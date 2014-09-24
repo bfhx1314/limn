@@ -7,12 +7,15 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
+import com.haowu.interfacetest.QQBInterface;
+import com.limn.tool.common.Common;
+import com.limn.tool.external.JSONControl;
+import com.limn.tool.random.RandomData;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import common.Common;
-import common.HttpFixture;
 import common.MyDate;
-import common.ResolveJSON;
+
 
 public class ShareInterface {
 	
@@ -21,15 +24,16 @@ public class ShareInterface {
 	
 	private String URL = "http://ios.haowu.com:83";;
 	
-	private HttpFixture hf = new HttpFixture();
 	
 	private int cityID = 1;
+	
+	private QQBInterface qqbif = new QQBInterface("ios.haowu.com", 83);
 	
 	private int WM = 4;
 	public HashMap<String,Double> getHasMoneyByActivityID(int cityID){
 		this.cityID = cityID;
 		String data = getActivitiesByCity(cityID);
-		HashMap<String,Object> hm = ResolveJSON.getMapFromJson(data);
+		HashMap<String,Object> hm = JSONControl.getMapFromJson(data);
 		int size = ((JSONArray)((Map)hm.get("data")).get("content")).size();
 		HashMap<String,Double> activity = new HashMap<String,Double>();
 		for(int i =0;i<size;i++){
@@ -48,9 +52,9 @@ public class ShareInterface {
 	public String share(String username, String password,String ID){
 		String info = "";
 		if(login(username,password)){
-			Common.sleepRandom(100, 200);
+			Common.wait(RandomData.getNumberRange(1, 2)/10);
 			String results = shareLink(ID);
-			HashMap<String,Object> hm = ResolveJSON.getMapFromJson(results);
+			HashMap<String,Object> hm = JSONControl.getMapFromJson(results);
 //			System.out.println(((Map)hm.get("data")).get("money"));
 			info = (String) hm.get("detail");
 			System.out.println(info);
@@ -61,58 +65,22 @@ public class ShareInterface {
 	}
 	
 	private String shareLink(String ID){
-		String keyURL = URL +"/hoss-society/app4/activity/sucessShare.do?activityId="
-						+ ID +"&shareStatus=1&way=2&key="+ loginKey;
-//		HashMap<String, Object> data = ResolveJSON.getMapFromJson(getResponse(keyURL));
-		return getResponse(keyURL);
+		return qqbif.shareActivites(ID);
 	}
 	
 	
-	/**
-	 * ��¼app
-	 * @param username �ֻ�����
-	 * @param password ����
-	 * @return ���ص�¼��� boolean
-	 */
 	private boolean login(String username, String password){
-		
-		String keyURL = URL + "/hoss-society/app4/login/agentlogin.do?user_name="
-				+ username + "&user_pass=" + password;
-
-		HashMap<String, Object> data = ResolveJSON.getMapFromJson(getResponse(keyURL));
-		
-		
-		if (data.get("status").equals("1")) {
-			
-			loginKey = (String) data.get("key");
-			return true;
-		}else {
-			System.out.println(data.get("detail"));
-			return false;
-			
-		}
-		
+		return qqbif.login(username, password);
 	}
 	
 	private String getActivitiesByCity(int cityID){
-		String url = URL + "/hoss-society/app4/activity/getActivities.do?cityId="
-				+ cityID;
-//		HashMap<String, Object> data = ResolveJSON.getMapFromJson(getResponse(url));
-		return getResponse(url);
+		
+		return qqbif.getActivitesByCityID(String.valueOf(cityID), RandomData.getMAC());
+
 	}
 	
 	
-	
-	
-	
-	private String getResponse(String url) {
-		hf.addHeaderValue("Content-Type", "application/json");
-		hf.setUrl(url);
-		hf.Get();
-		return hf.getResponseBody();
-	}
-	
-	
+
 	public static void main(String[] arg){
 		ShareInterface sif = new ShareInterface();
 		HashMap<String,Double> cancel = new HashMap<String, Double>();
@@ -126,7 +94,7 @@ public class ShareInterface {
 				}
 				System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 //				if(JOptionPane.showConfirmDialog(null, a.get(key), "Share", 0) == 0) {
-				if(true) {
+//				if(true) {
 					
 
 					//********share****************************************/
@@ -137,11 +105,10 @@ public class ShareInterface {
 					int num = 0;
 					boolean[]  bool = new boolean[data.length];
 					for (; rowLine < data.length; rowLine++) {
-						
-						Common.sleepRandom(10, 500);
-						
+						Common.wait(RandomData.getNumberRange(1, 50)/10);
+
 						do {
-							num = Common.random(1, data.length - 1);
+							num = RandomData.getNumberRange(1, data.length - 1);
 						} while (bool[num]);
 						
 						System.out.println("run:" + num);
@@ -152,11 +119,11 @@ public class ShareInterface {
 						
 					}
 					//*****************************************************/
-				}else{
-					cancel.put(key, a.get(key));
-				}
+//				}else{
+//					cancel.put(key, a.get(key));
+//				}
 			}
-			Common.sleepRandom(2000, 500);
+			Common.wait(RandomData.getNumberRange(1, 2));
 			System.out.println(MyDate.getDateToString("yyyy-MM-dd HH:mm:ss"));
 			
 		}

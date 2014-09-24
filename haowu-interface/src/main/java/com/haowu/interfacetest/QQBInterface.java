@@ -12,7 +12,9 @@ import org.apache.commons.httpclient.methods.PostMethod;
 
 
 
+
 import com.limn.tool.common.Common;
+import com.limn.tool.common.Print;
 import com.limn.tool.external.JSONControl;
 import com.limn.tool.httpclient.StructureMethod;
 /**
@@ -46,7 +48,7 @@ public class QQBInterface {
 	 * @param username 手机号
 	 * @param password 密码
 	 */
-	public void login(String username, String password){
+	public boolean login(String username, String password){
 		
 		NameValuePair[] param = { 
 				new NameValuePair("user_name", username),
@@ -59,9 +61,18 @@ public class QQBInterface {
 		
 		HashMap<String,Object> map = JSONControl.getMapFromJson(jsonResutls);
 		
-		key = (String) map.get("key");
+		if(map.get("status").equals("1")){
 		
-//		System.out.println(jsonResutls);
+			key = (String) map.get("key");
+		
+			Print.log("登录成功", 1);
+			return true;
+		}else{
+			Print.log("登录失败", 2);
+			return false;
+		}
+		
+		
 		
 	}
 	/**
@@ -100,7 +111,7 @@ public class QQBInterface {
 	}
 	
 	/**
-	 * 
+	 * 获取活动列表
 	 * @param cityID
 	 * @param mac
 	 * @return
@@ -117,7 +128,7 @@ public class QQBInterface {
 	}
 	
 	/**
-	 * 
+	 * 注册
 	 * @param iphone
 	 * @param mac
 	 * @param cityID
@@ -174,6 +185,9 @@ public class QQBInterface {
 		System.out.println(jsonResutls);
 	}
 	
+	/**
+	 * 获取总金额
+	 */
 	public String getCash(){
 		NameValuePair[] param = { 
 				new NameValuePair("key", key),
@@ -191,6 +205,11 @@ public class QQBInterface {
 		
 	}
 	
+	/**
+	 * 修改城市ID
+	 * @param cityID
+	 * @param phone
+	 */
 	public void changeCity(String cityID , String phone){
 		NameValuePair[] param = { 
 				new NameValuePair("key", key),
@@ -205,6 +224,18 @@ public class QQBInterface {
 		
 	}
 	
+	public String shareActivites(String activityId){
+		NameValuePair[] param = { 
+				new NameValuePair("key", key),
+				new NameValuePair("activityId", activityId),
+				new NameValuePair("shareStatus", "1"),
+				new NameValuePair("way", "2")
+		};
+		PostMethod postMethod = StructureMethod.getPostMethod(param,
+				"/hoss-society/app4/change/changeCity.do");
+		return StructureMethod.execute(client, postMethod);
+	}
+	
 	/**
 	 * 实例
 	 * @param args
@@ -216,3 +247,4 @@ public class QQBInterface {
 		
 	}
 }
+

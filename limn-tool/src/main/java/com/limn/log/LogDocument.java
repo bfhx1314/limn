@@ -9,7 +9,7 @@ import javax.swing.text.JTextComponent;
 @SuppressWarnings("serial")
 public class LogDocument extends DefaultStyledDocument {
 	private JTextComponent logTextArea = null;
-	// ��־��������
+	//显示行数
 	private int lineMax = 200;
 
 	public LogDocument(JTextComponent logTextArea) {
