@@ -1,10 +1,12 @@
-package com.limn.common;
+package com.limn.tool.common;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+
+import com.limn.tool.regexp.RegExp;
 
 /**
  * ִ��bat����

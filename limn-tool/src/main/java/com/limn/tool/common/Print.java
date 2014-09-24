@@ -1,4 +1,4 @@
-package com.limn.common;
+package com.limn.tool.common;
 
 import com.limn.log.RunLog;
 

@@ -16,7 +16,7 @@ import com.limn.tool.regexp.RegExp;
 
 /**
  * 
- * Haowu鍚庡彴 System
+ * Haowu后台 System
  * 
  * 
  * @author limn
@@ -29,8 +29,8 @@ public class SystemInterface {
 	
 	
 	/**
-	 * /system/login/do_login  鐧诲綍鐣岄潰鎺ュ彛
-	 * /system/counts/smsLog  鏌ョ湅楠岃瘉鐮佹帴鍙�
+	 * /system/login/do_login  登录界面接口
+	 * /system/counts/smsLog  查看验证码接口
 	 * @param ip
 	 * @param port
 	 */
@@ -41,9 +41,9 @@ public class SystemInterface {
 	
 	
 	/**
-	 * 鐧诲綍
-	 * @param username 鐢ㄦ埛甯愬彿
-	 * @param password 瀵嗙爜
+	 * 登录
+	 * @param username 用户帐号
+	 * @param password 密码
 	 */
 	public void login(String username, String password){
         NameValuePair[] param = {
@@ -61,8 +61,8 @@ public class SystemInterface {
 	
 	
 	/**
-	 * 鏍规嵁鎵嬫満鍙风爜 鑾峰彇楠岃瘉鐮�
-	 * @param phoneNumber 鏌ヨ鐨勬墜鏈哄彿
+	 * 根据手机号码 获取验证码
+	 * @param phoneNumber 查询的手机号
 	 * @return
 	 */
 	public String getCodeByPhone(String phoneNumber) {
@@ -85,10 +85,10 @@ public class SystemInterface {
 
 	}
 	/**
-	 * 鏂板妤肩洏
-	 * @param house_name 妤肩洏鍚嶇О
-	 * @param house_city 鎵�鍦ㄥ煄甯�
-	 * @param house_area 鎵�鍦ㄥ尯鍩�
+	 * 新增楼盘
+	 * @param house_name 楼盘名称
+	 * @param house_city 所在城市
+	 * @param house_area 所在区域
 	 */
 	public void addHouse(String house_name,String house_city,String house_area){
         NameValuePair[] param = {
@@ -96,11 +96,11 @@ public class SystemInterface {
                 new NameValuePair("house_state", "1"),
                 new NameValuePair("house_city", house_city),
                 new NameValuePair("house_area", house_area),
-                new NameValuePair("sub", "鎻愪氦"),
+                new NameValuePair("sub", "提交"),
                 new NameValuePair("app_tuijian", "0"),
                 new NameValuePair("kefu_id", "1"),
                 new NameValuePair("house_tj", "0"),
-                new NameValuePair("info_decoration", "姣涘澂")
+                new NameValuePair("info_decoration", "毛坯")
                 };  
 		PostMethod method = StructureMethod.getPostMethod(param, "/system/house/add");
 
@@ -108,9 +108,9 @@ public class SystemInterface {
 	}
 	
 	/**
-	 * 妤肩洏涓婁笅鏋�
+	 * 楼盘上下架
 	 * @param houseID
-	 * @param type 2涓婃灦 1涓嬫灦
+	 * @param type 2上架 1下架
 	 */
 	public void updateHouseStatus(String houseID,String type){
         NameValuePair[] param = {
@@ -122,7 +122,7 @@ public class SystemInterface {
 	
 	
 	/**
-	 * 瀹炰緥
+	 * 实例
 	 * @param args
 	 */
 	public static void main(String[] args){

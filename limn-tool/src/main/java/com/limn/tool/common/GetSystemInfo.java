@@ -1,4 +1,4 @@
-package com.limn.common;
+package com.limn.tool.common;
 
 /**
  * ��ȡϵͳ��Ϣ

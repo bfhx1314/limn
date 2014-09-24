@@ -68,7 +68,10 @@ public class HaowuInterface {
                 new NameValuePair("customersmobile", mobile),
                 new NameValuePair("customersname", name),
                 new NameValuePair("houseid", houseID),
-                new NameValuePair("housename", houseName)
+                new NameValuePair("housename", houseName),
+                new NameValuePair("yxcs", "4"),
+                new NameValuePair("yxjg", "1"),
+                new NameValuePair("yxqy", "48")
                 }; 
 		PostMethod recommennd = StructureMethod.getPostMethod(param, "/ajax/sendqrd1");
 		

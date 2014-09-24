@@ -17,10 +17,10 @@ import com.limn.tool.external.JSONControl;
 import com.limn.tool.httpclient.StructureMethod;
 /**
  * 
- * 鎶㈤挶鍖匒PP
+ * 抢钱包APP
  * 
- * /hoss-society/app4/agent/client.do 鎺ㄨ崘鎺ュ彛
- * /hoss-society/app4/login/agentlogin.do 鐧诲綍
+ * /hoss-society/app4/agent/client.do 推荐接口
+ * /hoss-society/app4/login/agentlogin.do 登录
  * @author limn
  *
  */
@@ -42,9 +42,9 @@ public class QQBInterface {
 	}
 	
 	/**
-	 * 鐧诲綍
-	 * @param username 鎵嬫満鍙�
-	 * @param password 瀵嗙爜
+	 * 登录
+	 * @param username 手机号
+	 * @param password 密码
 	 */
 	public void login(String username, String password){
 		
@@ -65,9 +65,9 @@ public class QQBInterface {
 		
 	}
 	/**
-	 * 鎺ㄨ崘瀹㈡埛
-	 * @param clientName 瀹㈡埛鍚嶇О
-	 * @param clientPhone 瀹㈡埛鎵嬫満鍙�
+	 * 推荐客户
+	 * @param clientName 客户名称
+	 * @param clientPhone 客户手机号
 	 * @param housesID housesID
 	 * @param housesName housesName
 	 */
@@ -206,7 +206,7 @@ public class QQBInterface {
 	}
 	
 	/**
-	 * 瀹炰緥
+	 * 实例
 	 * @param args
 	 */
 	public static void main(String[] args){

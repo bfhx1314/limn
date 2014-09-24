@@ -2,6 +2,7 @@ package com.limn.tool.external;
 
 import java.util.HashMap;
 import java.util.Iterator;
+
 import net.sf.ezmorph.object.DateMorpher;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
@@ -53,6 +54,11 @@ public class JSONControl {
 				System.out.println(o);
 			}
 		}
+	}
+	public static String getValueByHierarchy(String hierarchy){
+		String[] hie = hierarchy.split(":");
+//		hie
+		return null;
 	}
 
 }

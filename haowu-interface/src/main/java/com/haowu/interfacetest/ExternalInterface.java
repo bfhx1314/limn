@@ -81,6 +81,16 @@ public class ExternalInterface {
 	}
 	
 	
+	public void modify(String projectID){
+		NameValuePair[] param = { 
+				new NameValuePair("id", projectID)
+		};
+		PostMethod postMethod = StructureMethod.getPostMethod(param,"/test/renewal");
+		String results = StructureMethod.execute(client, postMethod);
+		System.out.println(results);
+	}
+	
+	
 	/**
 	 * 实例
 	 * @param args
