@@ -26,7 +26,6 @@ import com.limn.edit.EditTestCasePanel;
 import com.limn.keyword.KeyWordDriver;
 import com.limn.log.LogDocument;
 import com.limn.log.PrintLogDriver;
-import com.limn.log.RunLog;
 import com.limn.tool.regexp.RegExp;
 
 
@@ -87,9 +86,9 @@ public class DebugEditFrame extends PrintLogDriver{
 		init();
 	}
 	
-	private DebugEditFrame(){
-		super("调试编辑器");
-	}
+//	private DebugEditFrame(){
+//		super("调试编辑器");
+//	}
 		
 	private void init(){
 		//基本设置
