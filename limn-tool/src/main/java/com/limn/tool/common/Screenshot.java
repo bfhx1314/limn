@@ -6,6 +6,7 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
+
 import javax.imageio.ImageIO;
 
 
@@ -16,25 +17,30 @@ import javax.imageio.ImageIO;
  */
 public class Screenshot {
 
-	private static String fileName; // 文件的前缀
+	private String fileName; // 文件的前缀
 
 
-	private static int serialNum = 0;
+	static int serialNum = 0;
+
+	private String imageFormat; // 图像文件的格式
+
+	private String defaultImageFormat = "png";
+
+	Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 
 
-
-	private static String defaultImageFormat = "jpg";
-	
-	private static String imageFormat = defaultImageFormat; // 图像文件的格式
-
-	private static Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-
+	/**
+	 * 默认截图文件格式 png
+	 */
+	public Screenshot() {
+		imageFormat = defaultImageFormat;
+	}
 
 	/**
 	 * 自定义截图格式 
 	 * @param format
 	 */
-	public static void setFormat(String format) {
+	public Screenshot(String format) {
 		imageFormat = format;
 	}
 
@@ -42,14 +48,14 @@ public class Screenshot {
 	 * 文件保存
 	 * @param bitMapPath  文件保存路径 不需要带后缀名
 	 */
-	public static String snapShot(String bitMapPath, int x, int y, int witdh,	int height) {
-		
-		
+	public String snapShot(String bitMapPath) {
 		fileName = bitMapPath;
 		
 		try {
 			// 拷贝屏幕到一个BufferedImage对象screenshot
-			BufferedImage screenshot = new Robot().createScreenCapture(new Rectangle(y, x+50, witdh, height));
+			BufferedImage screenshot = (new Robot())
+					.createScreenCapture(new Rectangle(0, 0,
+							(int) d.getWidth(), (int) d.getHeight()));
 
 
 			// 根据文件前缀变量和文件格式变量，自动生成文件名

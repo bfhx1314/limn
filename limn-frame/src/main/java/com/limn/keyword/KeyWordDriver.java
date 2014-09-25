@@ -5,7 +5,8 @@ public interface KeyWordDriver {
 	/**
 	 * 关键字运行
 	 * @param step 关键字 [0]关键字   [1] ++ 内容
+	 * @return 
 	 */
-	public void start(String[] step);
+	public int start(String[] step);
 
 }

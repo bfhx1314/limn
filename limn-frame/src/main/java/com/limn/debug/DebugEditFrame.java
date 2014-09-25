@@ -287,7 +287,8 @@ public class DebugEditFrame extends PrintLogDriver{
 		new DebugEditFrame(new CustomPanel(),new KeyWordDriver() {
 			
 			@Override
-			public void start(String[] step) {
+			public int start(String[] step) {
+				return 0;
 				// TODO Auto-generated method stub
 				
 			}
