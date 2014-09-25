@@ -198,9 +198,11 @@ public class ExcelControl {
 	private boolean setValue(int row, int col, Object value){
 		if(readOnly){
 			return false;
-		}else if (excelSheet.getRow(row) == null) {
+		}
+		if (excelSheet.getRow(row) == null) {
 			excelSheet.createRow(row);
-		}else if (excelSheet.getRow(row).getCell(col) == null) {
+		}
+		if (excelSheet.getRow(row).getCell(col) == null) {
 			excelSheet.getRow(row).createCell(col);
 		}
 		try{
