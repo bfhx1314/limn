@@ -23,6 +23,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 
 import com.limn.log.RunLog;
+import com.limn.tool.common.Print;
 
 
 public class TestCaseExcel implements TestCase {
@@ -564,7 +565,7 @@ public class TestCaseExcel implements TestCase {
 							relate.put(getTestCaseNo(), getRelatedNo());
 							relate.put(getTestCaseNo() + "_Location", sheetIndex + "_" + row);
 						}else if(!getTestCaseNo().isEmpty()){
-							RunLog.printLog("用例编号存在重复:" + getTestCaseNo() + " " + sheetIndex
+							Print.log("用例编号存在重复:" + getTestCaseNo() + " " + sheetIndex
 									+ "_" + row , 2);
 						}
 					}

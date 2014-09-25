@@ -9,6 +9,7 @@ import org.openqa.selenium.WebDriverException;
 
 import com.limn.driver.Driver;
 import com.limn.log.RunLog;
+import com.limn.tool.common.Print;
 
 
 /**
@@ -66,25 +67,25 @@ public class OperateWindows {
 		        //确认or取消
 		        if (option) {
 		            //确认
-		        	RunLog.printLog("Accept the alert: " + alert.getText(),1);
+		        	Print.log("Accept the alert: " + alert.getText(),1);
 		            alert.accept();
 		        } else {
 		            //取消
-		        	RunLog.printLog("Dismiss the alert: " + alert.getText(),1);
+		        	Print.log("Dismiss the alert: " + alert.getText(),1);
 		            alert.dismiss();
 		        }
 		        flag = true;
 		    } catch (WebDriverException e) {
 		        if (e.getMessage().startsWith("Could not find")){
 		            System.out.println("There is no alert appear!");
-		            RunLog.printLog("There is no alert appear!",2);
+		            Print.log("There is no alert appear!",2);
 		        }else{
 		            throw e;
 		        }
 		    }
 		} catch (NoAlertPresentException e) {
 		    System.out.println("There is no alert appear!");
-		    RunLog.printLog("There is no alert appear!",2);
+		    Print.log("There is no alert appear!",2);
 		}
 		return flag;
 	}
@@ -110,7 +111,7 @@ public class OperateWindows {
 		int handlesSize = handles.size();
 		//存在窗口
 		if (handlesSize > 0) {
-			RunLog.printLog("存在"+ handlesSize +"个新窗口。", 3);
+			Print.log("存在"+ handlesSize +"个新窗口。", 3);
 			for(int i=0;i<handlesSize;){
 			    try{
 					//定位窗口
@@ -119,14 +120,14 @@ public class OperateWindows {
 			        return true;
 			    }catch(Exception e){
 			        System.out.println(e.getMessage());
-			        RunLog.printLog(e.getMessage(), 2);
+			        Print.log(e.getMessage(), 2);
 			        return false;
 			    }
 			}
 			Driver.driver.switchTo().window(currentHandle);
 		}
 		System.out.println("Did not find window");
-		RunLog.printLog("Did not find window", 2);
+		Print.log("Did not find window", 2);
 		return false;
 	}
 	 

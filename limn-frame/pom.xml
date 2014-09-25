@@ -31,11 +31,7 @@
 			<version>2.3</version>
 			<classifier>jdk15</classifier>
 		</dependency>
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-java</artifactId>
-			<version>2.39.0</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.tmatesoft.svnkit</groupId>
 			<artifactId>svnkit</artifactId>

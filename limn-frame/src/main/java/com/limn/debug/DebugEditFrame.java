@@ -268,13 +268,13 @@ public class DebugEditFrame extends PrintLogDriver{
 		setVisible(true);
 	}
 	
-	
-	
-	
-	
+
 	private void executeStep(String step){
-		String[] steps = RegExp.splitKeyWord(step);
-		keyWordDriver.start(steps);
+		String[] steps = step.split("\n");
+		for(String keys : steps){
+			String[] key = RegExp.splitKeyWord(keys);
+			keyWordDriver.start(key);
+		}
 	}
 
 	
