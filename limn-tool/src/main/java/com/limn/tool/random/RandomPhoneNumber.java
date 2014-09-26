@@ -2,7 +2,9 @@ package com.limn.tool.random;
 
 import java.io.InputStream;
 
-import com.limn.tool.external.ExcelControl;
+import com.limn.tool.external.ExcelEditor;
+
+
 
 
 
@@ -11,7 +13,7 @@ public class RandomPhoneNumber {
 	/*
 	 * 随机手机号码使用的变量
 	 */
-	private static ExcelControl ec = null;
+	private static ExcelEditor ec = null;
 	private static boolean flag = false;
 	
 	//*********************************************//
@@ -55,6 +57,6 @@ public class RandomPhoneNumber {
 	private static void init(){
 		InputStream is = RandomData.class.getClassLoader().getResourceAsStream(  
                 "data/Phone_Identity_City.xls");
-		ec = new ExcelControl(is);
+		ec = new ExcelEditor(is);
 	}
 }

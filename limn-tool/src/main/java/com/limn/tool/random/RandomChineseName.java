@@ -3,7 +3,7 @@ package com.limn.tool.random;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import com.limn.tool.external.ExcelControl;
+import com.limn.tool.external.ExcelEditor;
 import com.limn.tool.regexp.RegExp;
 
 
@@ -13,7 +13,7 @@ public class RandomChineseName {
 	/*
 	 * 随机中文姓名使用的变量
 	 */
-	private static ExcelControl ec = null;
+	private static ExcelEditor ec = null;
 	private static boolean flag = false;
 	
 	//*********************************************//
@@ -52,7 +52,7 @@ public class RandomChineseName {
 	private static void init(){
 		InputStream is = RandomData.class.getClassLoader().getResourceAsStream(  
                 "data/ChineseName_Data.xls");
-		ec = new ExcelControl(is);
+		ec = new ExcelEditor(is);
 	}
 	
 }
