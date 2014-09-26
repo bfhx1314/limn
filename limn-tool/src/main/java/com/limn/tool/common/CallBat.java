@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import com.limn.tool.regexp.RegExp;
 
 /**
- * ִ��bat����
+ * 执行bat命令
  * @author Administrator
  *
  */
@@ -27,15 +27,15 @@ public class CallBat {
 	}
 
 	/**
-	 * ִ������
-	 * @param cmd����
-	 * @return ���������,��ð��ƴ��
+	 * 执行命令
+	 * @param cmd命令
+	 * @return 返回输出流,以冒号拼接
 	 */
     public static String returnExec(String cmd) {
         Process p;
         String str = "";
         try {
-            //ִ������
+            //执行命令
         	cmd = cmd.replace("/", "\\");
             p = Runtime.getRuntime().exec(cmd);
             try {
@@ -44,14 +44,14 @@ public class CallBat {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-            //ȡ���������������
+            //取得命令结果的输出流
             InputStream fis=p.getInputStream();
-            //��һ�����������ȥ��
+            //用一个读输出流类去读
             InputStreamReader isr=new InputStreamReader(fis);
-            //�û���������
+            //用缓冲器读行
             BufferedReader br=new BufferedReader(isr);
             String line=null;
-            //ֱ������Ϊֹ
+            //直到读完为止
             while((line=br.readLine())!=null) {
             	str = str + line + ":";
             }
@@ -62,8 +62,8 @@ public class CallBat {
     }
     
 	/**
-	 * �������̣�������ڶ��һ��������
-	 * @param processName ������ ��PID
+	 * 结束进程，如果存在多个一并结束。
+	 * @param processName 进程名 、PID
 	 */
 	public static void closeProcess(String processName){
 		Runtime rt = Runtime.getRuntime();
@@ -71,7 +71,7 @@ public class CallBat {
 	    String command = "taskkill /F /IM " + processName;    
 	    try
 	    {
-//	      rt.exec(command1);//����һ������
+//	      rt.exec(command1);//返回一个进程
 	      rt.exec(command);
 	      System.out.println("success closed");
 	    }
@@ -122,7 +122,7 @@ public class CallBat {
 			}
 		}
 		if (PID!=null){
-			CallBat.closeProcess(PID); // ����TOMCAT
+			CallBat.closeProcess(PID); // 结束TOMCAT
 		}
 	}
 	
