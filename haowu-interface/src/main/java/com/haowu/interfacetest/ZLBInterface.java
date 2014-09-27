@@ -11,7 +11,7 @@ import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.PostMethod;
 
 import com.limn.tool.common.Print;
-import com.limn.tool.external.JSONControl;
+import com.limn.tool.external.JSONReader;
 import com.limn.tool.httpclient.StructureMethod;
 
 /** 
@@ -56,7 +56,7 @@ public class ZLBInterface {
 						"/hoss-projectAssistant/hoss/projectAssistant/projectAssistantLogin.do");
 		String jsonResutls = StructureMethod.execute(client, postMethod);
 		System.out.println(jsonResutls);
-		HashMap<String, Object> map = JSONControl.getMapFromJson(jsonResutls);
+		HashMap<String, Object> map = JSONReader.getMapFromJson(jsonResutls);
 		if(map.get("status").equals("1")){
 			Print.log("助理宝登陆成功：" + username, 1);
 			key = map.get("key").toString();
@@ -87,7 +87,7 @@ public class ZLBInterface {
 				.getPostMethod(paramlist,
 						"/hoss-projectAssistant/hoss/projectAssistant/getGroupBuyClients.do");
 		String jsonResutls = StructureMethod.execute(client, postMethod);
-		HashMap<String, Object> map = JSONControl.getMapFromJson(jsonResutls);
+		HashMap<String, Object> map = JSONReader.getMapFromJson(jsonResutls);
 		followId = ((Map) ((JSONArray) ((Map) map.get("data")).get("dataList"))
 				.get(0)).get("followId").toString();
 		clientName = ((Map) ((JSONArray) ((Map) map.get("data"))
@@ -114,7 +114,7 @@ public class ZLBInterface {
 				.getPostMethod(paramlist,
 						"/hoss-projectAssistant/hoss/projectAssistant/getProjectTypeList.do");
 		String jsonResutls = StructureMethod.execute(client, postMethod);
-		HashMap<String, Object> map = JSONControl.getMapFromJson(jsonResutls);
+		HashMap<String, Object> map = JSONReader.getMapFromJson(jsonResutls);
 		projectTypeId = ((Map) ((JSONArray) ((Map) map.get("data"))
 				.get("content")).get(0)).get("projectTypeId").toString();
 		System.out.println(projectTypeId);
@@ -156,7 +156,7 @@ public class ZLBInterface {
 		PostMethod postMethod = StructureMethod.getPostMethod(paramlist,
 						"/hoss-projectAssistant/hoss/projectAssistant/commitGroupBuyClient.do");
 		String jsonResutls = StructureMethod.execute(client, postMethod);
-		HashMap<String, Object> map = JSONControl.getMapFromJson(jsonResutls);
+		HashMap<String, Object> map = JSONReader.getMapFromJson(jsonResutls);
 		if(map.get("status").equals("1")){
 			Print.log("下定成功", 1);
 			key = map.get("key").toString();
@@ -195,7 +195,7 @@ public class ZLBInterface {
 		PostMethod postMethod = StructureMethod.getPostMethod(paramlist,
 						"/hoss-projectAssistant/hoss/projectAssistant/commitDealingClient.do");
 		String jsonResutls = StructureMethod.execute(client, postMethod);
-		HashMap<String, Object> map = JSONControl.getMapFromJson(jsonResutls);
+		HashMap<String, Object> map = JSONReader.getMapFromJson(jsonResutls);
 		if(map.get("status").equals("1")){
 			Print.log("成交成功", 1);
 			key = map.get("key").toString();
@@ -218,7 +218,7 @@ public class ZLBInterface {
 						"/hoss-projectAssistant/hoss/projectAssistant/commitFilingClients.do");
 		String jsonResutls = StructureMethod.execute(client, postMethod);
 		
-		HashMap<String, Object> map = JSONControl.getMapFromJson(jsonResutls);
+		HashMap<String, Object> map = JSONReader.getMapFromJson(jsonResutls);
 		if(map.get("status").equals("1")){
 			Print.log("报备成功", 1);
 			key = map.get("key").toString();
@@ -241,7 +241,7 @@ public class ZLBInterface {
 		PostMethod postMethod = StructureMethod.getPostMethod(paramlist,
 						"/hoss-projectAssistant/hoss/projectAssistant/checkVisitingClientVerifyCode.do");
 		String jsonResutls = StructureMethod.execute(client, postMethod);
-		HashMap<String, Object> map = JSONControl.getMapFromJson(jsonResutls);
+		HashMap<String, Object> map = JSONReader.getMapFromJson(jsonResutls);
 		if(map.get("status").equals("1")){
 			Print.log("到访成功", 1);
 			key = map.get("key").toString();
@@ -278,7 +278,7 @@ public class ZLBInterface {
 						"/hoss-projectAssistant/hoss/projectAssistant/commitRefundClient.do");
 		String jsonResutls = StructureMethod.execute(client, postMethod);
 		
-		HashMap<String, Object> map = JSONControl.getMapFromJson(jsonResutls);
+		HashMap<String, Object> map = JSONReader.getMapFromJson(jsonResutls);
 		if(map.get("status").equals("1")){
 			Print.log("退款成功" , 1);
 			key = map.get("key").toString();

@@ -1,71 +1,81 @@
 package com.limn.log;
 
-import java.awt.Color;
-import java.net.Socket;
 
-import javax.swing.JFrame;
+
+import java.awt.Color;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 
 
 
-public class PrintLogDriver extends JFrame{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	public static JTextPane writeLogPane = new JTextPane();
-	public static JScrollPane logJScrollLog = new JScrollPane(writeLogPane,
+public abstract class PrintLogDriver implements LogControlInterface{
+		
+	//日志面板
+	public JTextPane writeLogPane = new JTextPane();
+	public JScrollPane logJScrollLog = new JScrollPane(writeLogPane,
 			ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-	public static JTextPane writeStepPane = new JTextPane();
-	public static JScrollPane logJScrollStep = new JScrollPane(writeStepPane,
-			ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-	
-	
-	public static JProgressBar current;
+
+	//通信
+	public Socket socketServer = null;
+
+	//进度条
+	public JProgressBar progressBar;
 	
 	// 修改文字的起始位子
-	public static int LastScroll = -1;
-	public static int currentLength;
+	public int LastScroll = -1;
+	public int currentLength;
 	
-	public static int executedStepNum = 0;
-	public static int sumStepNum = 0;
+	//当前执行的用例
+	public int currentStepIndex = 0;
+	//总计的步骤数
+	public int stepCount = 0;
 	
-	public static int[] everySteplen = null;
-	public static int[] everyDescription = null;
+	public int[] everySteplen = null;
+	public int[] everyDescription = null;
 	
-	public static boolean isStart = false;
-	public PrintLogDriver(String title){
-		super(title);
-		isStart = true;
-	}
+	//进程中是否已经存在
+	private boolean isStart = false;
+	
+	//通信状态
+	public  int socketStatus = 0;
+	
 	
 	public PrintLogDriver(){
-		isStart = true;
+		init();
 	}
 	
 	public PrintLogDriver(Socket sc){
+		socketServer = sc;
+		init();
+	}
+	
+	private void init(){
 		isStart = true;
 	}
 	
-	
-	public void init(int count){
+	/**
+	 * 执行进度长度
+	 * @param count 
+	 */
+	public void progressLength(int count){
 		
 	}
 	
+	
 	/**
-	 * 
+	 * 写入日志
 	 * @param strng
 	 * @param strngDescrption
 	 * @param style 1 green , 2 red , 3 yellow ,4 sold black,else black 
@@ -102,65 +112,22 @@ public class PrintLogDriver extends JFrame{
 	}
 
 	
-	// runStep的界面输入
-	public static void runStepWrite(String strngStep, int currentStep) {
-		writeStepPane.setText(strngStep);
-		current.setValue(currentStep);
-	}
-
-	// runStep的界面修改 pos字符数的起始位置,currentL修改的字符串的长度
-	public void runStepInsert(int pos, int currentL, int style) {
-		LastScroll = pos;
-		currentLength = currentL;
-		if(writeStepPane.getText().length()<pos+currentL){
-			
-		}else{
-			writeStepPane.setCaretPosition(pos + currentL);
-		}
-
-		switch (style) {
-		// 没有问题的步骤样式
-		case 1:
-			// setDocs(Color.green.darker(),false);
-			insert(setDocs(Color.green.darker(), false));
-			break;
-		// 有问题的步骤样式
-		case 2:
-			insert(setDocs(Color.red, false));
-			break;
-		// 可能有问题的步骤样式
-		case 3:
-			insert(setDocs(Color.yellow.darker(), false));
-			break;
-		// 当前正在执行的步骤样式
-		case 4:
-			insert(setDocs(Color.black, true));
-			break;
-		// 其他 无样式变化
-		default:
-			insert(setDocs(Color.black, false));
-			break;
-		}
-	}
-
-	// 修改原来的字符的样式
-	public void insert(AttributeSet attrSet) {
-		Document doc = writeStepPane.getDocument();
-		try {
-			String strng = writeStepPane.getDocument().getText(LastScroll,
-					currentLength);
-			doc.remove(LastScroll, currentLength);
-			doc.insertString(LastScroll, strng, attrSet);
-		} catch (BadLocationException e) {
-			System.out.println("BadLocationException:   " + e);
-		}
-	}
 	
-	public static boolean isStart(){
+	
+	/**
+	 * 返回是否已经启动
+	 * @return
+	 */
+	public boolean isStart(){
 		return isStart;
 	}
-
-	// 样式的设置
+	
+	/**
+	 * 样式的设置
+	 * @param col
+	 * @param bold
+	 * @return
+	 */
 	public SimpleAttributeSet setDocs(Color col, boolean bold) {
 		SimpleAttributeSet attrSet = new SimpleAttributeSet();
 		// 颜色
@@ -169,68 +136,8 @@ public class PrintLogDriver extends JFrame{
 		if (bold == true) {
 			StyleConstants.setBold(attrSet, true);
 		}
-		// 字体大小
-		// StyleConstants.setFontSize(attrSet,fontSize);
 		return attrSet;
-		// insert(writeStepPane,attrSet);
 	}
-
-
-
-
-
-	
-	/**
-	 * 测试用例的Step
-	 * @param currentStepNum 第几个Step
-	 * @param currentStep 步骤的描述
-	 */
-	public void runStep(int currentStepNum, String[] currentStep) {
-		int eStepNum;
-		if (executedStepNum <= currentStepNum) {
-			eStepNum = currentStepNum + executedStepNum;
-		} else {
-			eStepNum = currentStepNum;
-		}
-
-		everySteplen = new int[currentStep.length + 1];
-		everyDescription = new int[currentStep.length + 1];
-		String firstDescription = "当前用例行: " + currentStepNum + " 总计用例行: "
-				+ sumStepNum + "\n";
-		
-		everySteplen[0] = firstDescription.length();
-		everyDescription[0] = firstDescription.length();
-		
-		String allStep = firstDescription;
-		int everyStep = 0;
-		for (String step:currentStep){
-			step = everyStep + "." + step + "\n";
-			everyStep++;
-			
-			everyDescription[everyStep] = step.length();
-			
-			everySteplen[everyStep] = everySteplen[everyStep-1] + everyDescription[everyStep];
-
-			allStep = allStep + step;
-			
-		}
-		
-		runStepWrite(allStep,eStepNum);
-
-
-	}
-	
-	/**
-	 * 界面上高亮当前的步骤
-	 * @param currentNum  index 从1开始
-	 */
-	public void runStepInsert(int currentNum){
-		if(currentNum>0){
-			runStepInsert(everySteplen[currentNum-1],everyDescription[currentNum],1);
-		}
-		runStepInsert(everySteplen[currentNum],everyDescription[currentNum+1],4);
-	}
-
 
 	
 	
@@ -258,6 +165,67 @@ public class PrintLogDriver extends JFrame{
 		
 	}
 
+	/**
+	 * 设置服务端和客户端之间的通信
+	 * @param socket
+	 */
+	public void setSocket(Socket socket){
+		socketServer = socket;
+		new Timer().scheduleAtFixedRate(new TimerSocket(), 0, 5000);
+	}
 	
+	/**
+	 * 更新服务器与客户端的通信
+	 * @param log
+	 */
+	public void uploadLog(String log){
+		if(socketServer!=null && !socketServer.isClosed()){
+			try {
+				new DataOutputStream(socketServer.getOutputStream()).writeUTF(log+"\r\n");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * 返回通信状态
+	 * @return
+	 */
+	public int getSocketStatus(){
+		return socketStatus;
+	}
+	
+	/**
+	 * 通信的维护
+	 * @author limn
+	 */
+	private class TimerSocket extends TimerTask {
+
+		@Override
+		public void run() {
+			
+			if(socketServer != null && !socketServer.isConnected()){
+				try {
+					socketServer = new Socket(socketServer.getInetAddress(), socketServer.getPort());
+					socketStatus = SocketStatusType.CONNECT;
+//					socketConnect.setBackground(Color.GREEN);
+//					socketConnect.setForeground(Color.GREEN);
+				} catch (IOException e) {
+					socketStatus = SocketStatusType.BREAK;
+//					socketConnect.setBackground(Color.LIGHT_GRAY);
+//					socketConnect.setForeground(Color.LIGHT_GRAY);
+					e.printStackTrace();
+				}
+			}else{
+				socketStatus = SocketStatusType.BREAK;
+//				socketConnect.setBackground(Color.GREEN);
+//				socketConnect.setForeground(Color.GREEN);
+			}
+				
+			
+		}
+	
+	}
 	
 }

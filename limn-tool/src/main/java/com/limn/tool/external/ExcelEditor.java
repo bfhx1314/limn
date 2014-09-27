@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -202,20 +203,27 @@ public class ExcelEditor {
 		if (excelSheet.getRow(row) == null) {
 			excelSheet.createRow(row);
 		}
-		if (excelSheet.getRow(row).getCell(col) == null) {
-			excelSheet.getRow(row).createCell(col);
+		HSSFRow cRow = excelSheet.getRow(row);
+		if (cRow.getCell(col) == null) {
+			cRow.createCell(col);
 		}
 		try{
 			Cell cell = excelSheet.getRow(row).getCell(col);
-			if(value instanceof Double){
+			if(value instanceof Double || value instanceof Integer){
+				//如果单元格原来是String类型 无法转化 必须删除
+				cRow.removeCell(cell);
+				cell = cRow.createCell(col);
 				cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+				if(value instanceof Integer){
+					value = ((Integer) value).doubleValue();
+				}
 				cell.setCellValue((Double) value);
-			}else{
+			}else{	
 				cell.setCellType(Cell.CELL_TYPE_STRING);
 				cell.setCellValue((String) value);
 			}
 			return true;
-		}catch(Exception e){
+		}catch(IllegalStateException e){
 			e.printStackTrace();
 			return false;
 		}

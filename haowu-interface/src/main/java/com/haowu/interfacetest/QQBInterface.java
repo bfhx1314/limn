@@ -15,7 +15,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
-import com.limn.tool.external.JSONControl;
+import com.limn.tool.external.JSONReader;
 import com.limn.tool.httpclient.StructureMethod;
 /**
  * 
@@ -59,7 +59,7 @@ public class QQBInterface {
 				"/hoss-society/app4/login/agentlogin.do");
 		String jsonResutls = StructureMethod.execute(client, postMethod);
 		
-		HashMap<String,Object> map = JSONControl.getMapFromJson(jsonResutls);
+		HashMap<String,Object> map = JSONReader.getMapFromJson(jsonResutls);
 		
 		if(map.get("status").equals("1")){
 		
@@ -146,7 +146,7 @@ public class QQBInterface {
 				"/hoss-society/app4/account/reg/verify.do");
 		String jsonResutls = StructureMethod.execute(client, postMethod);
 		System.out.println(jsonResutls);
-		Common.wait(2);
+		Common.wait(2000);
 		String ver = sif.getCodeByPhone(iphone);
 		System.out.println(ver);
 		NameValuePair[] param1 = { 
@@ -171,7 +171,7 @@ public class QQBInterface {
 				"/hoss-society/app4/account/reg.do");
 		jsonResutls = StructureMethod.execute(client, postMethod3);
 		System.out.println(jsonResutls);
-		return (String) JSONControl.getMapFromJson(jsonResutls).get("status");
+		return (String) JSONReader.getMapFromJson(jsonResutls).get("status");
 	}
 	
 	public void setCity(String CityID){
@@ -199,7 +199,7 @@ public class QQBInterface {
 				"/hoss-society/app4/wallets/cashBackList.do");
 		String jsonResutls = StructureMethod.execute(client, postMethod);
 		
-		HashMap<String,Object> map = JSONControl.getMapFromJson(jsonResutls);
+		HashMap<String,Object> map = JSONReader.getMapFromJson(jsonResutls);
 		
 		return map.get("balance").toString();
 		
