@@ -279,13 +279,13 @@ public class Test {
 			String[] steps = RegExp.splitWord(tc.getTestStep(), "\n");
 
 			if (!steps[0].isEmpty()) {
-				RunLog.runStep(tc.getCurrentRow() + 1, steps);
+				RunLog.setStepsForTextAreaByIndex(tc.getCurrentRow() + 1, steps);
 				int stepNum = runTimeStepNum;
 				//测试结果集
 				recordResult.addCase(tc.getTestCaseNo());
 				for (; stepNum < steps.length; stepNum++) {
 					runTimeStepNum = stepNum;
-					RunLog.runStepInsert(stepNum);
+					RunLog.highLightCurrentStep(stepNum);
 					
 					//测试结果集
 					recordResult.addStep(steps[stepNum], String.valueOf(result));

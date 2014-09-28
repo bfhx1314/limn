@@ -22,8 +22,10 @@ import javax.swing.table.DefaultTableModel;
 
 
 
+
 import com.limn.edit.EditTestCasePanel;
 import com.limn.keyword.KeyWordDriver;
+import com.limn.log.LogControlInterface;
 import com.limn.log.LogDocument;
 import com.limn.log.PrintLogDriver;
 import com.limn.tool.regexp.RegExp;
@@ -37,10 +39,10 @@ import com.limn.tool.regexp.RegExp;
  * @author limn
  *
  */
-public class DebugEditFrame extends PrintLogDriver{
+public class DebugEditFrame extends PrintLogDriver implements LogControlInterface{
 	
-	private static final long serialVersionUID = 1L;
-
+	private JFrame jframe = new JFrame();
+	
 	private JTextArea testCase = new JTextArea();
 	private JScrollPane testCaseJSP = new JScrollPane(testCase,
 			ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
@@ -92,14 +94,14 @@ public class DebugEditFrame extends PrintLogDriver{
 		
 	private void init(){
 		//基本设置
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		int screenHeight = ((int) java.awt.Toolkit.getDefaultToolkit()
 				.getScreenSize().height);
 		int screenWidth = ((int) java.awt.Toolkit.getDefaultToolkit()
 				.getScreenSize().width);
-		setBounds((int) ((screenWidth - 1000) *0.5), (int) ((screenHeight - 600) *0.5), 1000, 600);
+		jframe.setBounds((int) ((screenWidth - 1000) *0.5), (int) ((screenHeight - 600) *0.5), 1000, 600);
 		
-		setLayout(null);
+		jframe.setLayout(null);
 		
 		setBoundsAt(testCaseJSP,2, 5, 300, 70);
 		setBoundsAt(execute,202, 80, 100, 20);
@@ -145,8 +147,10 @@ public class DebugEditFrame extends PrintLogDriver{
 		
 		writeLogPane.setPreferredSize(new Dimension(290, 234));
 		writeLogPane.setEditable(false);
-		writeStepPane.setPreferredSize(new Dimension(244, 234));
-		writeStepPane.setEditable(false);
+		
+//		writeStepPane.setPreferredSize(new Dimension(244, 234));
+//		writeStepPane.setEditable(false);
+		
 		writeLogPane.setDocument(new LogDocument(writeLogPane, 400));
 		
 		model.addColumn("用例步骤");
@@ -262,10 +266,10 @@ public class DebugEditFrame extends PrintLogDriver{
 		});
 		
 		//基本设置
-		setAlwaysOnTop(true);
-		setResizable(false);
-		validate();
-		setVisible(true);
+		jframe.setAlwaysOnTop(true);
+		jframe.setResizable(false);
+		jframe.validate();
+		jframe.setVisible(true);
 	}
 	
 
@@ -280,7 +284,7 @@ public class DebugEditFrame extends PrintLogDriver{
 	
 	private void setBoundsAt(Component comp,int x,int y,int width,int height){
 		comp.setBounds(x, y, width, height);
-		this.add(comp);
+		jframe.add(comp);
 	}
 	
 	public static void main(String[] args){
