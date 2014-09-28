@@ -1,6 +1,6 @@
 package com.limn.tool.common;
 
-import com.limn.log.RunLog;
+import com.limn.tool.log.RunLog;
 
 public class Print {
 	
