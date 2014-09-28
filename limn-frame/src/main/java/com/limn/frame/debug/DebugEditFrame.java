@@ -1,4 +1,4 @@
-package com.limn.debug;
+package com.limn.frame.debug;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -23,11 +23,13 @@ import javax.swing.table.DefaultTableModel;
 
 
 
-import com.limn.edit.EditTestCasePanel;
-import com.limn.keyword.KeyWordDriver;
-import com.limn.log.LogControlInterface;
-import com.limn.log.LogDocument;
-import com.limn.log.PrintLogDriver;
+
+
+import com.limn.frame.edit.EditTestCasePanel;
+import com.limn.frame.keyword.KeyWordDriver;
+import com.limn.tool.log.LogControlInterface;
+import com.limn.tool.log.LogDocument;
+import com.limn.tool.log.PrintLogDriver;
 import com.limn.tool.regexp.RegExp;
 
 

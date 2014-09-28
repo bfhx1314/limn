@@ -1,4 +1,4 @@
-package com.limn.control;
+package com.limn.frame.control;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,13 +9,16 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.limn.exception.ParameterException;
-import com.limn.keyword.KeyWordDriver;
-import com.limn.log.RunLog;
-import com.limn.parameter.Parameter;
-import com.limn.results.RecordResult;
-import com.limn.testcase.TestCase;
-import com.limn.testcase.TestCaseExcel;
+
+
+
+
+import com.limn.frame.keyword.KeyWordDriver;
+import com.limn.frame.results.RecordResult;
+import com.limn.frame.testcase.TestCase;
+import com.limn.frame.testcase.TestCaseExcel;
+import com.limn.tool.log.RunLog;
+import com.limn.tool.parameter.Parameter;
 import com.limn.tool.common.CallBat;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
@@ -37,7 +40,7 @@ public class Test {
 	public static TestCase tc = null;
 
 	// 定义core文件属性集合
-	private CoreReader coreReader = null;
+//	private CoreReader coreReader = null;
 
 	private HashMap<String,String> relate = null;
 	
@@ -76,19 +79,8 @@ public class Test {
 		}
 
 		// 根据界面上的浏览器类型设置,赋值BrowerType
-		if(Parameter.BROWSERTYPE==null){
-			browserType = BrowserType.FireFox;
-		} else if (Parameter.BROWSERTYPE.equalsIgnoreCase("FireFox")) {
-			browserType = BrowserType.FireFox;
-		} else if (Parameter.BROWSERTYPE.equalsIgnoreCase("Chrome")) {
-			browserType = BrowserType.Chrome;
-		} else if (Parameter.BROWSERTYPE.equalsIgnoreCase("IE")) {
-			browserType = BrowserType.IE;
-		}
-
-		// 根据界面上的URL设置,赋值URL
-		URL = Parameter.URL;
-
+		browserType = Parameter.BROWSERTYPE;
+		
 		// 配置路径
 //		if(Parameter.NOTSERVER){
 //			ConfigInfo.setConfigPath(map.get("ConfigPath"));
@@ -122,7 +114,7 @@ public class Test {
 //		}
 		
 		// 默认步骤
-		defaultStep();
+//		defaultStep();
 		
 
 		if(!Parameter.DEBUGMODE){

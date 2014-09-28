@@ -28,6 +28,6 @@
     </Template> 
   </Templates>  
   <Cores> 
-    <Core id="s1"></Core> 
+    <Core id="s1"/> 
   </Cores> 
 </QTP>
