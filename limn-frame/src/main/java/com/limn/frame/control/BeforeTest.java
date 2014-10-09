@@ -31,9 +31,9 @@ public class BeforeTest implements Runnable {
 	//测试属性
 	private HashMap<String, String> testParameter = null;
 
-	private boolean update = true;
+//	private boolean update = true;
 	
-	private static KeyWordDriver keyWordDriver = null;
+	private KeyWordDriver keyWordDriver = null;
 	
 	private boolean flag = false;
 	
@@ -47,7 +47,8 @@ public class BeforeTest implements Runnable {
 	//本地化的RunLog
 	public BeforeTest(HashMap<String, String> map,KeyWordDriver kwd) {
 		testParameter = map;
-		update = false;
+		keyWordDriver = kwd;
+//		update = false;
 		beforeTest();
 	}
 	
@@ -55,6 +56,7 @@ public class BeforeTest implements Runnable {
 	public BeforeTest(HashMap<String, String> map,Socket socket,KeyWordDriver kwd) {
 		
 		testParameter = map;
+		keyWordDriver = kwd;
 		this.socket = socket;
 		beforeTest();
 	}

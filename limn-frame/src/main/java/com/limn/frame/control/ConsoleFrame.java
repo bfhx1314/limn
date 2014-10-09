@@ -544,7 +544,7 @@ public class ConsoleFrame extends JFrame {
 						
 						//此处运行当前界面的配置
 
-						new BeforeTest(xml.getNodeValueByTemplateIndex(0),keyWordDriver);
+						new Thread(new BeforeTest(xml.getNodeValueByTemplateIndex(0),keyWordDriver)).start();;
 //						new Thread(new BeforeTest(xml.getNodeValueByTemplateIndex(0))).start();
 						
 						

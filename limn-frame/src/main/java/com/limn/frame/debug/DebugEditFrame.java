@@ -25,11 +25,13 @@ import javax.swing.table.DefaultTableModel;
 
 
 
+
 import com.limn.frame.edit.EditTestCasePanel;
 import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.tool.log.LogControlInterface;
 import com.limn.tool.log.LogDocument;
 import com.limn.tool.log.PrintLogDriver;
+import com.limn.tool.log.RunLog;
 import com.limn.tool.regexp.RegExp;
 
 
@@ -80,11 +82,14 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	JPanel pabelTestCase = new JPanel();
 	
 	private KeyWordDriver keyWordDriver = null;
+	
+	
 	/**
 	 * 添加自定义面板到界面
 	 * @param cp 此面板需要继承CutomPanel的类
 	 */
 	public DebugEditFrame(CustomPanel cp, KeyWordDriver kwd){
+		new RunLog(this);
 		customPanel = cp;
 		keyWordDriver = kwd;
 		init();
