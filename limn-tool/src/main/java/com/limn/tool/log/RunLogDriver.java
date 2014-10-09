@@ -12,6 +12,8 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
+import com.limn.tool.common.Print;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.net.Socket;
@@ -42,6 +44,8 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	
 	public JFrame jFrame = new JFrame("RunLog");
+	
+	private boolean isStart = false;
 	/**
 	 * 默认的日志界面
 	 * 连接服务器RunLog
@@ -66,6 +70,7 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 	}
 	
 	private void init(){
+		isStart = true;
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		int screenHeight = ((int) java.awt.Toolkit.getDefaultToolkit()
 				.getScreenSize().height);
@@ -277,8 +282,7 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 	}
 
 	public boolean isStart() {
-		// TODO Auto-generated method stub
-		return false;
+		return isStart;
 	}
 	
 }

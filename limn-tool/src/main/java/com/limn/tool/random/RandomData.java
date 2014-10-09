@@ -18,22 +18,6 @@ public class RandomData {
 		}
 	}
 	
-	/**
-	 * 随机获取中文名称
-	 * @return
-	 */
-	public static String getChineseName(){
-		return RandomChineseName.getChineseName();
-	}
-
-	/**
-	 * 根据城市区号来随机生成该城市的手机号码
-	 * @param cityIdentity 城市区号
-	 * @return
-	 */
-	public static String getPhoneNumber(String cityIdentity){
-		return RandomPhoneNumber.getPhoneNumber(cityIdentity);
-	}
 	
 	/**
 	 * 范围数据随机
