@@ -6,7 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import com.limn.parameter.Parameter;
+import com.limn.tool.parameter.Parameter;
 import com.limn.tool.common.CallBat;
 import com.limn.tool.common.Common;
 
