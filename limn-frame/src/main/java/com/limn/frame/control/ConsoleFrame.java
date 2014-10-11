@@ -32,6 +32,7 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
 import com.limn.tool.exception.ParameterException;
+import com.limn.tool.external.XMLReader;
 import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;

@@ -89,7 +89,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	 * @param cp 此面板需要继承CutomPanel的类
 	 */
 	public DebugEditFrame(CustomPanel cp, KeyWordDriver kwd){
-		new RunLog(this);
+
 		customPanel = cp;
 		keyWordDriver = kwd;
 		init();
@@ -281,11 +281,10 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	
 
 	private void executeStep(String step){
-		String[] steps = step.split("\n");
-		for(String keys : steps){
-			String[] key = RegExp.splitKeyWord(keys);
-			keyWordDriver.start(key);
-		}
+		execute.setEnabled(false);
+		insertExecute.setEnabled(false);
+		executeAgain.setEnabled(false);
+		new Thread(new ExecuteStep(step)).start();
 	}
 
 	
@@ -327,5 +326,46 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	public void error(String log){
 	
 	}
-
+	
+	/**
+	 * 执行
+	 * @author limn
+	 *
+	 */
+	class ExecuteStep implements Runnable{
+		
+		public String step = null;
+		
+		public ExecuteStep(String step){
+			this.step = step;
+			
+		}
+		
+		@Override
+		public void run() {
+			
+			String[] steps = step.split("\n");
+			for(String keys : steps){
+				String[] key = RegExp.splitKeyWord(keys);
+				keyWordDriver.start(key);
+			}
+			execute.setEnabled(true);
+			insertExecute.setEnabled(true);
+			executeAgain.setEnabled(true);
+			
+		}
+		
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+

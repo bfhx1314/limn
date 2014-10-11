@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.dom4j.DocumentException;
 
+import com.limn.tool.external.XMLReader;
+
 
 public class CoreConfig {
 	private String corePath;
@@ -24,7 +26,7 @@ public class CoreConfig {
 //	String xmlPath = "H:/Template.xml";
 	public void coreOpen(){
 		try {    
-			Runtime.getRuntime().exec("cmd.exe  /c notepad "+corePath);
+			Runtime.getRuntime().exec("cmd.exe  /c notepad " + corePath);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
