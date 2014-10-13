@@ -22,6 +22,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import com.limn.tool.common.Common;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.OutputFormat;
@@ -30,7 +31,6 @@ import org.dom4j.io.XMLWriter;
 
 import com.limn.tool.log.PrintLogDriver;
 import com.limn.tool.log.RunLog;
-import com.limn.tool.log.RunLogDriver;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.external.XMLReader;
 
@@ -70,7 +70,7 @@ public class Client {
 	
 	private String templatePath = null;
 	
-	private PrintLogDriver printLog = new RunLogDriver();
+	private PrintLogDriver printLog = null;
 	
 	/**
 	 * 客户端
@@ -79,11 +79,25 @@ public class Client {
 		init();
 	}
 	
-	public Client(PrintLogDriver printLog){
-		this.printLog = printLog;
-		init();
-	}
-	
+//	public Client(PrintLogDriver printLog){
+//		this.printLog = printLog;
+//		init();
+//	}
+
+    public Client(String ip){
+        serverIP = ip;
+        init();
+        connectServer();
+    }
+
+    public Client(String ip,PrintLogDriver printLog) throws ConnectException {
+        serverIP = ip;
+        init();
+        if(!connectServer()){
+            throw new ConnectException("链接服务器失败");
+        }
+        this.printLog = printLog;
+    }
 	
 	private void init(){
 		//去上次用户成功执行的配置信息
@@ -138,26 +152,10 @@ public class Client {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
-				if (connectIP.getText().isEmpty()) {
-					infor.setText("连接地址不能为空");
-				} else if (connectPort.getText().isEmpty()) {
-					infor.setText("端口不能为空");
-				} else {
-					infor.setText("");
-					serverIP = connectIP.getText();
-					serverPort = Integer.parseInt(connectPort.getText());
-					if (connectServer()) {
-						saveParameter();
-						seleniumClient.dispose();
-						getInformation();
-					}
-				}
+                connectServer();
 			}
 		});
-		
-		
-		
+
 		try {
 			loadParameters();
 		} catch (DocumentException e1) {
@@ -166,11 +164,41 @@ public class Client {
 
 	}
 
+    /**
+     * 链接服务器验证
+     * @return
+     */
+    private boolean connectServer(){
+        if (connectIP.getText().isEmpty()) {
+            infor.setText("连接地址不能为空");
+        } else if (connectPort.getText().isEmpty()) {
+            infor.setText("端口不能为空");
+        } else {
+            infor.setText("");
+            serverIP = connectIP.getText();
+            serverPort = Integer.parseInt(connectPort.getText());
+            if (verConnectServer()) {
+                saveParameter();
+                seleniumClient.dispose();
+                getInformation();
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public void sendLog(String log) throws IOException {
+        
+        dos.writeUTF(log);
+    }
+
+
 	/**
 	 * 连接的判断
 	 * @return
 	 */
-	private boolean connectServer() {
+	private boolean verConnectServer() {
 		boolean connect = false;
 		try {
 			sc = new Socket(serverIP, serverPort);
@@ -267,12 +295,15 @@ public class Client {
 		try {
 			dis = new DataInputStream(sc.getInputStream());
 			dos = new DataOutputStream(sc.getOutputStream());
-			String version = dis.readUTF();
-			String tmpXML = dis.readUTF();
-			
-			dos.writeUTF("Success");
+//			String version = dis.readUTF();
+//			String tmpXML = dis.readUTF();
+            dos.writeUTF("start");
+			while(true) {
+                dos.writeUTF("Success");
+                Common.wait(1000);
+            }
 			//设置补丁信息
-			Parameter.VERSION = version;
+//			Parameter.VERSION = version;
 			
 //			printLog
 //			UpdatePlat.updateByVersion(version);

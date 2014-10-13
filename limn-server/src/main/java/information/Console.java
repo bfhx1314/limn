@@ -209,7 +209,7 @@ public class Console extends JFrame {
 
 	public static void appClientLog(String ip,String log){
 		if(testClientList.getSelectedValue()!=null && testClientList.getSelectedValue().get("IP").equals(ip)){
-			clientLog.append(DateFormat.getDate() + ": " + log + "\n");
+			clientLog.append(DateFormat.getDate("yyyy-MM-dd HH:mm:ss") + ": " + log + "\n");
 		}
 	}
 	
@@ -218,7 +218,7 @@ public class Console extends JFrame {
 	 * @param str
 	 */
 	public static void appServerLog(String str){
-		serverLog.append(DateFormat.getDate() + ": " + str + "\n");
+		serverLog.append(DateFormat.getDate("yyyy-MM-dd HH:mm:ss") + ": " + str + "\n");
 	}
 	
 	//remove

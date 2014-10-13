@@ -15,7 +15,7 @@ import proxy.TestProxy;
  * @author limn
  *
  */
-@SuppressWarnings("serial")
+
 public class Middleware extends Console{
 
 	private Timer timer = new Timer(true);
@@ -68,24 +68,24 @@ public class Middleware extends Console{
 		
 		@Override
 		public void run() {
-			CheckPatch cp = new CheckPatch(updatePath);
-			cp.getLastVersionFile();
-			VERSION = cp.getLastVersion();
-			
-			if (!new File("version/" + VERSION + ".txt").exists()) {
-				appServerLog("最新版本:" + VERSION + " 启动测试");
-				
-				try {
-					new File("version/" + VERSION + ".txt").createNewFile();
-				} catch (IOException e) {
-					
-					e.printStackTrace();
-				}
-				// Run Test 启动代理分发
-				proxy.testVersion(VERSION);
-//			}else{
-//				setLog("最新版本:" + VERSION + " 已存在测试记录");
-			}
+//			CheckPatch cp = new CheckPatch(updatePath);
+//			cp.getLastVersionFile();
+//			VERSION = cp.getLastVersion();
+//
+//			if (!new File("version/" + VERSION + ".txt").exists()) {
+//				appServerLog("最新版本:" + VERSION + " 启动测试");
+//
+//				try {
+//					new File("version/" + VERSION + ".txt").createNewFile();
+//				} catch (IOException e) {
+//
+//					e.printStackTrace();
+//				}
+//				// Run Test 启动代理分发
+//				proxy.testVersion(VERSION);
+////			}else{
+////				setLog("最新版本:" + VERSION + " 已存在测试记录");
+//			}
 
 		}
 

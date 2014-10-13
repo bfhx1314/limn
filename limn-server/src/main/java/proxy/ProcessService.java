@@ -37,54 +37,59 @@ public class ProcessService implements Runnable {
 	 */
 	public void runModule() {
 		// 获取模块信息
-		String[] moduleKey = TestModule.getTestModule();
-
-		// 未获取到 不执行
-		if (moduleKey[0] != null) {
+//		String[] moduleKey = TestModule.getTestModule();
+//
+//		// 未获取到 不执行
+//		if (moduleKey[0] != null) {
 			
-			DataOutputStream dos = null;
-			DataInputStream dis = null;
-			try {
-				dos = new DataOutputStream(socket.getOutputStream());
-				
-				
-				Middleware.appServerLog("发送执行版本号" + moduleKey[0]);
-				dos.writeUTF(moduleKey[0]);
-				
-				
-				Middleware.appServerLog("发送执行XML");
-				dos.writeUTF(TestModule.getModuleXMLForKey(moduleKey[1]));
+		DataOutputStream dos = null;
+		DataInputStream dis = null;
 
-				// 发送请求 等待客户端 执行结果 判断客户端是否执行成功
+        try {
 
-				dis = new DataInputStream(socket.getInputStream());
-				String status = ModuleStatus.ABNORMAL;
-				if (dis.readUTF().equalsIgnoreCase("Success")) {
-					// 提示成功
-					Middleware.appServerLog("IP: " + socket.getInetAddress().getHostAddress() + "运行成功");
-					status = ModuleStatus.RUN;
-					keepConnection();
-				} else if (dis.readUTF().equalsIgnoreCase("Fail")) {
-					// 提示失败
-					Middleware.appServerLog("IP: " + socket.getInetAddress().getHostAddress() + "运行失败");
-					status = ModuleStatus.FIALE;
-				} else{
-					Middleware.appServerLog("IP: " + socket.getInetAddress().getHostAddress() + "异常");
-				}
-				
-				setResults(moduleKey,status);
+            dis = new DataInputStream(socket.getInputStream());
+            if (dis.readUTF().equals("start")) {
+                dos = new DataOutputStream(socket.getOutputStream());
 
-			} catch (IOException e) {
-				try {
-					socket.close();
-				} catch (IOException e1) {
 
-					e1.printStackTrace();
-				}
-			}
-			
-		}
-	}
+//				Middleware.appServerLog("发送执行版本号" + moduleKey[0]);
+//				dos.writeUTF(moduleKey[0]);
+//
+//
+//				Middleware.appServerLog("发送执行XML");
+//				dos.writeUTF(TestModule.getModuleXMLForKey(moduleKey[1]));
+
+
+                Middleware.appServerLog(socket.getInetAddress().getHostAddress() + "：启动");
+
+                // 发送请求 等待客户端 执行结果 判断客户端是否执行成功
+
+                dis = new DataInputStream(socket.getInputStream());
+                String status = ModuleStatus.ABNORMAL;
+                if (dis.readUTF().equalsIgnoreCase("Success")) {
+                    // 提示成功
+                    Middleware.appServerLog("IP: " + socket.getInetAddress().getHostAddress() + "运行成功");
+                    status = ModuleStatus.RUN;
+                    keepConnection();
+                } else if (dis.readUTF().equalsIgnoreCase("Fail")) {
+                    // 提示失败
+                    Middleware.appServerLog("IP: " + socket.getInetAddress().getHostAddress() + "运行失败");
+                    status = ModuleStatus.FIALE;
+                } else {
+                    Middleware.appServerLog("IP: " + socket.getInetAddress().getHostAddress() + "异常");
+                }
+
+                setResults(new String[]{"0", "1"}, status);
+            }
+        }catch(IOException e){
+            try {
+                socket.close();
+            } catch (IOException e1) {
+
+                e1.printStackTrace();
+            }
+        }
+    }
 	
 	/**
 	 * 客户端保持连接,传送日志

@@ -9,6 +9,7 @@ import java.io.InputStream;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.PostMethod;
 
 
@@ -42,6 +43,8 @@ public class StructureMethod {
 	public static String execute(HttpClient hc , PostMethod pm){
 		String resutls = null;
 		try {
+			pm.getParams().setParameter(
+				"http.protocol.cookie-policy",CookiePolicy.BROWSER_COMPATIBILITY);
 			hc.executeMethod(pm);
 			InputStream res = pm.getResponseBodyAsStream();
 			resutls = inputStream2String(res);
