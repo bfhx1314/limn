@@ -17,6 +17,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.EventObject;
+import java.util.HashMap;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -52,6 +53,13 @@ import javax.swing.table.TableColumnModel;
 
 
 
+
+
+
+import org.dom4j.DocumentException;
+
+import com.limn.tool.common.Common;
+import com.limn.tool.external.XMLReader;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
 
@@ -105,6 +113,7 @@ public class EditTestCasePanel extends JPanel {
 	private JButton executeTestCase = new JButton("执行模块");
 	
 	
+	private String tmpOpenFile = Parameter.DEFAULT_TEMP_PATH + "/openfile.xml";
 	
 //	private JButton addSheet = new JButton("增加Sheet页");
 //	private JButton deleteSheet = new JButton("删除Sheet页");
@@ -289,6 +298,8 @@ public class EditTestCasePanel extends JPanel {
 			}
 		});
 		
+//		loadParameters();
+		
 	}
 
 	
@@ -398,7 +409,30 @@ public class EditTestCasePanel extends JPanel {
 		return menu;
 	}
 	
+	/**
+	 * 保存页面上参数的值
+	 * @throws IOException 
+	 * @throws DocumentException 
+	 */
+	private void saveParameters(String path){
+		Common.saveTemplateData("ExcelPath", path);
+	}
 	
+	public void loadParameters(){
+		HashMap<String, String> hm = Common.getTemplateData();
+
+		if(hm.containsKey("ExcelPath")){
+			eTestCase.openTestCase(hm.get("ExcelPath"));
+			setSheetList(eTestCase.getSheetRowCount());
+			if(moudleModel.getSize()>0){
+				moduleJList.setSelectedIndex(0);
+				setModuleList(moduleJList.getSelectedIndex()+1);
+			}	
+			
+			
+		}
+		
+	}
 	
 	private JMenu getMenuFile() {
 		JMenuItem open = new JMenuItem("打开");
@@ -412,10 +446,11 @@ public class EditTestCasePanel extends JPanel {
 				if(path!=null)
 				{
 					eTestCase.openTestCase(path);
+					saveParameters(path);
 					setSheetList(eTestCase.getSheetRowCount());
+					moduleJList.setSelectedIndex(0);
+					setModuleList(moduleJList.getSelectedIndex()+1);
 				}
-				
-				
 			}
 		});
 		

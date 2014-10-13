@@ -1,23 +1,33 @@
 package com.limn.frame.debug;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -25,6 +35,14 @@ import javax.swing.table.DefaultTableModel;
 
 
 
+
+
+
+
+
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 
 import com.limn.frame.edit.EditTestCasePanel;
 import com.limn.frame.keyword.KeyWordDriver;
@@ -47,7 +65,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	
 	private JFrame jframe = new JFrame();
 	
-	private JTextArea testCase = new JTextArea();
+	private JTextPane testCase = new JTextPane();
 	private JScrollPane testCaseJSP = new JScrollPane(testCase,
 			ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -55,8 +73,6 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	
 	private JButton moveTestCase = new JButton(">");
 	private JButton moveEditTestCase = new JButton("<");
-
-	private EditTestCasePanel testCasePanel = new EditTestCasePanel();
 	
 	//自定义面板
 	private CustomPanel customPanel = null;
@@ -82,6 +98,10 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	JPanel pabelTestCase = new JPanel();
 	
 	private KeyWordDriver keyWordDriver = null;
+	
+	private EditTestCasePanel testCasePanel = new EditTestCasePanel();
+	
+	private boolean isVerKeyWord = false;
 	
 	
 	/**
@@ -117,6 +137,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		setBoundsAt(stepJScrollStep,2, 105, 300, 270);
 		setBoundsAt(executeAgain,202, 380, 100, 20);
 		setBoundsAt(deleteRow,82, 380, 100, 20);
+		
 		
 
 		setBoundsAt(testCasePanel,350, 0, 635, 395);
@@ -168,6 +189,13 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		execute.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(!isVerKeyWord){
+					int status = JOptionPane.showConfirmDialog(jframe, "关键字有误,是否继续执行", "警告" ,JOptionPane.YES_NO_OPTION);
+					if(status==1){
+						return; 
+					}
+				}
+				
 				String[] steps = testCase.getText().split("\n");
 				for(String evertStep:steps){
 					model.addRow(new Object[]{evertStep});
@@ -272,14 +300,93 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 			}
 		});
 		
+		
+		testCase.addKeyListener(new KeyListener() {
+			
+			private boolean isTyped = false;
+			//键入
+			@Override
+			public void keyTyped(KeyEvent e) {
+				isTyped = true;
+			}
+			//释放
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if(isTyped){
+					int care = testCase.getCaretPosition();
+					setKeyWordHigh();
+					testCase.setCaretPosition(care);
+				}
+				isTyped = false;
+			}
+			//按下
+			@Override
+			public void keyPressed(KeyEvent e) {
+				isTyped = false;
+				
+			}
+		});
+//			
 		//基本设置
 		jframe.setAlwaysOnTop(true);
 		jframe.setResizable(false);
 		jframe.validate();
 		jframe.setVisible(true);
+		
+		testCasePanel.loadParameters();
 	}
 	
+	private void setKeyWordHigh(){
+		String content = testCase.getText();
+		String value= RegExp.splitKeyWord(content)[0];
+		if(keyWordDriver.isKeyWord(value)){
+			setStyleByKey(value,Color.BLUE,0);
+			isVerKeyWord = true;
+		}else{
+			setStyleByKey(value,Color.RED,0);
+			isVerKeyWord = false;
+		}
+		int customLenth = content.length() - value.length();
+		if(customLenth>0){
+			String customContent = content.substring(value.length());
+//			System.out.println(customContent);
+			setStyleByKey(customContent,Color.BLACK,value.length());
+		}
+	}
 
+	private void setStyleByKey(String key,Color color,int startPos){
+
+	
+		SimpleAttributeSet attrSet  = setDocs(color,true);
+		try {
+			testCase.getDocument().remove(startPos, key.length());
+			testCase.getDocument().insertString(startPos, key, attrSet);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+		
+
+
+	}
+	
+	
+	/**
+	 * 样式的设置
+	 * @param col
+	 * @param bold
+	 * @return
+	 */
+	public SimpleAttributeSet setDocs(Color col, boolean bold) {
+		SimpleAttributeSet attrSet = new SimpleAttributeSet();
+		// 颜色
+		StyleConstants.setForeground(attrSet, col);
+		// 字体是否加粗
+		if (bold == true) {
+			StyleConstants.setBold(attrSet, true);
+		}
+		return attrSet;
+	}
+	
 	private void executeStep(String step){
 		execute.setEnabled(false);
 		insertExecute.setEnabled(false);
@@ -301,6 +408,12 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 				return 0;
 				// TODO Auto-generated method stub
 				
+			}
+
+			@Override
+			public boolean isKeyWord(String key) {
+				// TODO Auto-generated method stub
+				return false;
 			}
 		});
 	}

@@ -8,5 +8,12 @@ public interface KeyWordDriver {
 	 * @return 
 	 */
 	public int start(String[] step);
+	
+	/**
+	 * 判断是否是关键字
+	 * @param key
+	 * @return
+	 */
+	public boolean isKeyWord(String key);
 
 }
