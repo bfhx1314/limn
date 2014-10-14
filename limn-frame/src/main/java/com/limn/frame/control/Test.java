@@ -13,8 +13,10 @@ import java.util.HashMap;
 
 
 
+
 import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.frame.results.RecordResult;
+import com.limn.frame.results.UploadServerData;
 import com.limn.frame.testcase.TestCase;
 import com.limn.frame.testcase.TestCaseExcel;
 import com.limn.tool.log.RunLog;
@@ -32,10 +34,11 @@ import com.limn.tool.regexp.RegExp;
  * 
  */
 public class Test {
+	
 	// 定义浏览器类型
-	private int browserType = BrowserType.FireFox;
+//	private int browserType = BrowserType.FireFox;
 	// 定义URL
-	private String URL = null;
+//	private String URL = null;
 
 	public static TestCase tc = null;
 
@@ -79,7 +82,7 @@ public class Test {
 		}
 
 		// 根据界面上的浏览器类型设置,赋值BrowerType
-		browserType = Parameter.BROWSERTYPE;
+//		browserType = Parameter.BROWSERTYPE;
 		
 		// 配置路径
 //		if(Parameter.NOTSERVER){
@@ -100,81 +103,73 @@ public class Test {
 //			RunKeyWord.setKeyWordDriver(new KeyWordDriver1_6Web());
 //		}
 
-		if(map.get("StartPlatform").equals("true")){
-			//需要增加一个默认步骤
-			isRestart = true;
-		}
+//		if(map.get("StartPlatform").equals("true")){
+//			//需要增加一个默认步骤
+//			isRestart = true;
+//		}
 		
 		// 浏览器类型，URL地址
 //		Driver.setDriver(browserType, URL, IP);
 
 		// 是否提交服务器
-//		if(map.containsKey("UploadResults") && Boolean.valueOf(map.get("UploadResults"))){
-//			recordResult.addRecordData(new UploadServerData());
-//		}
+		if(map.containsKey("UploadResults") && Boolean.valueOf(map.get("UploadResults"))){
+			recordResult.addRecordData(new UploadServerData());
+		}
 		
 		// 默认步骤
 //		defaultStep();
 		
 
-		if(!Parameter.DEBUGMODE){
-			// 测试用例驱动
-			try {
-
-				FileUtil.copyFile(new File(Parameter.TESTCASEPATH), new File(Parameter.RESULT_FOLDER + "/test.xls"));
-				ArrayList<String> Path = RegExp.matcherCharacters(Parameter.TESTCASEPATH, "[^\\\\/]{1,}");
-				Parameter.EXCELNAME = RegExp.matcherCharacters(Path.get(Path.size()-1),".*(?=.xls)").get(0);
-				Parameter.TESTCASEPATH = Parameter.RESULT_FOLDER + "/test.xls";
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			tc = new TestCaseExcel();
-			
-			//测试结果集
-			recordResult.init();
-			
-			if(map.containsKey("Specify") && map.get("Specify").equals("指定")){
-				runTimeSheetNum = Integer.parseInt(map.get("SpecifySheet")) - 1;
-				runTimeRowNum = Integer.parseInt(map.get("SpecifyRow")) - 1;
-				runTimeStepNum = Integer.parseInt(map.get("SpecifyStep")) - 1;
-				Print.log("指定Sheet:" + (runTimeSheetNum + 1), 0);
-				Print.log("指定Row:" + (runTimeRowNum + 1), 0);
-				Print.log("指定Step:" + (runTimeStepNum + 1), 0);
-				tc.init(Parameter.TESTCASEPATH, runTimeSheetNum);
-				RunLog.init(tc.getTableSheetCount());
-				executeTestCase();
-			}else if (Parameter.EXECUTEMODE!=null && Parameter.EXECUTEMODE.equals("固定模式执行")) {
-				runTimeSheetNum = 1;
-				tc.init(Parameter.TESTCASEPATH, runTimeSheetNum);
-				RunLog.init(tc.getTableSheetCount());
-				executeTestCase();
-				runTimeSheetNum = 0;
-				tc.init(Parameter.TESTCASEPATH, runTimeSheetNum);
-				
-				RunLog.init(tc.getTableSheetCount());
-				executeTestCase();
-			} else { // 还没有处理是否执行前置用例
-				tc.init(Parameter.TESTCASEPATH, Integer.parseInt(map.get("SheetsNum")) - 1);
-				runTimeSheetNum = Integer.parseInt(map.get("SheetsNum")) - 1;
-				if(map.get("FrontSteps").equals("需要")){
-					isRelate = true;
-					relate = tc.getTestCaseRelateNoByNo();
-				}
-				RunLog.init(tc.getTableSheetCount());
-				executeTestCase();
-			}
-			try {
-				tc.save();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		}else{
-			//调试模式
-			
+		try {
+			FileUtil.copyFile(new File(Parameter.TESTCASEPATH), new File(Parameter.RESULT_FOLDER + "/test.xls"));
+			ArrayList<String> Path = RegExp.matcherCharacters(Parameter.TESTCASEPATH, "[^\\\\/]{1,}");
+			Parameter.EXCELNAME = RegExp.matcherCharacters(Path.get(Path.size() - 1), ".*(?=.xls)").get(0);
+			Parameter.TESTCASEPATH = Parameter.RESULT_FOLDER + "/test.xls";
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		
 
+		tc = new TestCaseExcel();
+
+		// 测试结果集
+		recordResult.init();
+
+		if (map.containsKey("Specify") && map.get("Specify").equals("指定")) {
+			runTimeSheetNum = Integer.parseInt(map.get("SpecifySheet")) - 1;
+			runTimeRowNum = Integer.parseInt(map.get("SpecifyRow")) - 1;
+			runTimeStepNum = Integer.parseInt(map.get("SpecifyStep")) - 1;
+			Print.log("指定Sheet:" + (runTimeSheetNum + 1), 0);
+			Print.log("指定Row:" + (runTimeRowNum + 1), 0);
+			Print.log("指定Step:" + (runTimeStepNum + 1), 0);
+			tc.init(Parameter.TESTCASEPATH, runTimeSheetNum);
+			RunLog.init(tc.getTableSheetCount());
+			executeTestCase();
+		} else if (Parameter.EXECUTEMODE != null
+				&& Parameter.EXECUTEMODE.equals("固定模式执行")) {
+			runTimeSheetNum = 1;
+			tc.init(Parameter.TESTCASEPATH, runTimeSheetNum);
+			RunLog.init(tc.getTableSheetCount());
+			executeTestCase();
+			runTimeSheetNum = 0;
+			tc.init(Parameter.TESTCASEPATH, runTimeSheetNum);
+
+			RunLog.init(tc.getTableSheetCount());
+			executeTestCase();
+		} else { // 还没有处理是否执行前置用例
+			tc.init(Parameter.TESTCASEPATH, Integer.parseInt(map.get("SheetsNum")) - 1);
+			runTimeSheetNum = Integer.parseInt(map.get("SheetsNum")) - 1;
+			if (map.get("FrontSteps").equals("需要")) {
+				isRelate = true;
+				relate = tc.getTestCaseRelateNoByNo();
+			}
+			RunLog.init(tc.getTableSheetCount());
+			executeTestCase();
+		}
+		try {
+			tc.save();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -182,7 +177,7 @@ public class Test {
 	 */
 	private void executeTestCase() {
 		int count;
-		int result = 0;
+		int result = 1;
 		
 		//测试结果集
 		recordResult.addSheet(runTimeSheetNum);
@@ -205,7 +200,7 @@ public class Test {
 				runTimeRowNum = m;
 				tc.setCurrentRow(m);
 				result = runSteps(false);
-				if (result == 1) {
+				if (result != 1) {
 					// 执行下个模块
 					tc.setResult("跳过下个模块");
 					// 还需要一个场景还原的步骤
@@ -220,11 +215,6 @@ public class Test {
 		recordResult.addTestCaseCount("");
 	}
 	
-	
-	
-	
-	
-	
 	/**
 	 *
 	 * 运行测试用例    (用例行数执行     tc 所设定的行列)
@@ -234,7 +224,7 @@ public class Test {
 	 */
 	private int runSteps(boolean isRelated) {
 		
-		int result = 0;
+		int result = 1;
 		
 		if(!isRelated){
 			resultPath = runTimeSheetNum + "/" + runTimeRowNum;
@@ -283,17 +273,15 @@ public class Test {
 					recordResult.addStep(steps[stepNum], String.valueOf(result));
 					result = runSingleStep(steps[stepNum],resultPath + "/" + runTimeStepNum);
 					
-					
-					
-					if (result == 1) {
-						return result;
-					}
-
-					result = afterStep(steps, stepNum);
-
-					if (result == 1) {
-						return result;
-					}
+//					if (result != 1) {
+//						return result;
+//					}
+//
+//					result = afterStep(steps, stepNum);
+//
+//					if (result != 1) {
+//						return result;
+//					}
 
 				}
 //				CollateData.initializationParameter();
@@ -329,8 +317,8 @@ public class Test {
 		return results;
 	}
 
-	private int afterStep(String[] steps, int stepNum) {
-		return 0;
+//	private int afterStep(String[] steps, int stepNum) {
+//		return 1;
 //		int result = 0;
 //		int key = KeyWord.ChangeKeyWord(RegExp.splitKeyWord(steps[stepNum])[0]);
 //		switch (key) {
@@ -350,7 +338,7 @@ public class Test {
 //
 //		return result;
 
-	}
+//	}
 	
 	
 	
@@ -423,26 +411,12 @@ public class Test {
 		return nextKeys;
 	}
 	
-	/**
-	 * 获取预期结果，第5列
-	 * @return 数组
-	 */
-	public static String[] getArrExpectedResult(){
-		String[] steps = new String[0];
-		String expectedStr = tc.getExpected();
-		if (!expectedStr.isEmpty()){
-			steps = RegExp.splitWord(expectedStr, "\n");
-		}else{
-			Print.log("预期结果为空！", 2);
-		}
-		return steps;
-	}
 	
 	/**
 	 * 获取预期结果，第5列
 	 * @return 字符串
 	 */
-	public static String getStrExpectedResult(){
+	public static String getExpectedResult(){
 		return tc.getExpected();
 	}
 	
@@ -451,8 +425,7 @@ public class Test {
 	 * @return
 	 */
 	public static String getActulResult(){
-		String steps = tc.getActual();
-		return steps;
+		return tc.getActual();
 	}
 	
 	/**
@@ -534,6 +507,9 @@ public class Test {
 	public static void setHyperLink(int index, String path){
 		tc.setHyperLinks(index, path);
 	}
+	
+
+	
 	
 	public static int getCurrentRowCount(){
 		return tc.getTableSheetCount();

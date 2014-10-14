@@ -23,9 +23,9 @@ public class ExcelEditor {
 	
 	private String filePath = null;
 	
-	private HSSFSheet excelSheet = null;
+	public HSSFSheet excelSheet = null;
 
-	private HSSFWorkbook excelBook = null;
+	public HSSFWorkbook excelBook = null;
 	
 	private int sheetCount = 0;
 	

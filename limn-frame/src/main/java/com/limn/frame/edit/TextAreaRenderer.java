@@ -14,7 +14,12 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 public class TextAreaRenderer extends JTextArea implements TableCellRenderer{
-	   private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
+	  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
 	   
 	   /** map from table to map of rows to map of column heights */
 	   private final Map cellSizes = new HashMap();

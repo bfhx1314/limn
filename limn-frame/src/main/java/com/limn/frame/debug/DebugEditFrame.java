@@ -340,7 +340,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		String content = testCase.getText();
 		String value= RegExp.splitKeyWord(content)[0];
 		if(keyWordDriver.isKeyWord(value)){
-			setStyleByKey(value,Color.BLUE,0);
+			setStyleByKey(value,Color.GREEN.darker(),0);
 			isVerKeyWord = true;
 		}else{
 			setStyleByKey(value,Color.RED,0);

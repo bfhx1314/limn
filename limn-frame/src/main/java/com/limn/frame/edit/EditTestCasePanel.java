@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -18,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.Vector;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -56,9 +58,14 @@ import javax.swing.table.TableColumnModel;
 
 
 
+
+
+
+
 import org.dom4j.DocumentException;
 
 import com.limn.tool.common.Common;
+import com.limn.tool.common.Print;
 import com.limn.tool.external.XMLReader;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
@@ -196,6 +203,28 @@ public class EditTestCasePanel extends JPanel {
 		testCaseModel.addColumn("用例步骤");
 		testCaseModel.addColumn("预期结果");
 		testCaseTable.setModel(testCaseModel);
+
+		
+		testCaseTable.addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent e) {
+				int keyChar = e.getKeyChar();
+				if (keyChar == KeyEvent.VK_DELETE) {
+					//TODO delete键的删除事件
+//					System.out.println("ccc:"+testCaseModel.getValueAt(testCaseTable.getSelectedRow(), testCaseTable.getSelectedColumn()));
+//					testCaseModel.setValueAt("", testCaseTable.getSelectedRow(), testCaseTable.getSelectedColumn());
+//					System.out.println("zzz:"+testCaseModel.getValueAt(testCaseTable.getSelectedRow(), testCaseTable.getSelectedColumn()));
+////					testCaseModel.fireTableDataChanged();
+////					testCaseTable.repaint();
+////					testCaseJScroll.repaint();
+////					testCaseTable.validate();
+////					if(testCaseTable.isEditing()){
+////						   int row = testCaseTable.getEditingRow();
+////						   int col = testCaseTable.getEditingColumn();
+////						   testCaseTable.getCellEditor(row,col).stopCellEditing();
+////					}
+				}
+			}
+		});
 		
 		testCaseTable.setDefaultRenderer(Object.class, new TableCellTextAreaRenderer());
 		testCaseTable.setDefaultEditor(Object.class, new TableCellTextAreaEdit());
@@ -819,6 +848,18 @@ public class EditTestCasePanel extends JPanel {
 		
 		private int sourceHeight = 0;
 		
+//		public TableCellTextAreaEdit(){
+//			addKeyListener(new KeyAdapter() {
+//				public void keyTyped(KeyEvent e) {
+//					int keyChar = e.getKeyChar();
+//					Print.log("xxxx", 2);
+//					if (keyChar ==KeyEvent.VK_DELETE) {
+//						setText("");
+//					}
+//				}
+//			});
+//		}
+		
 		@Override
 		public Object getCellEditorValue() {
 			return this.getText();
@@ -828,6 +869,14 @@ public class EditTestCasePanel extends JPanel {
 		public boolean isCellEditable(EventObject anEvent) {
 
 			if (anEvent instanceof KeyEvent) {
+				
+//				if (((KeyEvent) anEvent).getKeyChar() ==KeyEvent.VK_DELETE) {
+//					System.out.println(getCellEditorValue());
+//					this.setText("");
+//				}
+//				
+				
+				
 //				keyEvent = String.valueOf(((KeyEvent) anEvent).getKeyChar());
 				return true;
 			} else {
@@ -911,8 +960,6 @@ public class EditTestCasePanel extends JPanel {
 			JScrollPane stepJScrollStep = new JScrollPane(this,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 					ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			
-
-			
 			
 			this.getDocument().addDocumentListener(new DocumentListener() {
 				
@@ -938,6 +985,9 @@ public class EditTestCasePanel extends JPanel {
 //				this.setRequestFocusEnabled(true);
 //				this.setText(keyEvent);
 			}else{
+				if(value==null){
+					value = "";
+				}
 				this.setText(value + "");
 			}
 			if(column>2){
@@ -1067,12 +1117,18 @@ public class EditTestCasePanel extends JPanel {
 		public TableCellTextAreaRenderer() {
 //		       setLineWrap(true);
 //		       setWrapStyleWord(true);
-		   }
+			
+
+
+		}
 
 		public Component getTableCellRendererComponent(JTable table, Object value,
 				boolean isSelected, boolean hasFocus, int row, int column) {
 			// 计算当下行的最佳高度
 			int maxPreferredHeight = 20;
+			
+
+			
 //			int diffLineCount = 0;
 //			
 //			String[] steps = value.toString().split("\n");

@@ -135,6 +135,7 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 	 * 测试用例的Step
 	 * @param currentStepNum 第几个Step
 	 * @param currentStep 步骤的描述
+	 * 
 	 */
 	public void setStepsForTextAreaByIndex(int currentStepNum, String[] currentStep) {
 		int eStepNum;
@@ -171,6 +172,14 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 
 	}
 	
+	public void appStepForTextArea(String strngStep){
+		Document doc = writeStepPane.getDocument();
+		try {
+			doc.insertString(doc.getLength(), strngStep + "\n", setDocs(Color.BLACK, false));
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	
 	/**

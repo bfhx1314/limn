@@ -9,9 +9,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFHyperlink;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -23,6 +25,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 
 import com.limn.tool.log.RunLog;
+import com.limn.tool.regexp.RegExp;
 import com.limn.tool.common.Print;
 
 
@@ -296,12 +299,39 @@ public class TestCaseExcel implements TestCase {
 		
 	}
 	
+	/**
+	 * 数据录入
+	 * @param index
+	 * @param value
+	 */
 	private void setCurrentCell(int index,String value){
-		if(excelSheet.getRow(currentRow).getCell(index - 1)==null){
+		
+		if(excelSheet.getRow(currentRow).getCell(index - 1) == null){
 			excelSheet.getRow(currentRow).createCell(index - 1);
 		}
-		excelSheet.getRow(currentRow).getCell(index - 1).setCellValue(value);
+		HSSFCell cell = excelSheet.getRow(currentRow).getCell(index - 1);
+		String[] rows = RegExp.splitWord(value, "\n");
+//		String content = null;
+//		for(String rowContent:rows){
+//			if(content==null){
+//				content = rowContent;
+//			}else{
+//				content = content + "\n" + rowContent;
+//			}
+//		}
+		int lineCount = rows.length;
+		if(excelSheet.getRow(currentRow).getHeightInPoints()<lineCount*13){
+			excelSheet.getRow(currentRow).setHeightInPoints(lineCount*13);
+		}
+//
+//		HSSFCellStyle cellStyle=excelBook.createCellStyle();
+//		cellStyle.setWrapText(true);
+//		cell.setCellStyle(cellStyle);
+		cell.setCellValue(new HSSFRichTextString(value));
+		
 	}
+	
+	
 	private void setCurrentCell(int index,String value, String style){
 		//创建字体
 		CellStyle titleStyle = excelBook.createCellStyle();
@@ -395,26 +425,32 @@ public class TestCaseExcel implements TestCase {
 		style.setBorderLeft(HSSFCellStyle.BORDER_THIN);// 左边框
 		style.setBorderTop(HSSFCellStyle.BORDER_THIN);// 上边框
 		style.setBorderRight(HSSFCellStyle.BORDER_THIN);// 右边框
-
+		style.setWrapText(true);
 		return style;
 	}
 	
+	/**
+	 * 样式
+	 */
 	private void setStyle(){
-
+		//模块标题
 		CellStyle titleStyle = excelBook.createCellStyle();
+		//列表标题(用例编号,相关用例等)
 		CellStyle listStyle =  setContentBorder();
+		//内容
 		CellStyle contentStyle = setContentBorder();
 		
 		HSSFFont font2 = excelBook.createFont();
 		font2.setFontName("楷体");
 		font2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);//粗体显示
 		font2.setFontHeightInPoints((short) 16);
+		
 		HSSFFont font1 = excelBook.createFont();
 		font1.setFontName("楷体");
 		font1.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);//粗体显示
 		font1.setFontHeightInPoints((short) 12);
 		
-		
+
 		titleStyle.setFont(font2);
 		listStyle.setFont(font1);
 		//设置背景颜色
@@ -448,6 +484,25 @@ public class TestCaseExcel implements TestCase {
 				}else{
 					setCellStyle(row, contentStyle);
 				}
+				row.setHeightInPoints(13);
+				for(int cellIndex = 0;cellIndex<=7;cellIndex++){
+					HSSFCell cell = row.getCell(cellIndex);
+					int lineCount = 1;
+					if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+						String value = cell.getStringCellValue();
+						String[] rows = RegExp.splitWord(value, "\n");
+						lineCount = rows.length;
+					}
+					
+					if(row.getHeightInPoints()<lineCount*13){
+						row.setHeightInPoints(lineCount*13);
+					}
+					
+				}
+				
+				
+				
+				
 			}
 		}
 		

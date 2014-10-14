@@ -112,7 +112,7 @@ public class ConsoleFrame extends JFrame {
 	
 	
 	// 调试复选框
-	private JCheckBox debugCheckBox = new JCheckBox("调试");	
+//	private JCheckBox debugCheckBox = new JCheckBox("调试");	
 	
 	// 无服务端环境
 	private JCheckBox notServer = new JCheckBox("无服务端环境");	
@@ -464,13 +464,13 @@ public class ConsoleFrame extends JFrame {
 		upload.setEnabled(false);
 		uploadSetting.setEnabled(false);
 		
-		setBoundsAtPanel(debugCheckBox,175, y, 100, 30);
+//		setBoundsAtPanel(debugCheckBox,175, y, 100, 30);
 		
-		setBoundsAtPanel(notServer,275, y, 150, 30);
+		setBoundsAtPanel(notServer,175, y, 150, 30);
 		
-		setBoundsAtPanel(upload,425, y, 120, 30);
+		setBoundsAtPanel(upload,325, y, 120, 30);
 		
-		setBoundsAtPanel(uploadSetting,545, y, 80, 30);
+		setBoundsAtPanel(uploadSetting,445, y, 80, 30);
 		uploadSetting.setMargin(new Insets(0,0,0,0));
 		
 		uploadSetting.addActionListener(new ActionListener() {
@@ -781,7 +781,7 @@ public class ConsoleFrame extends JFrame {
 		initDBPathLabel.setVisible(isVisible);
 		initDBPathContent.setVisible(isVisible);
 		initDBPathButton.setVisible(isVisible);	
-		debugCheckBox.setVisible(isVisible);
+//		debugCheckBox.setVisible(isVisible);
 		notServer.setVisible(isVisible);
 //		configPathLabel.setVisible(false);
 //		configPathContent.setVisible(false);
@@ -905,9 +905,9 @@ public class ConsoleFrame extends JFrame {
 			notServer.setSelected(Boolean.valueOf(hm.get("NotServer")));
 		}
 		
-		if(hm.containsKey("Debug") && !hm.get("Debug").isEmpty()){
-			debugCheckBox.setSelected(Boolean.valueOf(hm.get("Debug")));
-		}
+//		if(hm.containsKey("Debug") && !hm.get("Debug").isEmpty()){
+//			debugCheckBox.setSelected(Boolean.valueOf(hm.get("Debug")));
+//		}
 		
 		if(hm.containsKey("UploadResults") && !hm.get("UploadResults").isEmpty()){
 			upload.setSelected(Boolean.valueOf(hm.get("UploadResults")));
@@ -949,9 +949,8 @@ public class ConsoleFrame extends JFrame {
 			xml.setNodeValueByTemplateIndex(0, "SpecifySheet", String.valueOf(specifySheet.getText()));
 			xml.setNodeValueByTemplateIndex(0, "SpecifyRow", String.valueOf(specifyRow.getText()));
 			xml.setNodeValueByTemplateIndex(0, "SpecifyStep", String.valueOf(specifyStep.getText()));
-			xml.setNodeValueByTemplateIndex(0, "Debug", String.valueOf(debugCheckBox.isSelected()));
-			
-			xml.setNodeValueByTemplateIndex(0, "Debug", String.valueOf(debugCheckBox.isSelected()));
+//			xml.setNodeValueByTemplateIndex(0, "Debug", String.valueOf(debugCheckBox.isSelected()));
+//			
 			xml.setNodeValueByTemplateIndex(0, "NotServer", String.valueOf(notServer.isSelected()));
 			xml.setNodeValueByTemplateIndex(0, "UploadResults", String.valueOf(upload.isSelected()));
 			

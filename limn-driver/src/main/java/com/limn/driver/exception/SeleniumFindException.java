@@ -1,7 +1,5 @@
 package com.limn.driver.exception;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 import com.limn.tool.common.Print;
 
