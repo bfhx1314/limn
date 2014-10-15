@@ -19,8 +19,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.EventObject;
 import java.util.HashMap;
-import java.util.Vector;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -52,21 +50,8 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-
-
-
-
-
-
-
-
-
-
 import org.dom4j.DocumentException;
-
 import com.limn.tool.common.Common;
-import com.limn.tool.common.Print;
-import com.limn.tool.external.XMLReader;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
 
@@ -104,23 +89,23 @@ public class EditTestCasePanel extends JPanel {
 
 	private JLabel moduleKey = new JLabel();
 
-	private JList moduleJList = new JList();
+	private JList<String> moduleJList = new JList<String>();
 	private JScrollPane moduleJListJSP = new JScrollPane(moduleJList,
 			ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-	private DefaultListModel moudleModel = new DefaultListModel();
+	private DefaultListModel<String> moudleModel = new DefaultListModel<String>();
 	
 	
 
-	private JComboBox sheetIndex = new JComboBox();
+	private JComboBox<String> sheetIndex = new JComboBox<String>();
 
-	private JButton executeSingleTestCase = new JButton("执行单步");
-	
-	private JButton executeTestCase = new JButton("执行模块");
-	
-	
-	private String tmpOpenFile = Parameter.DEFAULT_TEMP_PATH + "/openfile.xml";
+//	private JButton executeSingleTestCase = new JButton("执行单步");
+//	
+//	private JButton executeTestCase = new JButton("执行模块");
+//	
+//	
+//	private String tmpOpenFile = Parameter.DEFAULT_TEMP_PATH + "/openfile.xml";
 	
 //	private JButton addSheet = new JButton("增加Sheet页");
 //	private JButton deleteSheet = new JButton("删除Sheet页");
@@ -141,7 +126,10 @@ public class EditTestCasePanel extends JPanel {
 	
 	private File fileName = null;
 	
+	private boolean isOpenExcel = false;
+	
 	public EditTestCasePanel(){
+		
 		setLayout(null);
 		
 		JLabel jSheet = new JLabel("Sheet页");
@@ -150,17 +138,12 @@ public class EditTestCasePanel extends JPanel {
 		
 		menubar.add(getMenuFile());
 
-
-		
-		
 		//菜单栏
 		setBoundsAt(menubar,0,3,40,25);
 		
 		//sheet
 		setBoundsAt(jSheet,280, 3, 60, 25);
 		setBoundsAt(sheetIndex,345, 5, 60, 20);
-		
-		
 		
 		
 		//模块列表
@@ -244,7 +227,8 @@ public class EditTestCasePanel extends JPanel {
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-			    if(e.getButton() == 3){
+				
+			    if(e.getButton() == 3 && isOpenExcel){
 			    	if(moduleJList.getSelectedIndex()==-1){
 			    		rightMenu = getRightMenu(true);
 			    	}else{
@@ -327,6 +311,7 @@ public class EditTestCasePanel extends JPanel {
 			}
 		});
 		
+		setUIControlEnable(false);
 //		loadParameters();
 		
 	}
@@ -444,21 +429,22 @@ public class EditTestCasePanel extends JPanel {
 	 * @throws DocumentException 
 	 */
 	private void saveParameters(String path){
-		Common.saveTemplateData("ExcelPath", path);
+		Common.saveTemplateData("EditExcelPath", path);
 	}
 	
 	public void loadParameters(){
 		HashMap<String, String> hm = Common.getTemplateData();
 
-		if(hm.containsKey("ExcelPath")){
-			eTestCase.openTestCase(hm.get("ExcelPath"));
-			setSheetList(eTestCase.getSheetRowCount());
-			if(moudleModel.getSize()>0){
-				moduleJList.setSelectedIndex(0);
-				setModuleList(moduleJList.getSelectedIndex()+1);
-			}	
-			
-			
+		if(hm.containsKey("EditExcelPath")){
+			if(new File(hm.get("EditExcelPath")).exists()){
+				eTestCase.openTestCase(hm.get("EditExcelPath"));
+				setUIControlEnable(true);
+				setSheetList(eTestCase.getSheetRowCount());
+				if(moudleModel.getSize()>0){
+					moduleJList.setSelectedIndex(0);
+					setModuleList(moduleJList.getSelectedIndex()+1);
+				}	
+			}
 		}
 		
 	}
@@ -475,6 +461,7 @@ public class EditTestCasePanel extends JPanel {
 				if(path!=null)
 				{
 					eTestCase.openTestCase(path);
+					setUIControlEnable(true);
 					saveParameters(path);
 					setSheetList(eTestCase.getSheetRowCount());
 					moduleJList.setSelectedIndex(0);
@@ -495,6 +482,7 @@ public class EditTestCasePanel extends JPanel {
 						path = path + ".xls";
 					}
 					eTestCase.createBook(path);
+					setUIControlEnable(true);
 					setSheetList(eTestCase.getSheetRowCount());
 				}
 				
@@ -739,14 +727,7 @@ public class EditTestCasePanel extends JPanel {
 				testCase[i][3] = testCaseTable.getValueAt(i, 3)==null?"":testCaseTable.getValueAt(i, 3).toString();
 				testCase[i][4] = testCaseTable.getValueAt(i, 4)==null?"":testCaseTable.getValueAt(i, 4).toString();
 			}
-			
-			try {
-				eTestCase.saveModuleCase(moduleJList.getSelectedIndex() + 1,testCase);
-			} catch (FileNotFoundException e) {
-				errorDialog(e.getMessage());
-				e.printStackTrace();
-			}
-	
+			eTestCase.saveModuleCase(moduleJList.getSelectedIndex() + 1,testCase);
 		}
 		
 	}
@@ -814,8 +795,17 @@ public class EditTestCasePanel extends JPanel {
 	}
 	
 	
-	
-	
+	/**
+	 * 设置界面按钮是否可以点击
+	 * @param isOpen
+	 */
+	private void setUIControlEnable(boolean isOpen){
+		isOpenExcel = isOpen;
+		addStep.setEnabled(isOpen);
+		deleteStep.setEnabled(isOpen);
+		saveModule.setEnabled(isOpen);
+		sheetIndex.setEnabled(isOpen);
+	}
 	
 	
 	

@@ -83,7 +83,7 @@ public class UploadServerData implements DataResults {
 	public void addSheet(int index) {
 
 		if(isConnect){
-			sumCaseCount = sumCaseCount + Test.tc.getTableSheetCount();
+			sumCaseCount = sumCaseCount + Test.tc.getSheetLastRowNumber();
 			executeSingleSQL("update  TestCase set TotalNum = '" + sumCaseCount + "' where id = '" + ID + "'");
 		}
 	}

@@ -1,5 +1,6 @@
 package com.limn.frame.debug;
 
+import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -44,6 +45,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import org.w3c.dom.events.Event;
+
 import com.limn.frame.edit.EditTestCasePanel;
 import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.tool.log.LogControlInterface;
@@ -63,9 +66,9 @@ import com.limn.tool.regexp.RegExp;
  */
 public class DebugEditFrame extends PrintLogDriver implements LogControlInterface{
 	
-	private JFrame jframe = new JFrame();
+	private JFrame jframe = new JFrame("用例调试器 V1.0");
 	
-	private JTextPane testCase = new JTextPane();
+	private static JTextPane testCase = new JTextPane();
 	private JScrollPane testCaseJSP = new JScrollPane(testCase,
 			ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -97,11 +100,11 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	JPanel pabelLog = new JPanel();
 	JPanel pabelTestCase = new JPanel();
 	
-	private KeyWordDriver keyWordDriver = null;
+	private static KeyWordDriver keyWordDriver = null;
 	
 	private EditTestCasePanel testCasePanel = new EditTestCasePanel();
 	
-	private boolean isVerKeyWord = false;
+	private static boolean isVerKeyWord = false;
 	
 	
 	/**
@@ -109,15 +112,11 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	 * @param cp 此面板需要继承CutomPanel的类
 	 */
 	public DebugEditFrame(CustomPanel cp, KeyWordDriver kwd){
-
 		customPanel = cp;
 		keyWordDriver = kwd;
 		init();
 	}
-	
-//	private DebugEditFrame(){
-//		super("调试编辑器");
-//	}
+
 		
 	private void init(){
 		//基本设置
@@ -299,8 +298,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 				
 			}
 		});
-		
-		
+
 		testCase.addKeyListener(new KeyListener() {
 			
 			private boolean isTyped = false;
@@ -336,7 +334,10 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		testCasePanel.loadParameters();
 	}
 	
-	private void setKeyWordHigh(){
+	/**
+	 * 设置关键字高亮
+	 */
+	private static void setKeyWordHigh(){
 		String content = testCase.getText();
 		String value= RegExp.splitKeyWord(content)[0];
 		if(keyWordDriver.isKeyWord(value)){
@@ -349,15 +350,14 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		int customLenth = content.length() - value.length();
 		if(customLenth>0){
 			String customContent = content.substring(value.length());
-//			System.out.println(customContent);
 			setStyleByKey(customContent,Color.BLACK,value.length());
 		}
 	}
 
-	private void setStyleByKey(String key,Color color,int startPos){
+	private static void setStyleByKey(String key,Color color,int startPos){
 
 	
-		SimpleAttributeSet attrSet  = setDocs(color,true);
+		SimpleAttributeSet attrSet  = setDocsStyle(color,true);
 		try {
 			testCase.getDocument().remove(startPos, key.length());
 			testCase.getDocument().insertString(startPos, key, attrSet);
@@ -376,7 +376,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	 * @param bold
 	 * @return
 	 */
-	public SimpleAttributeSet setDocs(Color col, boolean bold) {
+	public static SimpleAttributeSet setDocsStyle(Color col, boolean bold) {
 		SimpleAttributeSet attrSet = new SimpleAttributeSet();
 		// 颜色
 		StyleConstants.setForeground(attrSet, col);
@@ -418,6 +418,11 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		});
 	}
 
+	public static void setStepTextArea(String step){
+		testCase.setText(step);
+		setKeyWordHigh();
+	}
+	
 	
 	public void printLog(String log,int style){
 		runLogWrite(new SimpleDateFormat("MM-dd HH:mm:ss").format(new Date())+"-->",log + "\n\r",style);

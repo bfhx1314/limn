@@ -10,7 +10,7 @@
       <Middleware/>  
       <Yigo/>  
       <Version/>  
-      <ExcelPath>D:\用户目录\Documents\a.xls</ExcelPath>  
+      <ExcelPath>D:\用户目录\Documents\test.xls</ExcelPath>  
       <ExecuteMode>固定模式执行</ExecuteMode>  
       <SheetsNum/>  
       <FrontSteps>需要</FrontSteps>  
@@ -24,7 +24,8 @@
       <Debug>false</Debug>  
       <NotServer>false</NotServer>  
       <UploadResults>false</UploadResults>  
-      <StartPlatform>true</StartPlatform> 
+      <StartPlatform>true</StartPlatform>  
+      <EditExcelPath>D:\用户目录\Documents\test.xls</EditExcelPath> 
     </Template> 
   </Templates>  
   <Cores> 
