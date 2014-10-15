@@ -1,6 +1,7 @@
 package com.limn.driver.common;
 
 import com.limn.driver.Driver;
+import com.limn.driver.exception.SeleniumFindException;
 import com.limn.tool.log.RunLog;
 import com.limn.tool.common.CallBat;
 import com.limn.tool.common.FileUtil;
@@ -38,8 +39,9 @@ public class OperateDialog {
 	 * 保存（另存为）
 	 * @param path 文件路径
 	 * @param key 关键字
+	 * @throws SeleniumFindException 
 	 */
-	public static void saveFile(String path, String key){
+	public static void saveFile(String path, String key) throws SeleniumFindException{
 		if (!FileUtil.exists(path)){
 			Print.log("文件不存在："+path, 2);
 			return;

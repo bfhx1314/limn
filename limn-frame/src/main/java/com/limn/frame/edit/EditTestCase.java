@@ -22,11 +22,12 @@ public class EditTestCase{
 	private HashMap<Integer,Integer> moduleEndByIndex = new HashMap<Integer,Integer>();
 	
 	public EditTestCase(){
-		testCase = new TestCaseExcel();
+		
 	}
 	
 	public void openTestCase(String filePath){
-		testCase.init(filePath, 0);
+		testCase = new TestCaseExcel(filePath);
+		testCase.activateSheet(0);
 		refreshModuleData();
 	}
 	
@@ -50,6 +51,7 @@ public class EditTestCase{
 	
 	
 	public String[][] getModuleTestCaseByIndex(int index){
+		
 		int start = moduleStartByIndex.get(index);
 		
 		int end = moduleEndByIndex.get(index);
@@ -72,11 +74,11 @@ public class EditTestCase{
 	
 
 	public int getSheetRowCount(){
-		return testCase.getSheetCount();
+		return testCase.getSheetSize();
 	}
 	
 	public void setTableSheet(int index){
-		testCase.setTableSheet(index);
+		testCase.activateSheet(index);
 		refreshModuleData();
 	}
 	
@@ -86,7 +88,7 @@ public class EditTestCase{
 		refreshModuleData();
 	}
 	
-	public void saveModuleCase(int index,String[][] testCaseTable) throws FileNotFoundException{
+	public void saveModuleCase(int index,String[][] testCaseTable){
 		int count = testCaseTable.length;
 		
 		int start = moduleStartByIndex.get(index);
@@ -106,7 +108,7 @@ public class EditTestCase{
 			}
 		}
 		
-		testCase.save();
+		testCase.saveFile();
 		
 		
 		
@@ -120,7 +122,7 @@ public class EditTestCase{
 			testCase.setResults(testCaseTable[rowIndex][4]);
 		}
 		
-		testCase.save();
+		testCase.saveFile();
 		refreshModuleData();
 	}
 
@@ -136,7 +138,7 @@ public class EditTestCase{
 		testCase.insertRow(row);
 		testCase.insertRow(row + 1);
 		testCase.insertRow(row + 2);
-		testCase.save();
+		testCase.saveFile();
 		
 		
 		testCase.setCurrentRow(row);
@@ -154,7 +156,7 @@ public class EditTestCase{
 		
 
 		
-		testCase.save();
+		testCase.saveFile();
 		
 		refreshModuleData();
 		
@@ -168,7 +170,7 @@ public class EditTestCase{
 			testCase.deleteRow(rowStart);
 			rowEnd --;
 		}
-		testCase.save();
+		testCase.saveFile();
 		refreshModuleData();
 	}
 	
@@ -181,29 +183,29 @@ public class EditTestCase{
 		
 		int diffFirstRow = rowStart - upRowStart;
 		int diffEndRow = rowEnd - upRowEnd;
-		int move = testCase.getTableSheetCount() + 1 - rowStart;
+		int move = testCase.getSheetLastRowNumber() + 1 - rowStart;
 		testCase.shiftRows(rowStart, rowEnd, move);
 
 		testCase.shiftRows(upRowStart, upRowEnd, diffEndRow);
 
 		testCase.shiftRows(rowStart + move, rowEnd + move, -(move + diffFirstRow));
-		testCase.save();
+		testCase.saveFile();
 		refreshModuleData();
 		
 	}
 
 	public void createBook(String path) {
-		testCase.createBook(path);
+		testCase = new TestCaseExcel(path);
 		
 	}
 
 	public void setSavePath(String path){
-		testCase.setSaveFilePath(path);
+		((TestCaseExcel) testCase).saveAsFile(path);
 	}
 	
 	
 	public void Save() throws FileNotFoundException{
-		testCase.save();
+		testCase.saveFile();
 	}
 	
 	

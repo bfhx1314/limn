@@ -129,7 +129,7 @@ public class Test {
 			e.printStackTrace();
 		}
 
-		tc = new TestCaseExcel();
+		tc = new TestCaseExcel(Parameter.TESTCASEPATH);
 
 		// 测试结果集
 		recordResult.init();
@@ -141,35 +141,33 @@ public class Test {
 			Print.log("指定Sheet:" + (runTimeSheetNum + 1), 0);
 			Print.log("指定Row:" + (runTimeRowNum + 1), 0);
 			Print.log("指定Step:" + (runTimeStepNum + 1), 0);
-			tc.init(Parameter.TESTCASEPATH, runTimeSheetNum);
-			RunLog.init(tc.getTableSheetCount());
+			tc.activateSheet(runTimeSheetNum);
+			RunLog.init(tc.getSheetLastRowNumber());
 			executeTestCase();
 		} else if (Parameter.EXECUTEMODE != null
 				&& Parameter.EXECUTEMODE.equals("固定模式执行")) {
 			runTimeSheetNum = 1;
-			tc.init(Parameter.TESTCASEPATH, runTimeSheetNum);
-			RunLog.init(tc.getTableSheetCount());
+			tc.activateSheet(runTimeSheetNum);
+			RunLog.init(tc.getSheetLastRowNumber());
 			executeTestCase();
 			runTimeSheetNum = 0;
-			tc.init(Parameter.TESTCASEPATH, runTimeSheetNum);
+			tc.activateSheet(runTimeSheetNum);
 
-			RunLog.init(tc.getTableSheetCount());
+			RunLog.init(tc.getSheetLastRowNumber());
 			executeTestCase();
 		} else { // 还没有处理是否执行前置用例
-			tc.init(Parameter.TESTCASEPATH, Integer.parseInt(map.get("SheetsNum")) - 1);
+			tc.activateSheet(Integer.parseInt(map.get("SheetsNum")) - 1);
 			runTimeSheetNum = Integer.parseInt(map.get("SheetsNum")) - 1;
 			if (map.get("FrontSteps").equals("需要")) {
 				isRelate = true;
 				relate = tc.getTestCaseRelateNoByNo();
 			}
-			RunLog.init(tc.getTableSheetCount());
+			RunLog.init(tc.getSheetLastRowNumber());
 			executeTestCase();
 		}
-		try {
-			tc.save();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+
+		tc.saveFile();
+	
 	}
 
 	/**
@@ -244,15 +242,15 @@ public class Test {
 					//记录结果集
 					recordResult.addRelatedCase(relateNo);
 					
-					int originalSheet = tc.getCurrentSheetIndex();
+					int originalSheet = tc.getExcelSheetIndex();
 					int originalRow = tc.getCurrentRow();
 					String[] location = relate.get(tc.getRelatedNo() + "_Location").split("_");
 					//设置相关用例的行列
-					tc.setTableSheet(Integer.parseInt(location[0]));
+					tc.activateSheet(Integer.parseInt(location[0]));
 					tc.setCurrentRow(Integer.parseInt(location[1]));
 					runSteps(true);
 					//还原相关用例的行列
-					tc.setTableSheet(originalSheet);
+					tc.activateSheet(originalSheet);
 					tc.setCurrentRow(originalRow);
 				}
 			}
@@ -288,12 +286,9 @@ public class Test {
 				runTimeStepNum = 0;
 			}
 		}
-		try {
-			tc.save();
-		} catch (FileNotFoundException e) {
 
-			e.printStackTrace();
-		}
+		tc.saveFile();
+
 		return result;
 	}
 
@@ -468,36 +463,36 @@ public class Test {
 		recordResult.addResult(value);
 	}
 	
-	/**
-	 * 获取实际生成的sql， 第10列
-	 * @return
-	 */
-	public static String getActualSql(){
-		return tc.getSQLActual();
-		
-	}
-	/**
-	 * 写入实际生成的sql，第11列
-	 * @return
-	 */
-	public static void setActualSql(String value){
-		tc.setSQLAcutal(value);
-	}
-	/**
-	 * 写入实际生成的sql ，第11列
-	 * @return
-	 */
-	public static void setActualSql(boolean value){
-		tc.setSQLAcutal(String.valueOf(value));
-	}
+//	/**
+//	 * 获取实际生成的sql， 第10列
+//	 * @return
+//	 */
+//	public static String getActualSql(){
+//		return tc.getSQLActual();
+//		
+//	}
+//	/**
+//	 * 写入实际生成的sql，第11列
+//	 * @return
+//	 */
+//	public static void setActualSql(String value){
+//		tc.setSQLAcutal(value);
+//	}
+//	/**
+//	 * 写入实际生成的sql ，第11列
+//	 * @return
+//	 */
+//	public static void setActualSql(boolean value){
+//		tc.setSQLAcutal(String.valueOf(value));
+//	}
 	
-	/**
-	 * 写入sql 第10列
-	 * @param value
-	 */
-	public static void setSql(String value){
-		tc.setSQL(value);
-	}
+//	/**
+//	 * 写入sql 第10列
+//	 * @param value
+//	 */
+//	public static void setSql(String value){
+//		tc.setSQL(value);
+//	}
 	
 	/**
 	 * 设置超链接
@@ -508,15 +503,13 @@ public class Test {
 		tc.setHyperLinks(index, path);
 	}
 	
-
-	
 	
 	public static int getCurrentRowCount(){
-		return tc.getTableSheetCount();
+		return tc.getSheetLastRowNumber();
 	}
 	
 	public static int getSheetIndex(){
-		return tc.getCurrentSheetIndex();
+		return tc.getExcelSheetIndex();
 	}
 	
 	public static int getCurrentRow(){

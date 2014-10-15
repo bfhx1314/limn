@@ -6,7 +6,7 @@ import java.util.HashMap;
 public interface TestCase {
 	
 
-	public int getTableSheetCount();
+	public int getSheetLastRowNumber();
 
 	public HashMap<Integer, String> getExcelModuleName();
 
@@ -14,11 +14,11 @@ public interface TestCase {
 	
 	public HashMap<Integer, Integer> getExcelModuleEndIndex();
 
-	public void setTableSheet(int index);
+//	public void setTableSheet(int index);
 
 	public void setCurrentRow(int index);
 	
-	public void init(String filePath, int index);
+	public void activateSheet(int sheetIndex);
 
 	public Boolean isExecute();
 
@@ -38,10 +38,6 @@ public interface TestCase {
 	
 	public String getResult();
 	
-	public String getSQL();
-	
-	public String getSQLActual();
-	
 	public void setExecuted(String value);
 	
 	public void setTestCaseNo(String value);
@@ -52,8 +48,6 @@ public interface TestCase {
 	
 	public void setAcutal(String value);
 	
-	public void setSQLResults(String value);
-	
 	public void setResult(String value);
 	
 	/**
@@ -63,13 +57,11 @@ public interface TestCase {
 	 */
 	public void setResult(String value, String style);
 	
-	public void setSQL(String value);
-	
-	public void setSQLAcutal(String value);
+	public void setSQLResults(String value);
 
 	public int getCurrentRow();
 
-	public int getSheetCount();
+	public int getSheetSize();
 
 	public void setModuleName(int index, String moduleName);
 
@@ -81,18 +73,15 @@ public interface TestCase {
 
 	public void refreshModule();
 
-	public void save() throws FileNotFoundException;
+	public void saveFile();
 
 	public void shiftRows(int start,int end,int move);
 
-	public void createBook(String path);
-
-	public void setSaveFilePath(String path);
-
+//	public void createBook(String path);
 
 	public HashMap<String,String> getTestCaseRelateNoByNo();
 
-	public int getCurrentSheetIndex();
+	public int getExcelSheetIndex();
 	
 	/**
 	 * 设置超链接

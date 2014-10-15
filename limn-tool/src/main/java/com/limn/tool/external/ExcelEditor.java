@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -38,27 +39,43 @@ public class ExcelEditor {
 	public ExcelEditor(String path){
 		this.filePath = path;
 		File excelFile = new File(filePath);
-		InputStream fileIS = null;
-		ByteArrayInputStream byteArrayInputStream = null;
-		try {
-			fileIS = new FileInputStream(excelFile);
-			byte buf[] = IOUtils.toByteArray(fileIS);
-			byteArrayInputStream = new ByteArrayInputStream(buf);
-			excelBook = new HSSFWorkbook(byteArrayInputStream);
+		if (excelFile.exists()) {
+			InputStream fileIS = null;
+			ByteArrayInputStream byteArrayInputStream = null;
+			try {
+				fileIS = new FileInputStream(excelFile);
+				byte buf[] = IOUtils.toByteArray(fileIS);
+				byteArrayInputStream = new ByteArrayInputStream(buf);
+				excelBook = new HSSFWorkbook(byteArrayInputStream);
+				readOnly = false;
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (fileIS != null) {
+					try {
+						fileIS.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}else{
 			readOnly = false;
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {  
-            if (fileIS != null) {  
-                try {  
-                	fileIS.close();  
-                } catch (IOException e) {  
-                    e.printStackTrace();  
-                }  
-            }  
-        }
+			createBook(path);
+		}
 		sheetCount = excelBook.getNumberOfSheets();
 	}
+	
+	/**
+	 * 创建文件
+	 * @param path
+	 */
+	private void createBook(String path){
+		excelBook = new HSSFWorkbook();
+		excelSheet = excelBook.createSheet();
+		excelBook.createSheet();
+	}
+	
 	
 	/**
 	 * 读取Excel的数据
@@ -92,8 +109,8 @@ public class ExcelEditor {
 	 * @param row 行号
 	 * @return 全部返回成String类型
 	 */
-	public String getValue(int sheetIndex, int col, int row){
-		return setSheetByIndex(sheetIndex) ? getValue(col, row) : null;
+	public String getValue(int sheetIndex, int row, int col){
+		return setSheetByIndex(sheetIndex) ? getValue(row, col) : null;
 	}
 	
 	/**
@@ -103,8 +120,8 @@ public class ExcelEditor {
 	 * @param row 行号
 	 * @return 全部返回成String类型
 	 */
-	public String getValue(String sheetName, int col,int row){
-		return setSheetByName(sheetName) ? getValue(col, row) : null;
+	public String getValue(String sheetName, int row, int col){
+		return setSheetByName(sheetName) ? getValue(row, col) : null;
 	}
 	
 	
@@ -114,7 +131,7 @@ public class ExcelEditor {
 	 * @param row 行号
 	 * @return 全部返回成String类型
 	 */
-	private String getValue(int col, int row){
+	private String getValue(int row, int col){
 		if(excelSheet.getRow(row)==null){
 			return null;
 		}else if(excelSheet.getRow(row).getCell(col)==null){
@@ -218,7 +235,10 @@ public class ExcelEditor {
 					value = ((Integer) value).doubleValue();
 				}
 				cell.setCellValue((Double) value);
-			}else{	
+			}else if(value instanceof HSSFRichTextString){
+				cell.setCellType(Cell.CELL_TYPE_STRING);
+				cell.setCellValue((HSSFRichTextString)value);
+			}else{
 				cell.setCellType(Cell.CELL_TYPE_STRING);
 				cell.setCellValue((String) value);
 			}
