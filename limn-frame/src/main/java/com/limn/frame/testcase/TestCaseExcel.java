@@ -26,22 +26,24 @@ import com.limn.tool.external.ExcelEditor;
 public class TestCaseExcel extends ExcelEditor implements TestCase {
 
 
-	
+	//用例模块的起始位置
 	private HashMap <Integer,Integer> excelModuleStartIndex;
-	
+	//用例模块的结束位置
 	private HashMap <Integer,Integer> excelModuleEndIndex;
-	
+	//用例模块的名称
 	private HashMap <Integer,String> excelModuleName;
-	
+	//当前的sheetIndex
 	private int excelSheetIndex;
-	
+	//当前的行
 	private int currentRow;
 	
-	
+	/**
+	 * 
+	 * @param path 路径存在打开,不存在新建
+	 */
 	public TestCaseExcel(String path) {
 		super(path);
 	}
-	
 	
 	
 	@Override
