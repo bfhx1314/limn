@@ -49,6 +49,7 @@ import org.w3c.dom.events.Event;
 
 import com.limn.frame.edit.EditTestCasePanel;
 import com.limn.frame.keyword.KeyWordDriver;
+import com.limn.tool.common.Common;
 import com.limn.tool.log.LogControlInterface;
 import com.limn.tool.log.LogDocument;
 import com.limn.tool.log.PrintLogDriver;
@@ -106,6 +107,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	
 	private static boolean isVerKeyWord = false;
 	
+	private boolean isRunning = false;
 	
 	/**
 	 * 添加自定义面板到界面
@@ -207,7 +209,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 				Rectangle rect = editTestCase.getCellRect(row -1, 0, true);
 				editTestCase.scrollRectToVisible(rect);
 				
-				executeStep(testCase.getText());
+				executeStep(testCase.getText(),false);
 				testCase.setText("");
 				
 			}
@@ -246,7 +248,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 					
 					editTestCase.setRowSelectionInterval(0,row);
 
-					executeStep(testCase.getText());
+					executeStep(testCase.getText(),false);
 					testCase.setText("");
 				}
 				
@@ -256,12 +258,18 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		
 		executeAgain.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {	
+			public void actionPerformed(ActionEvent e) {
+				String step = null;
 				if(editTestCase.getRowCount()!=0){
-					for(int i = 0 ;i<model.getRowCount();i++){
-						executeStep((String) model.getValueAt(i, 0));
-						editTestCase.setRowSelectionInterval(0,i);
+					for(int i = 0 ;i<model.getRowCount();i++){	
+						if(null==step){
+							step = (String) model.getValueAt(i, 0);
+						}else{
+							step = step + "\n" + (String) model.getValueAt(i, 0);
+						}
 					}
+					executeStep(step,true);
+
 				}
 
 			}
@@ -387,11 +395,12 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		return attrSet;
 	}
 	
-	private void executeStep(String step){
+	private void executeStep(String step,boolean isExeAg){
+		isRunning = true;
 		execute.setEnabled(false);
 		insertExecute.setEnabled(false);
 		executeAgain.setEnabled(false);
-		new Thread(new ExecuteStep(step)).start();
+		new Thread(new ExecuteStep(step,isExeAg)).start();
 	}
 
 	
@@ -453,23 +462,31 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	class ExecuteStep implements Runnable{
 		
 		public String step = null;
-		
-		public ExecuteStep(String step){
+		private boolean  isExecuteAgain = false;
+		public ExecuteStep(String step,boolean isExeAg){
 			this.step = step;
+			isExecuteAgain = isExeAg;
+					
 			
 		}
 		
 		@Override
 		public void run() {
-			
-			String[] steps = step.split("\n");
-			for(String keys : steps){
-				String[] key = RegExp.splitKeyWord(keys);
-				keyWordDriver.start(key);
+			try{
+				String[] steps = step.split("\n");
+				for(int i = 0;i<steps.length;i++){
+					String[] key = RegExp.splitKeyWord(steps[i]);
+					if(isExecuteAgain){
+						editTestCase.setRowSelectionInterval(0,i);
+					}
+					keyWordDriver.start(key);
+				}
+			}finally{
+				execute.setEnabled(true);
+				insertExecute.setEnabled(true);
+				executeAgain.setEnabled(true);
+				isRunning = false;
 			}
-			execute.setEnabled(true);
-			insertExecute.setEnabled(true);
-			executeAgain.setEnabled(true);
 			
 		}
 		

@@ -181,7 +181,7 @@ public class Test {
 		recordResult.addSheet(runTimeSheetNum);
 		
 		//按模块执行
-		for (int i = 1 ; i <= tc.getExcelModuleStartIndex().size(); i++) {
+		for (int i = 0 ; i < tc.getExcelModuleStartIndex().size(); i++) {
 			
 			//测试结果集
 			recordResult.addModule(tc.getExcelModuleName().get(i));
@@ -202,7 +202,7 @@ public class Test {
 					// 执行下个模块
 					tc.setResult("跳过下个模块");
 					// 还需要一个场景还原的步骤
-					runSingleStep("重启", "场景还原/");
+//					runSingleStep("重启", "场景还原/");
 					break;
 				}
 			}
@@ -387,24 +387,24 @@ public class Test {
 //		Driver.runScript("Web_ShowDeskUI_JS('')");
 	}
 	
-	/**
-	 * 获取下一行用例
-	 * @return String[]
-	 */ 
-	public static String[] getNextStep(){
-		TestCase testCase = tc;
-		String[] steps = RegExp.splitWord(testCase.getTestStep(), "\n");
-		int runTimeStepNum = Test.runTimeStepNum;
-		String nextStep;
-		if (steps.length-1 > runTimeStepNum){
-			nextStep = steps[runTimeStepNum +1]; // 下一行用例
-		}else{
-			steps = RegExp.splitWord(testCase.getNextTestStep(), "\n");
-			nextStep = steps[0]; // 下一行用例
-		}
-		String[] nextKeys = RegExp.splitKeyWord(nextStep);
-		return nextKeys;
-	}
+//	/**
+//	 * 获取下一行用例
+//	 * @return String[]
+//	 */ 
+//	public static String[] getNextStep(){
+//		TestCase testCase = tc;
+//		String[] steps = RegExp.splitWord(testCase.getTestStep(), "\n");
+//		int runTimeStepNum = Test.runTimeStepNum;
+//		String nextStep;
+//		if (steps.length-1 > runTimeStepNum){
+//			nextStep = steps[runTimeStepNum +1]; // 下一行用例
+//		}else{
+//			steps = RegExp.splitWord(testCase.getNextTestStep(), "\n");
+//			nextStep = steps[0]; // 下一行用例
+//		}
+//		String[] nextKeys = RegExp.splitKeyWord(nextStep);
+//		return nextKeys;
+//	}
 	
 	
 	/**
@@ -451,7 +451,8 @@ public class Test {
 	 * @param value
 	 */
 	public static void setStyleAcutalResult(String value, String style){
-		tc.setResult(value,style);
+//		tc.setResult(value,style);
+		tc.setResult(value);
 	}
 	/**
 	 * 对比结果写入excel  true||false，第8列

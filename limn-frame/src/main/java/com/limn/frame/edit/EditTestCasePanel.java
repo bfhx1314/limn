@@ -19,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.EventObject;
 import java.util.HashMap;
+
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -50,8 +51,11 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+
 import org.dom4j.DocumentException;
+
 import com.limn.tool.common.Common;
+import com.limn.tool.common.Print;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
 
@@ -248,11 +252,11 @@ public class EditTestCasePanel extends JPanel {
 				
 				if(moduleJList.getSelectedIndex()==-1){
 					clearTable();
+				}else{
+					
 				}
-				
-				
 				if(e.getValueIsAdjusting()){
-					setModuleList(moduleJList.getSelectedIndex()+1);
+					setModuleList(moduleJList.getSelectedIndex());
 				}
 				
 			}
@@ -275,7 +279,7 @@ public class EditTestCasePanel extends JPanel {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED){
-					System.out.println("sheet:" + sheetIndex.getSelectedIndex());
+					Print.debugLog("sheet:" + sheetIndex.getSelectedIndex(),2);
 					eTestCase.setTableSheet(sheetIndex.getSelectedIndex());
 					setTestCaseModule();
 				}
@@ -317,10 +321,13 @@ public class EditTestCasePanel extends JPanel {
 	}
 
 	
-	
+	/**
+	 * 选择ModuleList
+	 * @param index
+	 */
 	private void setModuleList(int index){
 		setTestCaseByModule(index);
-		moduleKey.setText((String) moudleModel.get(index-1));
+		moduleKey.setText((String) moudleModel.get(index));
 	}
 	
 	/**
@@ -336,7 +343,8 @@ public class EditTestCasePanel extends JPanel {
 		JMenuItem up = new JMenuItem("模块上移");
 		JMenuItem down = new JMenuItem("模块下移");
 		JMenuItem delete = new JMenuItem("删除模块");
-		
+		up.setEnabled(false);
+		down.setEnabled(false);
 		modfily.addActionListener(new ActionListener() {
 
 			@Override
@@ -347,11 +355,11 @@ public class EditTestCasePanel extends JPanel {
 				if (name != null) {
 					isRefreshTable = false;
 					int index = moduleJList.getSelectedIndex();
-					eTestCase.setModuleNameByIndex(index + 1, name);
+					eTestCase.setModuleNameByIndex(index, name);
 					setTestCaseModule();
 					moduleJList.setSelectedIndex(index);
 					isRefreshTable = true;
-					setModuleList(index + 1);
+					setModuleList(index);
 				}
 
 			}
@@ -442,7 +450,7 @@ public class EditTestCasePanel extends JPanel {
 				setSheetList(eTestCase.getSheetRowCount());
 				if(moudleModel.getSize()>0){
 					moduleJList.setSelectedIndex(0);
-					setModuleList(moduleJList.getSelectedIndex()+1);
+					setModuleList(moduleJList.getSelectedIndex());
 				}	
 			}
 		}
@@ -465,7 +473,7 @@ public class EditTestCasePanel extends JPanel {
 					saveParameters(path);
 					setSheetList(eTestCase.getSheetRowCount());
 					moduleJList.setSelectedIndex(0);
-					setModuleList(moduleJList.getSelectedIndex()+1);
+					setModuleList(moduleJList.getSelectedIndex());
 				}
 			}
 		});
@@ -623,7 +631,7 @@ public class EditTestCasePanel extends JPanel {
 
 	private void setTestCaseModule(){
 		moudleModel.removeAllElements();
-		for(int i = 1 ; i <= eTestCase.getModuleCount(); i++){
+		for(int i = 0 ; i < eTestCase.getModuleCount(); i++){
 			moudleModel.addElement(eTestCase.getModuleNameByIndex(i)==""?"未命名":eTestCase.getModuleNameByIndex(i));
 		}
 		moduleJList.setModel(moudleModel);
@@ -631,12 +639,9 @@ public class EditTestCasePanel extends JPanel {
 	
 
 	private void addTestCaseModule(int index, String element){
-		try {
-			eTestCase.addModuleCase(index + 1,element);
-		} catch (FileNotFoundException e) {
-			errorDialog(e.getMessage());
-			e.printStackTrace();
-		}
+	
+		eTestCase.addModuleCase(index,element);
+		saveModuleCase();
 		moudleModel.add(index, element);
 		moduleJList.setModel(moudleModel);
 		moduleJList.ensureIndexIsVisible(index);
@@ -646,21 +651,20 @@ public class EditTestCasePanel extends JPanel {
 	
 
 	private void deleteTestCaseModule(){
-		try {
-			eTestCase.deleteModuleCase(moduleJList.getSelectedIndex() + 1);
-		} catch (FileNotFoundException e) {
-			errorDialog(e.getMessage());
-			e.printStackTrace();
+
+		boolean isDeleted = eTestCase.deleteModuleCase(moduleJList.getSelectedIndex());
+		if(isDeleted){
+			moudleModel.removeElementAt(moduleJList.getSelectedIndex());
+			moduleJList.setModel(moudleModel);
+			moduleJList.setSelectedIndex(moduleJList.getSelectedIndex());
 		}
-		moudleModel.removeElementAt(moduleJList.getSelectedIndex());
-		moduleJList.setModel(moudleModel);
-		moduleJList.setSelectedIndex(moduleJList.getSelectedIndex());
+
 	}
 	
 
 	private void upTestCasemodule(){
 		try {
-			eTestCase.upModuleCase(moduleJList.getSelectedIndex() + 1);
+			eTestCase.upModuleCase(moduleJList.getSelectedIndex());
 		} catch (FileNotFoundException e) {
 			errorDialog(e.getMessage());
 			e.printStackTrace();
@@ -671,12 +675,12 @@ public class EditTestCasePanel extends JPanel {
 		moudleModel.add(upIndex-1, up);
 		moduleJList.setModel(moudleModel);
 		moduleJList.setSelectedIndex(upIndex-1);
-		setModuleList(upIndex);
+		setModuleList(upIndex-1);
 	}
 	
 	private void downTestCasemodule(){
 		try {
-			eTestCase.upModuleCase(moduleJList.getSelectedIndex() + 2);
+			eTestCase.upModuleCase(moduleJList.getSelectedIndex() + 1);
 		} catch (FileNotFoundException e) {
 			errorDialog(e.getMessage());
 			e.printStackTrace();
@@ -727,7 +731,7 @@ public class EditTestCasePanel extends JPanel {
 				testCase[i][3] = testCaseTable.getValueAt(i, 3)==null?"":testCaseTable.getValueAt(i, 3).toString();
 				testCase[i][4] = testCaseTable.getValueAt(i, 4)==null?"":testCaseTable.getValueAt(i, 4).toString();
 			}
-			eTestCase.saveModuleCase(moduleJList.getSelectedIndex() + 1,testCase);
+			eTestCase.saveModuleCase(moduleJList.getSelectedIndex(),testCase);
 		}
 		
 	}

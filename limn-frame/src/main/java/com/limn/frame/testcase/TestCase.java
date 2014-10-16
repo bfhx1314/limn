@@ -95,7 +95,7 @@ public interface TestCase {
 	 * 测试用例的执行结果
 	 * @return
 	 */
-	public boolean getResult();
+	public String getResult();
 	
 	/**
 	 * 设置是否执行
@@ -131,7 +131,7 @@ public interface TestCase {
 	 * 设置测试用例的执行结果
 	 * @param value
 	 */
-	public void setResult(boolean value);
+	public void setResult(String value);
 	
 //	/**
 //	 * 写入第8列
@@ -167,7 +167,7 @@ public interface TestCase {
 
 	public void insertRow(int row);
 
-	public void deleteRow(int rowNum);
+	public boolean deleteRow(int rowNum);
 
 	/**
 	 * 设置测试用例的预期结果
@@ -183,7 +183,7 @@ public interface TestCase {
 	/**
 	 * 保存
 	 */
-	public void saveFile();
+	public boolean saveFile();
 
 	
 	public void shiftRows(int start,int end,int move);

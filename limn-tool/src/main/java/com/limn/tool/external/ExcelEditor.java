@@ -38,6 +38,14 @@ public class ExcelEditor {
 	 */
 	public ExcelEditor(String path){
 		this.filePath = path;
+		openExcel();
+		sheetCount = excelBook.getNumberOfSheets();
+	}
+	
+	/**
+	 * 
+	 */
+	private void openExcel(){
 		File excelFile = new File(filePath);
 		if (excelFile.exists()) {
 			InputStream fileIS = null;
@@ -47,6 +55,7 @@ public class ExcelEditor {
 				byte buf[] = IOUtils.toByteArray(fileIS);
 				byteArrayInputStream = new ByteArrayInputStream(buf);
 				excelBook = new HSSFWorkbook(byteArrayInputStream);
+				setSheetByIndex(0);
 				readOnly = false;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -61,10 +70,10 @@ public class ExcelEditor {
 			}
 		}else{
 			readOnly = false;
-			createBook(path);
+			createBook(filePath);
 		}
-		sheetCount = excelBook.getNumberOfSheets();
 	}
+	
 	
 	/**
 	 * 创建文件
@@ -280,6 +289,10 @@ public class ExcelEditor {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
+		} finally{
+			excelBook = null;
+			excelSheet = null;
+			openExcel();
 		}
 	}
 

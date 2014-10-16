@@ -82,18 +82,23 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 	 * excelModuleName	对应用例开始的行 - 2  才是模块名称 (-1是用例编号,相关用例 一栏)
 	 */
 	private void getExcelModule(){
+		
 		excelModuleStartIndex = new HashMap<Integer,Integer>();
 		excelModuleEndIndex = new HashMap<Integer,Integer>();
 		excelModuleName = new HashMap<Integer,String>();
 		
-		int index = 1;
+		int index = 0;
+		Print.debugLog("***************************", 2);
 		for (Row row:excelSheet){	
 			setCurrentRow(row.getRowNum());
 			if (getTestCaseNo() != null && getTestCaseNo().equals("用例编号")){
-				excelModuleStartIndex.put(index, row.getRowNum());
+				excelModuleStartIndex.put(index, row.getRowNum() + 1);
+				Print.debugLog(index + ":Start:"+ (row.getRowNum() + 1), 2);
 				excelModuleName.put(index, getValue(excelSheetIndex,row.getRowNum() - 1,1));
-				if(index > 1){
+				Print.debugLog(index + ":Name:"+ getValue(excelSheetIndex,row.getRowNum() - 1,1), 2);
+				if(index > 0){
 					excelModuleEndIndex.put(index-1, row.getRowNum() - 2);
+					Print.debugLog((index-1) + ":End:"+ (row.getRowNum() - 2), 2);
 				}
 				index++;
 			}
@@ -101,12 +106,17 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 		
 		//最后一个模块.结束为文件的最后
 		index--;
-		if(index > 0){
+		if(index != -1){
 			removeInvalidRow(excelModuleStartIndex.get(index));
-			excelModuleEndIndex.put(index, excelSheet.getLastRowNum() + 1);
-		}else{
-			
+			save();
+			excelModuleEndIndex.put(index, excelSheet.getLastRowNum());
+			Print.debugLog(index + ":End:" + excelSheet.getLastRowNum(), 2);
 		}
+//		}else{
+//			excelModuleStartIndex.put(1, 4);
+//			excelModuleEndIndex.put(1, 4);
+//		}
+		Print.debugLog("***************************", 2);
 	}
 	
 	
@@ -224,10 +234,10 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 		setCurrentCell(7,value);
 	}
 	
-	@Override
-	public void setResult(String value, String style) {
-		setCurrentCell(7,value,style);
-	}
+//	@Override
+//	public void setResult(String value, String style) {
+//		setCurrentCell(7,value,style);
+//	}
 	
 	/**
 	 * 数据录入
@@ -248,9 +258,9 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 	}
 	
 	
-	private void setCurrentCell(int index,String value, String style){
-		
-		setValue(excelSheetIndex, currentRow, index, new HSSFRichTextString(value));
+//	private void setCurrentCell(int index,String value, String style){
+//		
+//		setValue(excelSheetIndex, currentRow, index, new HSSFRichTextString(value));
 		
 //		//创建字体
 //		CellStyle titleStyle = excelBook.createCellStyle();
@@ -272,14 +282,14 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 //		}
 //		excelSheet.getRow(currentRow).getCell(index - 1).setCellValue(value);
 //		excelSheet.getRow(currentRow).getCell(index - 1).setCellStyle(titleStyle);
-	}
+//	}
 	
 	@Override
 	public void insertRow(int rowNum){
 		if(rowNum >= excelSheet.getLastRowNum()){
 			insertLastRow();
 		}else{
-			excelSheet.shiftRows(rowNum + 1, excelSheet.getLastRowNum(),1);
+			excelSheet.shiftRows(rowNum, excelSheet.getLastRowNum(), 1);
 		}
 	}
 	
@@ -289,54 +299,39 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 	
 	
 	@Override
-	public void deleteRow(int rowNum){
-		excelSheet.shiftRows(rowNum + 1,excelSheet.getLastRowNum(),-1);
+	public boolean deleteRow(int rowNum){
+		System.out.println("删除删除");
+		if(rowNum <= excelSheet.getLastRowNum()){
+			excelSheet.shiftRows(rowNum + 1,excelSheet.getLastRowNum(),-1);
+			return true;
+		}else{
+			Print.log("删除行已超出最大行数", 3);
+			return false;
+		}
 	}
 
 	
 	public void setModuleName(int index, String moduleName){
-		setCurrentRow(excelModuleStartIndex.get(index) - 2);
-		setTestCaseNo(moduleName);
-		getExcelModule();
+		if(excelModuleStartIndex.containsKey(index)){
+			setValue(excelSheetIndex, excelModuleStartIndex.get(index) - 2, 1, moduleName);
+		}else{
+			Print.log("index:" + index + " 的模块",2);
+		}
 	}
 	
-	public void saveAsFile(String path){
-		saveAs(path);
+	public boolean saveAsFile(String path){
+		return saveAs(path);
 	}
 	
 	@Override
-	public void saveFile(){
+	public boolean saveFile(){
 		setStyle();
-		save();
-		
-//		FileOutputStream out = null;
-//
-//		out = new FileOutputStream(excelFilePath);
-//
-//
-//		try {
-//			excelBook.write(out);
-//			out.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		excelBook = null;
-//		excelSheet = null;
-//		init(excelFilePath,excelSheetIndex);
+		return save();
 	}
 	
 	@Override
 	public void refreshModule(){
 		getExcelModule();
-	}
-	
-	@Override
-	public String getNextTestStep() {
-		if(excelSheet.getRow(currentRow+1).getCell(4-1)==null){
-			return "";
-		}else{
-			return excelSheet.getRow(currentRow+1).getCell(4-1).toString();			
-		}
 	}
 	
 	public int getExcelSheetIndex(){
@@ -361,38 +356,42 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 		//模块标题
 		CellStyle titleStyle = excelBook.createCellStyle();
 		//列表标题(用例编号,相关用例等)
-		CellStyle listStyle =  setContentBorder();
+		CellStyle menuStyle =  setContentBorder();
 		//内容
 		CellStyle contentStyle = setContentBorder();
 		
-		HSSFFont font2 = excelBook.createFont();
-		font2.setFontName("楷体");
-		font2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);//粗体显示
-		font2.setFontHeightInPoints((short) 16);
+		HSSFFont titleFont = excelBook.createFont();
+		titleFont.setFontName("楷体");
+		titleFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);//粗体显示
+		titleFont.setFontHeightInPoints((short) 16);
 		
-		HSSFFont font1 = excelBook.createFont();
-		font1.setFontName("楷体");
-		font1.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);//粗体显示
-		font1.setFontHeightInPoints((short) 12);
+		HSSFFont menuFont = excelBook.createFont();
+		menuFont.setFontName("楷体");
+		menuFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);//粗体显示
+		menuFont.setFontHeightInPoints((short) 12);
 		
 
-		titleStyle.setFont(font2);
-		listStyle.setFont(font1);
-		//设置背景颜色
-		listStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-		listStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		titleStyle.setFont(titleFont);
+		
+		menuStyle.setFont(menuFont);
+		menuStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
+		menuStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
 		
 		for(int index:excelModuleStartIndex.keySet()){
-			HSSFRow row = null;
-			row = excelSheet.getRow(excelModuleStartIndex.get(index)-2);
-			if(row!=null){
-				row.createCell(1);
-				row.getCell(1).setCellStyle(titleStyle);
-			}
 			
+			HSSFRow row = null;
+			//title行
+			row = excelSheet.getRow(excelModuleStartIndex.get(index)-2);
+			
+			if(row.getCell(1)==null){
+				row.createCell(1);
+			}
+			row.getCell(1).setCellStyle(titleStyle);
+			
+			//menu行
 			row = excelSheet.getRow(excelModuleStartIndex.get(index)-1);
 			
-			setCellStyle(row, listStyle);
+			setCellStyle(row, menuStyle);
 			
 			for(int i = excelModuleStartIndex.get(index);i<=excelModuleEndIndex.get(index);i++){
 				
@@ -478,31 +477,34 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 	
 	private void removeInvalidRow(int index){
 		CellReference cellReference = new CellReference("A"+index);
-		boolean flag = false;
-		for (int i = cellReference.getRow(); i < excelSheet.getLastRowNum();) {
+		//列是否有效
+		boolean isColValid = false;
+		for (int i = cellReference.getRow(); i < excelSheet.getLastRowNum();i++) {
 			Row r = excelSheet.getRow(i);
+			//最后一行直接跳出
+			if (i >= excelSheet.getLastRowNum()){
+				break;
+			}
+			
 			if (r == null) {
 				// 如果是空行（即没有任何数据、格式），直接把它以下的数据往上移动
 				deleteRow(i);
 				continue;
 			}
-			flag = false;
+			
+			isColValid = false;
+			//判断某一行 是否存在有效列
 			for (Cell c : r) {
 				if (c.getCellType() != Cell.CELL_TYPE_BLANK) {
-					flag = true;
+					isColValid = true;
 					break;
 				}
 			}
-			if (flag) {
-				i++;
-				continue;
-			} else {// 如果是空白行（即可能没有数据，但是有一定格式）
-				if (i == excelSheet.getLastRowNum()){
-					
-				}else{
-					// 如果还没到最后一行，则数据往上移一行
-					deleteRow(i);
-				}
+			
+			//不存在有效列直接删除
+			if (isColValid) {
+			} else {
+				deleteRow(i);
 			}
 		}
 	}
