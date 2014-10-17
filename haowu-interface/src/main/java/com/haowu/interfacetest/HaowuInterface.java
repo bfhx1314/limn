@@ -35,11 +35,13 @@ public class HaowuInterface {
 	 * @param username 手机号
 	 * @param password 密码
 	 */
-	public void login(String username, String password){
+	public void login(String username, String password,String activity_id){
 		
         NameValuePair[] param = {
         		new NameValuePair("Rpass", password),
-                new NameValuePair("Ruser", username)
+                new NameValuePair("Ruser", username),
+        		new NameValuePair("activity_id", activity_id),
+        		new NameValuePair("shareBrokerId", "-1")
                 };
         
         PostMethod login = StructureMethod.getPostMethod(param, "/ajax/login"); 
@@ -86,6 +88,20 @@ public class HaowuInterface {
 		
 	}
 	
+	public String getRed(String username, String password,String activity_id){
+        NameValuePair[] param = {
+        		new NameValuePair("Rpass", password),
+                new NameValuePair("Ruser", username),
+        		new NameValuePair("activity_id", activity_id),
+        		new NameValuePair("shareBrokerId", "-1"),
+        		new NameValuePair("way", "5")
+                };
+        
+        PostMethod login = StructureMethod.getPostMethod(param, "/m/share/commentAndGetRed"); 
+        login.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        return StructureMethod.execute(client, login);
+		
+	}
 	
 
 	/**
@@ -93,10 +109,12 @@ public class HaowuInterface {
 	 * @param args
 	 */
 	public static void main(String[] args){
-		HaowuInterface rc = new HaowuInterface("172.16.10.35", 90);
-		rc.login("15140902001", "a123456");
+		HaowuInterface rc = new HaowuInterface("www.haowu.com", 80);
+		rc.login("13773018115", "f105868","1003004003036");
+		String res = rc.getRed("13773018115", "f105868","1003004003036");
+		System.out.println(res);
 //		rc.addAgentSales("青年", "13838384381", "12944");
-		rc.recommennd("15140826302", "shehui1", "12959", "limn-5");
+//		rc.recommennd("15140826302", "shehui1", "12959", "limn-5");
 	}
 
 }
