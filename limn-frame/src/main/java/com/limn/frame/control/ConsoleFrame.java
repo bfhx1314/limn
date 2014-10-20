@@ -11,8 +11,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-
-
 import java.util.HashMap;
 
 import javax.swing.JButton;
@@ -115,7 +113,7 @@ public class ConsoleFrame extends JFrame {
 //	private JCheckBox debugCheckBox = new JCheckBox("调试");	
 	
 	// 无服务端环境
-	private JCheckBox notServer = new JCheckBox("无服务端环境");	
+//	private JCheckBox notServer = new JCheckBox("无服务端环境");	
 	
 	//上传结果到服务器
 	private JCheckBox upload = new JCheckBox("结果上传服务器");
@@ -138,6 +136,12 @@ public class ConsoleFrame extends JFrame {
 	
 	private JLabel specifyStepLabel = new JLabel("Step");
 	private JTextField specifyStep = new JTextField();
+	
+//	private JCheckBox serverLabel = new JCheckBox("上传服务器日志");
+//	
+//	private JTextField serverIP = new JTextField();
+	
+//	private JButton ver
 	
 //	private JLabel setCoreLable = new JLabel("Core文件设置:");
 //	private JComboBox<String> setCoreSwitch = new JComboBox<String>(new String[] { "需要", "不需要" });
@@ -165,10 +169,10 @@ public class ConsoleFrame extends JFrame {
 		}
 		// 布局运行电脑
 		int y = 30;
-		computerLabel.setEnabled(false);
-		computerContent.setEnabled(false);
-		ipLablel.setEnabled(false);
-		ipContent.setEnabled(false);
+//		computerLabel.setEnabled(false);
+//		computerContent.setEnabled(false);
+//		ipLablel.setEnabled(false);
+//		ipContent.setEnabled(false);
 		setBoundsAtPanel(computerLabel,50, y, 130, 30);
 		setBoundsAtPanel(computerContent,180, y, 110, 30);
 		setBoundsAtPanel(ipLablel,310,y,100,30);
@@ -430,6 +434,17 @@ public class ConsoleFrame extends JFrame {
 		
 		setSpecifyVisible();
 		
+		
+//		try{
+//			Class<?> clazz = Class.forName("com.limn.client.Client");
+//			y=y+40;
+//		}catch(ClassNotFoundException e){
+//			
+//			
+//			
+//		}
+		
+		
 //		y=y+40;
 //		setBoundsAtPanel(setCoreLable,50,y,130,30);
 //		setBoundsAtPanel(setCoreSwitch,180,y,110,30);
@@ -460,17 +475,17 @@ public class ConsoleFrame extends JFrame {
 		// 布局调试复选框
 		y=y+50;
 
-		notServer.setEnabled(false);
+//		notServer.setEnabled(false);
 		upload.setEnabled(false);
 		uploadSetting.setEnabled(false);
 		
 //		setBoundsAtPanel(debugCheckBox,175, y, 100, 30);
 		
-		setBoundsAtPanel(notServer,175, y, 150, 30);
+//		setBoundsAtPanel(notServer,175, y, 150, 30);
 		
-		setBoundsAtPanel(upload,325, y, 120, 30);
+		setBoundsAtPanel(upload,175, y, 120, 30);
 		
-		setBoundsAtPanel(uploadSetting,445, y, 80, 30);
+		setBoundsAtPanel(uploadSetting,295, y, 80, 30);
 		uploadSetting.setMargin(new Insets(0,0,0,0));
 		
 		uploadSetting.addActionListener(new ActionListener() {
@@ -496,24 +511,24 @@ public class ConsoleFrame extends JFrame {
 					try {
 						// 当选择运行模式为:由当前界面配置参数运行时,对必填项做基本检查
 						checkEmpty(URLContent.getText(), URLLabel.getText());
-						if(!notServer.isSelected()){
-							
-							String testCasePath = testCaseContent.getSelectedItem().toString();
-							
-							if(!RegExp.findCharacters(testCasePath, ":")){
-								testCasePath  = Parameter.DFAULT_TEST_PATH + "/testcase/" + testCasePath;
-							}
-							
-//							checkEmpty(YigoContent.getText(), YigoLabel.getText());
-							checkEmpty(testCasePath, testCaseLabel.getText());
-//							checkExist(YigoContent.getText(), YigoLabel.getText());
-							checkExist(testCasePath, testCaseLabel.getText());
-//							checkExist(YigoContent.getText()+"\\WEB-INF\\classes\\core.properties", "core.properties");
-							
-						}else{
-//							checkEmpty(configPathContent.getText(), configPathLabel.getText());
-//							checkExist(configPathContent.getText(), configPathLabel.getText());
-						}
+//						if(!notServer.isSelected()){
+//							
+//							String testCasePath = testCaseContent.getSelectedItem().toString();
+//							
+//							if(!RegExp.findCharacters(testCasePath, ":")){
+//								testCasePath  = Parameter.DFAULT_TEST_PATH + "/testcase/" + testCasePath;
+//							}
+//							
+////							checkEmpty(YigoContent.getText(), YigoLabel.getText());
+//							checkEmpty(testCasePath, testCaseLabel.getText());
+////							checkExist(YigoContent.getText(), YigoLabel.getText());
+//							checkExist(testCasePath, testCaseLabel.getText());
+////							checkExist(YigoContent.getText()+"\\WEB-INF\\classes\\core.properties", "core.properties");
+//							
+//						}else{
+////							checkEmpty(configPathContent.getText(), configPathLabel.getText());
+////							checkExist(configPathContent.getText(), configPathLabel.getText());
+//						}
 						
 						if(upload.isSelected()){
 							checkUpload();
@@ -545,7 +560,7 @@ public class ConsoleFrame extends JFrame {
 						
 						//此处运行当前界面的配置
 
-						new Thread(new BeforeTest(xml.getNodeValueByTemplateIndex(0),keyWordDriver)).start();;
+						new Thread(new BeforeTest(xml.getNodeValueByTemplateIndex(0),keyWordDriver)).start();
 //						new Thread(new BeforeTest(xml.getNodeValueByTemplateIndex(0))).start();
 						
 						
@@ -585,13 +600,13 @@ public class ConsoleFrame extends JFrame {
 			}
 		});
 		
-		notServer.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				setNoServerVisible();
-			}
-		});
+//		notServer.addActionListener(new ActionListener() {
+//			
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				setNoServerVisible();
+//			}
+//		});
 
 		setNoServerVisible();
 		
@@ -664,52 +679,52 @@ public class ConsoleFrame extends JFrame {
 	
 	private void setNoServerVisible(){
 		
-		if(notServer.isSelected()){
-//			MiddlewareLabel.setVisible(false);
-//			MiddlewareContent.setVisible(false);
-//			MiddlewareButton.setVisible(false);
-//			YigoLabel.setVisible(false);
-//			YigoContent.setVisible(false);
-//			YigoButton.setVisible(false);
-//			configPathLabel.setVisible(true);
-//			configPathContent.setVisible(true);
-//			configPathButton.setVisible(true);
-			
-
-			initDBLabel.setVisible(false);
-			initDBContent.setVisible(false);
-			initDBPathLabel.setVisible(false);
-			initDBPathContent.setVisible(false);
-			initDBPathButton.setVisible(false);
-			
-//			setCoreLable.setVisible(false);
-//			setCoreSetting.setVisible(false);
-//			setCoreSwitch.setVisible(false);
-			reStart.setVisible(false);
-			
-		}else{
-//			MiddlewareLabel.setVisible(true);
-//			MiddlewareContent.setVisible(true);
-//			MiddlewareButton.setVisible(true);
-//			YigoLabel.setVisible(true);
-//			YigoContent.setVisible(true);
-//			YigoButton.setVisible(true);
-//			configPathLabel.setVisible(false);
-//			configPathContent.setVisible(false);
-//			configPathButton.setVisible(false);
-			
-
-			initDBLabel.setVisible(true);
-			initDBContent.setVisible(true);
-			
-//			setCoreLable.setVisible(true);
-//			setCoreSwitch.setVisible(true);
-			reStart.setVisible(true);
-//			setCoreVisible();
-			
-			setinitDBContent();
-
-		}
+//		if(notServer.isSelected()){
+////			MiddlewareLabel.setVisible(false);
+////			MiddlewareContent.setVisible(false);
+////			MiddlewareButton.setVisible(false);
+////			YigoLabel.setVisible(false);
+////			YigoContent.setVisible(false);
+////			YigoButton.setVisible(false);
+////			configPathLabel.setVisible(true);
+////			configPathContent.setVisible(true);
+////			configPathButton.setVisible(true);
+//			
+//
+//			initDBLabel.setVisible(false);
+//			initDBContent.setVisible(false);
+//			initDBPathLabel.setVisible(false);
+//			initDBPathContent.setVisible(false);
+//			initDBPathButton.setVisible(false);
+//			
+////			setCoreLable.setVisible(false);
+////			setCoreSetting.setVisible(false);
+////			setCoreSwitch.setVisible(false);
+//			reStart.setVisible(false);
+//			
+//		}else{
+////			MiddlewareLabel.setVisible(true);
+////			MiddlewareContent.setVisible(true);
+////			MiddlewareButton.setVisible(true);
+////			YigoLabel.setVisible(true);
+////			YigoContent.setVisible(true);
+////			YigoButton.setVisible(true);
+////			configPathLabel.setVisible(false);
+////			configPathContent.setVisible(false);
+////			configPathButton.setVisible(false);
+//			
+//
+//			initDBLabel.setVisible(true);
+//			initDBContent.setVisible(true);
+//			
+////			setCoreLable.setVisible(true);
+////			setCoreSwitch.setVisible(true);
+//			reStart.setVisible(true);
+////			setCoreVisible();
+//			
+//			setinitDBContent();
+//
+//		}
 		
 	}
 	
@@ -782,11 +797,11 @@ public class ConsoleFrame extends JFrame {
 		initDBPathContent.setVisible(isVisible);
 		initDBPathButton.setVisible(isVisible);	
 //		debugCheckBox.setVisible(isVisible);
-		notServer.setVisible(isVisible);
+//		notServer.setVisible(isVisible);
 //		configPathLabel.setVisible(false);
 //		configPathContent.setVisible(false);
 //		configPathButton.setVisible(false);
-		notServer.setSelected(false);
+//		notServer.setSelected(false);
 		
 		specifyCood.setVisible(isVisible);
 		specifySwitch.setVisible(isVisible);
@@ -901,9 +916,9 @@ public class ConsoleFrame extends JFrame {
 //			configPathContent.setText(hm.get("ConfigPath"));
 //		}
 		
-		if(hm.containsKey("NotServer") && !hm.get("NotServer").isEmpty()){
-			notServer.setSelected(Boolean.valueOf(hm.get("NotServer")));
-		}
+//		if(hm.containsKey("NotServer") && !hm.get("NotServer").isEmpty()){
+//			notServer.setSelected(Boolean.valueOf(hm.get("NotServer")));
+//		}
 		
 //		if(hm.containsKey("Debug") && !hm.get("Debug").isEmpty()){
 //			debugCheckBox.setSelected(Boolean.valueOf(hm.get("Debug")));
@@ -951,7 +966,7 @@ public class ConsoleFrame extends JFrame {
 			xml.setNodeValueByTemplateIndex(0, "SpecifyStep", String.valueOf(specifyStep.getText()));
 //			xml.setNodeValueByTemplateIndex(0, "Debug", String.valueOf(debugCheckBox.isSelected()));
 //			
-			xml.setNodeValueByTemplateIndex(0, "NotServer", String.valueOf(notServer.isSelected()));
+//			xml.setNodeValueByTemplateIndex(0, "NotServer", String.valueOf(notServer.isSelected()));
 			xml.setNodeValueByTemplateIndex(0, "UploadResults", String.valueOf(upload.isSelected()));
 			
 			

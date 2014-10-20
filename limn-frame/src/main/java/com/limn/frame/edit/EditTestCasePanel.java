@@ -501,12 +501,7 @@ public class EditTestCasePanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					eTestCase.Save();
-				} catch (FileNotFoundException e1) {
-					errorDialog(e1.getMessage());
-					e1.printStackTrace();
-				}
+				eTestCase.save();
 			}
 		
 		});
@@ -523,13 +518,7 @@ public class EditTestCasePanel extends JPanel {
 						path = path + ".xls";
 					}
 					eTestCase.setSavePath(path);
-					try {
-						eTestCase.Save();
-					} catch (FileNotFoundException e1) {
-						errorDialog(e1.getMessage());
-						e1.printStackTrace();
-					}
-					
+					eTestCase.save();
 				}
 				
 			}

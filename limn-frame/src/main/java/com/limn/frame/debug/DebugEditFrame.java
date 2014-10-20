@@ -1,6 +1,6 @@
 package com.limn.frame.debug;
 
-import java.awt.AWTEvent;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -8,12 +8,10 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -21,39 +19,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-
-
-
-
-
-
-
-
-
-
-
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-
-import org.w3c.dom.events.Event;
-
 import com.limn.frame.edit.EditTestCasePanel;
 import com.limn.frame.keyword.KeyWordDriver;
-import com.limn.tool.common.Common;
 import com.limn.tool.log.LogControlInterface;
 import com.limn.tool.log.LogDocument;
 import com.limn.tool.log.PrintLogDriver;
-import com.limn.tool.log.RunLog;
 import com.limn.tool.regexp.RegExp;
 
 
@@ -415,13 +392,10 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 			@Override
 			public int start(String[] step) {
 				return 0;
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public boolean isKeyWord(String key) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 		});

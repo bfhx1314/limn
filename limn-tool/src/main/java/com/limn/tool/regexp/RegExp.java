@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.limn.tool.common.ConvertCharacter;
+
+
 /**
  * 定义正则表达式
  * 
@@ -19,7 +22,11 @@ public class RegExp {
 	 * @return
 	 */
 	public static String[] splitKeyWord(String characters) {
+		characters = ConvertCharacter.getHtmlAsc(characters);
 		String[] m = Pattern.compile("[;|:]").split(characters);
+		for(int i = 0 ; i<m.length ; i++){
+			m[i] = ConvertCharacter.getHtmlChr(m[i]);
+		}
 		return m;
 	}
 	
@@ -135,9 +142,9 @@ public class RegExp {
 	 * 实例
 	 */
 	public static void main(String[] args){
-		String a = "xpath://a[@path='xpath:']";
-		a = a.substring(6);
-		System.out.println(a);
+		String a = "登陆:\\:\\1:aaaaa";
+		String[] b = RegExp.splitKeyWord(a);
+		System.out.println(b);
 	}
 	
 	

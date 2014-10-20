@@ -104,6 +104,7 @@ public class EditTestCase{
 		int start = moduleStartByIndex.get(index);
 		int end = moduleEndByIndex.get(index);
 		//0行和1行 都是1行
+		int orgCount = count;
 		if(count>0){
 			count--;
 		}
@@ -125,7 +126,7 @@ public class EditTestCase{
 		testCase.saveFile();
 		
 		//这里行数需要正常
-		if(count>0){
+		if(orgCount > 0){
 			count++;
 		}
 		for(int rowIndex = 0;rowIndex < count; rowIndex++ ){
@@ -135,8 +136,9 @@ public class EditTestCase{
 			testCase.setTestRelatedNo(testCaseTable[rowIndex][2]);
 			testCase.setTestStep(testCaseTable[rowIndex][3]);
 			testCase.setResults(testCaseTable[rowIndex][4]);
-			testCase.saveFile();
 			refreshModuleData();
+			testCase.saveFile();
+			
 		}
 	}
 
@@ -228,7 +230,7 @@ public class EditTestCase{
 	}
 	
 	
-	public void Save() throws FileNotFoundException{
+	public void save(){
 		testCase.saveFile();
 	}
 	

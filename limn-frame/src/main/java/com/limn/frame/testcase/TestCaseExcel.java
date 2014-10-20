@@ -9,15 +9,11 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFHyperlink;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
-
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellReference;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
-
 import com.limn.tool.regexp.RegExp;
 import com.limn.tool.common.Print;
 import com.limn.tool.external.ExcelEditor;
@@ -146,7 +142,7 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 	@Override
 	public Boolean isExecute(){
 		String isExe = getValue(excelSheetIndex, currentRow, 0);
-		return isExe==null?false:isExe.equals("1");
+		return isExe==null?false:isExe.equalsIgnoreCase("Y");
 	}
 	
 	
@@ -193,6 +189,11 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 	
 	@Override
 	public void setExecuted(String value) {
+		if(value.equals("0")){
+			value = "N";
+		}else if(value.equals("1")){
+			value = "Y";
+		}
 		setCurrentCell(0,value);
 	}
 
@@ -300,7 +301,6 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 	
 	@Override
 	public boolean deleteRow(int rowNum){
-		System.out.println("删除删除");
 		if(rowNum <= excelSheet.getLastRowNum()){
 			excelSheet.shiftRows(rowNum + 1,excelSheet.getLastRowNum(),-1);
 			return true;
@@ -353,6 +353,7 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 	 * 样式
 	 */
 	private void setStyle(){
+		
 		//模块标题
 		CellStyle titleStyle = excelBook.createCellStyle();
 		//列表标题(用例编号,相关用例等)
@@ -372,6 +373,8 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 		
 
 		titleStyle.setFont(titleFont);
+		titleStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
+		titleStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
 		
 		menuStyle.setFont(menuFont);
 		menuStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
@@ -383,20 +386,24 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 			//title行
 			row = excelSheet.getRow(excelModuleStartIndex.get(index)-2);
 			
-			if(row.getCell(1)==null){
+			if(row.getCell(1) == null){
 				row.createCell(1);
 			}
-			row.getCell(1).setCellStyle(titleStyle);
+			setCellStyle(row,titleStyle);
+//			row.setRowStyle(titleStyle);
+			row.setHeightInPoints(26);
 			
 			//menu行
 			row = excelSheet.getRow(excelModuleStartIndex.get(index)-1);
 			
 			setCellStyle(row, menuStyle);
+//			row.setRowStyle(menuStyle);
+			row.setHeightInPoints(13);
 			
 			for(int i = excelModuleStartIndex.get(index);i<=excelModuleEndIndex.get(index);i++){
 				
 				row = excelSheet.getRow(i);
-				if(row==null){
+				if(row == null){
 					row = excelSheet.createRow(i);
 					row.createCell(0);
 					row.createCell(1);
@@ -407,12 +414,13 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 					row.createCell(6);
 					row.createCell(7);
 				}else{
-					setCellStyle(row, contentStyle);
+					setCellStyle(row,contentStyle);
 				}
 				row.setHeightInPoints(13);
 				for(int cellIndex = 0;cellIndex<=7;cellIndex++){
 					HSSFCell cell = row.getCell(cellIndex);
 					int lineCount = 1;
+					
 					if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
 						String value = cell.getStringCellValue();
 						String[] rows = RegExp.splitWord(value, "\n");
@@ -426,7 +434,6 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 				}
 			}
 		}
-	
 		excelSheet.autoSizeColumn((short)0);
 		excelSheet.autoSizeColumn((short)1);
 		excelSheet.autoSizeColumn((short)2);
@@ -438,40 +445,32 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 	}
 	
 	
-	private void setCellStyle(HSSFRow row, CellStyle contentStyle){
-		if(row.getCell(0)==null){
-			row.createCell(0);
-		}
-		if(row.getCell(1)==null){
-			row.createCell(1);
-		}
-		if(row.getCell(2)==null){
-			row.createCell(2);
-		}
-		if(row.getCell(3)==null){
-			row.createCell(3);
-		}
-		if(row.getCell(4)==null){
-			row.createCell(4);
-		}
-		if(row.getCell(5)==null){
-			row.createCell(5);
-		}
-		if(row.getCell(6)==null){
-			row.createCell(6);
-		}
-		if(row.getCell(7)==null){
-			row.createCell(7);
-		}
-		row.getCell(0).setCellStyle(contentStyle);
-		row.getCell(1).setCellStyle(contentStyle);
-		row.getCell(2).setCellStyle(contentStyle);
-		row.getCell(3).setCellStyle(contentStyle);
-		row.getCell(4).setCellStyle(contentStyle);
-		row.getCell(5).setCellStyle(contentStyle);
-		row.getCell(6).setCellStyle(contentStyle);
-		row.getCell(7).setCellStyle(contentStyle);
+	private void setCellStyle(HSSFRow row, CellStyle sytel_0){
 		
+		for (int i = 0; i < 8; i++){
+			if(null == row.getCell(i)){
+				row.createCell(i);
+			}
+			row.getCell(i).setCellStyle(sytel_0);
+		}
+//		CellStyle sytel_0 = setContentBorder();
+//		CellStyle sytel_1 = setContentBorder();
+//		CellStyle sytel_2 = setContentBorder();
+//		sytel_0.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
+//		sytel_0.setFillPattern(CellStyle.SOLID_FOREGROUND);
+//		sytel_0.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+//		row.getCell(0).setCellStyle(sytel_0);
+//		sytel_0 = null;
+//		sytel_1.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+//		row.getCell(1).setCellStyle(sytel_1);
+//		row.getCell(2).setCellStyle(sytel_1);
+//		sytel_1 = null;
+//		row.getCell(3).setCellStyle(sytel_2);
+//		row.getCell(4).setCellStyle(sytel_2);
+//		row.getCell(5).setCellStyle(sytel_2);
+//		row.getCell(6).setCellStyle(sytel_2);
+//		row.getCell(7).setCellStyle(sytel_2);
+//		sytel_2 = null;
 	}
 	
 	
