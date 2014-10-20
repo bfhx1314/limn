@@ -2,8 +2,6 @@ package monitor;
 
 import information.Console;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,6 +15,11 @@ import proxy.TestProxy;
  */
 
 public class Middleware extends Console{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private Timer timer = new Timer(true);
 
