@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 
 import com.haowu.common.DataBase;
 import com.haowu.exception.HaowuException;
+import com.haowu.keyword.RunKeyWord;
 import com.haowu.parameter.ParameterHaowu;
 import com.haowu.uitest.hossweb.HossWeb;
 import com.haowu.uitest.hossweb.Initialization;
@@ -145,7 +146,7 @@ public class ApplyWorkflow implements Runnable{
 		new RunLog();
 		Initialization.start();
 		try {
-			HossWeb.startBroswer(1, ParameterHaowu.HAOWU_URL, null);
+			RunKeyWord.startBroswer(1, ParameterHaowu.HAOWU_URL, null);
 		} catch (HaowuException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -285,7 +286,7 @@ public class ApplyWorkflow implements Runnable{
 		data.put("citySelect", ParameterHaowu.CityName);
 		data.put("projectSelect", ParameterHaowu.ProjectName);
 		data.put("fee_apply", "[click]");
-		data.put("xpath://a[@data-flowno='" + Fee_NO + "']", "[click]");
+		data.put("//a[@data-flowno='" + Fee_NO + "']", "[click]");
 		data.put("repayInfoList.feeInfoId", "[click]");
 		data.put("repayInfoList.repayAmount", "5000");
 //		data.put("projectRepay.bankAccountName", "测试人员");
@@ -376,7 +377,7 @@ public class ApplyWorkflow implements Runnable{
 		String sql = "select id from cm_pro_goods_apply  where flow_no='"+ Goods_NO +"'";
 		String no = DataBase.executeSQL(sql)[0][0];
 		
-		data.put("xpath://a[@goodsapplyid='" + no + "']", "[click]");
+		data.put("//a[@goodsapplyid='" + no + "']", "[click]");
 		data.put("cancelAmount", "100");
 		Flow_NO = HossWeb.createApply("项目物品核销单", data, "提交审批");
 		
@@ -478,15 +479,15 @@ public class ApplyWorkflow implements Runnable{
 
 		//数据录入
 		LinkedHashMap<String, String> data = new LinkedHashMap<String, String>();
-		data.put("xpath://select[@id='cityId']", ParameterHaowu.CityName);
-		data.put("xpath://select[@id='projectId']", ParameterHaowu.ProjectName);
+		data.put("//select[@id='cityId']", ParameterHaowu.CityName);
+		data.put("//select[@id='projectId']", ParameterHaowu.ProjectName);
 		data.put("fee_apply", "[dbclick]");
 		
 //		Fee_No = "FYSQ-141010-007";
 		
-		data.put("xpath://a[@data-flowno='" + Fee_NO + "']", "[click]");
+		data.put("//a[@data-flowno='" + Fee_NO + "']", "[click]");
 		
-		data.put("xpath://input[@data-feename='什么费用']", "[click]");
+		data.put("//input[@data-feename='什么费用']", "[click]");
 		
 		data.put("cmApplyContract.contractName", "aaaaa");
 		data.put("cmApplyContract.contractNo", "no11111");
@@ -533,8 +534,8 @@ public class ApplyWorkflow implements Runnable{
 		
 		LinkedHashMap<String,String> data = new LinkedHashMap<String, String>();
 		
-		data.put("xpath://select[@id='cityId']", ParameterHaowu.CityName);
-		data.put("xpath://select[@id='projectId']", ParameterHaowu.ProjectName);
+		data.put("//select[@id='cityId']", ParameterHaowu.CityName);
+		data.put("//select[@id='projectId']", ParameterHaowu.ProjectName);
 		data.put("pay_contractno", "[click]");
 		
 		
@@ -544,7 +545,7 @@ public class ApplyWorkflow implements Runnable{
 		
 
 		
-		data.put("xpath://a[@data-pid='" + dataPid + "']", "[click]");
+		data.put("//a[@data-pid='" + dataPid + "']", "[click]");
 		
 		data.put("bankAccountName", "aaaa");
 		

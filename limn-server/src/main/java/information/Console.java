@@ -1,7 +1,19 @@
 package information;
 
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.HashMap;
+
+
+
+
+
+
+
 
 
 
@@ -19,10 +31,19 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+
+
+
+
+
+
 
 
 
@@ -56,7 +77,6 @@ public class Console extends JFrame {
 	//连接的客户端
 	public static JList<HashMap<String, String>> testClientList = new JList<HashMap<String, String>>();
 	//客户端列表
-	
 	public static DefaultListModel<HashMap<String, String>> clientList = new DefaultListModel<HashMap<String, String>>();
 	//测试版本
 	public static JList<String> testPatchList = new JList<String>();
@@ -96,6 +116,24 @@ public class Console extends JFrame {
 		testPatchList.setCellRenderer(new PatchCellRenderer());
 		testModuleList.setCellRenderer(new ModuleCellRenderer());
 		testClientList.setCellRenderer(new ClientCellRenderer());
+		
+		testClientList.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+			    if(e.getButton() == 3){
+			    	JPopupMenu rightMenu = null;
+			    	if(testClientList.getSelectedIndex()==-1){
+			    		rightMenu = getClinetMenu(true);
+			    	}else{
+			    		rightMenu = getClinetMenu(false);
+			    	}
+			    	rightMenu.show(testClientList, e.getX(), e.getY());
+			    }
+				
+			}
+		});
 		
 		testPatchList.addListSelectionListener(new ListSelectionListener() {
 			
@@ -182,6 +220,28 @@ public class Console extends JFrame {
 		testClientList.setModel(clientList);
 	}
 	
+	
+	private JPopupMenu getClinetMenu(boolean isNew){
+		JPopupMenu menu = new JPopupMenu();
+		JMenuItem add = new JMenuItem("新增测试");
+		JMenuItem delete = new JMenuItem("删除模块");
+		add.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				
+			}
+		});
+		if(isNew){
+			menu.add(add);
+		}else{
+			menu.add(add);
+			menu.add(delete);
+		}
+		return menu;
+	}
+	
 	/**
 	 * 更新客户端连接信息
 	 * @param client
@@ -190,8 +250,7 @@ public class Console extends JFrame {
 	public static void updateTestClient(HashMap<String,String> client){
 		boolean isNew = true;
 		for(int i=0;i<clientList.getSize();i++){
-			if(clientList.get(i).get("IP").equals(client.get("IP")) && 
-					clientList.get(i).get("Port").equals(client.get("Port"))){
+			if(clientList.get(i).get("IP").equals(client.get("IP")) && 	clientList.get(i).get("Port").equals(client.get("Port"))){
 				clientList.set(i, client);
 				isNew = false;
 			}

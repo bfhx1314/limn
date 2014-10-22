@@ -86,7 +86,7 @@ public class DataBase {
 	
 	public static String[][] executeSQL(String sql){
 		DBInit();
-		Print.debugLog(sql, 0);
+		Print.log(sql, 0);
 		Statement sta = null;
 		String[][] res = null;
 		try {
@@ -114,7 +114,8 @@ public class DataBase {
 			conn.close();
 
 		} catch (SQLException e) {
-			RunLog.printLog(e.getMessage(), 0);
+			Print.log(e.getMessage(), 0);
+			return new String[0][0];
 		}
 		return res;
 		

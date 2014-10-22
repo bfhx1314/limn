@@ -10,8 +10,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -26,6 +29,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+
 import com.limn.frame.edit.EditTestCasePanel;
 import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.tool.log.LogControlInterface;
@@ -60,6 +64,8 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	
 	private JButton change =new JButton("切换");
 	
+	private JButton loadBrowser =new JButton("load");
+	
 	//步骤编辑区
 	private JTable editTestCase = new JTable();
 	private DefaultTableModel model = new DefaultTableModel();
@@ -81,6 +87,9 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	private static KeyWordDriver keyWordDriver = null;
 	
 	private EditTestCasePanel testCasePanel = new EditTestCasePanel();
+	
+	//载入面板
+	private LoadBroswerPanel loadPanel = new LoadBroswerPanel();
 	
 	private static boolean isVerKeyWord = false;
 	
@@ -120,23 +129,56 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 
 		setBoundsAt(testCasePanel,350, 0, 635, 395);
 		setBoundsAt(customPanel,350, 0, 635, 395);
+		setBoundsAt(loadPanel,350, 0, 635, 395);
+		
 //		testCasePanel.setVisible(false);
 		customPanel.setVisible(false);
 		
+		setBoundsAt(loadBrowser,302, 130, 46, 20);
+		loadBrowser.setMargin(new Insets(0,0,0,0));
+		loadBrowser.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e){
+				if (loadPanel.isVisible()) {
+					testCasePanel.setVisible(true);
+					loadPanel.setVisible(false);
+					customPanel.setVisible(false);
+				} else {
+					testCasePanel.setVisible(false);
+					loadPanel.setVisible(true);
+					customPanel.setVisible(false);
+				}
+			}
+		});
+//		loadBrowser.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				if(loadPanel.isVisible()){
+//					testCasePanel.setVisible(true);
+//					loadPanel.setVisible(false);
+//				}else{
+//					testCasePanel.setVisible(false);
+//					loadPanel.setVisible(true);
+//				}
+//				
+//			}
+//		});
+		loadPanel.setVisible(false);
 		setBoundsAt(change,302, 100, 46, 20);
 		change.setMargin(new Insets(0,0,0,0));
 		
 		//切换自定义的面板
-		change.addActionListener(new ActionListener() {
-			
+		change.addMouseListener(new MouseAdapter() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void mouseClicked(MouseEvent e){
 				if(customPanel.isVisible()){
 					testCasePanel.setVisible(true);
 					customPanel.setVisible(false);
+					loadPanel.setVisible(false);
 				}else{
 					testCasePanel.setVisible(false);
 					customPanel.setVisible(true);
+					loadPanel.setVisible(false);
 				}
 				
 			}

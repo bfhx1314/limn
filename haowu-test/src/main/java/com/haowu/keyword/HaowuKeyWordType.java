@@ -92,4 +92,26 @@ public class HaowuKeyWordType {
 	public final static String WORKFLOW_TEST = "工作流测试";
 	
 	public final static String Check = "验证";
+	
+	/**
+	 * 说明: 录入<br>
+	 * 参数1: 定位器  id,name,xpath[xpath]<br>
+	 * 参数2: 值  下拉选项,录入的值,日期,  [Click] 点击<br>
+	 * 用法: 录入:[locator]:[value]<br>
+	 * 实例: 录入:username:limn-manager<br>
+	 * 实例: 录入:xpath//div:[Click]<br>
+	 */
+	public final static String INPUT = "录入";
+	
+	/**
+	 * 模态窗口
+	 * 参数1: true false   y or n
+	 */
+	public final static String DIALOG = "提示框";
+	
+	/**
+	 * 浏览器页面跳转
+	 */
+	public final static String CHANGE_URL = "跳转";
+	
 }

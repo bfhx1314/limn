@@ -24,7 +24,8 @@
       <Debug>false</Debug>  
       <NotServer>false</NotServer>  
       <UploadResults>false</UploadResults>  
-      <StartPlatform>true</StartPlatform> 
+      <StartPlatform>true</StartPlatform>  
+      <EditExcelPath>D:\用户目录\Documents\zzzzz.xls</EditExcelPath> 
     </Template> 
   </Templates>  
   <Cores> 

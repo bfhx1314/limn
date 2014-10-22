@@ -54,7 +54,7 @@ public class HaowuPanel extends CustomPanel {
 		
 		setBounds(0, 0, 635, 395);
 		setLayout(null);
-		DefaultMutableTreeNode keyWordNode = new DefaultMutableTreeNode(); 
+		DefaultMutableTreeNode keyWordNode = new DefaultMutableTreeNode("关键字列表"); 
 		keyWord = getKeyWord();
 		for(String key:keyWord.keySet()){
 			keyWordNode.add(new DefaultMutableTreeNode(key));
@@ -95,25 +95,11 @@ public class HaowuPanel extends CustomPanel {
 				String name = selectedNode.toString();
 				if(keyWordAnnotate.containsKey(keyWord.get(name))){
 					helpPane.setText(keyWordAnnotate.get(keyWord.get(name)));
+					DebugEditFrame.setStepTextArea(name + ":");
 				}
-				DebugEditFrame.setStepTextArea(name + ":");
-				
 			}
 		});
 		
-//		keyWordTree.addTreeSelectionListener(new TreeSelectionListener() {
-//			
-//			@Override
-//			public void valueChanged(TreeSelectionEvent e) {
-//				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) keyWordTree.getLastSelectedPathComponent();//返回最后选定的节点
-//				String name = selectedNode.toString();
-//				if(keyWordAnnotate.containsKey(keyWord.get(name))){
-//					helpPane.setText(keyWordAnnotate.get(keyWord.get(name)));
-//				}
-//				DebugEditFrame.setStepTextArea(name);
-//				
-//			}
-//		});
 		helpPane.setContentType("text/html");
 		helpPane.setEditable(false);
 		
@@ -192,7 +178,7 @@ public class HaowuPanel extends CustomPanel {
 	}
 	
 	public static void main(String[] args){
-//		getKeyWordAnnotate();
+		
 	}
 	
 	

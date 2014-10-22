@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import com.haowu.exception.HaowuException;
 import com.limn.driver.Driver;
 import com.limn.driver.exception.SeleniumFindException;
 import com.limn.tool.common.Common;
@@ -25,11 +26,16 @@ public class WebControl {
 	 * 下拉框的选择
 	 * @param web tagname=select
 	 * @param value 界面显示的值
+	 * @throws HaowuException 
 	 */
-	private static void selectList(WebElement web, String value) {
+	private static void selectList(WebElement web, String value) throws HaowuException {
 		Select select = new Select(web);
 		Print.log("list选项:" + value, 0);
-		select.selectByVisibleText(value);
+		try{
+			select.selectByVisibleText(value);
+		}catch(Exception e){
+			throw new HaowuException(10010001, e.getMessage());
+		}
 	}
 	
 	/**
@@ -53,12 +59,23 @@ public class WebControl {
 	 * @param web webElement
 	 * @param value 值，选项，事件
 	 * @param locator 定位
+	 * @throws HaowuException 
 	 */
-	public static void setValue(WebElement web, String value){
+	public static void setValue(String locator, String value) throws HaowuException{
+		
+		WebElement web = WebControl.getWebElementBylocator(locator);
+		
+		Print.log("录入数据 Key:" + locator,1);
+		Print.log("录入数据 Value:" + value,1);
+		
+		if(web == null){
+			Print.log("定位失败 locator:" + locator, 2);
+			return;
+		}
 		
 		if(RegExp.findCharacters(value, "\\[.*?\\]")){
 			webEvent(web,RegExp.filterString(value, "[\\]"));
-			return ;
+			return;
 		}
 		
 		if(web.getTagName().equalsIgnoreCase("select")){
@@ -66,10 +83,11 @@ public class WebControl {
 		}else{
 			inputValue(web, value);
 		}
+		
 		try {
 			Driver.cancelHighLightWebElement(findWebElement);
 		} catch (SeleniumFindException e) {
-			e.printStackTrace();
+			Print.log("取消高亮失败", 2);
 		}
 	}
 	
@@ -98,48 +116,17 @@ public class WebControl {
 		}
 	}
 	
+	public static void main(String[] args){
+		getWebElementBylocator("xpath(zzzzz)");
+	}
+	
 	/**
 	 * 根据locator获取webElement
 	 * @param locator
 	 * @return
 	 */
 	public static WebElement getWebElementBylocator(String locator){
-		WebElement web = null;
-		if (RegExp.findCharacters(locator, "^xpath:")) {
-			
-			String xpath = locator.substring(6);
-			try {
-				web = Driver.getWebElementByXPath(xpath);
-			} catch (SeleniumFindException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			findWebElement = web;
-		} else {
-			findWebElement = null;
-			new Thread(new FindWebElements(By.id(locator))).start();
-			new Thread(new FindWebElements(By.name(locator))).start();
-			hasThread = 2;
-			while(true){
-				if(null!=findWebElement){
-					break;
-				}
-
-				if(hasThread==0){
-					Print.log("未定位WebElement locator:" + locator, 2);
-					break;	
-				}
-				Common.wait(500);
-			}
-		}
-		if(findWebElement!=null){
-			try {
-				Driver.highLightWebElement(findWebElement);
-			} catch (SeleniumFindException e) {
-				e.printStackTrace();
-			}
-		}
-		return findWebElement;
+		return Driver.getWebElementBylocator(locator);
 	}
 	
 

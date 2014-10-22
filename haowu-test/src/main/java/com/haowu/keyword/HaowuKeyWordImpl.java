@@ -5,9 +5,12 @@ import java.util.HashSet;
 
 import com.haowu.exception.HaowuException;
 import com.haowu.parameter.ParameterHaowu;
-import com.haowu.test.apply_workflow.ApplyWorkflow;
-import com.haowu.test.apply_workflow.ApplyWorkflowTest;
+import com.haowu.uitest.common.WebControl;
 import com.haowu.uitest.hossweb.HossWeb;
+import com.limn.driver.Driver;
+import com.limn.driver.common.OperateWindows;
+import com.limn.driver.exception.SeleniumFindException;
+import com.limn.frame.debug.LoadBroswerPanel;
 import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.common.Print;
@@ -43,49 +46,48 @@ public class HaowuKeyWordImpl implements KeyWordDriver {
 			switch (step[0]) {
 
 			case HaowuKeyWordType.START_BROWSER:
-				if (step.length > 1) {
-					if(step[1].equalsIgnoreCase("firefox")){
-						Parameter.BROWSERTYPE = 1;
-					}else if(step[1].equalsIgnoreCase("ie")){
-						Parameter.BROWSERTYPE = 3;
-					}else if(step[1].equalsIgnoreCase("chrome")){
-						Parameter.BROWSERTYPE = 2;
-					}else{
-						throw new HaowuException(10020000, "不支持此浏览器类型:" + step[1] + " 支持的类型有:firefox,chrome,ie");
-					}
-				}
-				HossWeb.startBroswer(Parameter.BROWSERTYPE, ParameterHaowu.HAOWU_URL, null);
+				RunKeyWord.startBrowser(step);
 				break;
 			case HaowuKeyWordType.CLOSE_BROWSER:
-				HossWeb.stopBroswer();
+				RunKeyWord.stopBroswer();
 				break;
 			case HaowuKeyWordType.LOGIN:
-				if(step.length<3){
-					throw new HaowuException(10020000, "登录关键字:参数个数有误");
-				}
-				HossWeb.login(step[1], step[2]);
+				cheakKeyWordCount(step.length, 3);
 				Print.log("账号:" + step[1] + "  密码:" + step[2], 0);
+				HossWeb.login(step[1], step[2]);
 				break;
 			case HaowuKeyWordType.LOGOUT:
-				HossWeb.logout();
 				Print.log("注销登陆", 0);
+				HossWeb.logout();
 				break;
 			case HaowuKeyWordType.MENU:
-				if(step.length<2){
-					throw new HaowuException(10020000, "菜单关键字:参数个数有误");
-				}
-				HossWeb.menu(step[1]);
+				cheakKeyWordCount(step.length,2);
 				Print.log("菜单:" + step[1], 0);
+				HossWeb.menu(step[1]);
 				break;
 			case HaowuKeyWordType.LIST:
-				if(step.length<2){
-					throw new HaowuException(10020000, "列表关键字:参数个数有误");
-				}
-				HossWeb.list(step[1]);
+				cheakKeyWordCount(step.length, 2);
 				Print.log("列表:" + step[1], 0);
+				HossWeb.list(step[1]);
 				break;
 			case HaowuKeyWordType.Check:
 				
+				break;
+			case HaowuKeyWordType.INPUT:
+				cheakKeyWordCount(step.length, 2);
+				WebControl.setValue(step[1], step[2]);
+				break;
+			case HaowuKeyWordType.DIALOG:
+				cheakKeyWordCount(step.length, 1);
+				if(step[1].equals("确定") || step[1].equals("是")){
+					OperateWindows.dealPotentialAlert(true);
+				}else{
+					OperateWindows.dealPotentialAlert(false);
+				}
+				break;
+			case HaowuKeyWordType.CHANGE_URL:
+				cheakKeyWordCount(step.length, 1);
+				RunKeyWord.toURL(step);
 				break;
 			default:
 				if (customKeyWordDriver != null) {
@@ -94,11 +96,20 @@ public class HaowuKeyWordImpl implements KeyWordDriver {
 					Print.log("不存在此关键字:" + step[0], 2);
 				}
 			}
+			
+			if(HaowuKeyWordClassification.isWebElementKeyword(step[0])){
+				HossWeb.waitLoadForPage();
+				try {
+					LoadBroswerPanel.loadWebElement();
+				} catch (SeleniumFindException e) {
+					throw new HaowuException(10010000, e.getMessage());
+				}
+			}
 		} catch (HaowuException e) {
 			status = e.getCode();
 			Print.log("异常信息: Message:" + e.getMessage(), 2);
 		}
-		
+
 		return status;
 
 	}
@@ -128,5 +139,11 @@ public class HaowuKeyWordImpl implements KeyWordDriver {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	
+	}
+	
+	private void cheakKeyWordCount(int keyWordCount, int needCount) throws HaowuException{
+		if(keyWordCount<needCount){
+			throw new HaowuException(10020000, "列表关键字:参数个数有误");
+		}
 	}
 }

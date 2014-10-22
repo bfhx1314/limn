@@ -3,19 +3,8 @@ package com.haowu.uitest.hossweb;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-
-
-
-
-
-
-
-
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
-
 import com.haowu.common.DataBase;
 import com.haowu.exception.HaowuException;
 import com.haowu.uitest.common.WebControl;
@@ -27,36 +16,15 @@ import com.limn.driver.Driver;
 import com.limn.frame.control.Test;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
-import com.thoughtworks.selenium.SeleniumException;
 
 
 public class HossWeb {
 	
-	
+	//当前的登陆用户名
 	private static String UserName = null;
+
 	
-	/**
-	 * 初始化浏览器
-	 * @param type 浏览器类型 1firefox 2chrome
-	 * @param url 地址
-	 * @param ip 远程运行IP 可选
-	 * @throws HaowuException 
-	 */
-	public static void startBroswer(int type, String url, String ip) throws HaowuException{
-		  Driver.setDriver(type, url, null);
-		  try {
-			Driver.startBrowser();
-		} catch (SeleniumFindException e) {
-			throw new HaowuException(10020000, e.getMessage());
-		}
-	}
-	
-	/**
-	 * 关闭浏览器
-	 */
-	public static void stopBroswer(){
-		Driver.closeBrowser();
-	}
+
 	
 	/**
 	 * 登录
@@ -260,11 +228,12 @@ public class HossWeb {
 			OperateWindows.dealPotentialAlert(true);
 			
 			Common.wait(1000);
+			Print.log("查询数据单据编号", 0);
+			String sql = "select flow_no from "+ dataTable +" where "
+					+ "creater in (select id from auth_user where user_name='"
+					+ UserName + "' ) " + "order by id desc";
 			
-			String flow_no = DataBase
-					.executeSQL("select flow_no from "+ dataTable +" where "
-							+ "creater in (select id from auth_user where user_name='"
-							+ UserName + "' ) " + "order by id desc")[0][0];
+			String flow_no = DataBase.executeSQL(sql)[0][0];
 	
 			Print.log("单据编号:" + flow_no,0);
 			
@@ -342,8 +311,9 @@ public class HossWeb {
 	 * @param applyType 申请的类型名称
 	 * @param days 暂缓天数
 	 * @throws SeleniumFindException 
+	 * @throws HaowuException 
 	 */
-	public static void deferApply(String applyNo, String applyType, String days) throws SeleniumFindException{
+	public static void deferApply(String applyNo, String applyType, String days) throws SeleniumFindException, HaowuException{
 		waitLoadForPage();
 		String dataTable = getTableName(applyType);
 		String buinessKey = DataBase.executeSQL("select id from "+ dataTable +" where flow_no = '"+applyNo+"'")[0][0];
@@ -351,14 +321,12 @@ public class HossWeb {
 		Driver.getWebElementByXPath("//button[@data-businesskey='" + buinessKey + "' and text()='审批']").click();
 		applySubmitButton("暂缓");
 		OperateWindows.dealPotentialAlert(true);
-		WebElement web = WebControl.getWebElementBylocator("deferDays");
-		WebControl.setValue(web, days);
+		WebControl.setValue("deferDays", days);
 		WebControl.clickControl(Driver.getWebElementByXPath("//a[text()='确定']"));
 		
 	}
 	
 	public static void applyApproval(String billNO, String applyType,LinkedHashMap<String,String> data,String comments,String buttonName) throws SeleniumFindException{
-		Common.wait(2);
 		waitLoadForPage();
 		WebTable talbe = new WebTable(Driver.getWebElementByXPath("//table[@id='searchResultList']"));
 	
@@ -432,18 +400,24 @@ public class HossWeb {
 	private static void applyEdit(LinkedHashMap<String, String> data) throws SeleniumFindException {
 		
 		for (String key : data.keySet()) {
-			Common.wait(500);
-			waitLoadForPage();
-			
-			WebElement web = WebControl.getWebElementBylocator(key);
-			Print.log("录入数据 Key:" + key,1);
-			Print.log("录入数据 Value:" + data.get(key),1);
-			if(web==null){
-				Print.log("locator:" + key, 2);
-			}else{
-				WebControl.setValue(web, data.get(key));
+			try {
+				input(key,data.get(key));
+			} catch (HaowuException e) {
+				// TODO Auto-generated catch block
+//				e.printStackTrace();
 			}
-			waitLoadForPage();
+//			Common.wait(500);
+//			waitLoadForPage();
+//			
+//			WebElement web = WebControl.getWebElementBylocator(key);
+//			Print.log("录入数据 Key:" + key,1);
+//			Print.log("录入数据 Value:" + data.get(key),1);
+//			if(web==null){
+//				Print.log("locator:" + key, 2);
+//			}else{
+//				WebControl.setValue(web, data.get(key));
+//			}
+//			waitLoadForPage();
 		}
 	}
 	
@@ -517,25 +491,39 @@ public class HossWeb {
 		String expected = Test.getExpectedResult();
 	}
 	
+	/**
+	 * 数据录入
+	 * @param locator 定位器
+	 * @param value 值
+	 * @throws HaowuException 
+	 * @throws SeleniumFindException
+	 */
+	public static void input(String locator,String value) throws HaowuException{
 	
+		waitLoadForPage();
+		WebControl.setValue(locator, value);
+		waitLoadForPage();
+
+	}
 	
 	/**
 	 * 页面加载等待
-	 * @throws SeleniumFindException 
 	 */
-	private static void waitLoadForPage() throws SeleniumFindException{
-		try{
-			
-			WebElement web = Driver.getWebElementByXPath("//div[@id='spinner']");
-			
-			while(web.getCssValue("display") !=null && !web.getCssValue("display").equals("none")){
-				Common.wait(1000);
-				Print.log("页面加载中", 0);
+	public static void waitLoadForPage(){
+		WebElement web = null;
+		try {
+			if(Driver.isWebElementExist("//div[@id='spinner']")){
+				web = Driver.getWebElementByXPath("//div[@id='spinner']");
+				while(web.getCssValue("display") != null && !web.getCssValue("display").equals("none")){
+					Common.wait(1000);
+					Print.log("页面加载中", 0);
+				}
 			}
-		}catch (StaleElementReferenceException e){
-			waitLoadForPage();
+		} catch (SeleniumFindException e) {
+			
 		}
-		
+
+
 	}
 	
 }

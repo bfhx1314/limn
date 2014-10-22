@@ -1,6 +1,7 @@
 package com.limn.client;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -20,9 +21,14 @@ import java.util.HashMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
+import com.limn.client.remote.RemoteClient;
+import com.limn.frame.control.BeforeTest;
 import com.limn.tool.common.Common;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.OutputFormat;
@@ -78,11 +84,6 @@ public class Client {
 	public Client() {
 		init();
 	}
-	
-//	public Client(PrintLogDriver printLog){
-//		this.printLog = printLog;
-//		init();
-//	}
 
     public Client(String ip){
         serverIP = ip;
@@ -109,28 +110,49 @@ public class Client {
 		int screenWidth = ((int) java.awt.Toolkit.getDefaultToolkit()
 				.getScreenSize().width);
 
-		seleniumClient.setBounds((int) ((screenWidth - 300) * 0.5),
-				(int) ((screenHeight - 300) * 0.5), 300, 300);
+		seleniumClient.setBounds((int) ((screenWidth - 500) * 0.5),
+				(int) ((screenHeight - 300) * 0.5), 500, 300);
 
 		seleniumClient.setLayout(null);
-		connectIPLabel.setBounds(20, 50, 100, 30);
-		connectIP.setBounds(100, 50, 180, 30);
-		connectPortLabel.setBounds(20, 100, 100, 30);
-		connectPort.setBounds(100, 100, 180, 30);
-		submit.setBounds(100, 170, 100, 30);
-		infor.setBounds(80, 220, 180, 30);
-
 		
-		connectPort.setText(String.valueOf(serverPort));
 		
-		seleniumClient.add(connectIP);
-//		seleniumClient.add(connectPort);
-		seleniumClient.add(submit);
-		seleniumClient.add(connectIPLabel);
-//		seleniumClient.add(connectPortLabel);
-		seleniumClient.add(infor);
+		JSeparator hs = new JSeparator(SwingConstants.VERTICAL);
+		setBoundsAt(hs, 250, 20, 10, 230);
+		
+		JLabel titleConnect = new JLabel("受控客户端连接");
+		setBoundsAt(titleConnect, 80, 5, 100, 30);
+		try{
+			Class.forName("com.limn.frame.control.BeforeTest");
 
-		infor.setForeground(Color.RED);
+			setBoundsAt(connectIPLabel, 20, 50, 60, 30);
+			setBoundsAt(connectIP, 80, 56, 150, 22);
+			setBoundsAt(connectPortLabel, 20, 96, 60, 30);
+			setBoundsAt(connectPort, 80, 100, 60, 22);
+			connectPort.setEditable(false);
+			setBoundsAt(submit, 100, 180, 60, 30);
+			setBoundsAt(infor, 110, 215, 180, 30);
+			infor.setForeground(Color.RED);
+			connectPort.setText(String.valueOf(serverPort));
+		}catch(ClassNotFoundException e){
+			JLabel message = new JLabel("缺失功能模块,不能加载该功能!");
+			setBoundsAt(message, 40, 80, 200, 30);
+			message.setForeground(Color.YELLOW.darker());
+		}	
+
+
+		JLabel titleRemote = new JLabel("受控远程客户端");
+		JButton submitRemote  = new JButton("启动");
+		setBoundsAt(titleRemote, 330, 5, 100, 30);
+		setBoundsAt(submitRemote, 350, 180, 60, 30);
+		
+		submitRemote.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				seleniumClient.dispose();
+				new Thread(new RemoteClient()).start();
+			}
+		});
+		
 
 		seleniumClient.setVisible(true);
 		seleniumClient.setAlwaysOnTop(true);
@@ -162,6 +184,12 @@ public class Client {
 			e1.printStackTrace();
 		}
 
+	}
+	
+	
+	private void setBoundsAt(Component comp,int x,int y,int width,int height){
+		comp.setBounds(x, y, width, height);
+		seleniumClient.add(comp);
 	}
 
     /**
@@ -302,14 +330,7 @@ public class Client {
                 dos.writeUTF("Success");
                 Common.wait(1000);
             }
-			//设置补丁信息
-//			Parameter.VERSION = version;
 			
-//			printLog
-//			UpdatePlat.updateByVersion(version);
-			//运行测试
-//			new ModularTest(tmpXML, false, sc);
-			//TODO 运行借口
 			
 			
 		} catch (IOException e) {

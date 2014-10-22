@@ -15,7 +15,7 @@ import com.limn.tool.log.LogDocument;
  * 
  * @author limn
  */
-public class RemoteClient extends JFrame{
+public class RemoteClient extends JFrame implements Runnable{
 	
 	
 
@@ -51,13 +51,7 @@ public class RemoteClient extends JFrame{
 		
 		setDefaultCloseOperation(RemoteClient.EXIT_ON_CLOSE);
 		
-		//监听请求
-		rl = new RemoteListener();
-		try {
-			rl.accept();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
 		
 	}
 	
@@ -68,6 +62,17 @@ public class RemoteClient extends JFrame{
 	
 	public static void main(String[] args){
 		new RemoteClient();
+	}
+
+	@Override
+	public void run() {
+		//监听请求
+		rl = new RemoteListener();
+		try {
+			rl.accept();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }
