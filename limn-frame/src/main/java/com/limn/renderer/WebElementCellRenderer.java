@@ -11,7 +11,10 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
+
+import com.limn.frame.debug.DictoryKeyValue;
 
 
 
@@ -30,29 +33,9 @@ public class WebElementCellRenderer extends JPanel implements ListCellRenderer<O
 	public Component getListCellRendererComponent(JList<?> list, Object value,
 			int index, boolean isSelected, boolean cellHasFocus) {
 		
-		WebElement web = ((WebElement)value);
-		text = web.getTagName() + "{";
-		String att_id = web.getAttribute("id");
-		String att_name = web.getAttribute("name");
-		String att_class = web.getAttribute("class");
-		
-		if(web.getTagName().equalsIgnoreCase("input")){
-			text = text + " type=" + web.getAttribute("type");
-		}
-		
-		if(null != att_id && !att_id.isEmpty()){
-			text = text + " id=" + att_id;
-		}
-		
-		if(null != att_name && !att_name.isEmpty()){
-			text = text + " name=" + att_name;
-		}
-		
-		if(null != att_class && !att_class.isEmpty()){
-			text = text + " class=" + att_class;
-		}
-		
-		text = text + "}";
+
+		text = ((DictoryKeyValue) value).value();
+
 		
 		Color statusBackground = null;
 		Color statusForgeround = null;

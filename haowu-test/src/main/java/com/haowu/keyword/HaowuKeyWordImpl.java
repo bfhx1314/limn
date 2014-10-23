@@ -3,6 +3,8 @@ package com.haowu.keyword;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 
+import org.openqa.selenium.support.PageFactory;
+
 import com.haowu.exception.HaowuException;
 import com.haowu.parameter.ParameterHaowu;
 import com.haowu.uitest.common.WebControl;
@@ -97,14 +99,6 @@ public class HaowuKeyWordImpl implements KeyWordDriver {
 				}
 			}
 			
-			if(HaowuKeyWordClassification.isWebElementKeyword(step[0])){
-				HossWeb.waitLoadForPage();
-				try {
-					LoadBroswerPanel.loadWebElement();
-				} catch (SeleniumFindException e) {
-					throw new HaowuException(10010000, e.getMessage());
-				}
-			}
 		} catch (HaowuException e) {
 			status = e.getCode();
 			Print.log("异常信息: Message:" + e.getMessage(), 2);

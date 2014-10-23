@@ -2,6 +2,7 @@ package com.limn.frame.debug;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -21,11 +22,15 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 import com.limn.driver.Driver;
 import com.limn.driver.exception.SeleniumFindException;
 import com.limn.renderer.WebElementCellRenderer;
+import com.limn.tool.common.Common;
+import com.limn.tool.common.Print;
 
 
 
@@ -37,13 +42,11 @@ public class LoadBroswerPanel extends CustomPanel {
 	private static final long serialVersionUID = 1L;
 	
 
-
-	
 	private JLabel titleLabel = new JLabel("当前URL:");
 	private static JLabel title = new JLabel();
 	
-	private static JList<WebElement> webElements = new JList<WebElement>();
-	public static DefaultListModel<WebElement> webElementsList = new DefaultListModel<WebElement>();
+	private static JList<DictoryKeyValue> webElements = new JList<DictoryKeyValue>();
+	public static DefaultListModel<DictoryKeyValue> webElementsList = new DefaultListModel<DictoryKeyValue>();
 	private JScrollPane webElementsJSP = new JScrollPane(webElements,
 			ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -59,7 +62,11 @@ public class LoadBroswerPanel extends CustomPanel {
 	private static JComboBox<String> filterWebElement  = new JComboBox<String>();
 	
 	//查询的元素列表
-	private static HashMap<String,List<WebElement>> findWebElements = new HashMap<String, List<WebElement>>();
+	private HashMap<Integer, WebElement> findWebElements = new HashMap<Integer, WebElement>();
+	private HashMap<Integer, String> showList = new HashMap<Integer, String>();
+	private HashMap<String, String> rangeList = new HashMap<String, String>();
+ 	
+	private JButton refresh = new JButton("刷新");
 	
 	public LoadBroswerPanel(){
 		
@@ -68,7 +75,20 @@ public class LoadBroswerPanel extends CustomPanel {
 		//页面URL
 		setBoundsAt(titleLabel,5,5,80,20);
 		setBoundsAt(title,65,5,400,20);
-		
+		setBoundsAt(refresh,470,5,50,20);
+		refresh.setMargin(new Insets(0,0,0,0));
+		refresh.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					loadWebElement();
+				} catch (SeleniumFindException e1) {
+					e1.printStackTrace();
+				}
+				
+			}
+		});
 		JLabel recommendLocatorLabel = new JLabel("Locator:");
 		
 		setBoundsAt(recommendLocatorLabel,5,50,50,20);
@@ -125,30 +145,29 @@ public class LoadBroswerPanel extends CustomPanel {
 				if(e.getStateChange() == ItemEvent.SELECTED){
 					//清空所有元素
 					webElementsList.removeAllElements();
-					
 					String selectItem = filterWebElement.getSelectedItem().toString();
 					if(selectItem.equalsIgnoreCase("ALL")){
-						for (String tagname : findWebElements.keySet()) {
-							for (WebElement webs : findWebElements.get(tagname)) {
-								webElementsList.addElement(webs);
-							}
+						for(Integer key:showList.keySet()){
+							webElementsList.addElement(new DictoryKeyValue(key,showList.get(key)));
 						}
 					}else{
-						for (WebElement webs : findWebElements.get(selectItem)) {
-							webElementsList.addElement(webs);
+						String[] range = rangeList.get(selectItem).split(":");
+						int start = Integer.valueOf(range[0]);
+						int end = Integer.valueOf(range[1]);
+						for (; start <= end; start++) {
+							webElementsList.addElement(new DictoryKeyValue(start,showList.get(start)));
 						}
 					}
 					webElements.setModel(webElementsList);
 				}
 			}
+
 		});
 		
 		
 		//WebElement 的list
 		setBoundsAt(webElementsJSP, 5, 100, 500, 280);
-
 		webElements.setCellRenderer(new WebElementCellRenderer());
-
 		webElements.addListSelectionListener(new ListSelectionListener() {
 			
 			@Override
@@ -157,8 +176,12 @@ public class LoadBroswerPanel extends CustomPanel {
 					if (null != currentHighWebElement) {
 						Driver.cancelHighLightWebElement(currentHighWebElement);
 					}
-
-					currentHighWebElement = webElements.getSelectedValue();
+					
+					if(webElements.getSelectedIndex() == -1){
+						return;
+					}
+					
+					currentHighWebElement = findWebElements.get(((DictoryKeyValue)webElements.getSelectedValue()).key());
 					
 					setWebElmentByLocator(currentHighWebElement);
 
@@ -175,10 +198,11 @@ public class LoadBroswerPanel extends CustomPanel {
 	}
 	
 	
-	public static void loadWebElement() throws SeleniumFindException{
-		WebElement web = Driver.getWebElement(By.xpath("/html"));
+	public void loadWebElement() throws SeleniumFindException{
+
+		Print.log("URL:" + Driver.driver.getCurrentUrl(), 0);
 		title.setText(Driver.driver.getCurrentUrl());
-		traversal(web);
+		traversal();
 	}
 	
 	
@@ -191,27 +215,46 @@ public class LoadBroswerPanel extends CustomPanel {
 	 * 遍历页面中所有元素,取出tagname = input,a,button
 	 * @param web
 	 */
-	private static void traversal(WebElement web){
-		//清空所有元素
-		webElementsList.removeAllElements();
-		
-		
-		//要搜索哪些元素
-		String[] findTagName = {"input","a","button"};
-		//显示所有的
-		filterWebElement.addItem("ALL");
-		
-		for(String tagName:findTagName){
-			filterWebElement.addItem(tagName);
-			findWebElements.put(tagName,web.findElements(By.tagName(tagName)));
-		}
-		
-		filterWebElement.setSelectedItem("ALL");
-		for (String tagname : findWebElements.keySet()) {
-			for (WebElement webs : findWebElements.get(tagname)) {
-				webElementsList.addElement(webs);
+	private void traversal(){
+		currentHighWebElement = null;
+		WebElement web = null;
+		try {
+			web = Driver.getWebElement(By.xpath("/html"));
+			title.setText(Driver.driver.getCurrentUrl());
+
+			// 清空所有元素
+			
+			webElementsList.removeAllElements();
+			findWebElements.clear();
+			filterWebElement.removeAllItems();
+			webElements.removeAll();
+			
+			// 要搜索哪些元素
+			String[] findTagName = { "input", "a", "button" };
+			// 显示所有的
+			filterWebElement.addItem("ALL");
+			
+			int range = 0;
+			for (String tagName : findTagName) {
+				filterWebElement.addItem(tagName);
+				int start = range;
+				for(WebElement webs : web.findElements(By.tagName(tagName))){
+					findWebElements.put(range, webs);
+					showList.put(range, getIdentifiedByWebElement(webs));
+					range ++;
+				}
+				rangeList.put(tagName,start + ":" + (range-1));
 			}
+			
+			filterWebElement.setSelectedItem("ALL");
+			for(Integer key:showList.keySet()){
+				webElementsList.addElement(new DictoryKeyValue(key,showList.get(key)));
+			}
+
+		} catch (SeleniumFindException e) {
+			
 		}
+
 	}
 
 	
@@ -245,4 +288,52 @@ public class LoadBroswerPanel extends CustomPanel {
 
 	}
 	
+	private String getIdentifiedByWebElement(WebElement web){
+
+		String text = web.getTagName() + "{";
+		String att_id = web.getAttribute("id");
+		String att_name = web.getAttribute("name");
+		String att_class = web.getAttribute("class");
+		
+		if(web.getTagName().equalsIgnoreCase("input")){
+			text = text + " type=" + web.getAttribute("type");
+		}
+		
+		if(null != att_id && !att_id.isEmpty()){
+			text = text + " id=" + att_id;
+		}
+		
+		if(null != att_name && !att_name.isEmpty()){
+			text = text + " name=" + att_name;
+		}
+		
+		if(null != att_class && !att_class.isEmpty()){
+			text = text + " class=" + att_class;
+		}
+		
+		text = text + "}";
+		
+		return text;
+	}
+	
+	public static boolean waitPageRefresh(WebElement trigger) {
+		int refreshTime = 0;
+		boolean isRefresh = false;
+		try {
+			for (int i = 1; i < 60; i++) {
+				refreshTime = i;
+				trigger.getTagName();
+				Common.wait(1000);
+			}
+		} catch (StaleElementReferenceException e) {
+			isRefresh = true;
+			Print.log("Page refresh time is:" + refreshTime + " seconds!",0);
+			return isRefresh;
+		} catch (WebDriverException e) {
+			e.printStackTrace();
+		}
+		Print.log("Page didnt refresh in 60 seconds!",0);
+		return isRefresh;
+	}
+
 }
