@@ -44,11 +44,11 @@ public class WebElementCellRenderer extends JPanel implements ListCellRenderer<O
 			text = text + " id=" + att_id;
 		}
 		
-		if(null != att_name && !att_id.isEmpty()){
+		if(null != att_name && !att_name.isEmpty()){
 			text = text + " name=" + att_name;
 		}
 		
-		if(null != att_class && !att_id.isEmpty()){
+		if(null != att_class && !att_class.isEmpty()){
 			text = text + " class=" + att_class;
 		}
 		
