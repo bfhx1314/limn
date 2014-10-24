@@ -1,4 +1,4 @@
-package com.haowu.panel;
+package com.limn.frame.debug;
 
 
 import java.awt.event.MouseAdapter;
@@ -35,11 +35,11 @@ import com.limn.frame.debug.DebugEditFrame;
 import com.limn.tool.random.RandomData;
 
 /**
- * 好屋的关键字帮助面板
+ * 关键字帮助面板
  * @author limn
  *
  */
-public class HaowuPanel extends CustomPanel {
+public class KeyWordPanel extends CustomPanel {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -51,38 +51,41 @@ public class HaowuPanel extends CustomPanel {
 	private JTextPane helpPane = new JTextPane();
 	private JScrollPane helpPaneJSP = new JScrollPane(helpPane, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	
-	public HaowuPanel(){
-		
+	private Class<?> keyType = null;
+	
+	public KeyWordPanel(Class<?> keyType){
+		this.keyType = keyType;
 		setBounds(0, 0, 635, 395);
 		setLayout(null);
 		DefaultMutableTreeNode keyWordNode = new DefaultMutableTreeNode("关键字列表"); 
 		keyWord = getKeyWord();
-		for(String key:keyWord.keySet()){
-			keyWordNode.add(new DefaultMutableTreeNode(key));
-		}
-		keyWordTree = new JTree(keyWordNode);
-		keyWordTreeJSP = new JScrollPane(keyWordTree, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		keyWordAnnotate = getKeyWordAnnotate();
-		
-		keyWordTree.addMouseListener(new MouseAdapter() {
-	
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) keyWordTree.getLastSelectedPathComponent();//返回最后选定的节点
-				String name = selectedNode.toString();
-				if(keyWordAnnotate.containsKey(keyWord.get(name))){
-					helpPane.setText(keyWordAnnotate.get(keyWord.get(name)));
-					DebugEditFrame.setStepTextArea(name + ":");
-				}
+		if(null != keyWord){
+			for(String key:keyWord.keySet()){
+				keyWordNode.add(new DefaultMutableTreeNode(key));
 			}
-		});
+			keyWordTree = new JTree(keyWordNode);
+			keyWordTreeJSP = new JScrollPane(keyWordTree, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			keyWordAnnotate = getKeyWordAnnotate();
+			
+			keyWordTree.addMouseListener(new MouseAdapter() {
 		
-		helpPane.setContentType("text/html");
-		helpPane.setEditable(false);
-		
-		setBoundsAtPanel(keyWordTreeJSP,0,5,200,390);
-		setBoundsAtPanel(helpPaneJSP,205,5,430,390);
-
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) keyWordTree.getLastSelectedPathComponent();//返回最后选定的节点
+					String name = selectedNode.toString();
+					if(keyWordAnnotate.containsKey(keyWord.get(name))){
+						helpPane.setText(keyWordAnnotate.get(keyWord.get(name)));
+						DebugEditFrame.setStepTextArea(name + ":");
+					}
+				}
+			});
+			
+			helpPane.setContentType("text/html");
+			helpPane.setEditable(false);
+			
+			setBoundsAtPanel(keyWordTreeJSP,0,5,200,390);
+			setBoundsAtPanel(helpPaneJSP,205,5,430,390);
+		}
 	}
 	
 	/**
@@ -90,14 +93,17 @@ public class HaowuPanel extends CustomPanel {
 	 * @return
 	 */
 	private LinkedHashMap<String,String> getKeyWord(){
+		if(null == keyType){
+			return null;
+		}
+		
 		LinkedHashMap<String,String> keyWord = new LinkedHashMap<String,String>();
-		Class<?> clazz = null;
 		try {
-			clazz = Class.forName("com.haowu.keyword.HaowuKeyWordType");
-			Field[] fields = clazz.getDeclaredFields();
+
+			Field[] fields = keyType.getDeclaredFields();
 			for (Field f : fields) {
 				if (f.getGenericType().toString().equals("class java.lang.String")) {
-					keyWord.put((String)f.get(clazz),f.getName());		
+					keyWord.put((String)f.get(keyType),f.getName());		
 				}
 			}
 		} catch (Exception e) {
@@ -124,8 +130,8 @@ public class HaowuPanel extends CustomPanel {
 
 	private HashMap<String,String> getKeyWordAnnotate(){
 		HashMap<String,String> data = new HashMap<String,String>();
-		InputStream is = RandomData.class.getClassLoader().getResourceAsStream(  
-                "javadoc/HaowuKeyWordType.html");
+		InputStream is = keyType.getClassLoader().getResourceAsStream(  
+                "javadoc/KeyWordType.html");
 		Document doc = null;
 		try {
 			doc = Jsoup.parse(is, "UTF-8", "");
@@ -134,7 +140,7 @@ public class HaowuPanel extends CustomPanel {
 		}
 		Elements codes = doc.getElementsByTag("H4");
 		for(Element code:codes){
-			if(!code.equals("HaowuKeyWordType")){
+			if(!code.equals("KeyWordType")){
 				String value = "";
 				try{
 					value = code.nextElementSibling().nextElementSibling().outerHtml();

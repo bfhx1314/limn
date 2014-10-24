@@ -92,7 +92,7 @@ public class LoadBroswerPanel extends CustomPanel {
 		JLabel recommendLocatorLabel = new JLabel("Locator:");
 		
 		setBoundsAt(recommendLocatorLabel,5,50,50,20);
-		setBoundsAt(recommendLocator,65,50,200,20);
+		setBoundsAt(recommendLocator,65,50,300,20);
 
 		recommendLocator.setEditable(false);
 		recommendLocator.setBorder(null);
@@ -101,7 +101,7 @@ public class LoadBroswerPanel extends CustomPanel {
 		JLabel locatorLabel = new JLabel("定位:");
 		JButton search = new JButton("搜索");
 		setBoundsAt(locatorLabel,5,78,50,20);
-		setBoundsAt(locator,35,78,400,20);
+		setBoundsAt(locator,35,78,300,20);
 		locator.setHorizontalAlignment(JTextField.RIGHT);
 		setBoundsAt(search,240,78,60,20);
 		setBoundsAt(result,320,78,60,20);
@@ -200,7 +200,7 @@ public class LoadBroswerPanel extends CustomPanel {
 	
 	public void loadWebElement() throws SeleniumFindException{
 
-		Print.log("URL:" + Driver.driver.getCurrentUrl(), 0);
+		Print.log("URL:" + Driver.getCurrentURL(), 0);
 		title.setText(Driver.driver.getCurrentUrl());
 		traversal();
 	}

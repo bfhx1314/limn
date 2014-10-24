@@ -62,9 +62,11 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	//自定义面板
 	private CustomPanel customPanel = null;
 	
-	private JButton change =new JButton("切换");
+//	private JTabbedPane Jtab = new JTabbedPane();
 	
-	private JButton loadBrowser =new JButton("load");
+	private JButton eidt = new JButton("编辑");
+	private JButton change = new JButton("关键字");
+	private JButton loadBrowser =new JButton("定位");
 	
 	//步骤编辑区
 	private JTable editTestCase = new JTable();
@@ -99,8 +101,8 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	 * 添加自定义面板到界面
 	 * @param cp 此面板需要继承CutomPanel的类
 	 */
-	public DebugEditFrame(CustomPanel cp, KeyWordDriver kwd){
-		customPanel = cp;
+	public DebugEditFrame(Class<?> cp, KeyWordDriver kwd){
+		customPanel = new KeyWordPanel(cp);
 		keyWordDriver = kwd;
 		init();
 	}
@@ -126,66 +128,76 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		setBoundsAt(deleteRow,82, 380, 100, 20);
 		
 		
-
+//		setBoundsAt(Jtab,350, 0, 635, 395);
+		
 		setBoundsAt(testCasePanel,350, 0, 635, 395);
 		setBoundsAt(customPanel,350, 0, 635, 395);
 		setBoundsAt(loadPanel,350, 0, 635, 395);
 		
+//		Jtab.add("用例编辑器", testCasePanel);
+//		Jtab.add("页面定位器", loadPanel);
+//		Jtab.add("自定义面板", customPanel);
 //		testCasePanel.setVisible(false);
-		customPanel.setVisible(false);
+//		customPanel.setVisible(false);
 		
-		setBoundsAt(loadBrowser,302, 130, 46, 20);
+		
+		setBoundsAt(eidt, 303, 5, 46, 20);
+		eidt.setMargin(new Insets(0,0,0,0));
+		eidt.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e){
+//				if (loadPanel.isVisible()) {
+					testCasePanel.setVisible(true);
+					loadPanel.setVisible(false);
+					customPanel.setVisible(false);
+//				} else {
+//					testCasePanel.setVisible(false);
+//					loadPanel.setVisible(true);
+//					customPanel.setVisible(false);
+//				}
+			}
+		});
+		
+		setBoundsAt(loadBrowser,303, 30, 46, 20);
 		loadBrowser.setMargin(new Insets(0,0,0,0));
 		loadBrowser.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e){
-				if (loadPanel.isVisible()) {
-					testCasePanel.setVisible(true);
-					loadPanel.setVisible(false);
-					customPanel.setVisible(false);
-				} else {
+//				if (loadPanel.isVisible()) {
+//					testCasePanel.setVisible(true);
+//					loadPanel.setVisible(false);
+//					customPanel.setVisible(false);
+//				} else {
 					testCasePanel.setVisible(false);
 					loadPanel.setVisible(true);
 					customPanel.setVisible(false);
-				}
+//				}
 			}
 		});
-//		loadBrowser.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				if(loadPanel.isVisible()){
-//					testCasePanel.setVisible(true);
-//					loadPanel.setVisible(false);
-//				}else{
-//					testCasePanel.setVisible(false);
-//					loadPanel.setVisible(true);
-//				}
-//				
-//			}
-//		});
+		
 		loadPanel.setVisible(false);
-		setBoundsAt(change,302, 100, 46, 20);
+		setBoundsAt(change, 303, 55, 46, 20);
 		change.setMargin(new Insets(0,0,0,0));
 		
 		//切换自定义的面板
 		change.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e){
-				if(customPanel.isVisible()){
-					testCasePanel.setVisible(true);
-					customPanel.setVisible(false);
-					loadPanel.setVisible(false);
-				}else{
+//				if(customPanel.isVisible()){
+//					testCasePanel.setVisible(true);
+//					customPanel.setVisible(false);
+//					loadPanel.setVisible(false);
+//				}else{
 					testCasePanel.setVisible(false);
 					customPanel.setVisible(true);
 					loadPanel.setVisible(false);
-				}
+//				}
 				
 			}
 		});
 		
-		setBoundsAt(moveTestCase,302, 200, 46, 20);
-		setBoundsAt(moveEditTestCase,302, 250, 46, 20);
+		setBoundsAt(moveTestCase,303, 200, 46, 20);
+		setBoundsAt(moveEditTestCase,303, 250, 46, 20);
 
 		setBoundsAt(logJScrollLog,2, 405, 990, 165);
 
@@ -429,7 +441,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	}
 	
 	public static void main(String[] args){
-		new DebugEditFrame(new CustomPanel(),new KeyWordDriver() {
+		new DebugEditFrame(null,new KeyWordDriver() {
 			
 			@Override
 			public int start(String[] step) {
