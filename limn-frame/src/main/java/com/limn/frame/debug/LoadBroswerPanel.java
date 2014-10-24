@@ -101,7 +101,7 @@ public class LoadBroswerPanel extends CustomPanel {
 		JLabel locatorLabel = new JLabel("定位:");
 		JButton search = new JButton("搜索");
 		setBoundsAt(locatorLabel,5,78,50,20);
-		setBoundsAt(locator,35,78,200,20);
+		setBoundsAt(locator,35,78,400,20);
 		locator.setHorizontalAlignment(JTextField.RIGHT);
 		setBoundsAt(search,240,78,60,20);
 		setBoundsAt(result,320,78,60,20);
@@ -266,16 +266,12 @@ public class LoadBroswerPanel extends CustomPanel {
 		recommendLocator.setText("努力搜索中....");
 		recommendLocator.setForeground(Color.BLACK);
 		try {
-			HashMap<String,String> data = new HashMap<String,String>();
-			int attCount = ((Long) Driver.runScript("return arguments[0].attributes.length", web)).intValue();
-			for (int i = 0; i < attCount; i++) {
-				String name = String.valueOf(Driver.runScript("return arguments[0].attributes[" + i + "].name", web));
-				String value = String.valueOf(Driver.runScript("return arguments[0].attributes[" + i + "].value", web));
-				data.put(name, value);
-			}
-			
-			if(data.containsKey("id")){
-				recommendLocator.setText(data.get("id"));
+
+		
+			String locator = String.valueOf(Driver.runScript("return getLocatorByNode(arguments[0])", web));
+
+			if(null != locator && !locator.isEmpty()){
+				recommendLocator.setText(locator);
 				recommendLocator.setForeground(Color.GREEN.darker());
 			}else{
 				recommendLocator.setText("未能定位");
@@ -314,26 +310,6 @@ public class LoadBroswerPanel extends CustomPanel {
 		text = text + "}";
 		
 		return text;
-	}
-	
-	public static boolean waitPageRefresh(WebElement trigger) {
-		int refreshTime = 0;
-		boolean isRefresh = false;
-		try {
-			for (int i = 1; i < 60; i++) {
-				refreshTime = i;
-				trigger.getTagName();
-				Common.wait(1000);
-			}
-		} catch (StaleElementReferenceException e) {
-			isRefresh = true;
-			Print.log("Page refresh time is:" + refreshTime + " seconds!",0);
-			return isRefresh;
-		} catch (WebDriverException e) {
-			e.printStackTrace();
-		}
-		Print.log("Page didnt refresh in 60 seconds!",0);
-		return isRefresh;
 	}
 
 }
