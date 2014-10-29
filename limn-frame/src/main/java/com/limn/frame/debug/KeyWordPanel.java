@@ -131,7 +131,8 @@ public class KeyWordPanel extends CustomPanel {
 	private HashMap<String,String> getKeyWordAnnotate(){
 		HashMap<String,String> data = new HashMap<String,String>();
 		InputStream is = keyType.getClassLoader().getResourceAsStream(  
-                "javadoc/KeyWordType.html");
+                "javadoc/" + keyType.getSimpleName() + ".html");
+		
 		Document doc = null;
 		try {
 			doc = Jsoup.parse(is, "UTF-8", "");
@@ -140,7 +141,7 @@ public class KeyWordPanel extends CustomPanel {
 		}
 		Elements codes = doc.getElementsByTag("H4");
 		for(Element code:codes){
-			if(!code.equals("KeyWordType")){
+			if(!code.equals(keyType.getSimpleName())){
 				String value = "";
 				try{
 					value = code.nextElementSibling().nextElementSibling().outerHtml();

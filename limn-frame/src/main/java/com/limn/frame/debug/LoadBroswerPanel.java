@@ -71,8 +71,8 @@ public class LoadBroswerPanel extends CustomPanel {
 		setLayout(null);
 		//页面URL
 		setBoundsAt(titleLabel,5,5,80,20);
-		setBoundsAt(title,65,5,400,20);
-		setBoundsAt(refresh,470,5,50,20);
+		setBoundsAt(title,65,5,500,20);
+		setBoundsAt(refresh,565,5,50,20);
 		refresh.setMargin(new Insets(0,0,0,0));
 		refresh.addActionListener(new ActionListener() {
 			
@@ -100,9 +100,10 @@ public class LoadBroswerPanel extends CustomPanel {
 		setBoundsAt(locatorLabel,5,78,50,20);
 		setBoundsAt(locator,35,78,300,20);
 		locator.setHorizontalAlignment(JTextField.RIGHT);
-		setBoundsAt(search,240,78,60,20);
-		setBoundsAt(result,320,78,60,20);
+		setBoundsAt(search,340,78,60,20);
+		setBoundsAt(result,410,78,60,20);
 		result.setVisible(false);
+		
 		search.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -133,7 +134,7 @@ public class LoadBroswerPanel extends CustomPanel {
 			}
 		});		
 		
-		setBoundsAt(filterWebElement,404,78,100,20);
+		setBoundsAt(filterWebElement,490,78,100,20);
 		//选中过滤
 		filterWebElement.addItemListener(new ItemListener() {
 			
@@ -163,7 +164,7 @@ public class LoadBroswerPanel extends CustomPanel {
 		
 		
 		//WebElement 的list
-		setBoundsAt(webElementsJSP, 5, 100, 500, 280);
+		setBoundsAt(webElementsJSP, 5, 100, 590, 280);
 		webElements.setCellRenderer(new WebElementCellRenderer());
 		webElements.addListSelectionListener(new ListSelectionListener() {
 			
@@ -227,7 +228,7 @@ public class LoadBroswerPanel extends CustomPanel {
 			webElements.removeAll();
 			
 			// 要搜索哪些元素
-			String[] findTagName = { "input", "a", "button" };
+			String[] findTagName = { "input", "a", "button" ,"select" };
 			// 显示所有的
 			filterWebElement.addItem("ALL");
 			

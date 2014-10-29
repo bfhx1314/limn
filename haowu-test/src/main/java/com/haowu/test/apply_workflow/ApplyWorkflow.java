@@ -129,8 +129,8 @@ public class ApplyWorkflow implements Runnable{
 //	
 //			a.test_WPHX_wf();
 //		a.test_BZJFKD_wf();
-//		a.test_QDYJBZSQD_wf();
-			a.test_QDFJ_wf();
+		a.test_QDYJBZSQD_wf();
+//			a.test_QDFJ_wf();
 //		a.test_XMBZJFKD_wf();
 //		a.test_XMTKD_wf();
 		} catch (SeleniumFindException e1) {
