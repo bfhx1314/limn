@@ -31,7 +31,12 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import com.limn.frame.edit.EditTestCasePanel;
+import com.limn.frame.keyword.BaseKeyWordDriverImpl;
+import com.limn.frame.keyword.BaseKeyWordType;
 import com.limn.frame.keyword.KeyWordDriver;
+import com.limn.frame.panel.CustomPanel;
+import com.limn.frame.panel.KeyWordPanel;
+import com.limn.frame.panel.LoadBroswerPanel;
 import com.limn.tool.log.LogControlInterface;
 import com.limn.tool.log.LogDocument;
 import com.limn.tool.log.PrintLogDriver;
@@ -60,7 +65,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	private JButton moveEditTestCase = new JButton("<");
 	
 	//自定义面板
-	private CustomPanel customPanel = null;
+	private KeyWordPanel keyWordPanel = null;
 	
 //	private JTabbedPane Jtab = new JTabbedPane();
 	
@@ -86,7 +91,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	JPanel pabelLog = new JPanel();
 	JPanel pabelTestCase = new JPanel();
 	
-	private static KeyWordDriver keyWordDriver = null;
+	private static BaseKeyWordDriverImpl keyWordDriver = new BaseKeyWordDriverImpl();
 	
 	private EditTestCasePanel testCasePanel = new EditTestCasePanel();
 	
@@ -101,12 +106,29 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	 * 添加自定义面板到界面
 	 * @param cp 此面板需要继承CutomPanel的类
 	 */
-	public DebugEditFrame(Class<?> cp, KeyWordDriver kwd){
-		customPanel = new KeyWordPanel(cp);
-		keyWordDriver = kwd;
+//	public DebugEditFrame(Class<?> cp, KeyWordDriver kwd){
+//		customPanel = new KeyWordPanel(cp);
+//		keyWordDriver.addKeyWordDriver(key, kwd, cp);
+//		init();
+//	}
+	
+
+	
+	public DebugEditFrame(){
+		keyWordPanel = new KeyWordPanel();
+		addKeyWordDriver("基础关键字", new BaseKeyWordDriverImpl(), BaseKeyWordType.class);
 		init();
 	}
 
+	
+	public static void addKeyWordDriver(String key, KeyWordDriver keyWord,Class<?> keyWordType){
+		keyWordDriver.addKeyWordDriver(key, keyWord, keyWordType);
+		KeyWordPanel.addKeyWord(keyWordType);
+	}
+	
+	
+	
+	
 		
 	private void init(){
 		//基本设置
@@ -131,7 +153,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 //		setBoundsAt(Jtab,350, 0, 635, 395);
 		
 		setBoundsAt(testCasePanel,350, 0, 635, 395);
-		setBoundsAt(customPanel,350, 0, 635, 395);
+		setBoundsAt(keyWordPanel,350, 0, 635, 395);
 		setBoundsAt(loadPanel,350, 0, 635, 395);
 		
 //		Jtab.add("用例编辑器", testCasePanel);
@@ -149,7 +171,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 //				if (loadPanel.isVisible()) {
 					testCasePanel.setVisible(true);
 					loadPanel.setVisible(false);
-					customPanel.setVisible(false);
+					keyWordPanel.setVisible(false);
 //				} else {
 //					testCasePanel.setVisible(false);
 //					loadPanel.setVisible(true);
@@ -170,7 +192,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 //				} else {
 					testCasePanel.setVisible(false);
 					loadPanel.setVisible(true);
-					customPanel.setVisible(false);
+					keyWordPanel.setVisible(false);
 //				}
 			}
 		});
@@ -189,7 +211,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 //					loadPanel.setVisible(false);
 //				}else{
 					testCasePanel.setVisible(false);
-					customPanel.setVisible(true);
+					keyWordPanel.setVisible(true);
 					loadPanel.setVisible(false);
 //				}
 				
@@ -415,7 +437,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	 * @param bold
 	 * @return
 	 */
-	public static SimpleAttributeSet setDocsStyle(Color col, boolean bold) {
+	private static SimpleAttributeSet setDocsStyle(Color col, boolean bold) {
 		SimpleAttributeSet attrSet = new SimpleAttributeSet();
 		// 颜色
 		StyleConstants.setForeground(attrSet, col);
@@ -441,18 +463,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	}
 	
 	public static void main(String[] args){
-		new DebugEditFrame(null,new KeyWordDriver() {
-			
-			@Override
-			public int start(String[] step) {
-				return 0;
-			}
-
-			@Override
-			public boolean isKeyWord(String key) {
-				return false;
-			}
-		});
+		new DebugEditFrame();
 	}
 
 	public static void setStepTextArea(String step){

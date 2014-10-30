@@ -1,4 +1,4 @@
-package com.limn.frame.debug;
+package com.limn.frame.panel;
 
 import javax.swing.JPanel;
 
@@ -8,7 +8,7 @@ import javax.swing.JPanel;
  * @author limn
  *
  */
-public class CustomPanel  extends JPanel{
+public class CustomPanel extends JPanel{
 	
 	private static final long serialVersionUID = 1L;
 

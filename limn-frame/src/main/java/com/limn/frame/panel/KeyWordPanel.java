@@ -1,4 +1,4 @@
-package com.limn.frame.debug;
+package com.limn.frame.panel;
 
 
 import java.awt.event.MouseAdapter;
@@ -24,13 +24,13 @@ import javax.swing.event.AncestorListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeModel;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.limn.frame.debug.CustomPanel;
 import com.limn.frame.debug.DebugEditFrame;
 import com.limn.tool.random.RandomData;
 
@@ -45,71 +45,75 @@ public class KeyWordPanel extends CustomPanel {
 	
 	//关键字树
 	private JTree keyWordTree = null;
+	//关键字树的滚动条
 	private JScrollPane keyWordTreeJSP = null;
-	private HashMap<String,String> keyWordAnnotate = new HashMap<String,String>();
-	private LinkedHashMap<String,String> keyWord = new LinkedHashMap<String,String>();
+	//关键字注释
+	private static HashMap<String,String> keyWordAnnotate = new HashMap<String,String>();
+	//关键字
+	private static LinkedHashMap<String,String> keyWord = new LinkedHashMap<String,String>();
+	
+	
 	private JTextPane helpPane = new JTextPane();
 	private JScrollPane helpPaneJSP = new JScrollPane(helpPane, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	
-	private Class<?> keyType = null;
+	private static DefaultMutableTreeNode keyWordNode = new DefaultMutableTreeNode("关键字列表"); 
 	
-	public KeyWordPanel(Class<?> keyType){
-		this.keyType = keyType;
+	public KeyWordPanel(){
 		setBounds(0, 0, 635, 395);
 		setLayout(null);
-		DefaultMutableTreeNode keyWordNode = new DefaultMutableTreeNode("关键字列表"); 
-		keyWord = getKeyWord();
-		if(null != keyWord){
-			for(String key:keyWord.keySet()){
-				keyWordNode.add(new DefaultMutableTreeNode(key));
-			}
-			keyWordTree = new JTree(keyWordNode);
-			keyWordTreeJSP = new JScrollPane(keyWordTree, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-			keyWordAnnotate = getKeyWordAnnotate();
-			
-			keyWordTree.addMouseListener(new MouseAdapter() {
+	
+		keyWordTree = new JTree(keyWordNode);
 		
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) keyWordTree.getLastSelectedPathComponent();//返回最后选定的节点
-					String name = selectedNode.toString();
-					if(keyWordAnnotate.containsKey(keyWord.get(name))){
-						helpPane.setText(keyWordAnnotate.get(keyWord.get(name)));
-						DebugEditFrame.setStepTextArea(name + ":");
-					}
+		keyWordTreeJSP = new JScrollPane(keyWordTree, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		
+		keyWordTree.addMouseListener(new MouseAdapter() {
+	
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) keyWordTree.getLastSelectedPathComponent();//返回最后选定的节点
+				String name = selectedNode.toString();
+				if(keyWordAnnotate.containsKey(keyWord.get(name))){
+					helpPane.setText(keyWordAnnotate.get(keyWord.get(name)));
+					DebugEditFrame.setStepTextArea(name + ":");
 				}
-			});
-			
-			helpPane.setContentType("text/html");
-			helpPane.setEditable(false);
-			
-			setBoundsAtPanel(keyWordTreeJSP,0,5,200,390);
-			setBoundsAtPanel(helpPaneJSP,205,5,430,390);
-		}
+			}
+		});
+		
+		helpPane.setContentType("text/html");
+		helpPane.setEditable(false);
+		
+		setBoundsAtPanel(keyWordTreeJSP,0,5,200,390);
+		setBoundsAtPanel(helpPaneJSP,205,5,430,390);
+		
 	}
+	
+	public static void addKeyWord(Class<?> keyType){
+		setKeyWord(keyType);
+		setKeyWordAnnotate(keyType);
+	}
+	
+	
 	
 	/**
 	 * 获取关键字列表
 	 * @return
 	 */
-	private LinkedHashMap<String,String> getKeyWord(){
-		if(null == keyType){
-			return null;
-		}
-		
-		LinkedHashMap<String,String> keyWord = new LinkedHashMap<String,String>();
+	private static void setKeyWord(Class<?> keyType){
+
+		LinkedHashMap<String,String> keyWordTmpe = new LinkedHashMap<String,String>();
 		try {
 
 			Field[] fields = keyType.getDeclaredFields();
 			for (Field f : fields) {
 				if (f.getGenericType().toString().equals("class java.lang.String")) {
-					keyWord.put((String)f.get(keyType),f.getName());		
+					keyWordTmpe.put((String)f.get(keyType),f.getName());
+					keyWord.put((String)f.get(keyType),f.getName());
+					keyWordNode.add(new DefaultMutableTreeNode((String)f.get(keyType)));
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	
-		return keyWord;
 	}
 	
 	
@@ -128,11 +132,13 @@ public class KeyWordPanel extends CustomPanel {
 
 
 
-	private HashMap<String,String> getKeyWordAnnotate(){
-		HashMap<String,String> data = new HashMap<String,String>();
+	private static void setKeyWordAnnotate(Class<?> keyType){
+	
 		InputStream is = keyType.getClassLoader().getResourceAsStream(  
                 "javadoc/" + keyType.getSimpleName() + ".html");
-		
+		if(null == is){
+			return;
+		}
 		Document doc = null;
 		try {
 			doc = Jsoup.parse(is, "UTF-8", "");
@@ -145,11 +151,10 @@ public class KeyWordPanel extends CustomPanel {
 				String value = "";
 				try{
 					value = code.nextElementSibling().nextElementSibling().outerHtml();
-//					value = value.replace("<br>", "\n");
 				}catch(Exception e){
 					
 				}
-				data.put(code.text(),value);
+				keyWordAnnotate.put(code.text(),value);
 			}
 		}
 		try {
@@ -157,23 +162,9 @@ public class KeyWordPanel extends CustomPanel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return data;
 		
 	}
-	
-	public static void main(String[] args){
-		
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 }
 

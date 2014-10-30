@@ -1,4 +1,4 @@
-package com.limn.frame.debug;
+package com.limn.frame.panel;
 
 public class DictoryKeyValue {
 	

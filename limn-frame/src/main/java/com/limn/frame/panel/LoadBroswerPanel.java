@@ -1,4 +1,4 @@
-package com.limn.frame.debug;
+package com.limn.frame.panel;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -21,7 +21,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.openqa.selenium.By;
-
 import org.openqa.selenium.WebElement;
 
 import com.limn.driver.Driver;

@@ -14,7 +14,7 @@ import javax.swing.ListCellRenderer;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 
-import com.limn.frame.debug.DictoryKeyValue;
+import com.limn.frame.panel.DictoryKeyValue;
 
 
 
