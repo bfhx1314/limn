@@ -15,6 +15,7 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
+import com.limn.tool.exception.ParameterException;
 import com.limn.tool.external.XMLReader;
 import com.limn.tool.parameter.Parameter;
 
@@ -29,6 +30,21 @@ public class Common {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	public String getCodeByPicturePath(String filePath) throws ParameterException{
+		return new GetCodeByPicture().identificationByPath(filePath);
+	}
+	
+	public String getCodeByPictureIS(InputStream instr) throws ParameterException{
+		return new GetCodeByPicture().identification(instr);
+	}
+	
+	public String getCodeByPictureURL(String URL) throws ParameterException{
+		return new GetCodeByPicture().identification(URL);
+	}
+	
+	
 	
 	public static HashMap<String,String> getTemplateData(){
 		XMLReader xmlr = new XMLReader(getTemplatePath(),true);

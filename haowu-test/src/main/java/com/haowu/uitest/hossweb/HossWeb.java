@@ -112,12 +112,20 @@ public class HossWeb {
 	public static void logout() throws HaowuException{
 
 		try {
+			Print.log("退出登录", 0);
 			waitLoadForPage();
-			WebElement webElement;
+
+			WebElement webElement = null;
+
 			webElement = Driver.getWebElementByXPath("//a[@id='logout']");
-			WebControl.clickControl(webElement);
+
+			webElement.click();
+
+//			WebControl.clickControl(webElement);
 			Common.wait(200);
+			Print.log("退出登录完成", 0);
 		} catch (SeleniumFindException e) {
+			Print.log("退出登录异常", 2);
 			throw new HaowuException(10010000,e.getMessage());
 		}
 
@@ -218,8 +226,6 @@ public class HossWeb {
 		if(data!=null){
 			applyEdit(data);
 		}
-		
-
 		
 		if(isCreate){
 			
@@ -407,7 +413,7 @@ public class HossWeb {
 //				e.printStackTrace();
 			}
 //			Common.wait(500);
-//			waitLoadForPage();
+			waitLoadForPage();
 //			
 //			WebElement web = WebControl.getWebElementBylocator(key);
 //			Print.log("录入数据 Key:" + key,1);
@@ -514,13 +520,18 @@ public class HossWeb {
 		try {
 			if(Driver.isWebElementExist("//div[@id='spinner']")){
 				web = Driver.getWebElementByXPath("//div[@id='spinner']");
-				while(web.getCssValue("display") != null && !web.getCssValue("display").equals("none")){
-					Common.wait(1000);
-					Print.log("页面加载中", 0);
+				try{
+					while(web.getCssValue("display") != null && !web.getCssValue("display").equals("none")){
+						Common.wait(1000);
+						Print.log("页面加载中", 0);
+					}
+				}catch(Exception e){
+					Print.log("waitloadforpage:异常",2);
+					waitLoadForPage();
 				}
 			}
 		} catch (SeleniumFindException e) {
-			
+			Print.log("页面加载中异常", 0);
 		}
 
 

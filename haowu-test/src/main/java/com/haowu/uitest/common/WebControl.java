@@ -84,11 +84,11 @@ public class WebControl {
 			inputValue(web, value);
 		}
 		
-		try {
-			Driver.cancelHighLightWebElement(findWebElement);
-		} catch (SeleniumFindException e) {
-			Print.log("取消高亮失败", 2);
-		}
+//		try {
+//			Driver.cancelHighLightWebElement(findWebElement);
+//		} catch (SeleniumFindException e) {
+//			Print.log("取消高亮失败", 2);
+//		}
 	}
 	
 	/**
@@ -131,34 +131,5 @@ public class WebControl {
 	
 
 	
-}
-
-
-class FindWebElements implements Runnable{
-	
-	private By locator = null;
-	
-	public FindWebElements(By locator){
-		this.locator = locator;
-	}
-
-	@Override
-	public void run() {
-		try {
-			if (Driver.isWebElementExist(locator)){
-				try {
-					WebElement web = Driver.getWebElement(locator);
-					if(null!=web){
-						WebControl.findWebElement = web;
-					}
-				} catch (SeleniumFindException e) {
-					
-				}
-			}
-		} catch (SeleniumFindException e) {
-			e.printStackTrace();
-		}
-		WebControl.hasThread --;
-	}
 }
 

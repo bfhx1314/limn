@@ -87,9 +87,11 @@ public class KeyWordPanel extends CustomPanel {
 		
 	}
 	
-	public static void addKeyWord(Class<?> keyType){
-		setKeyWord(keyType);
+	public static void addKeyWord(String key, Class<?> keyType){
+		DefaultMutableTreeNode moduleTree = new DefaultMutableTreeNode(key);
+		setKeyWord(moduleTree,keyType);
 		setKeyWordAnnotate(keyType);
+		keyWordNode.add(moduleTree);
 	}
 	
 	
@@ -98,7 +100,7 @@ public class KeyWordPanel extends CustomPanel {
 	 * 获取关键字列表
 	 * @return
 	 */
-	private static void setKeyWord(Class<?> keyType){
+	private static void setKeyWord(DefaultMutableTreeNode moduleTree, Class<?> keyType){
 
 		LinkedHashMap<String,String> keyWordTmpe = new LinkedHashMap<String,String>();
 		try {
@@ -108,7 +110,7 @@ public class KeyWordPanel extends CustomPanel {
 				if (f.getGenericType().toString().equals("class java.lang.String")) {
 					keyWordTmpe.put((String)f.get(keyType),f.getName());
 					keyWord.put((String)f.get(keyType),f.getName());
-					keyWordNode.add(new DefaultMutableTreeNode((String)f.get(keyType)));
+					moduleTree.add(new DefaultMutableTreeNode((String)f.get(keyType)));
 				}
 			}
 		} catch (Exception e) {

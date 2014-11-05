@@ -1,6 +1,7 @@
 package com.limn.frame.debug;
 
 
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -14,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -69,9 +71,9 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	
 //	private JTabbedPane Jtab = new JTabbedPane();
 	
-	private JButton eidt = new JButton("编辑");
-	private JButton change = new JButton("关键字");
-	private JButton loadBrowser =new JButton("定位");
+//	private JButton eidt = new JButton("编辑");
+//	private JButton change = new JButton("关键字");
+//	private JButton loadBrowser =new JButton("定位");
 	
 	//步骤编辑区
 	private JTable editTestCase = new JTable();
@@ -102,6 +104,11 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	
 	private boolean isRunning = false;
 	
+	private CustomPanel isShowPanel = null;
+	
+	private LinkedHashMap<String,CustomPanel> panelSet = new LinkedHashMap<String,CustomPanel>();
+	
+	
 	/**
 	 * 添加自定义面板到界面
 	 * @param cp 此面板需要继承CutomPanel的类
@@ -120,10 +127,15 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		init();
 	}
 
-	
-	public static void addKeyWordDriver(String key, KeyWordDriver keyWord,Class<?> keyWordType){
+	/**
+	 * 增加关键字
+	 * @param key 关键字分类名称
+	 * @param keyWord 关键字驱动
+	 * @param keyWordType 关键字定义
+	 */
+	public void addKeyWordDriver(String key, KeyWordDriver keyWord,Class<?> keyWordType){
 		keyWordDriver.addKeyWordDriver(key, keyWord, keyWordType);
-		KeyWordPanel.addKeyWord(keyWordType);
+		KeyWordPanel.addKeyWord(key,keyWordType);
 	}
 	
 	
@@ -152,9 +164,9 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		
 //		setBoundsAt(Jtab,350, 0, 635, 395);
 		
-		setBoundsAt(testCasePanel,350, 0, 635, 395);
-		setBoundsAt(keyWordPanel,350, 0, 635, 395);
-		setBoundsAt(loadPanel,350, 0, 635, 395);
+//		setBoundsAt(testCasePanel,350, 0, 635, 395);
+//		setBoundsAt(keyWordPanel,350, 0, 635, 395);
+//		setBoundsAt(loadPanel,350, 0, 635, 395);
 		
 //		Jtab.add("用例编辑器", testCasePanel);
 //		Jtab.add("页面定位器", loadPanel);
@@ -162,61 +174,67 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 //		testCasePanel.setVisible(false);
 //		customPanel.setVisible(false);
 		
+
 		
-		setBoundsAt(eidt, 303, 5, 46, 20);
-		eidt.setMargin(new Insets(0,0,0,0));
-		eidt.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e){
-//				if (loadPanel.isVisible()) {
-					testCasePanel.setVisible(true);
-					loadPanel.setVisible(false);
-					keyWordPanel.setVisible(false);
-//				} else {
+		addPanel("编辑", testCasePanel);
+		addPanel("定位", loadPanel);
+		addPanel("关键字", keyWordPanel);
+		testCasePanel.setVisible(true);
+		isShowPanel = testCasePanel;
+//		setBoundsAt(eidt, 303, 5, 46, 20);
+//		eidt.setMargin(new Insets(0,0,0,0));
+//		eidt.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseClicked(MouseEvent e){
+////				if (loadPanel.isVisible()) {
+//					testCasePanel.setVisible(true);
+//					loadPanel.setVisible(false);
+//					keyWordPanel.setVisible(false);
+////				} else {
+////					testCasePanel.setVisible(false);
+////					loadPanel.setVisible(true);
+////					customPanel.setVisible(false);
+////				}
+//			}
+//		});
+//		
+//		setBoundsAt(loadBrowser,303, 30, 46, 20);
+//		loadBrowser.setMargin(new Insets(0,0,0,0));
+//		loadBrowser.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseClicked(MouseEvent e){
+////				if (loadPanel.isVisible()) {
+////					testCasePanel.setVisible(true);
+////					loadPanel.setVisible(false);
+////					customPanel.setVisible(false);
+////				} else {
 //					testCasePanel.setVisible(false);
 //					loadPanel.setVisible(true);
-//					customPanel.setVisible(false);
-//				}
-			}
-		});
-		
-		setBoundsAt(loadBrowser,303, 30, 46, 20);
-		loadBrowser.setMargin(new Insets(0,0,0,0));
-		loadBrowser.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e){
-//				if (loadPanel.isVisible()) {
-//					testCasePanel.setVisible(true);
+//					keyWordPanel.setVisible(false);
+////				}
+//			}
+//		});
+//		
+//		loadPanel.setVisible(false);
+//		setBoundsAt(change, 303, 55, 46, 20);
+//		change.setMargin(new Insets(0,0,0,0));
+//		
+//		//切换自定义的面板
+//		change.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseClicked(MouseEvent e){
+////				if(customPanel.isVisible()){
+////					testCasePanel.setVisible(true);
+////					customPanel.setVisible(false);
+////					loadPanel.setVisible(false);
+////				}else{
+//					testCasePanel.setVisible(false);
+//					keyWordPanel.setVisible(true);
 //					loadPanel.setVisible(false);
-//					customPanel.setVisible(false);
-//				} else {
-					testCasePanel.setVisible(false);
-					loadPanel.setVisible(true);
-					keyWordPanel.setVisible(false);
-//				}
-			}
-		});
-		
-		loadPanel.setVisible(false);
-		setBoundsAt(change, 303, 55, 46, 20);
-		change.setMargin(new Insets(0,0,0,0));
-		
-		//切换自定义的面板
-		change.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e){
-//				if(customPanel.isVisible()){
-//					testCasePanel.setVisible(true);
-//					customPanel.setVisible(false);
-//					loadPanel.setVisible(false);
-//				}else{
-					testCasePanel.setVisible(false);
-					keyWordPanel.setVisible(true);
-					loadPanel.setVisible(false);
-//				}
-				
-			}
-		});
+////				}
+//				
+//			}
+//		});
 		
 		setBoundsAt(moveTestCase,303, 200, 46, 20);
 		setBoundsAt(moveEditTestCase,303, 250, 46, 20);
@@ -394,6 +412,37 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		
 		testCasePanel.loadParameters();
 	}
+	
+	public void addPanel(String name, CustomPanel cp){
+		panelSet.put(name, cp);
+		cp.setVisible(false);
+		refreshPanel();
+	}
+	
+	private void refreshPanel(){
+		int y = 5;
+		for(final String name : panelSet.keySet()){
+			JButton button = new JButton(name);
+			button.setMargin(new Insets(0,0,0,0));
+			button.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e){
+					
+					if(null != isShowPanel){
+						isShowPanel.setVisible(false);
+					}
+					
+					panelSet.get(name).setVisible(true);
+					isShowPanel = panelSet.get(name);
+				}
+			});
+			setBoundsAt(button, 303, y, 46, 20);
+			setBoundsAt(panelSet.get(name),350, 0, 635, 395);
+			y+=25;
+		}
+	}
+	
+	
 	
 	/**
 	 * 设置关键字高亮

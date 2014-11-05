@@ -54,6 +54,7 @@ import javax.swing.table.TableColumnModel;
 
 import org.dom4j.DocumentException;
 
+import com.limn.frame.panel.CustomPanel;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
 import com.limn.tool.parameter.Parameter;
@@ -70,7 +71,7 @@ import com.limn.tool.regexp.RegExp;
  *
  */
 
-public class EditTestCasePanel extends JPanel {
+public class EditTestCasePanel extends CustomPanel {
 
 	/**
 	 * 

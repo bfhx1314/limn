@@ -1,7 +1,7 @@
 package com.haowu.start;
 
-import com.haowu.keyword.CustomKeyWordImpl;
-import com.haowu.keyword.HaowuKeyWordImpl;
+import com.haowu.keyword.HossCustomKeyWordImpl;
+import com.haowu.keyword.HossKeyWordImpl;
 import com.haowu.uitest.hossweb.Initialization;
 import com.limn.frame.control.ConsoleFrame;
 
@@ -13,9 +13,9 @@ public class Start {
 	public static void runTest(){
 	
 		//好屋关键字
-		HaowuKeyWordImpl haowuKWI = new HaowuKeyWordImpl();
+		HossKeyWordImpl haowuKWI = new HossKeyWordImpl();
 		//自定义关键字
-		haowuKWI.setKeyWordDriver(new CustomKeyWordImpl());
+		haowuKWI.setKeyWordDriver(new HossCustomKeyWordImpl());
 		
 		Initialization.start();
 		

@@ -58,10 +58,11 @@ public class ApplyWorkflowTest implements Runnable{
 				test_YDYS_wf();
 				break;
 			case ApplyType.FYSQ:
-				Fee_NO = tmpApplyType;
+				
 				test_FYSQ_wf();
 				break;
 			case ApplyType.FYBX:
+				Fee_NO = tmpApplyType;
 				test_FYBX_wf();
 				break;
 			case ApplyType.WPLY:
@@ -107,10 +108,10 @@ public class ApplyWorkflowTest implements Runnable{
 		ApplyWorkflow b = new ApplyWorkflow(false);
 		a.init();
 		try {
-//			a.test_QZQYS_wf();
+			a.test_QZQYS_wf();
 //			a.test_YDYS_wf();
 //
-			a.test_FYSQ_wf();
+//			a.test_FYSQ_wf();
 //			a.test_FYBX_wf();
 //
 //			a.FYSQ_wf();
@@ -141,7 +142,7 @@ public class ApplyWorkflowTest implements Runnable{
 			e.printStackTrace();
 		}
 		Parameter.DBDRIVER = "com.mysql.jdbc.Driver";
-		Parameter.DBURL = "jdbc:mysql://172.16.10.250:3306/hoss_new";
+		Parameter.DBURL = "jdbc:mysql://172.16.10.250:3306/hoss_new_20141016_bak";
 		Parameter.DBUSER = "hoss_test";
 		Parameter.DBPASS = ParameterHaowu.General_Password;
 	}
@@ -314,11 +315,10 @@ public class ApplyWorkflowTest implements Runnable{
 		data.put("citySelect", ParameterHaowu.CityName);
 		data.put("projectSelect", ParameterHaowu.ProjectName);
 		data.put("fee_apply", "[click]");
-//		Fee_NO = "FYSQ-141011-046";
 		data.put("//a[@data-flowno='" + Fee_NO + "']", "[click]");
 		data.put("repayInfoList.feeInfoId", "[click]");
 		data.put("repayInfoList.repayAmount", "5000");
-		data.put("projectRepay.bankAccountName", "测试人员");
+//		data.put("projectRepay.bankAccountName", "测试人员");
 		data.put("projectRepay.bankName", "测试银行");
 		data.put("projectRepay.bankNo", "10486486548");
 		
@@ -457,7 +457,7 @@ public class ApplyWorkflowTest implements Runnable{
 		data.put("projectSelect", ParameterHaowu.ProjectName);
 		data.put("goodsApplySelectBtn", "[click]");
 		
-		Goods_NO = "WPSQ-141011-008";
+//		Goods_NO = "WPSQ-141011-008";
 		String sql = "select id from cm_pro_goods_apply  where flow_no='"+ Goods_NO +"'";
 		String no = DataBase.executeSQL(sql)[0][0];
 		
@@ -640,13 +640,13 @@ public class ApplyWorkflowTest implements Runnable{
 		LinkedHashMap<String, String> data = new LinkedHashMap<String, String>();
 		data.put("//select[@id='cityId']", ParameterHaowu.CityName);
 		data.put("//select[@id='projectId']", ParameterHaowu.ProjectName);
-		data.put("fee_apply", "[dbclick]");
+		data.put("fee_apply", "[Click]");
 		
 //		Fee_No = "FYSQ-141010-007";
 		
-		data.put("//a[@data-flowno='" + Fee_NO + "']", "[click]");
+		data.put("//a[@data-flowno='" + Fee_NO + "']", "[Click]");
 		
-		data.put("//input[@data-feename='什么费用']", "[click]");
+		data.put("//input[@data-feename='什么费用']", "[Click]");
 		
 		data.put("cmApplyContract.contractName", "aaaaa");
 		data.put("cmApplyContract.contractNo", "no11111");

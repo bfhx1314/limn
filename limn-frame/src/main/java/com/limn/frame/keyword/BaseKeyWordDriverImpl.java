@@ -5,6 +5,9 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 
+import com.limn.driver.Driver;
+import com.limn.driver.common.OperateWindows;
+import com.limn.driver.exception.SeleniumFindException;
 import com.limn.tool.common.Print;
 
 /**
@@ -19,38 +22,76 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 	private LinkedHashMap<String,Class<?>> KWDT = new LinkedHashMap<String,Class<?>>();
 	private HashSet<String> allKeyWord = new HashSet<String>();
 	private boolean flag = false;
+	
 	@Override
 	public int start(String[] step) {
 
 		int status = -1;
-	
-		switch (step[0]) {
+		try {
 
-		case BaseKeyWordType.START_BROWSER:	
-			
-			break;		
-		case BaseKeyWordType.CLOSE_BROSWER:	
-			
-			break;
-		case BaseKeyWordType.INPUT:
-			
-			break;
-		default:
+			switch (step[0]) {
 
-			for(String key:KWD.keySet()){
-				status = KWD.get(key).start(step);
-				if(status!=-1){
-					return status;
+			//启动浏览器
+			case BaseKeyWordType.START_BROWSER:
+				BaseRunKeyWordImpl.startBrowser(step);
+				break;
+			//关闭浏览器
+			case BaseKeyWordType.CLOSE_BROSWER:
+				BaseRunKeyWordImpl.stopBroswer();
+				break;
+			//录入
+			case BaseKeyWordType.INPUT:
+				cheakKeyWordCount(step.length, 2);
+				Driver.setValue(step[1], step[2]);
+				break;
+			//提示框
+			case BaseKeyWordType.DIALOG:
+				cheakKeyWordCount(step.length, 1);
+				if (step[1].equals("确定") || step[1].equals("是")) {
+					OperateWindows.dealPotentialAlert(true);
+				} else {
+					OperateWindows.dealPotentialAlert(false);
+				}
+				break;
+			//页面跳转	
+			case BaseKeyWordType.CHANGE_URL:
+				cheakKeyWordCount(step.length, 1);
+				BaseRunKeyWordImpl.toURL(step);
+				break;
+			case BaseKeyWordType.KEYBOARD_EVENT:
+				cheakKeyWordCount(step.length, 1);
+				BaseRunKeyWordImpl.keyBoardEvent(step);
+				
+				break;
+			//自定义关键字
+			default:
+
+				for (String key : KWD.keySet()) {
+					if(key.equals("基础关键字")){
+						continue;
+					}
+					status = KWD.get(key).start(step);
+					if (-1 != status) {
+						return status;
+					}
+				}
+				if (-1 == status) {
+					Print.log("不存在此关键字:" + step[0], 2);
 				}
 			}
-			if(-1 == status){
-				Print.log("不存在此关键字:" + step[0], 2);
-			}
+		} catch (SeleniumFindException e) {
+			Print.log(e.getMessage(), 2);
 		}
 		return status;
 
 	}
 
+	private void cheakKeyWordCount(int keyWordCount, int needCount){
+		if(keyWordCount<needCount){
+//			throw new HaowuException(10020000, "列表关键字:参数个数有误");
+		}
+	}
+	
 
 	/**
 	 * 判断是否是关键字

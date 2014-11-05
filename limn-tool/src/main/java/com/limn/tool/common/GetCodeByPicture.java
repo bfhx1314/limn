@@ -13,6 +13,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.limn.tool.exception.ParameterException;
+
 /**
  * 通过图片获取验证码 首先将图片进行处理，黑白掉 在通过Tesseract-OCR 这个工具识别
  * 
@@ -22,16 +24,22 @@ import java.util.List;
 public class GetCodeByPicture {
 
 	public static void main(String[] args) {
-		new GetCodeByPicture()
-				.identification("http://172.16.10.35:8080/hoss-web/hoss/sys/v2/getVerCode.do");
+		try {
+			new GetCodeByPicture()
+					.identification("http://172.16.10.35:8080/hoss-web/hoss/sys/v2/getVerCode.do");
+		} catch (ParameterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
 	 * 
 	 * @param instr InputStream 
 	 * @return 验证码
+	 * @throws ParameterException 
 	 */
-	public String identification(InputStream instr){
+	public String identification(InputStream instr) throws ParameterException{
 		File pic = null;
 		try {
 			pic = getInputStream(instr);
@@ -47,8 +55,9 @@ public class GetCodeByPicture {
 	 * 
 	 * @param pic 图片文件地址
 	 * @return
+	 * @throws ParameterException 
 	 */
-	public String identificationByPath(String picPath){
+	public String identificationByPath(String picPath) throws ParameterException{
 		File pic = new File(picPath);
 		return run(pic);
 	}
@@ -58,8 +67,9 @@ public class GetCodeByPicture {
 	 * 
 	 * @param url 图片地址
 	 * @return 验证码
+	 * @throws ParameterException 
 	 */
-	public String identification(String url) {
+	public String identification(String url) throws ParameterException {
 		File pic = null;
 		try {
 			pic = getIntnetPicture(url);
@@ -69,7 +79,12 @@ public class GetCodeByPicture {
 		return run(pic);
 	}
 	
-	private String run(File pic){
+	private String run(File pic) throws ParameterException{
+		
+		if(!new File(System.getProperty("user.dir") + "/bin/Tesseract-OCR/tesseract.exe").exists()){
+			throw new ParameterException(-1, "Tesseract-OCR文件不存在,需要将Tesseract-OCR文件放在bin目录下");
+		}
+		
 		PictureChange pc = new PictureChange();
 		String codePath = System.getProperty("user.dir") + "/code.jpg";
 		String code = null;

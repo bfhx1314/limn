@@ -1,8 +1,8 @@
 package com.haowu.start;
 
-import com.haowu.keyword.CustomKeyWordImpl;
-import com.haowu.keyword.HaowuKeyWordImpl;
-import com.haowu.keyword.HaowuKeyWordType;
+import com.haowu.keyword.HossCustomKeyWordImpl;
+import com.haowu.keyword.HossKeyWordImpl;
+import com.haowu.keyword.HossKeyWordType;
 import com.haowu.uitest.hossweb.Initialization;
 import com.limn.frame.debug.DebugEditFrame;
 import com.limn.tool.log.RunLog;
@@ -13,16 +13,23 @@ public class DebugStart {
 	 */
 	public static void debugStart(){
 		
-		//好屋关键字
-		HaowuKeyWordImpl haowuKWI = new HaowuKeyWordImpl();
-
+		//好屋关键字  ***************************************************
+		HossKeyWordImpl haowuKWI = new HossKeyWordImpl();
 		//自定义关键字
-		haowuKWI.setKeyWordDriver(new CustomKeyWordImpl());
+		haowuKWI.setKeyWordDriver(new HossCustomKeyWordImpl());
+		//**********************************************************
+		
+		//合伙人关键字 *************************************************
+		
+		
+		//**********************************************************
 		
 		Initialization.start();
-		DebugEditFrame a = new DebugEditFrame(HaowuKeyWordType.class, haowuKWI);
+		DebugEditFrame a = new DebugEditFrame();
+		a.addKeyWordDriver("Hoss关键字", haowuKWI, HossKeyWordType.class);
 		new RunLog(a);
 	}
+	
 	
 	public static void main(String[] args){
 		debugStart();

@@ -34,7 +34,8 @@ public class Initialization {
 		
 		Parameter.DBPASS = Variable.getValue("db.pass");
 		
-		ParameterHaowu.HAOWU_URL = Variable.getValue("haowu.url");
+		Parameter.URL = Variable.getValue("haowu.url");
+//		ParameterHaowu.HAOWU_URL = Variable.getValue("haowu.url");
 		
 		Variable.close();
 	}

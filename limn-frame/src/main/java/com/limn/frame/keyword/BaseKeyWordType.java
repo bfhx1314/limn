@@ -10,7 +10,7 @@ public class BaseKeyWordType {
 	 * 实例: 录入:username:limn-manager<br>
 	 * 实例: 录入://input[@id='username']:limn-manager<br>
 	 */
-	public final static String INPUT = "录入";
+	public static final String INPUT = "录入";
 	
 	/**
 	 * 说明: 启动浏览器<br>
@@ -18,12 +18,38 @@ public class BaseKeyWordType {
 	 * 用法: 启动浏览器:[浏览器类型]<br>
 	 * 实例: 启动浏览器:firefox<br>
 	 */
-	public final static String START_BROWSER = "启动浏览器";
+	public static final String START_BROWSER = "启动浏览器";
 	
 	/**
 	 * 说明: 关闭打开的浏览器<br>
 	 * 实例: 关闭浏览器
 	 */
-	public final static String CLOSE_BROSWER = "关闭浏览器";
+	public static final String CLOSE_BROSWER = "关闭浏览器";
+
+	/**
+	 * 说明: 界面弹出的提示框<br>
+	 * 参数1: 确定 or 取消
+	 * 实例: 提示框:确定
+	 */
+	public static final String DIALOG = "提示框";
+
+	/**
+	 * 说明: 页面跳转<br>
+	 * 参数1: 转向的URL<br>
+	 * 实例: 跳转:http:www.baidu.com
+	 */
+	public static final String CHANGE_URL = "跳转";
+	
+	/**
+	 * 说明: 键盘事件<br>
+	 * 参数1: 按键名称<br>
+	 * 实例: 键盘事件:Enter
+	 */
+	public static final String KEYBOARD_EVENT = "键盘事件";
+	
+	/**
+	 * 
+	 */
+	public static final String MOUSE_EVENT = "鼠标事件";
 
 }
