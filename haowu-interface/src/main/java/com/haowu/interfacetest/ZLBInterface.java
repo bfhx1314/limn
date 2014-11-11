@@ -299,10 +299,9 @@ public class ZLBInterface {
 	public static void main(String[] args) {
 		ZLBInterface determined1 = new ZLBInterface("172.16.10.35", 19090);
 		determined1.login("ywsy", "111111");
-		determined1.list();
-		determined1.ProjectType();
-//		determined1.determined("535656565665565766", "5656565446565656",
-//				"1000038000037", "1000038000038", "cash", "50000");
+//		determined1.determined(clientName, clientPhone, followId, projectTypeId, invoiceNo, contractNo, contractPicId, invoicePicId, payWay, receivedAmount);
+////		determined1.determined("535656565665565766", "5656565446565656",
+////				"1000038000037", "1000038000038", "cash", "50000");
 
 	}
 }

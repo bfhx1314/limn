@@ -65,25 +65,25 @@ public class SystemInterface {
 	 * @param phoneNumber 查询的手机号
 	 * @return
 	 */
-	public String getCodeByPhone(String phoneNumber) {
-        NameValuePair[] param = {
-                new NameValuePair("phone_number", phoneNumber)
-                }; 
-        
-        PostMethod method = StructureMethod.getPostMethod(param, "/system/counts/smsLog");
-		String res = StructureMethod.execute(client, method);
-
-		Document doc = Jsoup.parse(res);
-
-		Elements ele = doc.getElementsByClass("noborder");
-
-		String codeString = ele.get(1).text();
-
-		String code = RegExp.matcherCharacters(codeString, "\\d{4,}").get(0);
-		
-		return code;
-
-	}
+//	public String getCodeByPhone(String phoneNumber) {
+//        NameValuePair[] param = {
+//                new NameValuePair("phone_number", phoneNumber)
+//                }; 
+//        
+//        PostMethod method = StructureMethod.getPostMethod(param, "/system/counts/smsLog");
+//		String res = StructureMethod.execute(client, method);
+//
+//		Document doc = Jsoup.parse(res);
+//
+//		Elements ele = doc.getElementsByClass("noborder");
+//
+//		String codeString = ele.get(1).text();
+//
+//		String code = RegExp.matcherCharacters(codeString, "\\d{4,}").get(0);
+//		
+//		return code;
+//
+//	}
 	/**
 	 * 新增楼盘
 	 * @param house_name 楼盘名称
@@ -128,7 +128,7 @@ public class SystemInterface {
 	public static void main(String[] args){
 		SystemInterface vc = new SystemInterface("172.16.10.35",90);
 		vc.login("admin", "123456");
-		System.out.println(vc.getCodeByPhone("13654654654"));
+//		System.out.println(vc.getCodeByPhone("13654654654"));
 	}
 	
 }

@@ -38,11 +38,6 @@ public class QQBInterface {
 		
 	}
 	
-	public void loginSystem(){
-		sif = new SystemInterface("www.haowu.com", 80);
-		sif.login("haowuwang", "haowuwangbestwu");
-	}
-	
 	/**
 	 * 登录
 	 * @param username 手机号
@@ -134,9 +129,10 @@ public class QQBInterface {
 	 * @param cityID
 	 * @param username
 	 * @param password
+	 * @param ver 验证码
 	 * @return
 	 */
-	public String register(String iphone,String mac,String username,String password){
+	public String register(String iphone,String mac,String username,String password,String ver){
 		NameValuePair[] param = { 
 				new NameValuePair("account_phone", iphone),
 				new NameValuePair("mac", mac),
@@ -147,8 +143,6 @@ public class QQBInterface {
 		String jsonResutls = StructureMethod.execute(client, postMethod);
 		System.out.println(jsonResutls);
 		Common.wait(2000);
-		String ver = sif.getCodeByPhone(iphone);
-		System.out.println(ver);
 		NameValuePair[] param1 = { 
 				new NameValuePair("account_phone", iphone),
 				new NameValuePair("verify", ver),

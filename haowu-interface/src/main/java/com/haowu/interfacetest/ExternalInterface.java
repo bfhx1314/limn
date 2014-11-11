@@ -30,32 +30,26 @@ public class ExternalInterface {
 
 	}
 
-	/**
-	 * 获取好屋分享预约验证码
-	 * 调用 SystemInterface 的短信验证码接口
-	 * @param phone 预约手机号码
-	 * @return 验证码
-	 */
-	public String getShareVerCode(String phone){
-		NameValuePair[] param = { 
-				new NameValuePair("phone", phone)
-		};
-		PostMethod postMethod = StructureMethod.getPostMethod(param,"/ajaxNew/getVerifyByType/1");
-		String results = StructureMethod.execute(client, postMethod);
-		if(results.equals("1")){
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			SystemInterface sif = new SystemInterface(IP, Port);
-			sif.login("admin", "123456");
-			code = sif.getCodeByPhone(phone);
-			System.out.println(code);
-		}
-		return code;
-	}
+//	/**
+//	 * 获取好屋分享预约验证码
+//	 * 调用 SystemInterface 的短信验证码接口
+//	 * @param phone 预约手机号码
+//	 * @return 验证码
+//	 */
+//	public String getShareVerCode(String phone,String code){
+//		NameValuePair[] param = { 
+//				new NameValuePair("phone", phone)
+//		};
+//		PostMethod postMethod = StructureMethod.getPostMethod(param,"/ajaxNew/getVerifyByType/1");
+//		String results = StructureMethod.execute(client, postMethod);
+//		if(results.equals("1")){
+//			SystemInterface sif = new SystemInterface(IP, Port);
+//			sif.login("admin", "123456");
+//			code = sif.getCodeByPhone(phone);
+//			System.out.println(code);
+//		}
+//		return code;
+//	}
 	
 	
 	/**
@@ -97,7 +91,7 @@ public class ExternalInterface {
 	 */
 	public static void main(String[] args){
 		ExternalInterface eif = new ExternalInterface("172.16.10.35", 90);
-		eif.getShareVerCode("13131313131");
+//		eif.getShareVerCode("13131313131");
 		eif.shareHaoWu("1003798003797", "3857", "待定", "13131313131");
 	}
 	

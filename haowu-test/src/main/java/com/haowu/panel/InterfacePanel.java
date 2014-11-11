@@ -37,7 +37,45 @@ public class InterfacePanel extends CustomPanel {
 		JLabel determinedLable = new JLabel("下定金额:");
 		JTextField determined = new JTextField();
 		
+		int x = 25;
+		int y = 15;
+		int height = 20;
+		int widthLable = 100;
+		int width = 200;
 		
+		this.setLayout(null);
+		setBoundsAt(assistantUsernameLable,x,y,widthLable,height);
+		setBoundsAt(assistantUsername,x + widthLable, y ,width,20);
+		
+		y=y+25;
+		
+		setBoundsAt(assistantPasswordLable,x,y,widthLable,height);
+		setBoundsAt(assistantPassword,x + widthLable, y ,width,20);
+		
+		y=y+25;
+		
+		setBoundsAt(clientUserNameLable,x,y,widthLable,height);
+		setBoundsAt(clientUserName,x + widthLable, y ,width,20);
+		
+		y=y+25;
+		
+		setBoundsAt(clientPasswordLable,x,y,widthLable,height);
+		setBoundsAt(clientPassword,x + widthLable, y ,width,20);	
+		
+		y=y+25;
+		
+		setBoundsAt(houseIDLable,x,y,widthLable,height);
+		setBoundsAt(houseID,x + widthLable, y ,width,20);			
+		
+		y=y+25;
+		
+		setBoundsAt(houseTypeLable,x,y,widthLable,height);
+		setBoundsAt(houseType,x + widthLable, y ,width,20);			
+		
+		y=y+25;
+		
+		setBoundsAt(determinedLable,x,y,widthLable,height);
+		setBoundsAt(determined,x + widthLable, y ,width,20);	
 	}
 	
 	

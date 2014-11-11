@@ -176,7 +176,7 @@ public class ExcelEditor {
 	
 	private boolean setSheetByIndex(int sheetIndex){
 		if(sheetIndex >= sheetCount){
-			System.out.println("SheetIndex越界:" + sheetIndex + "，总计：" + sheetCount);
+//			System.out.println("SheetIndex越界:" + sheetIndex + "，总计：" + sheetCount);
 			return false;
 		}else{
 			excelSheet = excelBook.getSheetAt(sheetIndex);

@@ -423,6 +423,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		int y = 5;
 		for(final String name : panelSet.keySet()){
 			JButton button = new JButton(name);
+			button.setVisible(true);
 			button.setMargin(new Insets(0,0,0,0));
 			button.addMouseListener(new MouseAdapter() {
 				@Override
@@ -440,6 +441,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 			setBoundsAt(panelSet.get(name),350, 0, 635, 395);
 			y+=25;
 		}
+		jframe.repaint();
 	}
 	
 	

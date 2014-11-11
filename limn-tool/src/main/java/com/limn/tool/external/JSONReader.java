@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import net.sf.ezmorph.object.DateMorpher;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
 
@@ -34,6 +35,7 @@ public class JSONReader {
 						"yyyy-MM-dd HH:mm:ss" }));
 	}
 
+	
 	public static void decodeJSONObject(JSONObject json) {
 		@SuppressWarnings("unchecked")
 		Iterator<String> keys = json.keys();
@@ -55,10 +57,29 @@ public class JSONReader {
 			}
 		}
 	}
-	public static String getValueByHierarchy(String hierarchy){
+	
+	
+	
+	/**
+	 * 获取解析数据
+	 * @param data JSONOBject or JSONArray
+	 * @param hierarchy 解析的层次    冒号分割
+	 * @return JSONArray or JSONObject
+	 */
+	public static Object getObejctByHierarchy(Object data, String hierarchy){
+		Object res = data;
 		String[] hie = hierarchy.split(":");
-//		hie
-		return null;
+		for(String key:hie){
+			if(res instanceof JSONObject){
+				res = ((JSONObject) res).get(key);
+			}else if(res instanceof JSONArray){
+				res = ((JSONArray) res).get(Integer.valueOf(key));
+			}
+		}
+		return res;
 	}
+
+	
+	
 
 }

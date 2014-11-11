@@ -3,6 +3,7 @@ package com.haowu.start;
 import com.haowu.keyword.HossCustomKeyWordImpl;
 import com.haowu.keyword.HossKeyWordImpl;
 import com.haowu.keyword.HossKeyWordType;
+import com.haowu.panel.InterfacePanel;
 import com.haowu.uitest.hossweb.Initialization;
 import com.limn.frame.debug.DebugEditFrame;
 import com.limn.tool.log.RunLog;
@@ -27,6 +28,7 @@ public class DebugStart {
 		Initialization.start();
 		DebugEditFrame a = new DebugEditFrame();
 		a.addKeyWordDriver("Hoss关键字", haowuKWI, HossKeyWordType.class);
+		a.addPanel("接口", new InterfacePanel());
 		new RunLog(a);
 	}
 	
