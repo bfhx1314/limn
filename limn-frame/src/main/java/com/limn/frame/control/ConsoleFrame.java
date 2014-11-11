@@ -31,7 +31,10 @@ import org.dom4j.io.XMLWriter;
 
 import com.limn.tool.exception.ParameterException;
 import com.limn.tool.external.XMLReader;
+import com.limn.frame.keyword.BaseKeyWordDriverImpl;
+import com.limn.frame.keyword.BaseKeyWordType;
 import com.limn.frame.keyword.KeyWordDriver;
+import com.limn.frame.panel.KeyWordPanel;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
 
@@ -151,11 +154,12 @@ public class ConsoleFrame extends JFrame {
 	
 	
 //	private CoreConfig cc = null;
-	private KeyWordDriver keyWordDriver = null;
+//	private KeyWordDriver keyWordDriver = null;
+	private static BaseKeyWordDriverImpl keyWordDriver = new BaseKeyWordDriverImpl();
 	
-	public ConsoleFrame(KeyWordDriver kwd) throws Exception{
+	public ConsoleFrame() throws Exception{
 		super("脚本运行参数配置界面");
-		keyWordDriver = kwd;
+		addKeyWordDriver("基础关键字", new BaseKeyWordDriverImpl(), BaseKeyWordType.class);
 		panel.setLayout(null);
 		// 定义界面数据存放路径
 		templatePath = getTemplatePath();
@@ -616,6 +620,12 @@ public class ConsoleFrame extends JFrame {
 		add(panel);
 		setBounds((int) ((getScreenWidth() - 700) *0.5), (int) ((getScreenHeight() - 500) *0.5), 700, 500);
 		setVisible(true);
+	}
+	
+	
+	public void addKeyWordDriver(String key, KeyWordDriver keyWord,Class<?> keyWordType){
+		keyWordDriver.addKeyWordDriver(key, keyWord, keyWordType);
+		KeyWordPanel.addKeyWord(key,keyWordType);
 	}
 	
 	
@@ -1123,6 +1133,6 @@ public class ConsoleFrame extends JFrame {
 //	}
 
 	public static void main(String args[]) throws Exception{	
-		new ConsoleFrame(null);
+		new ConsoleFrame();
 	}
 }
