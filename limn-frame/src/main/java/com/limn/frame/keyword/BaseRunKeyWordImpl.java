@@ -27,7 +27,7 @@ public class BaseRunKeyWordImpl {
 		if(step.length > 2){
 			Parameter.URL = step[2];
 		}
-		startBroswer(Parameter.BROWSERTYPE, Parameter.URL, null);
+		startBroswer(Parameter.BROWSERTYPE, Parameter.URL, Parameter.REMOTEIP);
 	}
 	
 	

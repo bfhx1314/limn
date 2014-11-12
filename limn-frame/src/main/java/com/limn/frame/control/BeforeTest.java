@@ -184,8 +184,10 @@ public class BeforeTest implements Runnable {
 			Parameter.TESTCASEPATH  = Parameter.DFAULT_TEST_PATH + "/testcase/" + Parameter.TESTCASEPATH;
 		}
 		
-		Parameter.TESTNAME = new File(Parameter.TESTCASEPATH).getName();
-		
+//		Parameter.TESTNAME = new File(Parameter.TESTCASEPATH).getName();
+		Parameter.TESTNAME = FileUtil.getName(Parameter.TESTCASEPATH);
+		Parameter.TESTNAME = Parameter.TESTNAME.substring(0,Parameter.TESTNAME.lastIndexOf("."));
+//		Parameter.TESTNAME = Parameter.TESTNAME.replaceAll("[.][^.]+$", "");
 		if(new File(Parameter.TESTCASEPATH).isDirectory()){
 			Parameter.TESTCASEPATH = FileUtil.findFileByType(Parameter.TESTCASEPATH, "xls");
 		}else{
