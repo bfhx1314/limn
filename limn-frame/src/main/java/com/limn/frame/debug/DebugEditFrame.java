@@ -15,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import javax.swing.JButton;
@@ -108,7 +109,8 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	
 	private LinkedHashMap<String,CustomPanel> panelSet = new LinkedHashMap<String,CustomPanel>();
 	
-	
+	// 存放XPATH与别名
+	public static HashMap<String, String> xpathName = new HashMap<String, String>();
 	/**
 	 * 添加自定义面板到界面
 	 * @param cp 此面板需要继承CutomPanel的类
