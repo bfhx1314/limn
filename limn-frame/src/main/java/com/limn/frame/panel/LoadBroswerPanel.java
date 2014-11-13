@@ -184,7 +184,7 @@ public class LoadBroswerPanel extends CustomPanel {
 
 					Driver.highLightWebElement(currentHighWebElement);
 				} catch (SeleniumFindException e1) {
-					e1.printStackTrace();
+//					e1.printStackTrace();
 				}
 			}
 		});

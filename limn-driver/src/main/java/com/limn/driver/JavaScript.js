@@ -101,3 +101,23 @@ function getPrefixFromNS(ns) {
 function isHtmlDocument(doc) {
 	return doc.contentType === 'text/html';
 }
+
+
+
+
+//触发事件  type  mouseover .....
+function fireEvent(node,type){
+	if (window.navigator.userAgent.indexOf("MSIE")>=1){
+		node.fireEvent("on"+type);
+	}else{
+		var me = document.createEvent("MouseEvents");
+		me.initEvent(type,true,true);
+		node.dispatchEvent(me);
+	}
+}
+
+
+
+
+
+

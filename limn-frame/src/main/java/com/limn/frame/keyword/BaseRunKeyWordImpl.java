@@ -2,6 +2,8 @@ package com.limn.frame.keyword;
 
 import com.limn.driver.Driver;
 import com.limn.driver.exception.SeleniumFindException;
+import com.limn.tool.common.Common;
+import com.limn.tool.common.Print;
 import com.limn.tool.parameter.Parameter;
 
 public class BaseRunKeyWordImpl {
@@ -59,13 +61,15 @@ public class BaseRunKeyWordImpl {
 	 */
 	public static void toURL(String[] step) throws SeleniumFindException{
 		String url = step[1];
-		if(step.length == 2){
-			url = step[1] + step[2];
+		if(step.length >= 2){
+			url = step[1] + ":" + step[2];
 		}
+		Print.log("URL:" + url,0);
 		Driver.changeURL(url);
 	}
 	
 	public static void keyBoardEvent(String[] step){
+		Common.wait(2000);
 		Driver.keyBoardEvent(step[1]);
 	}
 	

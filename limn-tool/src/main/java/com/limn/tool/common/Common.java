@@ -9,6 +9,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.HashMap;
 
+import org.apache.commons.httpclient.Cookie;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpState;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.OutputFormat;
@@ -17,10 +23,15 @@ import org.dom4j.io.XMLWriter;
 
 import com.limn.tool.exception.ParameterException;
 import com.limn.tool.external.XMLReader;
+import com.limn.tool.httpclient.StructureMethod;
 import com.limn.tool.parameter.Parameter;
 
 public class Common {
 
+	/**
+	 * 等待
+	 * @param sec 毫秒
+	 */
 	public static void wait(int sec){
 		Long time = ((Integer) sec).longValue();
 		try {
@@ -31,16 +42,63 @@ public class Common {
 		}
 	}
 	
+	/**
+	 * 根据请求返回InputStream
+	 * @param cookies 当前浏览器的cookies
+	 * @param ip ip地址
+	 * @param port 端口号
+	 * @param requestURL 请求页面
+	 * @return
+	 */
+	public static InputStream getISByRequest(String cookies, String ip, int port ,String requestURL){
+		HttpClient client = new HttpClient();
+		client.getHostConfiguration().setHost(ip,port,"http");
+		
+		NameValuePair[] param = {};
+		PostMethod recommennd = StructureMethod.getPostMethod(param,requestURL);
+		
+		recommennd.setRequestHeader("Cookie", cookies);
+
+		try {
+			client.executeMethod(recommennd);
+			return recommennd.getResponseBodyAsStream();
+		} catch (HttpException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+		
+	}
 	
-	public String getCodeByPicturePath(String filePath) throws ParameterException{
+	/**
+	 * 返回OCR识别的验证码,注意有失败的几率
+	 * @param filePath 图片路径
+	 * @return
+	 * @throws ParameterException
+	 */
+	public static String getCodeByPicturePath(String filePath) throws ParameterException{
 		return new GetCodeByPicture().identificationByPath(filePath);
 	}
 	
-	public String getCodeByPictureIS(InputStream instr) throws ParameterException{
+	/**
+	 * 返回OCR识别的验证码,注意有失败的几率
+	 * @param instr 
+	 * @return
+	 * @throws ParameterException
+	 */
+	public static String getCodeByPictureIS(InputStream instr) throws ParameterException{
 		return new GetCodeByPicture().identification(instr);
 	}
 	
-	public String getCodeByPictureURL(String URL) throws ParameterException{
+	/**
+	 * 
+	 * @param URL
+	 * @return
+	 * @throws ParameterException
+	 */
+	public static String getCodeByPictureURL(String URL) throws ParameterException{
 		return new GetCodeByPicture().identification(URL);
 	}
 	
