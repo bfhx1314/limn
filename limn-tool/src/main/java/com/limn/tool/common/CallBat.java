@@ -73,7 +73,7 @@ public class CallBat {
 	    {
 //	      rt.exec(command1);//返回一个进程
 	      rt.exec(command);
-	      System.out.println("success closed");
+	      System.out.println("success closed："+processName);
 	    }
 	    catch (IOException e)
 	    {
@@ -97,7 +97,7 @@ public class CallBat {
 	    try
 	    {
 	      rt.exec(command);
-	      System.out.println("success closed");
+	      System.out.println("success closed："+titleName);
 	      Thread.sleep(1000);
 	    }
 	    catch (IOException e)
