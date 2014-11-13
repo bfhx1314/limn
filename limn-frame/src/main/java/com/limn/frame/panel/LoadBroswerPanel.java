@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
@@ -25,6 +26,7 @@ import org.openqa.selenium.WebElement;
 
 import com.limn.driver.Driver;
 import com.limn.driver.exception.SeleniumFindException;
+import com.limn.frame.debug.DebugEditFrame;
 import com.limn.renderer.WebElementCellRenderer;
 import com.limn.tool.common.Print;
 
@@ -63,7 +65,8 @@ public class LoadBroswerPanel extends CustomPanel {
 	private HashMap<String, String> rangeList = new HashMap<String, String>();
  	
 	private JButton refresh = new JButton("刷新");
-	
+	private static JButton setXPathName = new JButton("设置XPATH别名");
+	private static String locatorXPath = "";
 	public LoadBroswerPanel(){
 		
 		setBounds(0, 0, 635, 395);
@@ -92,7 +95,27 @@ public class LoadBroswerPanel extends CustomPanel {
 
 		recommendLocator.setEditable(false);
 		recommendLocator.setBorder(null);
-		
+		// 设置XPATH别名按钮
+				// JButton setXPathName = new JButton("设置XPATH别名");
+				setXPathName.setMargin(new Insets(0, 0, 0, 0));
+				setBoundsAt(setXPathName, 515, 50, 100, 20);
+				setXPathName.setEnabled(false);
+				setXPathName.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						String name = JOptionPane.showInputDialog(
+								LoadBroswerPanel.this, "设置XPATH别名", "");
+						if (name != null && !name.equals("")) {
+							DebugEditFrame.xpathName.put(name, locatorXPath);
+							// 传入用例输入框
+							String step = "录入:" + name + ":" ;
+							DebugEditFrame.setStepTextArea(step);
+							// System.out.println(name);
+						}
+
+					}
+				});
 		//搜索框
 		JLabel locatorLabel = new JLabel("定位:");
 		JButton search = new JButton("搜索");

@@ -26,7 +26,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import com.limn.client.remote.RemoteClient;
-import com.limn.frame.control.BeforeTest;
 import com.limn.tool.common.Common;
 
 import org.dom4j.Document;

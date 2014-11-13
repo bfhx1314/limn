@@ -87,6 +87,7 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 		int index = 0;
 		Print.debugLog("***************************", 2);
 		for (Row row:excelSheet){	
+			excelSheet.getSheetName();
 			setCurrentRow(row.getRowNum());
 			if (getTestCaseNo() != null && getTestCaseNo().equals("用例编号")){
 				excelModuleStartIndex.put(index, row.getRowNum() + 1);
