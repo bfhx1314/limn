@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
+
 import com.limn.tool.regexp.RegExp;
 import com.limn.tool.common.Print;
 import com.limn.tool.external.ExcelEditor;
@@ -186,6 +187,11 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 		return getCurrentCell(7);
 	}
 	
+	@Override
+	public String getAssociatedProperites() {
+		return getCurrentCell(8);
+	}
+	
 	
 	@Override
 	public void setExecuted(String value) {
@@ -233,6 +239,11 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 	@Override
 	public void setResult(String value) {
 		setCurrentCell(7,value);
+	}
+	
+	@Override
+	public void setAssociatedProperites(String value) {
+		setCurrentCell(8,value);
 	}
 	
 //	@Override
@@ -413,11 +424,12 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 					row.createCell(5);
 					row.createCell(6);
 					row.createCell(7);
+					row.createCell(8);
 				}else{
 					setCellStyle(row,contentStyle);
 				}
 				row.setHeightInPoints(13);
-				for(int cellIndex = 0;cellIndex<=7;cellIndex++){
+				for(int cellIndex = 0;cellIndex<=8;cellIndex++){
 					HSSFCell cell = row.getCell(cellIndex);
 					int lineCount = 1;
 					
@@ -442,12 +454,13 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 		excelSheet.autoSizeColumn((short)5);
 		excelSheet.autoSizeColumn((short)6);
 		excelSheet.autoSizeColumn((short)7);
+		excelSheet.autoSizeColumn((short)8);
 	}
 	
 	
 	private void setCellStyle(HSSFRow row, CellStyle sytel_0){
 		
-		for (int i = 0; i < 8; i++){
+		for (int i = 0; i < 9; i++){
 			if(null == row.getCell(i)){
 				row.createCell(i);
 			}
@@ -564,5 +577,8 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 	public void setHyperLinks(int index, String path) {
 		setExcelHyperLinks(index,path);
 	}
+
+
+
 	
 }

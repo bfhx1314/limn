@@ -81,9 +81,7 @@ public class EditTestCasePanel extends CustomPanel {
 	//测试用例表格
 	private JTable testCaseTable = new JTable();
 	private DefaultTableModel testCaseModel = new DefaultTableModel();
-	private JScrollPane testCaseJScroll = new JScrollPane(testCaseTable,
-			ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+	private JScrollPane testCaseJScroll = new JScrollPane();
 	
 	//菜单栏
 	private JMenuBar menubar = new JMenuBar();
@@ -153,6 +151,9 @@ public class EditTestCasePanel extends CustomPanel {
 		
 		//模块列表
 
+
+		
+		
 		setBoundsAt(moduleKey,0, 35, 100, 20);
 		setBoundsAt(jModuleList,50, 3, 60, 25);
 		setBoundsAt(moduleJListJSP,110,3,160,60);
@@ -182,6 +183,8 @@ public class EditTestCasePanel extends CustomPanel {
 		saveModule.setMargin(new Insets(0,0,0,0));
 
 		//TestCaseTable
+		testCaseJScroll.setViewportView(testCaseTable);
+		testCaseTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		setBoundsAt(testCaseJScroll,0, 65, 635, 330);
 		
 		
@@ -190,6 +193,7 @@ public class EditTestCasePanel extends CustomPanel {
 		testCaseModel.addColumn("相关用例");
 		testCaseModel.addColumn("用例步骤");
 		testCaseModel.addColumn("预期结果");
+		testCaseModel.addColumn("关联属性");
 		testCaseTable.setModel(testCaseModel);
 
 		
@@ -222,7 +226,7 @@ public class EditTestCasePanel extends CustomPanel {
 		testCaseTable.getColumnModel().getColumn(0).setCellRenderer(new TableCellCheckBoxRenderer());
 		
 		
-		testCaseTable.setColumnModel(getColumn(testCaseTable,new int[]{20,20,20,200,150}));
+		testCaseTable.setColumnModel(getColumn(testCaseTable,new int[]{75,75,75,200,200,200}));
 
 		testCaseTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		
@@ -564,7 +568,7 @@ public class EditTestCasePanel extends CustomPanel {
 			for(int i=0;i<testCaseStep.length;i++){
 				testCaseModel.insertRow(i, new Object[]{
 						testCaseStep[i][0],testCaseStep[i][1],testCaseStep[i][2],
-						testCaseStep[i][3],testCaseStep[i][4]});
+						testCaseStep[i][3],testCaseStep[i][4],testCaseStep[i][5]});
 			}
 			testCaseTable.setModel(testCaseModel);
 		}
@@ -713,13 +717,14 @@ public class EditTestCasePanel extends CustomPanel {
 	private void saveModuleCase(){
 		if(moduleJList.getSelectedIndex()!=-1){
 			int rowCount = testCaseTable.getRowCount();
-			String[][] testCase = new String[rowCount][5];
+			String[][] testCase = new String[rowCount][6];
 			for(int i = 0; i < rowCount; i++){
 				testCase[i][0] = testCaseTable.getValueAt(i, 0)==null?"":testCaseTable.getValueAt(i, 0).toString();
 				testCase[i][1] = testCaseTable.getValueAt(i, 1)==null?"":testCaseTable.getValueAt(i, 1).toString();
 				testCase[i][2] = testCaseTable.getValueAt(i, 2)==null?"":testCaseTable.getValueAt(i, 2).toString();
 				testCase[i][3] = testCaseTable.getValueAt(i, 3)==null?"":testCaseTable.getValueAt(i, 3).toString();
 				testCase[i][4] = testCaseTable.getValueAt(i, 4)==null?"":testCaseTable.getValueAt(i, 4).toString();
+				testCase[i][5] = testCaseTable.getValueAt(i, 5)==null?"":testCaseTable.getValueAt(i, 5).toString();
 			}
 			eTestCase.saveModuleCase(moduleJList.getSelectedIndex(),testCase);
 		}
@@ -778,12 +783,28 @@ public class EditTestCasePanel extends CustomPanel {
 		
 	}
 	
-	
+	/**
+	 * 
+	 * @param steps
+	 */
 	public void setTestCaseStep(String steps){
 		
 		int row = testCaseTable.getSelectedRow();
 		if(row!=-1){
 			testCaseTable.setValueAt(steps, row, 3);
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * @param steps
+	 */
+	public void setAssProperties(String steps){
+		
+		int row = testCaseTable.getSelectedRow();
+		if(row!=-1){
+			testCaseTable.setValueAt(steps, row, 5);
 		}
 		
 	}

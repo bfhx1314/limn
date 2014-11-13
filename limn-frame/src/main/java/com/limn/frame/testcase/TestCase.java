@@ -98,6 +98,12 @@ public interface TestCase {
 	public String getResult();
 	
 	/**
+	 * 获取关联属性
+	 * @return
+	 */
+	public String getAssociatedProperites();
+	
+	/**
 	 * 设置是否执行
 	 * @param value 1 or 0
 	 */
@@ -132,6 +138,12 @@ public interface TestCase {
 	 * @param value
 	 */
 	public void setResult(String value);
+	
+	/**
+	 * 设置关联属性
+	 * @param value
+	 */
+	public void setAssociatedProperites(String value);
 	
 //	/**
 //	 * 写入第8列
@@ -203,4 +215,5 @@ public interface TestCase {
 	 * @param path 超链接地址
 	 */
 	public void setHyperLinks(int index, String path);
+
 }

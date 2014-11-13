@@ -1,10 +1,15 @@
 package com.limn.frame.keyword;
 
+import java.util.HashMap;
+
 import com.limn.driver.Driver;
 import com.limn.driver.exception.SeleniumFindException;
+import com.limn.frame.control.Test;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
+import com.limn.tool.common.TransformationMap;
 import com.limn.tool.parameter.Parameter;
+import com.limn.tool.regexp.RegExp;
 
 public class BaseRunKeyWordImpl {
 	
@@ -72,5 +77,31 @@ public class BaseRunKeyWordImpl {
 		Common.wait(2000);
 		Driver.keyBoardEvent(step[1]);
 	}
+	
+	/**
+	 * 
+	 * @param step
+	 * @throws SeleniumFindException
+	 */
+	public static void inputValue(String[] step) throws SeleniumFindException{
+		HashMap<String,String> traXPath = null; 
+		if(step.length >= 4 && RegExp.findCharacters(step[3], "^HASHMAP")){
+			traXPath = TransformationMap.transformationByString(step[3]);
+		}else{
+			traXPath = TransformationMap.transformationByString(Test.getAssociatedProperites());
+		}
+		String xpath = null;
+		if(null != traXPath){
+			if(traXPath.containsKey(step[2])){
+				xpath = traXPath.get(step[2]);
+			}
+		}else{
+			xpath = step[2];
+		}
+		
+		Driver.setValue(step[1], xpath);
+		
+	}
+	
 	
 }

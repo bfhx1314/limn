@@ -67,7 +67,7 @@ public class EditTestCase{
 		
 		int countRow = end - start + 1;
 
-		String[][] testCaseStep = new String[countRow][5];
+		String[][] testCaseStep = new String[countRow][6];
 		
 		for (int i = 0; i < countRow; i++){
 			testCase.setCurrentRow(start);
@@ -77,6 +77,7 @@ public class EditTestCase{
 			testCaseStep[i][2] = testCase.getRelatedNo();
 			testCaseStep[i][3] = testCase.getTestStep();
 			testCaseStep[i][4] = testCase.getExpected();
+			testCaseStep[i][5] = testCase.getExpected();
 		}
 		return testCaseStep;
 	}
@@ -136,6 +137,7 @@ public class EditTestCase{
 			testCase.setTestRelatedNo(testCaseTable[rowIndex][2]);
 			testCase.setTestStep(testCaseTable[rowIndex][3]);
 			testCase.setResults(testCaseTable[rowIndex][4]);
+			testCase.setAssociatedProperites(testCaseTable[rowIndex][5]);
 			refreshModuleData();
 			testCase.saveFile();
 			
@@ -170,6 +172,7 @@ public class EditTestCase{
 		testCase.setAcutal("实际结果");
 		testCase.setSQLResults("数据库结果");
 		testCase.setResult("是否通过");
+		testCase.setAssociatedProperites("关联属性");
 		
 		
 		testCase.saveFile();

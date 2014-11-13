@@ -42,7 +42,8 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 			//录入
 			case BaseKeyWordType.INPUT:
 				cheakKeyWordCount(step.length, 2);
-				Driver.setValue(step[1], step[2]);
+				BaseRunKeyWordImpl.inputValue(step);
+				
 				break;
 			//提示框
 			case BaseKeyWordType.DIALOG:

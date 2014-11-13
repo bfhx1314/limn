@@ -424,6 +424,16 @@ public class Test {
 	}
 	
 	/**
+	 * 获取excel实际结果内容，第6列
+	 * @return
+	 */
+	public static String getAssociatedProperites(){
+		return tc.getAssociatedProperites();
+	}
+	
+	
+	
+	/**
 	 * 实际结果内容写入excel，第6列
 	 * @param value
 	 */
