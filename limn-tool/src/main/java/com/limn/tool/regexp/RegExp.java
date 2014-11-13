@@ -142,11 +142,17 @@ public class RegExp {
 	 * 实例
 	 */
 	public static void main(String[] args){
+		String ip = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."  
+                +"(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."  
+                +"(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."  
+                +"(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
+		String ip1 = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])(\\.(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5][1-9\\d]|\\d)){3}";
 		String a = "登陆:\\:\\1:aaaaa";
+		a = "1.1.1.1";
+		System.out.println(RegExp.findCharacters(a, ip));
 		String[] b = RegExp.splitKeyWord(a);
 		System.out.println(b);
 	}
 	
 	
 }
-

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.limn.frame.keyword;
 
 import java.util.HashMap;
@@ -116,3 +117,89 @@ public class BaseRunKeyWordImpl {
 	
 	
 }
+=======
+package com.limn.frame.keyword;
+
+import com.limn.driver.Driver;
+import com.limn.driver.exception.SeleniumFindException;
+import com.limn.tool.parameter.Parameter;
+import com.limn.tool.regexp.RegExp;
+
+public class BaseRunKeyWordImpl {
+	
+	/**
+	 * 启动浏览器
+	 * @param step 数组参数 0 可选参数 1浏览器类型 可选参数  2URL
+	 * @throws SeleniumFindException
+	 */
+	public static void startBrowser(String[] step) throws SeleniumFindException{
+		int stepLen = step.length;
+		for(int i=1;i<stepLen;i++){
+			if (RegExp.findCharacters(step[i], "(?i)^http|^https")){
+				if (stepLen <= i + 1) {
+					throw new SeleniumFindException("URL地址为空。");
+				}
+				Parameter.URL = step[i] + ":" + step[i + 1];
+				i++;
+			}else if(RegExp.findCharacters(step[i], "(?i)firefox|ie|chrome")){
+				if(step[i].equalsIgnoreCase("firefox")){
+					Parameter.BROWSERTYPE = 1;
+				}else if(step[i].equalsIgnoreCase("ie")){
+					Parameter.BROWSERTYPE = 3;
+				}else if(step[i].equalsIgnoreCase("chrome")){
+					Parameter.BROWSERTYPE = 2;
+				}else{
+					throw new SeleniumFindException("不支持此浏览器类型:" + step[i] + " 支持的类型有:firefox,chrome,ie");
+				}
+			}else if(RegExp.findCharacters(step[i], "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])(\\.(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5][1-9\\d]|\\d)){3}")){
+				Parameter.REMOTEIP = step[i];
+			}
+		}
+		
+//		if(step.length > 2){
+//			Parameter.URL = step[2];
+//		}
+		startBroswer(Parameter.BROWSERTYPE, Parameter.URL, Parameter.REMOTEIP);
+	}
+	
+	
+	/**
+	 * 初始化浏览器
+	 * @param type 浏览器类型 1firefox 2chrome
+	 * @param url 地址
+	 * @param ip 远程运行IP 可选
+	 * @throws SeleniumFindException 
+	 * @throws HaowuException 
+	 */
+	public static void startBroswer(int type, String url, String ip) throws SeleniumFindException {
+		Driver.setDriver(type, url, ip);
+		Driver.startBrowser();
+	}
+	
+	
+	/**
+	 * 关闭浏览器
+	 */
+	public static void stopBroswer(){
+		Driver.closeBrowser();
+	}
+	
+	/**
+	 * 页面跳转
+	 * @param step
+	 * @throws SeleniumFindException
+	 */
+	public static void toURL(String[] step) throws SeleniumFindException{
+		String url = step[1];
+		if(step.length == 2){
+			url = step[1] + step[2];
+		}
+		Driver.changeURL(url);
+	}
+	
+	public static void keyBoardEvent(String[] step){
+		Driver.keyBoardEvent(step[1]);
+	}
+	
+}
+>>>>>>> branch 'master' of https://github.com/bfhx1314/limn.git
