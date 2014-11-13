@@ -1,17 +1,0 @@
-11-12 17:36:46-->正在启动本地电脑Hub.....请稍等
-11-12 17:36:50-->正在启动远程电脑Node.....请稍等
-11-12 17:36:53-->远程端口:5556
-11-12 17:36:58-->浏览器启动成功
-11-12 17:37:05-->无法定位元素xpath:By.name: username
-11-12 17:37:05-->无法定位元素xpath:By.id: username
-11-12 17:37:05-->未定位WebElement locator:username
-11-12 17:37:05-->定位失败locator:username
-11-12 17:37:05-->定位失败locator:username
-11-12 17:37:05-->定位失败locator:username
-11-12 17:37:12-->无法定位元素xpath:By.id: password
-11-12 17:37:12-->无法定位元素xpath:By.name: password
-11-12 17:37:13-->未定位WebElement locator:password
-11-12 17:37:13-->定位失败locator:password
-11-12 17:37:13-->定位失败locator:password
-11-12 17:37:13-->定位失败locator:password
-
