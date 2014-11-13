@@ -42,6 +42,10 @@ public class ExcelEditor {
 		sheetCount = excelBook.getNumberOfSheets();
 	}
 	
+//	public static void main(String[] args){
+//		ExcelEditor ee = new ExcelEditor("F:\\test.xls");
+//	}
+	
 	/**
 	 * 
 	 */

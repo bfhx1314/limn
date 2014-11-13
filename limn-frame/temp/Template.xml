@@ -3,14 +3,14 @@
 <QTP> 
   <Templates> 
     <Template id="s1" Core="s1"> 
-      <Computer>本机</Computer>  
-      <IP/>  
+      <Computer>远程</Computer>  
+      <IP>172.16.24.185</IP>  
       <BrowserType>Firefox</BrowserType>  
       <URL>http://www.baidu.com</URL>  
       <Middleware/>  
       <Yigo/>  
       <Version/>  
-      <ExcelPath>D:\用户目录\Documents\test.xls</ExcelPath>  
+      <ExcelPath>F:\zzz.xls</ExcelPath>  
       <ExecuteMode>固定模式执行</ExecuteMode>  
       <SheetsNum/>  
       <FrontSteps>需要</FrontSteps>  
@@ -25,7 +25,7 @@
       <NotServer>false</NotServer>  
       <UploadResults>false</UploadResults>  
       <StartPlatform>true</StartPlatform>  
-      <EditExcelPath>D:\用户目录\Documents\aaa.xls</EditExcelPath> 
+      <EditExcelPath>F:\zzz.xls</EditExcelPath> 
     </Template> 
   </Templates>  
   <Cores> 
