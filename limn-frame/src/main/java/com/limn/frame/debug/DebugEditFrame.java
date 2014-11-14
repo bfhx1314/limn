@@ -40,6 +40,7 @@ import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.frame.panel.CustomPanel;
 import com.limn.frame.panel.KeyWordPanel;
 import com.limn.frame.panel.LoadBroswerPanel;
+import com.limn.tool.common.Print;
 import com.limn.tool.common.TransformationMap;
 import com.limn.tool.log.LogControlInterface;
 import com.limn.tool.log.LogDocument;
@@ -390,6 +391,9 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 				String assPro = testCasePanel.getSelectAssProperties();
 				if(null != assPro && !assPro.isEmpty()){
 					xpathName = TransformationMap.transformationByString(assPro);
+					Print.log("获取关联属性:" + xpathName.size(),0);
+				}else{
+					Print.log("未获取获取关联属性",0);
 				}
 				
 			}
