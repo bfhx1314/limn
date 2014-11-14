@@ -40,6 +40,7 @@ import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.frame.panel.CustomPanel;
 import com.limn.frame.panel.KeyWordPanel;
 import com.limn.frame.panel.LoadBroswerPanel;
+import com.limn.tool.common.TransformationMap;
 import com.limn.tool.log.LogControlInterface;
 import com.limn.tool.log.LogDocument;
 import com.limn.tool.log.PrintLogDriver;
@@ -342,7 +343,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 						}
 					}
 					executeStep(step,true);
-
+					
 				}
 
 			}
@@ -359,6 +360,8 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 						steps =  steps + "\n" +(String) model.getValueAt(i, 0);
 					}
 					testCasePanel.setTestCaseStep(steps);
+
+					testCasePanel.setAssProperties(TransformationMap.transformationByMap(xpathName));
 				}
 				
 			}
@@ -373,8 +376,12 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 					for(String evertStep:steps){
 						model.addRow(new Object[]{evertStep});
 					}
-
+					
 					editTestCase.setModel(model);
+				}
+				String assPro = testCasePanel.getSelectAssProperties();
+				if(null != assPro){
+					
 				}
 				
 			}
