@@ -113,8 +113,8 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	private LinkedHashMap<String,CustomPanel> panelSet = new LinkedHashMap<String,CustomPanel>();
 	
 	// 存放XPATH与别名
-	private static HashMap<String, String> xpathName = new HashMap<String, String>();
-	public static HashMap<String, String> getXpathName() {
+	private static LinkedHashMap<String, String> xpathName = new LinkedHashMap<String, String>();
+	public static LinkedHashMap<String, String> getXpathName() {
 		return xpathName;
 	}
 
@@ -122,10 +122,12 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		DebugEditFrame.xpathName.put(key, value);
 	}
 	
-	public static void removeXpathName() {
-		DebugEditFrame.xpathName = new HashMap<String, String>();
+	public static void removeXpathAll() {
+		DebugEditFrame.xpathName = new LinkedHashMap<String, String>();
 	}
-
+	public static void removeXpathName(String key) {
+		DebugEditFrame.xpathName.remove(key);
+	}
 	/**
 	 * 添加自定义面板到界面
 	 * @param cp 此面板需要继承CutomPanel的类
@@ -186,7 +188,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				DebugEditFrame.removeXpathName();
+				DebugEditFrame.removeXpathAll();
 			}
 		});
 //		setBoundsAt(Jtab,350, 0, 635, 395);
@@ -319,7 +321,33 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 			public void actionPerformed(ActionEvent e) {
 				if(editTestCase.getSelectedRow()!=-1){
 					int row = editTestCase.getSelectedRow();
+					int in = model.getColumnCount();
+					String excelVaule = model.getValueAt(row, 0).toString();
+					String searchKey = RegExp.splitKeyWord(excelVaule)[1];
+					String[] getNameXPath = testCasePanel.getSelectStepXPath();
+					int index = -1;
+					if (getNameXPath.length>1){
+						for(int j=1;j<getNameXPath.length;j++){
+							String[] arrXPath = RegExp.splitWord(getNameXPath[j], "\t");
+							String XPathKey = arrXPath[0];
+							String XPathVaule = arrXPath[1];
+							DebugEditFrame.setXpathName(XPathKey, XPathVaule);
+							if (searchKey.equals(XPathKey)){
+								DebugEditFrame.removeXpathName(XPathKey);
+//								index = j;
+							}
+						}
+					}
+
+//					String[] ary = new String[getNameXPath.length-1];
+//					if (index != -1){
+//						System.arraycopy(getNameXPath, 0, ary, 0, index);
+//						System.arraycopy(getNameXPath, index+1, ary, index, ary.length-index);
+//						getNameXPath = ary;
+////						testCasePanel.setAssProperties
+//					}
 					model.removeRow(row);
+
 					if(model.getRowCount()!=0 && model.getRowCount()>row){
 						editTestCase.setRowSelectionInterval(0,row);
 					}else if(model.getRowCount()!=0 && model.getRowCount()<=row){
