@@ -2,13 +2,14 @@ package com.limn.tool.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import com.limn.tool.regexp.RegExp;
 
 public class TransformationMap {
 	
 	
-	public static String transformationByMap(HashMap<String,String> data){
+	public static String transformationByMap(LinkedHashMap<String,String> data){
 		String traString = "HASHMAP\n";
 		for(String key : data.keySet()){
 			if(traString.equalsIgnoreCase("HASHMAP\n")){
@@ -20,10 +21,10 @@ public class TransformationMap {
 		return traString;
 	}
 	
-	public static HashMap<String,String> transformationByString(String data){
+	public static LinkedHashMap<String,String> transformationByString(String data){
 		if(RegExp.findCharacters(data, "^HASHMAP\n")){
 			data = data.substring(8);
-			HashMap<String,String> map = new HashMap<String, String>();
+			LinkedHashMap<String,String> map = new LinkedHashMap<String, String>();
 			String[] dataDe = data.split("\n");
 			for(String key : dataDe){
 				ArrayList<String> keyValue = RegExp.matcherCharacters(key, "[^\t]{1,}");
@@ -31,13 +32,13 @@ public class TransformationMap {
 			}
 			return map;
 		}else{
-			return new HashMap<String,String>();
+			return new LinkedHashMap<String,String>();
 		}
 		
 	}
 	
 	public static void main(String[] args){
-		HashMap<String,String> a = new HashMap<String, String>();
+		LinkedHashMap<String,String> a = new LinkedHashMap<String, String>();
 		a.put("a", "1");
 		a.put("b", "2");
 		String b = TransformationMap.transformationByMap(a);
