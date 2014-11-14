@@ -103,14 +103,14 @@ public class BaseRunKeyWordImpl {
 		}
 		String xpath = null;
 		if(null != traXPath){
-			if(traXPath.containsKey(step[2])){
-				xpath = traXPath.get(step[2]);
+			if(traXPath.containsKey(step[1])){
+				xpath = traXPath.get(step[1]);
 			}
 		}else{
-			xpath = step[2];
+			xpath = step[1];
 		}
 		
-		Driver.setValue(step[1], xpath);
+		Driver.setValue(xpath,step[2]);
 		
 	}
 	

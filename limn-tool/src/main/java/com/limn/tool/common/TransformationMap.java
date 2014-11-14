@@ -11,7 +11,7 @@ public class TransformationMap {
 	public static String transformationByMap(HashMap<String,String> data){
 		String traString = "HASHMAP\n";
 		for(String key : data.keySet()){
-			if(null == traString){
+			if(traString.equalsIgnoreCase("HASHMAP\n")){
 				traString = traString + key + "\t" + data.get(key);
 			}else{
 				traString = traString + "\n" + key + "\t" + data.get(key);
@@ -21,7 +21,7 @@ public class TransformationMap {
 	}
 	
 	public static HashMap<String,String> transformationByString(String data){
-		data = data.substring(9);
+		data = data.substring(8);
 		HashMap<String,String> map = new HashMap<String, String>();
 		String[] dataDe = data.split("\n");
 		for(String key : dataDe){

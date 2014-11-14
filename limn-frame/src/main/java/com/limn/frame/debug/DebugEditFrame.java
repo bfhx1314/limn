@@ -111,7 +111,15 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	private LinkedHashMap<String,CustomPanel> panelSet = new LinkedHashMap<String,CustomPanel>();
 	
 	// 存放XPATH与别名
-	public static HashMap<String, String> xpathName = new HashMap<String, String>();
+	private static HashMap<String, String> xpathName = new HashMap<String, String>();
+	public static HashMap<String, String> getXpathName() {
+		return xpathName;
+	}
+
+	public static void setXpathName(String key, String value) {
+		DebugEditFrame.xpathName.put(key, value);
+	}
+
 	/**
 	 * 添加自定义面板到界面
 	 * @param cp 此面板需要继承CutomPanel的类
@@ -573,11 +581,17 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		public void run() {
 			try{
 				String[] steps = step.split("\n");
+				for (int j = 0; j < steps.length; j++){
+					if (RegExp.findCharacters(steps[j], ("^录入:"))){
+						steps[j] = steps[j] + ":" + TransformationMap.transformationByMap(xpathName);
+					}
+				}
 				for(int i = 0;i<steps.length;i++){
 					String[] key = RegExp.splitKeyWord(steps[i]);
 					if(isExecuteAgain){
 						editTestCase.setRowSelectionInterval(0,i);
 					}
+
 					keyWordDriver.start(key);
 				}
 			}finally{
