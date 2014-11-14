@@ -763,7 +763,20 @@ public class EditTestCasePanel extends CustomPanel {
 		}
 		return steps.split("\n");
 	}
-	
+	/**
+	 * 返回XPath用例
+	 * @return
+	 */
+	public String[] getSelectStepXPath() {
+		String steps = null;
+		int row = testCaseTable.getSelectedRow();
+		if (row != -1) {
+			steps = (String) testCaseTable.getValueAt(row, 5);
+		} else {
+			return null;
+		}
+		return steps.split("\n");
+	}
 	/**
 	 * 返回关联属性
 	 * @return
