@@ -90,6 +90,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	private JButton insertExecute = new JButton("插入执行");
 	private JButton executeAgain = new JButton("执行");
 	private JButton deleteRow = new JButton("删除");
+	private JButton deleteXPath = new JButton("删除XPath别名");
 	
 	
 	JTabbedPane tabbedPane = new JTabbedPane();
@@ -119,6 +120,10 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 
 	public static void setXpathName(String key, String value) {
 		DebugEditFrame.xpathName.put(key, value);
+	}
+	
+	public static void removeXpathName() {
+		DebugEditFrame.xpathName = new HashMap<String, String>();
 	}
 
 	/**
@@ -170,10 +175,20 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		setBoundsAt(insertExecute,82, 80, 100, 20);
 		
 		setBoundsAt(stepJScrollStep,2, 105, 300, 270);
-		setBoundsAt(executeAgain,202, 380, 100, 20);
-		setBoundsAt(deleteRow,82, 380, 100, 20);
+		executeAgain.setMargin(new Insets(0, 0, 0, 0));
+		setBoundsAt(executeAgain,215, 380, 50, 20);
+		deleteRow.setMargin(new Insets(0, 0, 0, 0));
+		setBoundsAt(deleteRow,145, 380, 50, 20);
+		deleteXPath.setMargin(new Insets(0, 0, 0, 0));
+		setBoundsAt(deleteXPath,20, 380, 105, 20);
 		
-		
+		deleteXPath.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				DebugEditFrame.removeXpathName();
+			}
+		});
 //		setBoundsAt(Jtab,350, 0, 635, 395);
 		
 //		setBoundsAt(testCasePanel,350, 0, 635, 395);
