@@ -110,7 +110,16 @@ public class LoadBroswerPanel extends CustomPanel {
 				String name = JOptionPane.showInputDialog(
 						LoadBroswerPanel.this, "设置XPATH别名", "");
 				if (name != null && !name.equals("")) {
-					DebugEditFrame.xpathName.put(name, locatorXPath);
+					HashMap<String, String> hm = DebugEditFrame.getXpathName();
+//					do{
+//						
+//					}while();
+//					if (hm.containsKey(name)){
+//						
+//					}else{
+						DebugEditFrame.setXpathName(name, locatorXPath);
+//					}
+					
 					// 传入用例输入框
 					String step = "录入:" + name + ":" ;
 					DebugEditFrame.setStepTextArea(step);

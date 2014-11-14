@@ -77,7 +77,7 @@ public class EditTestCase{
 			testCaseStep[i][2] = testCase.getRelatedNo();
 			testCaseStep[i][3] = testCase.getTestStep();
 			testCaseStep[i][4] = testCase.getExpected();
-			testCaseStep[i][5] = testCase.getExpected();
+			testCaseStep[i][5] = testCase.getAssociatedProperites();
 		}
 		return testCaseStep;
 	}
