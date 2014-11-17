@@ -15,7 +15,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import javax.swing.JButton;
@@ -119,24 +118,30 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	}
 
 	public static void setXpathName(String key, String value) {
-		DebugEditFrame.xpathName.put(key, value);
+		if(xpathName.containsKey(key)){
+			xpathName.replace(key, value);
+		}else{
+			xpathName.put(key, value);
+		}
 	}
 	
+	
 	public static void removeXpathAll() {
-		DebugEditFrame.xpathName = new LinkedHashMap<String, String>();
+		Print.log("删除全部关联属性:" + xpathName.size(), 0);
+		xpathName.clear();
 	}
+	
 	public static void removeXpathName(String key) {
-		DebugEditFrame.xpathName.remove(key);
+		if(xpathName.containsKey(key)){
+			Print.log("删除关联属性:" + key + "=" + xpathName.get(key), 0);
+			xpathName.remove(key);
+		}
 	}
 	/**
 	 * 添加自定义面板到界面
 	 * @param cp 此面板需要继承CutomPanel的类
 	 */
-//	public DebugEditFrame(Class<?> cp, KeyWordDriver kwd){
-//		customPanel = new KeyWordPanel(cp);
-//		keyWordDriver.addKeyWordDriver(key, kwd, cp);
-//		init();
-//	}
+
 	
 
 	
@@ -321,23 +326,29 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 			public void actionPerformed(ActionEvent e) {
 				if(editTestCase.getSelectedRow()!=-1){
 					int row = editTestCase.getSelectedRow();
-					int in = model.getColumnCount();
+//					int in = model.getColumnCount();
+					
 					String excelVaule = model.getValueAt(row, 0).toString();
-					String searchKey = RegExp.splitKeyWord(excelVaule)[1];
-					String[] getNameXPath = testCasePanel.getSelectStepXPath();
-					int index = -1;
-					if (getNameXPath.length>1){
-						for(int j=1;j<getNameXPath.length;j++){
-							String[] arrXPath = RegExp.splitWord(getNameXPath[j], "\t");
-							String XPathKey = arrXPath[0];
-							String XPathVaule = arrXPath[1];
-							DebugEditFrame.setXpathName(XPathKey, XPathVaule);
-							if (searchKey.equals(XPathKey)){
-								DebugEditFrame.removeXpathName(XPathKey);
-//								index = j;
-							}
-						}
+					String splitKey[] = RegExp.splitKeyWord(excelVaule);
+
+					if(splitKey.length>1 && splitKey[0].equals("录入")){
+						removeXpathName(splitKey[1]);
 					}
+//					String searchKey = RegExp.splitKeyWord(excelVaule)[1];
+//					String[] getNameXPath = testCasePanel.getSelectStepXPath();
+//					int index = -1;
+//					if (getNameXPath.length>1){
+//						for(int j=1;j<getNameXPath.length;j++){
+//							String[] arrXPath = RegExp.splitWord(getNameXPath[j], "\t");
+//							String XPathKey = arrXPath[0];
+//							String XPathVaule = arrXPath[1];
+//							DebugEditFrame.setXpathName(XPathKey, XPathVaule);
+//							if (searchKey.equals(XPathKey)){
+//								DebugEditFrame.removeXpathName(XPathKey);
+////								index = j;
+//							}
+//						}
+//					}
 
 //					String[] ary = new String[getNameXPath.length-1];
 //					if (index != -1){
