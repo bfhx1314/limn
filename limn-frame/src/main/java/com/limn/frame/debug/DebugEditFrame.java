@@ -137,14 +137,9 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 			xpathName.remove(key);
 		}
 	}
-	/**
-	 * 添加自定义面板到界面
-	 * @param cp 此面板需要继承CutomPanel的类
-	 */
-
+	
 	
 
-	
 	public DebugEditFrame(){
 		keyWordPanel = new KeyWordPanel();
 		addKeyWordDriver("基础关键字", new BaseKeyWordDriverImpl(), BaseKeyWordType.class);
@@ -163,9 +158,6 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	}
 	
 	
-	
-	
-		
 	private void init(){
 		//基本设置
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -196,6 +188,8 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 				DebugEditFrame.removeXpathAll();
 			}
 		});
+		
+		
 //		setBoundsAt(Jtab,350, 0, 635, 395);
 		
 //		setBoundsAt(testCasePanel,350, 0, 635, 395);

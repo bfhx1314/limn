@@ -10,10 +10,10 @@ public class TransformationMap {
 	
 	
 	public static String transformationByMap(LinkedHashMap<String,String> data){
-		String traString = "";
+		String traString = "HASHMAP\n";
 		for(String key : data.keySet()){
 			if(traString.isEmpty()){
-				traString = "HASHMAP\n" + key + "\t" + data.get(key);
+				traString = traString + key + "\t" + data.get(key);
 			}else{
 				traString = traString + "\n" + key + "\t" + data.get(key);
 			}
@@ -23,7 +23,7 @@ public class TransformationMap {
 	
 	public static LinkedHashMap<String,String> transformationByString(String data){
 		if(RegExp.findCharacters(data, "^HASHMAP\n")){
-			data = data.substring(8);
+			data = data.substring(9);
 			LinkedHashMap<String,String> map = new LinkedHashMap<String, String>();
 			String[] dataDe = data.split("\n");
 			for(String key : dataDe){

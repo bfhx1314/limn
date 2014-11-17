@@ -99,12 +99,19 @@ public class BaseRunKeyWordImpl {
 		if(step.length >= 4 && RegExp.findCharacters(step[3], "^HASHMAP")){
 			traXPath = TransformationMap.transformationByString(step[3]);
 		}else{
-			traXPath = TransformationMap.transformationByString(Test.getAssociatedProperites());
+			String context = Test.getAssociatedProperites();
+			if(null == context){
+				traXPath = null;
+			}else{
+				traXPath = TransformationMap.transformationByString(context);
+			}
 		}
 		String xpath = null;
 		if(null != traXPath){
 			if(traXPath.containsKey(step[1])){
 				xpath = traXPath.get(step[1]);
+			}else{
+				xpath = step[1];
 			}
 		}else{
 			xpath = step[1];
