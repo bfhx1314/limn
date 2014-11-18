@@ -1,5 +1,6 @@
 package com.limn.frame.keyword;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.limn.driver.Driver;
@@ -8,6 +9,7 @@ import com.limn.frame.control.Test;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.TransformationMap;
+import com.limn.tool.exception.ParameterException;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
 
@@ -120,7 +122,66 @@ public class BaseRunKeyWordImpl {
 		Driver.setValue(xpath,step[2]);
 		
 	}
+
+	/**
+	 * 表达式 (“=”右边暂时仅支持一次运算，暂时只支持“+”、“&”运算) 
+	 * @param step 用例
+	 * @throws ParameterException 
+	 */
+	public static void executeExpression(String[] step) throws ParameterException {
+		String variable = null;
+		if (RegExp.findCharacters(step[1], "=")){
+			String[] arr = RegExp.splitWord(step[1], "=");
+			if (RegExp.findCharacters(arr[0], "^\\{.*\\}$")){
+				if (!arr[1].equals("")){
+					
+				}else{
+					throw new ParameterException("表达式不完整："+step[1]);
+				}
+				ArrayList<String> arrL = RegExp.matcherCharacters(arr[0], "(?<=\\{)(.+?)(?=\\})");
+				variable = arrL.get(0);
+				
+			}else{
+				throw new ParameterException("表达式缺少“{ }变量”"+step[1]);
+			}
+		}else{
+			throw new ParameterException("表达式缺少“=”"+step[1]);
+		}
+
+	}
 	
+	public static void exeExp(String str) throws ParameterException {
+		String arr[] = null;
+		
+		if (RegExp.findCharacters(str, "+")){
+			arr = RegExp.splitWord(str, "+");
+			try{
+				int left = Integer.parseInt(arr[0]);
+			}catch(NumberFormatException e){
+				throw new ParameterException(arr[0] +"不是数字，无法运算。");
+			}
+			try{
+				int right = Integer.parseInt(arr[1]);
+			}catch(NumberFormatException e){
+				throw new ParameterException(arr[1] +"不是数字，无法运算。");
+			}
+		}else if (RegExp.findCharacters(str, "&")){
+			arr = RegExp.splitWord(str, "&");
+			
+		}else if(RegExp.findCharacters(str, "\\(|\\)|*|/")){
+			throw new ParameterException("暂时不支持次运算："+str);
+		}else{
+			
+		}
+
+	}
+	
+	public static void main(String[] args){
+		String a = "{asd}";
+		boolean b = RegExp.findCharacters(a, "^\\{.*\\}$");
+		ArrayList<String> arrL = RegExp.matcherCharacters(a, "(?<=\\{)(.+?)(?=\\})");
+		System.out.println();
+	}
 	
 }
 
