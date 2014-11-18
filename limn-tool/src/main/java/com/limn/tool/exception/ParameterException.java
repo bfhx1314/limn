@@ -56,13 +56,19 @@ public class ParameterException extends Exception{
 		printStackTrace();
 		JOptionPane.showMessageDialog(consoleFrame,message);
 
-		Print.log(message, 2);
+
 		
 	}
 	public ParameterException(int code, String message){
 		super(message);
 
-		Print.log(message, 2);
+
+	}
+	
+	public ParameterException( String message){
+		super(message);
+
 		
 	}
+	
 }
