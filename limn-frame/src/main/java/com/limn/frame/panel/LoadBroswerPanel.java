@@ -31,9 +31,9 @@ import org.openqa.selenium.WebElement;
 import com.limn.driver.Driver;
 import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.debug.DebugEditFrame;
-import com.limn.frame.edit.EditTestCasePanel;
 import com.limn.renderer.WebElementCellRenderer;
 import com.limn.tool.common.Print;
+import com.limn.tool.regexp.RegExp;
 
 public class LoadBroswerPanel extends CustomPanel {
 
@@ -58,21 +58,29 @@ public class LoadBroswerPanel extends CustomPanel {
 	private JLabel result = new JLabel();
 
 	private static JTextField recommendLocator = new JTextField();
+	
+	private JPopupMenu rightMenu = new JPopupMenu();
 
 	private static JComboBox<String> filterWebElement = new JComboBox<String>();
 
+	private VerificationPanel verification = new VerificationPanel();
+	
 	// 查询的元素列表
 	private HashMap<Integer, WebElement> findWebElements = new HashMap<Integer, WebElement>();
 	private HashMap<Integer, String> showList = new HashMap<Integer, String>();
 	private HashMap<String, String> rangeList = new HashMap<String, String>();
 
 	// 要搜索哪些元素
-	private final String[] FINDTAGNAME = { "input", "a", "button", "select", "table" };
+	private final String[] FINDTAGNAME = { "input", "a", "button", "select", "table" ,"textarea" };
 	
 
 	private JButton refresh = new JButton("刷新");
+	private static JButton verificationButton = new JButton("验证");
 	private static JButton setXPathName = new JButton("设置XPATH别名");
-	private static String locatorXPath = "";
+//	private static String locatorXPath = "";
+	
+	private JButton returnButton = new JButton("返回");
+	
 	// private JButton setXPathName = new JButton("设置XPATH别名");
 	public LoadBroswerPanel() {
 
@@ -89,6 +97,7 @@ public class LoadBroswerPanel extends CustomPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					setXPathName.setEnabled(false);
+					verificationButton.setEnabled(false);
 					loadWebElement();
 				} catch (SeleniumFindException e1) {
 					e1.printStackTrace();
@@ -96,6 +105,11 @@ public class LoadBroswerPanel extends CustomPanel {
 
 			}
 		});
+		
+		result.setText("努力搜索中....");
+		result.setForeground(Color.RED);
+		result.setVisible(false);
+		
 		JLabel recommendLocatorLabel = new JLabel("Locator:");
 
 		setBoundsAt(recommendLocatorLabel, 5, 50, 50, 20);
@@ -104,6 +118,46 @@ public class LoadBroswerPanel extends CustomPanel {
 		recommendLocator.setEditable(false);
 		recommendLocator.setBorder(null);
 
+		
+		setBoundsAt(verification, 5, 125, 610, 280);
+		verification.setVisible(false);
+		
+		setBoundsAt(returnButton, 515, 105, 100, 20);
+		returnButton.setVisible(false);
+		
+		verificationButton.setMargin(new Insets(0, 0, 0, 0));
+		setBoundsAt(verificationButton, 410, 50, 100, 20);
+		verificationButton.setEnabled(false);
+		
+		verificationButton.addActionListener(new ActionListener() {
+			
+			
+			@Override
+			//验证界面
+			public void actionPerformed(ActionEvent e) {
+				//TODO 验证界面
+				
+				WebElement web = Driver.getWebElementBylocator(recommendLocator.getText());
+				verification.setVerWebElement(web);
+				verification.setVisible(true);
+				
+				webElementsJSP.setVisible(false);
+				returnButton.setVisible(true);
+
+				
+			}
+		});
+		
+		
+		returnButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				webElementsJSP.setVisible(true);
+				returnButton.setVisible(false);
+				verification.setVisible(false);
+			}
+		});
+		
 		// 设置XPATH别名按钮
 		// JButton setXPathName = new JButton("设置XPATH别名");
 		setXPathName.setMargin(new Insets(0, 0, 0, 0));
@@ -113,24 +167,44 @@ public class LoadBroswerPanel extends CustomPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String name = JOptionPane.showInputDialog(
-						LoadBroswerPanel.this, "设置XPATH别名", "");
-				if (name != null && !name.equals("")) {
-					HashMap<String, String> hm = DebugEditFrame.getXpathName();
-//					do{
-//						
-//					}while();
-//					if (hm.containsKey(name)){
-//						
-//					}else{
-						DebugEditFrame.setXpathName(name, locatorXPath);
-//					}
-					
-					// 传入用例输入框
-					String step = "录入:" + name + ":" ;
-					DebugEditFrame.setStepTextArea(step);
-					// System.out.println(name);
+				String locator = recommendLocator.getText();
+				if(locator.equals("未能定位")){
+					return ;
 				}
+				//xpath别名
+				String name = null;
+				//是否完成
+				boolean flag = true;
+				do{
+					name = JOptionPane.showInputDialog(LoadBroswerPanel.this, "设置XPATH别名", "");
+					if (name != null && !name.equals("")) {
+						HashMap<String, String> hm = DebugEditFrame.getXpathName();
+						if (hm.containsKey(name)){
+							int status = JOptionPane.showConfirmDialog(LoadBroswerPanel.this, "存在重复的关联属性:" + name + ",是否覆盖", "警告",JOptionPane.OK_CANCEL_OPTION);
+							if(status == 0){
+								DebugEditFrame.setXpathName(name, locator);
+								flag = false;
+							}
+						}else{
+							DebugEditFrame.setXpathName(name, locator);
+							flag = false;
+						}
+					}else{
+						return ;
+					}
+				}while(flag);
+				String value = "";
+				String currentStep = DebugEditFrame.getStepTextArea();
+				if(!currentStep.isEmpty()){
+					String[] step = RegExp.splitKeyWord(currentStep);
+					if(step.length >= 3){
+						value = step[2];
+					}
+				}
+				
+				// 传入用例输入框
+				String step = "录入:" + name + ":" + value;
+				DebugEditFrame.setStepTextArea(step);
 
 			}
 		});
@@ -141,35 +215,16 @@ public class LoadBroswerPanel extends CustomPanel {
 		setBoundsAt(locator, 35, 78, 300, 20);
 		locator.setHorizontalAlignment(JTextField.RIGHT);
 		setBoundsAt(search, 340, 78, 60, 20);
-		setBoundsAt(result, 410, 78, 60, 20);
+		setBoundsAt(result, 410, 78, 100, 20);
 		result.setVisible(false);
 
 		search.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!locator.getText().isEmpty()) {
-					// 开始搜索
-					result.setText("努力搜索中....");
-					result.setForeground(Color.BLACK);
-					try {
-						if (null != currentHighWebElement) {
-							Driver.cancelHighLightWebElement(currentHighWebElement);
-						}
-						currentHighWebElement = Driver.getWebElementBylocator(locator.getText());
-						result.setVisible(true);
-						if (null != currentHighWebElement) {
-							// 找到元素
-							result.setForeground(Color.GREEN.darker());
-							result.setText("Find");
-							Driver.highLightWebElement(currentHighWebElement);
-						} else {
-							// 未找到元素
-							result.setForeground(Color.RED);
-							result.setText("Not Find");
-						}
-					} catch (SeleniumFindException e1) {
-						e1.printStackTrace();
-					}
+
+					new Thread(new FindWebElement(locator.getText())).start();
+			
 				}
 			}
 		});
@@ -211,16 +266,16 @@ public class LoadBroswerPanel extends CustomPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 
-				if (e.getButton() == 3) {
-					
-					JPopupMenu rightMenu = null;
-					if (webElements.getSelectedIndex() == -1) {
-//						rightMenu = getRightMenu(true);
-					} else {
-//						rightMenu = getRightMenu(Driver.getXpathByWebElement(web));
-					}
-					rightMenu.show(webElements, e.getX(), e.getY());
-				}
+//				if (e.getButton() == 3) {
+//					
+//					if (webElements.getSelectedIndex() == -1) {
+//
+//					} else {
+//						WebElement web = findWebElements.get(webElements.getSelectedValue().key());
+//						rightMenu = getRightMenu(web);
+//					}
+//					rightMenu.show(webElements, e.getX(), e.getY());
+//				}
 
 			}
 		});
@@ -259,7 +314,7 @@ public class LoadBroswerPanel extends CustomPanel {
 	 *            是否有选中项目
 	 * @return
 	 */
-	private JPopupMenu getRightMenu(Boolean isNew) {
+	private JPopupMenu getRightMenu(final WebElement web) {
 		JPopupMenu menu = new JPopupMenu();
 		JMenuItem verification = new JMenuItem("验证");
 		
@@ -267,11 +322,12 @@ public class LoadBroswerPanel extends CustomPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//TODO 
 				
 				
 			}
 		});
-		
+		menu.add(verification);
 		return menu;
 		
 	}
@@ -295,10 +351,9 @@ public class LoadBroswerPanel extends CustomPanel {
 	 * loading
 	 */
 	private void loading(){
-		result.setText("努力搜索中....");
-		result.setForeground(Color.BLACK);
+		recommendLocator.setText("");
 		result.setVisible(true);
-		refresh.setEnabled(false);
+//		refresh.setEnabled(false);
 	}
 	
 	/**
@@ -306,7 +361,7 @@ public class LoadBroswerPanel extends CustomPanel {
 	 */
 	private void complete(){
 		result.setVisible(false);
-		refresh.setEnabled(true);
+//		refresh.setEnabled(true);
 	}
 	
 	
@@ -333,25 +388,9 @@ public class LoadBroswerPanel extends CustomPanel {
 			// 显示所有的
 			filterWebElement.addItem("ALL");
 			filterWebElement.setSelectedItem("ALL");
-			loading();
-			new Thread(new SearchWebElement(web)).start();
 			
-//			int range = 0;
-//			for (String tagName : FINDTAGNAME) {
-//				filterWebElement.addItem(tagName);
-//				int start = range;
-//				for (WebElement webs : web.findElements(By.tagName(tagName))) {
-//					findWebElements.put(range, webs);
-//					showList.put(range, getIdentifiedByWebElement(webs));
-//					range++;
-//				}
-//				rangeList.put(tagName, start + ":" + (range - 1));
-//			}
-//
-//			filterWebElement.setSelectedItem("ALL");
-//			for (Integer key : showList.keySet()) {
-//				webElementsList.addElement(new DictoryKeyValue(key, showList.get(key)));
-//			}
+			new Thread(new SearchWebElement(web)).start();
+
 
 		} catch (SeleniumFindException e) {
 
@@ -359,24 +398,15 @@ public class LoadBroswerPanel extends CustomPanel {
 
 	}
 
-	private static void setWebElmentByLocator(WebElement web) {
+	private void setWebElmentByLocator(WebElement web) {
 		if (null == web) {
 			return;
 		}
-		// first 查找唯一属性
-		recommendLocator.setText("努力搜索中....");
-		recommendLocator.setForeground(Color.BLACK);
+		
 		try {
-
 			String locator = Driver.getXpathByWebElement(web);
 			if (null != locator && !locator.isEmpty()) {
-				setXPathName.setEnabled(true);
-				recommendLocator.setText(locator);
-				recommendLocator.setForeground(Color.GREEN.darker());
-				locatorXPath = locator;
-				// 点击xpath时传入用例输入框
-				String step = "录入:" + locator + ":";
-				DebugEditFrame.setStepTextArea(step);
+				new Thread(new FindWebElement(locator)).start();
 			} else {
 				recommendLocator.setText("未能定位");
 				recommendLocator.setForeground(Color.RED.darker());
@@ -387,6 +417,8 @@ public class LoadBroswerPanel extends CustomPanel {
 		}
 
 	}
+	
+
 	
 	private String getIdentifiedByWebElement(WebElement web) {
 
@@ -433,7 +465,7 @@ public class LoadBroswerPanel extends CustomPanel {
 		
 		@Override
 		public void run() {
-			
+			loading();
 			int range = 0;
 			for (String tagName : FINDTAGNAME) {
 				filterWebElement.addItem(tagName);
@@ -449,12 +481,48 @@ public class LoadBroswerPanel extends CustomPanel {
 				}
 				rangeList.put(tagName, start + ":" + (range - 1));
 			}
-			
 			complete();
+		}
+		
+	}
+	
+	/**
+	 * 搜索页面元素
+	 * @author 001392
+	 *
+	 */
+	class FindWebElement implements Runnable{
+
+		private String locator = null;
+		
+		public FindWebElement(String locator){
+			this.locator = locator;	
+		}
+		
+		
+		@Override
+		public void run() {
+			loading();
 			
+			if(null != Driver.getWebElementBylocator(locator)){
+				setXPathName.setEnabled(true);
+				verificationButton.setEnabled(true);
+				recommendLocator.setText(locator);
+				recommendLocator.setForeground(Color.GREEN.darker());
+//				locatorXPath = locator;
+				// 点击xpath时传入用例输入框
+				String step = "录入:" + locator + ":";
+				DebugEditFrame.setStepTextArea(step);
+			}else{
+				recommendLocator.setText("未能定位");
+				recommendLocator.setForeground(Color.RED.darker());
+			}
+			complete();
 		}
 		
 	}
 
+	
+	
 }
 

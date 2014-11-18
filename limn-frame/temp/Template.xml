@@ -25,7 +25,7 @@
       <NotServer>false</NotServer>  
       <UploadResults>false</UploadResults>  
       <StartPlatform>true</StartPlatform>  
-      <EditExcelPath>F:\zzz.xls</EditExcelPath> 
+      <EditExcelPath>C:\Users\001392\Desktop\审批管理.xls</EditExcelPath> 
     </Template> 
   </Templates>  
   <Cores> 
