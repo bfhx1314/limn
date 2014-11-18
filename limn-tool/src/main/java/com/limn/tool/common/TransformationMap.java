@@ -12,7 +12,7 @@ public class TransformationMap {
 	public static String transformationByMap(LinkedHashMap<String,String> data){
 		String traString = "HASHMAP\n";
 		for(String key : data.keySet()){
-			if(traString.isEmpty()){
+			if(traString.equals("HASHMAP\n")){
 				traString = traString + key + "\t" + data.get(key);
 			}else{
 				traString = traString + "\n" + key + "\t" + data.get(key);
@@ -23,13 +23,14 @@ public class TransformationMap {
 	
 	public static LinkedHashMap<String,String> transformationByString(String data){
 		if(RegExp.findCharacters(data, "^HASHMAP\n")){
-			data = data.substring(9);
+			data = data.substring(8);
 			LinkedHashMap<String,String> map = new LinkedHashMap<String, String>();
 			String[] dataDe = data.split("\n");
 			for(String key : dataDe){
 				ArrayList<String> keyValue = RegExp.matcherCharacters(key, "[^\t]{1,}");
 				if (keyValue.size() == 0){
-					return new LinkedHashMap<String,String>();
+//					return new LinkedHashMap<String,String>();
+					continue;
 				}else{
 					map.put(keyValue.get(0), keyValue.get(1));
 				}

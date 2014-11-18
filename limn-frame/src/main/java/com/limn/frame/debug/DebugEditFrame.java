@@ -32,6 +32,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import org.openqa.selenium.WebElement;
+
 import com.limn.frame.edit.EditTestCasePanel;
 import com.limn.frame.keyword.BaseKeyWordDriverImpl;
 import com.limn.frame.keyword.BaseKeyWordType;
@@ -39,11 +41,13 @@ import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.frame.panel.CustomPanel;
 import com.limn.frame.panel.KeyWordPanel;
 import com.limn.frame.panel.LoadBroswerPanel;
+import com.limn.frame.panel.VerificationPanel;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.TransformationMap;
 import com.limn.tool.log.LogControlInterface;
 import com.limn.tool.log.LogDocument;
 import com.limn.tool.log.PrintLogDriver;
+import com.limn.tool.log.RunLog;
 import com.limn.tool.regexp.RegExp;
 
 
@@ -100,6 +104,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	
 	private EditTestCasePanel testCasePanel = new EditTestCasePanel();
 	
+//	public VerificationPanel verificationPanel = new VerificationPanel();
 	//载入面板
 	private LoadBroswerPanel loadPanel = new LoadBroswerPanel();
 	
@@ -143,6 +148,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	public DebugEditFrame(){
 		keyWordPanel = new KeyWordPanel();
 		addKeyWordDriver("基础关键字", new BaseKeyWordDriverImpl(), BaseKeyWordType.class);
+		//TODO
 		init();
 	}
 
@@ -207,6 +213,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		addPanel("编辑", testCasePanel);
 		addPanel("定位", loadPanel);
 		addPanel("关键字", keyWordPanel);
+//		addPanel("验证", verificationPanel);
 		testCasePanel.setVisible(true);
 		isShowPanel = testCasePanel;
 //		setBoundsAt(eidt, 303, 5, 46, 20);
@@ -488,6 +495,8 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		refreshPanel();
 	}
 	
+	
+	
 	private void refreshPanel(){
 		int y = 5;
 		for(final String name : panelSet.keySet()){
@@ -583,12 +592,26 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	}
 	
 	public static void main(String[] args){
-		new DebugEditFrame();
+		DebugEditFrame a = new DebugEditFrame();
+		new RunLog(a);
 	}
 
+	/**
+	 * 设置运行框的内容
+	 * @param step
+	 */
 	public static void setStepTextArea(String step){
 		testCase.setText(step);
 		setKeyWordHigh();
+	}
+	
+	/**
+	 * 获取运行框的内容
+	 * @param step
+	 * @return
+	 */
+	public static String getStepTextArea(){
+		return testCase.getText();
 	}
 	
 	
