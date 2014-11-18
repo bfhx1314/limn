@@ -111,7 +111,7 @@ public class EditTestCase{
 		}
 		int diff = count - (end - start);
 
-		Print.log("Start:" + start + " End:" + end + " diff:" + diff,2);
+//		Print.log("Start:" + start + " End:" + end + " diff:" + diff,2);
 		
 		if(diff>0){
 			while(diff!=0){
