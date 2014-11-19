@@ -26,12 +26,14 @@ public class Test {
 		Object result = null;
 		try {
 			String[] vScript = new String[] {
+					"1==1",
+					"asda",
 					"1+1*(8*3.0)",
 					"left('abc',1)",
 					"toint(left('123',2))+3",
 					"iif(1<2,2+2,3+3)"
 			};
-			result = parser.eval(null, vScript[3], tree, null);
+			result = parser.eval(null, vScript[0], tree, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

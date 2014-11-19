@@ -30,8 +30,22 @@ public class FileUtil {
 		return new File(filePath).exists();
 	}
 	
+	/**
+	 * 文件是否存在
+	 * @param filePath 文件绝对路径
+	 * @return
+	 */
+	public static void createFile(String filePath){
+		try {
+			new File(filePath).createNewFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 //	public static void main(String[] args){
-//		createFloder("C:\\AA\\AA");
+//		createFloder("C:\\aa\\aaa");
+//		createFile("C:\\variable.properties");
 //	}
 	
 	/**

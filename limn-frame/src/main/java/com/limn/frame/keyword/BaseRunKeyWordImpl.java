@@ -3,6 +3,13 @@ package com.limn.frame.keyword;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
+
+
+
+
+import org.apache.commons.lang.StringUtils;
+
 import com.limn.driver.Driver;
 import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.control.Test;
@@ -10,8 +17,12 @@ import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.TransformationMap;
 import com.limn.tool.exception.ParameterException;
+import com.limn.tool.parameter.Expression;
 import com.limn.tool.parameter.Parameter;
+import com.limn.tool.parser.Parser;
+import com.limn.tool.parser.SyntaxTree;
 import com.limn.tool.regexp.RegExp;
+import com.limn.tool.variable.Variable;
 
 public class BaseRunKeyWordImpl {
 	
@@ -118,66 +129,102 @@ public class BaseRunKeyWordImpl {
 		}else{
 			xpath = step[1];
 		}
-		
+		if (RegExp.findCharacters(step[2], "\\{.*\\}")){
+			String var = RegExp.filterString(step[2], "{}");
+			step[2] = Variable.getExpressionValue(var);
+		}
 		Driver.setValue(xpath,step[2]);
 		
 	}
 
 	/**
-	 * 表达式 (“=”右边暂时仅支持一次运算，暂时只支持“+”、“&”运算) 
+	 * 表达式支持所有运算
 	 * @param step 用例
 	 * @throws ParameterException 
 	 */
 	public static void executeExpression(String[] step) throws ParameterException {
 		String variable = null;
+		String variableValue = null;
 		if (RegExp.findCharacters(step[1], "=")){
 			String[] arr = RegExp.splitWord(step[1], "=");
 			if (RegExp.findCharacters(arr[0], "^\\{.*\\}$")){
 				if (!arr[1].equals("")){
-					
+					variableValue = getExpressionValue(arr[1]);
+					if (null != variableValue){
+						ArrayList<String> arrL = RegExp.matcherCharacters(arr[0], "(?<=\\{)(.+?)(?=\\})");
+						variable = arrL.get(0);
+						Variable.setExpressionName(variable, variableValue);
+					}else{
+						throw new ParameterException("语法解析失败，表达式："+arr[1]);
+					}
+
 				}else{
 					throw new ParameterException("表达式不完整："+step[1]);
 				}
-				ArrayList<String> arrL = RegExp.matcherCharacters(arr[0], "(?<=\\{)(.+?)(?=\\})");
-				variable = arrL.get(0);
-				
 			}else{
 				throw new ParameterException("表达式缺少“{ }变量”"+step[1]);
 			}
 		}else{
 			throw new ParameterException("表达式缺少“=”"+step[1]);
 		}
-
 	}
-	
-	public static void exeExp(String str) throws ParameterException {
-		String arr[] = null;
-		
-		if (RegExp.findCharacters(str, "+")){
-			arr = RegExp.splitWord(str, "+");
-			try{
-				int left = Integer.parseInt(arr[0]);
-			}catch(NumberFormatException e){
-				throw new ParameterException(arr[0] +"不是数字，无法运算。");
-			}
-			try{
-				int right = Integer.parseInt(arr[1]);
-			}catch(NumberFormatException e){
-				throw new ParameterException(arr[1] +"不是数字，无法运算。");
-			}
-		}else if (RegExp.findCharacters(str, "&")){
-			arr = RegExp.splitWord(str, "&");
-			
-		}else if(RegExp.findCharacters(str, "\\(|\\)|*|/")){
-			throw new ParameterException("暂时不支持次运算："+str);
-		}else{
-			
+	/**
+	 * 获取用例变量值，支持变量再次运算
+	 * @param str 变量表达式
+	 * @return 解析后的结果
+	 * @throws ParameterException
+	 */
+	public static String getExpressionValue(String str) throws ParameterException {
+		String variableValue = null;
+		String exp = Variable.resolve(str);
+		SyntaxTree tree = new SyntaxTree();
+		Parser parser = new Parser();
+		String[] array = {};
+		if (RegExp.findCharacters(exp, "&")){
+			array = exp.split("&");
 		}
-
+		if (array.length == 0){
+			try{
+				variableValue = parser.eval(null, exp, tree, null).toString();
+			}catch(Exception e){
+//				throw new ParameterException("语法解析失败，表达式："+str);
+			}
+		}else{
+			for(int i=0;i<array.length;i++){
+				try{
+					array[i] = parser.eval(null, array[i], tree, null).toString();
+				}catch(Exception e){
+					
+				}finally{
+					array[i] = "'"+array[i]+"'";
+				}
+			}
+			String strArr = StringUtils.join(array,"&");
+			try {
+				variableValue = parser.eval(null, strArr, tree, null).toString();
+			} catch (Exception e) {
+//				throw new ParameterException("语法解析失败，表达式："+str);
+			}
+		}
+		return variableValue;
 	}
 	
 	public static void main(String[] args){
+		String[] testP = {"setVar","{setVar}='testVar'"};
+		try {
+			executeExpression(testP);
+		} catch (ParameterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String[] testPa = {"getVar","{getVar}={setVar}&'addString'"};
 		String a = "{asd}";
+		try {
+			executeExpression(testPa);
+		} catch (ParameterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		boolean b = RegExp.findCharacters(a, "^\\{.*\\}$");
 		ArrayList<String> arrL = RegExp.matcherCharacters(a, "(?<=\\{)(.+?)(?=\\})");
 		System.out.println();
