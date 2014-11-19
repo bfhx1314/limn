@@ -10,6 +10,7 @@ import com.limn.driver.common.OperateWindows;
 import com.limn.driver.exception.SeleniumFindException;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
+import com.limn.tool.exception.ParameterException;
 
 /**
  * 基础关键字
@@ -69,6 +70,9 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 				cheakKeyWordCount(step.length, 1);
 				int waitTime = Integer.valueOf(step[1])*1000;
 				Common.wait(waitTime);
+			case BaseKeyWordType.EXPRESSION:
+				cheakKeyWordCount(step.length, 1);
+				BaseRunKeyWordImpl.executeExpression(step);
 			//自定义关键字
 			default:
 
@@ -86,6 +90,9 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 				}
 			}
 		} catch (SeleniumFindException e) {
+			status = -2;
+			Print.log(e.getMessage(), 2);
+		} catch (ParameterException e) {
 			status = -2;
 			Print.log(e.getMessage(), 2);
 		}

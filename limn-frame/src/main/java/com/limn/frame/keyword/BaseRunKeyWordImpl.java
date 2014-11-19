@@ -8,7 +8,9 @@ import java.util.HashMap;
 
 
 
+
 import org.apache.commons.lang.StringUtils;
+import org.openqa.selenium.WebElement;
 
 import com.limn.driver.Driver;
 import com.limn.driver.exception.SeleniumFindException;
@@ -128,10 +130,7 @@ public class BaseRunKeyWordImpl {
 		}else{
 			xpath = step[1];
 		}
-		if (RegExp.findCharacters(step[2], "\\{.*\\}")){
-			String var = RegExp.filterString(step[2], "{}");
-			step[2] = Variable.getExpressionValue(var);
-		}
+
 		Driver.setValue(xpath,step[2]);
 		
 	}
@@ -144,17 +143,18 @@ public class BaseRunKeyWordImpl {
 	public static void executeExpression(String[] step) throws ParameterException {
 		String variable = null;
 		String variableValue = null;
+		String[] arrT = null;
 		if (RegExp.findCharacters(step[1], "=")){
-			String[] arr = RegExp.splitWord(step[1], "=");
-			if (RegExp.findCharacters(arr[0], "^\\{.*\\}$")){
-				if (!arr[1].equals("")){
-					variableValue = getExpressionValue(arr[1]);
+			arrT = RegExp.splitWord(step[1], "=");
+			if (RegExp.findCharacters(arrT[0], "^\\{.*\\}$")){
+				if (!arrT[1].equals("")){
+					variableValue = getExpressionValue(arrT[1]);
 					if (null != variableValue){
-						ArrayList<String> arrL = RegExp.matcherCharacters(arr[0], "(?<=\\{)(.+?)(?=\\})");
+						ArrayList<String> arrL = RegExp.matcherCharacters(arrT[0], "(?<=\\{)(.+?)(?=\\})");
 						variable = arrL.get(0);
 						Variable.setExpressionName(variable, variableValue);
 					}else{
-						throw new ParameterException("语法解析失败，表达式："+arr[1]);
+						throw new ParameterException("语法解析失败，表达式："+arrT[1]);
 					}
 
 				}else{
@@ -207,6 +207,7 @@ public class BaseRunKeyWordImpl {
 		}
 		return variableValue;
 	}
+
 	
 	public static void main(String[] args){
 		

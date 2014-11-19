@@ -59,5 +59,13 @@ public class BaseKeyWordType {
 	 * 
 	 */
 	public static final String WAIT = "等待";
+	
+	/**
+	 * 说明: EXPRESSION<br>
+	 * 参数1: 表达式<br>
+	 * 实例: 表达式:{set}={get}&'a' 、 内置函数自增{houseName}=getAutoIncrement(5) <br>
+	 * 
+	 */
+	public static final String EXPRESSION = "表达式";
 
 }
