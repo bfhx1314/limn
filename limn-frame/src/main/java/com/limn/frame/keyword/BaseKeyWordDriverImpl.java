@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import com.limn.driver.Driver;
 import com.limn.driver.common.OperateWindows;
 import com.limn.driver.exception.SeleniumFindException;
+import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
 
 /**
@@ -64,6 +65,10 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 				BaseRunKeyWordImpl.keyBoardEvent(step);
 				
 				break;
+			case BaseKeyWordType.WAIT:
+				cheakKeyWordCount(step.length, 1);
+				int waitTime = Integer.valueOf(step[1])*1000;
+				Common.wait(waitTime);
 			//自定义关键字
 			default:
 

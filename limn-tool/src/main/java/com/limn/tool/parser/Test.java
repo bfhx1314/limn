@@ -26,7 +26,7 @@ public class Test {
 		Object result = null;
 		try {
 			String[] vScript = new String[] {
-					"1==1",
+					"getAutoIncrement(5)",
 					"asda",
 					"1+1*(8*3.0)",
 					"left('abc',1)",

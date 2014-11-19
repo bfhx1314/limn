@@ -17,7 +17,6 @@ import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.TransformationMap;
 import com.limn.tool.exception.ParameterException;
-import com.limn.tool.parameter.Expression;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.parser.Parser;
 import com.limn.tool.parser.SyntaxTree;
@@ -210,24 +209,36 @@ public class BaseRunKeyWordImpl {
 	}
 	
 	public static void main(String[] args){
-		String[] testP = {"setVar","{setVar}='testVar'"};
-		try {
-			executeExpression(testP);
-		} catch (ParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String[] testPa = {"getVar","{getVar}={setVar}&'addString'"};
-		String a = "{asd}";
-		try {
-			executeExpression(testPa);
-		} catch (ParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		boolean b = RegExp.findCharacters(a, "^\\{.*\\}$");
-		ArrayList<String> arrL = RegExp.matcherCharacters(a, "(?<=\\{)(.+?)(?=\\})");
-		System.out.println();
+		
+//		try {
+//			String[] testP = {"setVar","{setVar}=getAutoIncrement(5)"};
+//			executeExpression(testP);
+//			
+//			System.out.println(Variable.getExpressionValue("setVar"));
+//			
+//		} catch (ParameterException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+//		String[] testP = {"setVar","{setVar}='testVar'"};
+//		try {
+//			executeExpression(testP);
+//		} catch (ParameterException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		String[] testPa = {"getVar","{getVar}={setVar}&'addString'"};
+//		String a = "{asd}";
+//		try {
+//			executeExpression(testPa);
+//		} catch (ParameterException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		boolean b = RegExp.findCharacters(a, "^\\{.*\\}$");
+//		ArrayList<String> arrL = RegExp.matcherCharacters(a, "(?<=\\{)(.+?)(?=\\})");
+//		System.out.println();
 	}
 	
 }

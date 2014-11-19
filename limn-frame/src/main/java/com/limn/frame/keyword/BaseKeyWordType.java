@@ -51,5 +51,13 @@ public class BaseKeyWordType {
 	 * 
 	 */
 	public static final String MOUSE_EVENT = "鼠标事件";
+	
+	/**
+	 * 说明: 等待<br>
+	 * 参数1: 等待的秒数<br>
+	 * 实例: 等待:5<br>
+	 * 
+	 */
+	public static final String WAIT = "等待";
 
 }

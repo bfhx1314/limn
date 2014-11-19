@@ -1,5 +1,9 @@
 package com.limn.tool.parser;
 
+import java.io.IOException;
+
+import com.limn.tool.common.FileUtil;
+import com.limn.tool.parameter.Parameter;
 import com.limn.tool.util.TypeConvertor;
 
 
@@ -18,6 +22,7 @@ import com.limn.tool.util.TypeConvertor;
  * ToString
  * IIF
  * IIFS
+ * GetAutoIncrement
  * </pre><p>
  * @author 王元和
  * @since YES1.0
@@ -182,9 +187,52 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 			}
 			return value;
 		}
-		
 	}
 
+	
+	class GetAutoincrement implements IFunctionImpl {
+
+		
+		@Override
+		public Object calc(String name, IEvalContext context, Object[] arguments) {
+			
+			int digit = TypeConvertor.toInteger(arguments[0]);
+			
+			return getAutoIncrement(digit);
+
+		}
+		/**
+		 * 根据本地的环境自增
+		 * @param digit
+		 * @return
+		 */
+		private String getAutoIncrement(int digit){
+			String number = null;
+			String path = Parameter.DEFAULT_TEMP_PATH + "/AutoIncrement.txt";
+			try {
+				number = FileUtil.getFileText(path);
+	
+				number = String.valueOf(Integer.parseInt(number) + 1);
+				
+				FileUtil.setFileText(path, number);
+			} catch (IOException e) {
+
+			}
+			
+			int diff = digit - number.length();
+			if(diff>0){
+				String diffStr = "";
+				for(int i = 0 ; i <= diff ; i++){
+					diffStr += "0";
+				}
+				number = diffStr + number;
+			}else{
+				number = number.substring(diff);
+			}
+			return number;
+		}
+	}
+	
 	@Override
 	protected Object[][] getImplTable() {
 		return new Object[][] {
@@ -198,7 +246,8 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 				{ "todecimal", new ToDecimalImpl() },
 				{ "tostring", new ToStringImpl() },
 				{ "iif", new IIFImpl() },
-				{ "iifs", new IIFSImpl() }
+				{ "iifs", new IIFSImpl() },
+				{ "getAutoIncrement", new GetAutoincrement() }
 		};
 	}
 
