@@ -27,7 +27,7 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 	@Override
 	public int start(String[] step) {
 
-		int status = -1;
+		int status = 1;
 		try {
 
 			switch (step[0]) {
@@ -86,6 +86,7 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 				}
 			}
 		} catch (SeleniumFindException e) {
+			status = -2;
 			Print.log(e.getMessage(), 2);
 		}
 		return status;

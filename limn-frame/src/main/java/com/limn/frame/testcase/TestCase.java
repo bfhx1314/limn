@@ -3,6 +3,8 @@ package com.limn.frame.testcase;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 
+import com.limn.tool.exception.ExcelEditorException;
+
 public interface TestCase {
 	
 
@@ -41,8 +43,14 @@ public interface TestCase {
 	 * 激活sheet页
 	 * @param sheetIndex
 	 */
-	public void activateSheet(int sheetIndex);
+	public void activateSheet(int sheetIndex) ;
 
+	/**
+	 * 激活sheet页
+	 * @param sheetName
+	 */
+	public void activateSheet(String sheetName) throws ExcelEditorException;
+	
 	/**
 	 * 是否执行
 	 * @return

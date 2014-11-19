@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.Row;
 
 import com.limn.tool.regexp.RegExp;
 import com.limn.tool.common.Print;
+import com.limn.tool.exception.ExcelEditorException;
 import com.limn.tool.external.ExcelEditor;
 
 
@@ -54,6 +55,18 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 		excelSheetIndex = sheetIndex;
 		excelSheet = excelBook.getSheetAt(excelSheetIndex);
 		getExcelModule();
+	}
+	
+	@Override
+	public void activateSheet(String sheetName) throws ExcelEditorException {
+		int index = getSheetIndexBySheetName(sheetName);
+		if(index == -1){
+			throw new ExcelEditorException("错误的sheetName:" + sheetName);
+		}
+		excelSheetIndex = index;
+		excelSheet = excelBook.getSheetAt(excelSheetIndex);
+		getExcelModule();
+		
 	}
 	
 	
@@ -541,7 +554,8 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 		for(int i=0;i<sheetCount;i++){
 			activateSheet(i);
 			setCurrentRow(0);
-			if(getCurrentCell(1).toString().equals("1.0") || getCurrentCell(1).toString().equals("1")){
+			String isExecute = getCurrentCell(1);
+			if(null != isExecute && isExecute.toString().equals("Y")){
 				getExcelModule();
 				for(int index:excelModuleStartIndex.keySet()){
 					int row = excelModuleStartIndex.get(index);
@@ -578,6 +592,9 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 	public void setHyperLinks(int index, String path) {
 		setExcelHyperLinks(index,path);
 	}
+
+
+
 
 
 

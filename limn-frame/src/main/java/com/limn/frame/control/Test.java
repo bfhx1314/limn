@@ -14,6 +14,13 @@ import java.util.HashMap;
 
 
 
+
+
+
+
+import org.openqa.selenium.NoSuchWindowException;
+
+import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.frame.results.RecordResult;
 import com.limn.frame.results.UploadServerData;
@@ -25,7 +32,10 @@ import com.limn.tool.common.CallBat;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.Screenshot;
+import com.limn.tool.exception.ExcelEditorException;
+import com.limn.tool.external.ExcelEditor;
 import com.limn.tool.regexp.RegExp;
+import com.thoughtworks.selenium.SeleniumException;
 
 /**
  * 程序驱动
@@ -72,6 +82,8 @@ public class Test {
 	private static RecordResult recordResult = new RecordResult();
 	
 	private static KeyWordDriver keyWordDriver = null;
+	
+	private String SR = null;
 	
 	public Test(HashMap<String, String> map,KeyWordDriver kwd) {
 		
@@ -144,17 +156,17 @@ public class Test {
 			tc.activateSheet(runTimeSheetNum);
 			RunLog.init(tc.getSheetLastRowNumber());
 			executeTestCase();
-		} else if (Parameter.EXECUTEMODE != null
-				&& Parameter.EXECUTEMODE.equals("固定模式执行")) {
-			runTimeSheetNum = 1;
-			tc.activateSheet(runTimeSheetNum);
-			RunLog.init(tc.getSheetLastRowNumber());
-			executeTestCase();
+		} else if (Parameter.EXECUTEMODE != null && Parameter.EXECUTEMODE.equals("固定模式执行")) {
+			//这里取消掉 旧的模式, 固定模式 就是读sheet0的用例.
 			runTimeSheetNum = 0;
 			tc.activateSheet(runTimeSheetNum);
-
 			RunLog.init(tc.getSheetLastRowNumber());
 			executeTestCase();
+//			runTimeSheetNum = 0;
+//			tc.activateSheet(runTimeSheetNum);
+//
+//			RunLog.init(tc.getSheetLastRowNumber());
+//			executeTestCase();
 		} else { // 还没有处理是否执行前置用例
 			tc.activateSheet(Integer.parseInt(map.get("SheetsNum")) - 1);
 			runTimeSheetNum = Integer.parseInt(map.get("SheetsNum")) - 1;
@@ -199,10 +211,10 @@ public class Test {
 				tc.setCurrentRow(m);
 				result = runSteps(false);
 				if (result != 1) {
-					// 执行下个模块
 					tc.setResult("跳过下个模块");
-					// 还需要一个场景还原的步骤
-//					runSingleStep("重启", "场景还原/");
+					
+					scenarioReduction();
+					// 执行下个模块
 					break;
 				}
 			}
@@ -231,6 +243,9 @@ public class Test {
 		}
 		
 		if (tc.isExecute()) {
+			
+			
+			
 			
 			if(isRelate){
 				Print.log("当前用例编号:" + tc.getTestCaseNo(),0);
@@ -270,17 +285,9 @@ public class Test {
 					//测试结果集
 					recordResult.addStep(steps[stepNum], String.valueOf(result));
 					result = runSingleStep(steps[stepNum],resultPath + "/" + runTimeStepNum);
-					
-//					if (result != 1) {
-//						return result;
-//					}
-//
-//					result = afterStep(steps, stepNum);
-//
-//					if (result != 1) {
-//						return result;
-//					}
-
+					if(result != 1){
+						break;
+					}
 				}
 //				CollateData.initializationParameter();
 				runTimeStepNum = 0;
@@ -292,17 +299,30 @@ public class Test {
 		return result;
 	}
 
+	
+	
 	/**
-	 * 
-	 * @param step
-	 *            步骤内容
-	 * @param path
-	 *            一个存储截图的路径相对路径
+	 * 步骤执行
+	 * @param step     步骤内容
+	 * @param path     一个存储截图的路径相对路径
 	 * @return
 	 */
 	private int runSingleStep(String step, String path) {
-
-		int results = keyWordDriver.start(RegExp.splitKeyWord(step));
+		if(null != SR){
+			path = SR;
+		}
+		int results = 1;
+		
+		try{
+			results = keyWordDriver.start(RegExp.splitKeyWord(step));
+		} catch (NoSuchWindowException e2){
+			Print.log(e2.getMessage(), 2);
+			return -2;
+		} catch (Exception e1){
+			Print.log(e1.getMessage(), 2);
+			return -2;
+		}
+		
 		// 截图
 		String bitMapPath = Parameter.RESULT_FOLDER_BITMAP + "/" + path + "_"+ step.split(":")[0];
 		
@@ -312,80 +332,87 @@ public class Test {
 		return results;
 	}
 
-//	private int afterStep(String[] steps, int stepNum) {
-//		return 1;
-//		int result = 0;
-//		int key = KeyWord.ChangeKeyWord(RegExp.splitKeyWord(steps[stepNum])[0]);
-//		switch (key) {
-//		case KeyWord.OPEN:
-//			String[] keys = RegExp.splitKeyWord(steps[stepNum + 1]);
-//			int firstKey = KeyWord.ChangeKeyWord(keys[0]);
-//			ConfigInfo.currentBillKey();
-//			if ((firstKey != KeyWord.CLICK && firstKey != KeyWord.SHOWVIEW)
-//					&& RegExp.findCharacters(ConfigInfo.metaKey, ".*VIEW$")) {
-//				result = runSingleStep("点击:确定", runTimeSheetNum + "/"
-//						+ runTimeRowNum + "_" + runTimeStepNum + "后置步骤");
-//			}
-//			break;
-//		default:
-//			break;
-//		}
-//
-//		return result;
-
-//	}
-	
-	
-	
-	private void defaultStep(){
-		// 默认步骤 这步是必须的
-		int defaultStep = 0;
+	/**
+	 * 执行场景还原
+	 */
+	private void scenarioReduction(){
 		
-		if(isRestart){
-			CallBat.closeMiddleware();
-			runSingleStep("启动", "默认步骤/");
-			defaultStep = defaultStep + 1;
-		}
+		int rtstepn = runTimeStepNum;
+		int rtsheetn = runTimeSheetNum;
+		int rtrown = runTimeRowNum;
+		Print.log("环境出错,搜索还原场景步骤",2);
+		runTimeRowNum = 0;
+		runTimeStepNum = 0;
 		
-		runSingleStep("运行", "默认步骤/" + defaultStep);
-		File file = new File(Parameter.DFAULT_TEST_PATH + "/DefaultStep.txt");
-		
-
-
 		try {
-			if (file.isFile() && file.exists()) { // 判断文件是否存在
-				InputStreamReader read;
-
-				read = new InputStreamReader(new FileInputStream(file));
-				//考虑到编码格式
-				BufferedReader bufferedReader = new BufferedReader(read);
-				String lineTxt = null;
-				while ((lineTxt = bufferedReader.readLine()) != null) {
-					defaultStep ++;
-					runSingleStep(lineTxt, "默认步骤/" + defaultStep);
-				}
-				read.close();
-			} else {
-				//默认步骤  未设置时的默认步骤
-				runSingleStep("录入:用户代码:administrator", "默认步骤/" + defaultStep);
-				// 增加831时设置帐套。
-				if (Parameter.TESTCASEPATH.indexOf("831") != -1){
-					runSingleStep("录入:账套:NewCorp", "默认步骤/" + defaultStep);
-				}
-				runSingleStep("点击:确定(&O)", "默认步骤/" + defaultStep);
-			}
-		} catch (IOException e) {
-			//默认步骤  未设置时的默认步骤
-			runSingleStep("录入:用户代码:administrator", "默认步骤/" + defaultStep);
-			//  增加831时设置帐套。
-			if (Parameter.TESTCASEPATH.indexOf("831") != -1){
-				runSingleStep("录入:账套:NewCorp", "默认步骤/" + defaultStep);
-			}
-			runSingleStep("点击:确定(&O)", "默认步骤/" + defaultStep);
+			tc.activateSheet("Scenario Reduction");
+			SR = "场景还原/";
+			Print.log("开始执行还原场景步骤",2);
+			executeTestCase();
+		} catch (ExcelEditorException e) {
+			throw new SeleniumException("场景还原异常:" + e.getMessage());
+			
+		} finally{
+			SR = null;
 		}
-//		ConfigInfo.currentBillKey();
-//		Driver.runScript("Web_ShowDeskUI_JS('')");
+		
+		tc.activateSheet(rtsheetn);
+		runTimeRowNum = rtrown;
+		runTimeSheetNum = rtsheetn;
+		runTimeStepNum = rtstepn;
 	}
+	
+	
+	
+//	private void defaultStep(){
+//		// 默认步骤 这步是必须的
+//		int defaultStep = 0;
+//		
+//		if(isRestart){
+//			CallBat.closeMiddleware();
+//			runSingleStep("启动", "默认步骤/");
+//			defaultStep = defaultStep + 1;
+//		}
+//		
+//		runSingleStep("运行", "默认步骤/" + defaultStep);
+//		File file = new File(Parameter.DFAULT_TEST_PATH + "/DefaultStep.txt");
+//		
+//
+//
+//		try {
+//			if (file.isFile() && file.exists()) { // 判断文件是否存在
+//				InputStreamReader read;
+//
+//				read = new InputStreamReader(new FileInputStream(file));
+//				//考虑到编码格式
+//				BufferedReader bufferedReader = new BufferedReader(read);
+//				String lineTxt = null;
+//				while ((lineTxt = bufferedReader.readLine()) != null) {
+//					defaultStep ++;
+//					runSingleStep(lineTxt, "默认步骤/" + defaultStep);
+//				}
+//				read.close();
+//			} else {
+//				//默认步骤  未设置时的默认步骤
+//				runSingleStep("录入:用户代码:administrator", "默认步骤/" + defaultStep);
+//				// 增加831时设置帐套。
+//				if (Parameter.TESTCASEPATH.indexOf("831") != -1){
+//					runSingleStep("录入:账套:NewCorp", "默认步骤/" + defaultStep);
+//				}
+//				runSingleStep("点击:确定(&O)", "默认步骤/" + defaultStep);
+//			}
+//		} catch (IOException e) {
+//			//默认步骤  未设置时的默认步骤
+//			runSingleStep("录入:用户代码:administrator", "默认步骤/" + defaultStep);
+//			//  增加831时设置帐套。
+//			if (Parameter.TESTCASEPATH.indexOf("831") != -1){
+//				runSingleStep("录入:账套:NewCorp", "默认步骤/" + defaultStep);
+//			}
+//			runSingleStep("点击:确定(&O)", "默认步骤/" + defaultStep);
+//		}
+////		ConfigInfo.currentBillKey();
+////		Driver.runScript("Web_ShowDeskUI_JS('')");
+//	}
 	
 //	/**
 //	 * 获取下一行用例

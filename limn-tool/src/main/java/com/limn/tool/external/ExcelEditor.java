@@ -15,6 +15,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.util.IOUtils;
 
+import com.limn.tool.common.Print;
+
 /**
  * Excel的读写方法
  * @author limn
@@ -178,6 +180,21 @@ public class ExcelEditor {
 
 	}
 	
+	/**
+	 * 根据sheetname返回 index
+	 * @param sheetName
+	 * @return
+	 */
+	public int getSheetIndexBySheetName(String sheetName){
+		HSSFSheet excelSheetTmp = excelBook.getSheet(sheetName);
+		if(excelSheetTmp == null){
+			Print.log("不存在的Sheet页名称：" + sheetName, 2);
+			return -1;
+		}else{
+			return excelBook.getSheetIndex(excelSheetTmp);
+		}
+	}
+	
 	private boolean setSheetByIndex(int sheetIndex){
 		if(sheetIndex >= sheetCount){
 //			System.out.println("SheetIndex越界:" + sheetIndex + "，总计：" + sheetCount);
@@ -191,7 +208,7 @@ public class ExcelEditor {
 	private boolean setSheetByName(String sheetName){
 		HSSFSheet excelSheetTmp = excelBook.getSheet(sheetName);
 		if(excelSheetTmp == null){
-			System.out.println("不存在的Sheet页名称：" + sheetName);
+			Print.log("不存在的Sheet页名称：" + sheetName, 2);
 			return false;
 		}else{
 			excelSheet = excelSheetTmp;
