@@ -70,9 +70,11 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 				cheakKeyWordCount(step.length, 1);
 				int waitTime = Integer.valueOf(step[1])*1000;
 				Common.wait(waitTime);
+				break;
 			case BaseKeyWordType.EXPRESSION:
 				cheakKeyWordCount(step.length, 1);
 				BaseRunKeyWordImpl.executeExpression(step);
+				break;
 			//自定义关键字
 			default:
 
