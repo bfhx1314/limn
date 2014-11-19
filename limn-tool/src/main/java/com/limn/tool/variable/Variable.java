@@ -3,9 +3,11 @@ package com.limn.tool.variable;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Properties;
@@ -15,22 +17,38 @@ import com.limn.tool.common.Print;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
 
-
-
-//import test.svn.ExportForSVN;
-
 public class Variable {
 
-	private static String AUTOMATION = Parameter.DFAULT_TEST_PATH;
 	private static LinkedHashMap<String, String> expression = new LinkedHashMap<String, String>();
+
+	private static String saveLocalVariablePath = Parameter.DEFAULT_TEMP_PATH + "/variableLocal.properties";
+	
+	
+	/**
+	 * 
+	 * @param key
+	 * @param value
+	 */
 	public static void setExpressionName(String key, String value) {
+		
 		if(expression.containsKey(key)){
 			expression.replace(key, value);
 		}else{
 			expression.put(key, value);
 		}
+		saveLocal();
 	}
+	
+	
+	/**
+	 * 
+	 * @param key
+	 * @return
+	 */
 	public static String getExpressionValue(String key) {
+		if(expression.size()==0){
+			getLocal();
+		}
 		if (expression.containsKey(key)){
 			return expression.get(key);
 		}else{
@@ -38,10 +56,19 @@ public class Variable {
 			return null;
 		}
 	}
+	
+	/**
+	 * 删除所有的变量
+	 */
 	public static void removeExpressionAll() {
 		Print.log("删除用例中的全部变量:" + expression.size(), 0);
 		expression.clear();
 	}
+	
+	/**
+	 * 删除变量
+	 * @param key
+	 */
 	public static void removeExpressionName(String key) {
 		if(expression.containsKey(key)){
 			Print.log("删除用例中的变量:" + key + "=" + expression.get(key), 0);
@@ -49,116 +76,118 @@ public class Variable {
 		}
 	}
 	
-	private static Properties variableProps = new Properties();
-	private static Properties SVNProps = new Properties();
-	
-	private static long lastModfiyVar = 0;
-	private static long lastModfiySVN = 0;
-	
-	private static boolean isInit = false;
-	
-	private static String getVariable(String key){
+	private static void saveLocal(){
+		Properties props = new Properties();
 		
-		String retrunValue = null;
-		retrunValue = getExpressionValue(key);
-//		if(key.equalsIgnoreCase("Automation")){
-//			retrunValue = AUTOMATION;
-//		}else{
-//			if(variableProps.containsKey(key)){
-//				retrunValue = variableProps.getProperty(key);
-//			}else{
-//				System.out.println("不存在变量的值 : " + key);
-//				// TODO 报错
-//			}
-//		}
-		return retrunValue;
+		props.putAll(expression);
+		
+		FileOutputStream fOut = null;
+		Writer out = null;
+		try {
+			fOut = new FileOutputStream(saveLocalVariablePath);
+			out = new OutputStreamWriter(fOut, "UTF-8");
+			
+			props.store(out, "variable local cache");
+		} catch (Exception e) {
+			Print.log("存储本地化文件变量出错:" + e.getMessage(),2);
+			e.printStackTrace();
+		} finally{
+			try {
+				fOut.close();
+				out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
 	}
 	
 	
-/*	private static String getSVNVariable(String key){
-		if(SVNProps.containsKey(key)){
-			File svnFile = new File(Parameter.DFAULT_TEST_PATH + "/" + key);
-
-			ExportForSVN exp = new ExportForSVN();
-			exp.setBranchURL(SVNProps.getProperty(key));
-			exp.setExportPath(svnFile.getAbsolutePath());
-			exp.setUsername(getVariable("SVNUserName"));
-			exp.setPassWord(getVariable("SVNPassWord"));
-			exp.execute();
-
-		}else{
-			// TODO 报错
-		}
-		return key;
-	}*/
 	
-	private static void init(){
+	/**
+	 * 获取本地的缓存
+	 */
+	private static void getLocal(){
+		
+		Properties props = new Properties();
+		
 		InputStreamReader isr = null;
-		if (!FileUtil.exists(Parameter.DEFAULT_CONF_PATH)){
-			FileUtil.createFloder(Parameter.DEFAULT_CONF_PATH);
+		
+		if(!new File(saveLocalVariablePath).exists()){
+			new File(saveLocalVariablePath).mkdirs();
+			return ;
 		}
-		if (!FileUtil.exists(Parameter.DEFAULT_CONF_PATH + "/variable.properties")){
-			FileUtil.createFile(Parameter.DEFAULT_CONF_PATH + "/variable.properties");
-		}
-		lastModfiyVar = new File(Parameter.DEFAULT_CONF_PATH + "/variable.properties").lastModified();
-
-//		lastModfiySVN = new File(Parameter.DEFAULT_CONF_PATH + "/svn.properties").lastModified();
 		
 		try {
-			isr = new InputStreamReader(new FileInputStream(Parameter.DEFAULT_CONF_PATH + "/variable.properties"));
-			variableProps.load(isr);
-//			isr = new InputStreamReader(new FileInputStream(Parameter.DEFAULT_CONF_PATH + "/svn.properties"));
-//			SVNProps.load(isr);
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			isr = new InputStreamReader(new FileInputStream(saveLocalVariablePath),"UTF-8");
+			props.load(isr);
+		} catch (Exception e) {
+			Print.log("获取本地化文件变量出错:" + e.getMessage(),2);
 		}
-		isInit = true;
+		
+		expression.clear();
+		for(Object key:props.keySet()){
+			expression.put((String) key, (String) props.get(key));
+		}
+		
 	}
 	
+	
+	
+	public static void setVariableLocal(String path){
+		
+		path = FileUtil.getFileAbsolutelyPath(Parameter.DEFAULT_CONF_PATH,path);
+		
+		Properties variableProps = new Properties();
+		File newFile = new File(path);
+		if(newFile.exists()){
+			try {
+				InputStreamReader isr = new InputStreamReader(new FileInputStream(path));
+				variableProps.load(isr);
+
+				for(Object key:variableProps.keySet()){
+					if(expression.containsKey((String) key)){
+						Print.log("警告:存在相同的变量名称:" + (String) key , 3);
+					}else{
+						expression.put((String) key, (String) variableProps.get(key));
+					}
+				}
+				
+			} catch (Exception e) {
+				Print.log("获取本地化文件变量出错:" + e.getMessage(),2);
+			}
+			
+		}else{
+			Print.log("本地化文件变量不存在,路径:" + path,2);
+		}
+		
+
+	}
+	
+	/**
+	 * 查询变量数据
+	 * @param content
+	 * @return
+	 */
 	public static String resolve(String content){
-		refresh();
+		
 		ArrayList<String> variableList = RegExp.matcherCharacters(content, "\\{.*?\\}");
 		String varFormat = null;
 		for(String var:variableList){
 			varFormat = RegExp.filterString(var, "{}");
-			content = resolve(content.replace(var, getVariable(varFormat)));
+			content = resolve(content.replace(var, getExpressionValue(varFormat)));
 			
 		}
-		
-//		variableList = RegExp.matcherCharacters(content, "\\{.*?\\}");
-//		for(String var:variableList){
-//			content = content.replace(var,getSVNVariable(RegExp.filterString(var, "{\\}")));
-//		}
-		
 		return content;
 	}
 	
 	
-	private static void refresh(){
-		long lastModfiyVarNow = new File(Parameter.DEFAULT_CONF_PATH + "/variable.properties").lastModified();
-//		long lastModfiySVNNow = new File(Parameter.DEFAULT_CONF_PATH + "/svn.properties").lastModified();
-		if(lastModfiyVar!=lastModfiyVarNow){
-			lastModfiyVar = lastModfiyVarNow;
-			isInit = false;
-		}
-//		if(lastModfiySVN!=lastModfiySVNNow){
-//			lastModfiySVN = lastModfiySVNNow;
-//			isInit = false;
-//		}
-		if(!isInit){
-			init();
-		}
-	}
 	
-//	public static void main(String[] args){
-////		Parameter.CONFPATH = "C:\\selenium\\conf";
-//		Variable.init();
-////		System.out.println(Variable.resolve("limn[SVNUserName]{QSConfig}tangxy[SVNPassWord]"));
-//		System.out.println(Variable.resolve("limn{Automation}tangxy{Automation}"));
-//		
-//	}
+	public static void main(String[] args){
+//		Variable.setExpressionName("zzzz", "ccccc");
+		Variable.setVariableLocal("apply.properties");
+		System.out.println(Variable.getExpressionValue("Manager"));
+	}
 	
 	
 }
