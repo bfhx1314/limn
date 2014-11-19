@@ -83,6 +83,7 @@ public class Test {
 	
 	private static KeyWordDriver keyWordDriver = null;
 	
+	// 不是null 时, 标志执行场景还原
 	private String SR = null;
 	
 	public Test(HashMap<String, String> map,KeyWordDriver kwd) {
@@ -179,7 +180,7 @@ public class Test {
 		}
 
 		tc.saveFile();
-	
+		Print.log("用例执行完毕", 4);
 	}
 
 	/**
@@ -210,12 +211,19 @@ public class Test {
 				runTimeRowNum = m;
 				tc.setCurrentRow(m);
 				result = runSteps(false);
-				if (result != 1) {
+				if (result != ExecuteStatus.SUCCESS) {
+					
+					Print.log("跳过: " + tc.getExcelModuleName().get(i),2);
+					
 					tc.setResult("跳过下个模块");
 					
-					scenarioReduction();
+					SR = "场景还原/";
 					// 执行下个模块
 					break;
+				} else{
+					if(null != SR){
+						Print.log("模块存在关联,跳过: " + tc.getExcelModuleName().get(i),2);
+					}
 				}
 			}
 
@@ -234,7 +242,7 @@ public class Test {
 	 */
 	private int runSteps(boolean isRelated) {
 		
-		int result = 1;
+		int result = ExecuteStatus.SUCCESS;
 		
 		if(!isRelated){
 			resultPath = runTimeSheetNum + "/" + runTimeRowNum;
@@ -244,9 +252,17 @@ public class Test {
 		
 		if (tc.isExecute()) {
 			
-			
-			
-			
+			if(null != SR){
+				
+				String relateCase = tc.getRelatedNo();
+				if(null != relateCase && !relateCase.isEmpty()){
+					tc.setResult("跳过下个模块");
+					
+					return ExecuteStatus.SUCCESS;
+				}
+				scenarioReduction();
+				
+			}
 			if(isRelate){
 				Print.log("当前用例编号:" + tc.getTestCaseNo(),0);
 				String relateNo = relate.get(tc.getTestCaseNo());
@@ -285,7 +301,7 @@ public class Test {
 					//测试结果集
 					recordResult.addStep(steps[stepNum], String.valueOf(result));
 					result = runSingleStep(steps[stepNum],resultPath + "/" + runTimeStepNum);
-					if(result != 1){
+					if(result != ExecuteStatus.SUCCESS){
 						break;
 					}
 				}
@@ -317,10 +333,10 @@ public class Test {
 			results = keyWordDriver.start(RegExp.splitKeyWord(step));
 		} catch (NoSuchWindowException e2){
 			Print.log(e2.getMessage(), 2);
-			return -2;
+			return ExecuteStatus.FAILURE;
 		} catch (Exception e1){
 			Print.log(e1.getMessage(), 2);
-			return -2;
+			return ExecuteStatus.FAILURE;
 		}
 		
 		// 截图
@@ -346,11 +362,13 @@ public class Test {
 		
 		try {
 			tc.activateSheet("Scenario Reduction");
-			SR = "场景还原/";
+			
 			Print.log("开始执行还原场景步骤",2);
 			executeTestCase();
+			
 		} catch (ExcelEditorException e) {
-			throw new SeleniumException("场景还原异常:" + e.getMessage());
+			
+			throw new SeleniumException("未找到还原场景步骤");
 			
 		} finally{
 			SR = null;

@@ -17,6 +17,8 @@ import java.util.HashSet;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
 
+import com.limn.tool.regexp.RegExp;
+
 
 
 public class FileUtil {
@@ -381,11 +383,35 @@ public class FileUtil {
 		}   
 	}
 
-//	public static void main(String[] args){
-//		String a = "aaaaaa.xtx";
-//		int i = a.lastIndexOf(".");
-//		System.out.println(findFileByType("D:\\Automation\\Test Case\\Business831","xls"));
+	/**
+	 * 返回文件绝对路径
+	 * @param AbsolutelyPath
+	 * @param path
+	 * @return
+	 */
+	public static String getFileAbsolutelyPath(String AbsolutelyPath,String path){
+		if(RegExp.findCharacters(path, "[/|\\\\]")){
+			return path;
+		}else{
+			return AbsolutelyPath + "\\" + path;
+		}
+	}
+	
+//	public static String getFileFormatPath(String path){
+//		path = path.replaceAll("//", "/");
+//		path = path.replaceAll("/", "\\");
+//		return path;
 //	}
+//	
+//	
+	
+//	public static void main(String[] args){
+//		String a = getFileAbsolutelyPath("d:\\zzz\\zdd\\ddddd","aaaa.a");
+//		System.out.println(a );
+//	}
+	
+	
+	
 	
 	
 }
