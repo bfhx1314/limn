@@ -35,20 +35,27 @@ public class ConnectClient implements Runnable {
 	 */
 	@Override
 	public void run() {
-		startNode(sc.getInetAddress().getHostAddress());
-		while(flag){
-			
-			try {
-				sc.sendUrgentData(0xFF);
-			} catch (IOException e1) {
-				flag = false;
+		try{
+			startNode(sc.getInetAddress().getHostAddress());
+			while(flag){
+				
+				try {
+					sc.sendUrgentData(0xFF);
+				} catch (IOException e1) {
+					flag = false;
+				}
+	
+				Common.wait(10000);
 			}
-
-			Common.wait(10000);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			RemoteClient.setText("关闭对应Node:" + code);
+//			CallBat.closeProcessByTitle("RemoteClinet:" + port);
+			CallBat.closeProcessByTitle(code);
 		}
 		
-		RemoteClient.setText("关闭对应Node:" + code);
-		CallBat.closeProcessByTitle(code);
+		
 	}
 	
 	/**

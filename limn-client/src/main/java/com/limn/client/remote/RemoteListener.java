@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import com.limn.tool.common.CallBat;
 import com.limn.tool.parameter.Parameter;
 
 
@@ -31,7 +32,13 @@ public class RemoteListener{
 			sc = socketServer.accept();
 			RemoteClient.setText("连接客户端: " + sc.getInetAddress().getHostAddress());
 			//客户端的连接维护.
-			new Thread(new ConnectClient(sc,port)).start();
+			try{
+				new Thread(new ConnectClient(sc,port)).start();
+			}catch(Exception e){
+				CallBat.closeProcessByTitle("RemoteClinet:" + port);
+				e.printStackTrace();
+			}
+			
 			port ++;
 			try {
 				Thread.sleep(1000);
