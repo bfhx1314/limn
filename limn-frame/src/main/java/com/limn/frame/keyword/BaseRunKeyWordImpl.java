@@ -107,8 +107,9 @@ public class BaseRunKeyWordImpl {
 	 * 
 	 * @param step
 	 * @throws SeleniumFindException
+	 * @throws ParameterException 
 	 */
-	public static void inputValue(String[] step) throws SeleniumFindException{
+	public static void inputValue(String[] step) throws SeleniumFindException, ParameterException{
 		HashMap<String,String> traXPath = null; 
 		if(step.length >= 4 && RegExp.findCharacters(step[3], "^HASHMAP")){
 			traXPath = TransformationMap.transformationByString(step[3]);
@@ -130,7 +131,12 @@ public class BaseRunKeyWordImpl {
 		}else{
 			xpath = step[1];
 		}
-
+		String variableValue = "";
+		try {
+			variableValue = getExpressionValue(step[2]);
+		} catch (ParameterException e) {
+			throw new ParameterException("语法解析失败，表达式："+step[2]);
+		}
 		Driver.setValue(xpath,step[2]);
 		
 	}
