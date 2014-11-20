@@ -67,5 +67,13 @@ public class BaseKeyWordType {
 	 * 
 	 */
 	public static final String EXPRESSION = "表达式";
+	
+	/**
+	 * 说明: ADDATTACHMENT<br>
+	 * 参数1: 附件的相对路径<br>
+	 * 实例: 添加附件:attachment\\upload.txt <br>
+	 * 
+	 */
+	public final static String ADDATTACHMENT = "添加附件";
 
 }

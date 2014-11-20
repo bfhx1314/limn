@@ -9,13 +9,22 @@ import java.util.HashMap;
 
 
 
+
+
+
+
+
 import org.apache.commons.lang.StringUtils;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import com.limn.driver.Driver;
 import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.control.Test;
+import com.limn.frame.control.WebElementByXPath;
 import com.limn.tool.common.Common;
+import com.limn.tool.common.ConvertCharacter;
+import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.TransformationMap;
 import com.limn.tool.exception.ParameterException;
@@ -34,6 +43,11 @@ public class BaseRunKeyWordImpl {
 	 */
 	public static void startBrowser(String[] step) throws SeleniumFindException{
 		int stepLen = step.length;
+		
+		if(null == Parameter.RUNMODE || Parameter.RUNMODE.equals("本地")){
+			Parameter.REMOTEIP = null;
+		}
+		
 		for(int i=1;i<stepLen;i++){
 			if (RegExp.findCharacters(step[i], "(?i)^http|^https")){
 				if (stepLen <= i + 1) {
@@ -169,6 +183,78 @@ public class BaseRunKeyWordImpl {
 		}
 	}
 	
+	public static void addAttachment(String[] step) throws SeleniumFindException, ParameterException {
+		if (step.length>1){
+			String filePath = ConvertCharacter.getHtmlChr(step[1]);  // 转回原来的字符串
+			if (!RegExp.findCharacters(filePath, "^[a-zA-Z]:")){
+				filePath = Parameter.RESULT_FOLDER + "\\ExpExcel" + filePath;
+				String parentPath = FileUtil.getParent(filePath);
+				if (!FileUtil.exists(parentPath)){
+					FileUtil.createFloder(parentPath);
+				}
+			}
+			Print.log("导入路径："+filePath, 2);
+//			OperateDialog.saveFile(path, step[0]);
+			//String xPath = "//div[@class=' x-window x-window-noborder' and contains(@style,'visibility: visible')]";
+			if (!step[1].equals("取消")){
+				if (FileUtil.exists(filePath)){
+//					if (WebElementByXPath.doesExist(By.xpath(xPath))){
+//						WebElement inputFile = Driver.getWebElementByXPath(xPath+"//input[@type='file']");
+//						inputFile.sendKeys(filePath);
+						inputValue(step);
+		//				WebElement webE = Driver.selectElementByXPath(xPath);
+//						Driver.getWebElementByXPath(xPath + "//button[contains(text(),'确定')]").click();
+//					}else{
+//						throw new ParameterException("添加附件框没有找到。");
+//					}
+				}else{
+					throw new ParameterException(filePath+"文件不存在");
+				}
+			}else{
+//				if (WebElementByXPath.doesExist(By.xpath(xPath + "//button[contains(text(),'"+ step[1] +"')]"))){
+//					Driver.getWebElementByXPath(xPath + "//button[contains(text(),'"+ step[1] +"')]").click();
+//				}else{
+//					throw new ParameterException("没有找到按钮："+step[1]);
+//				}
+			}
+		}else{
+			throw new ParameterException("用例错误。");
+		}
+		/* 
+		String xPath = "//div[@class=' x-window x-window-noborder' and contains(@style,'visibility: visible')]";
+		if (!key.equals("取消")){
+			String filePath = FileUtil.getParent(Parameter.TESTCASEPATH) + "\\" + key;
+			if (FileUtil.exists(filePath)){
+				if (WebElementByXPath.doesExist(By.xpath(xPath))){
+	//				WebElement webE = Driver.selectElementByXPath(xPath);
+					if (WebElementByXPath.doesExist(By.xpath(xPath + "//button[contains(text(),'浏览')]"))){
+						Driver.selectElementByXPath(xPath + "//button[contains(text(),'浏览')]").click();
+						String cmdBufferedReader = OperateDialog.importFile(filePath);
+						String xPath1 = "//div[@class=' x-window x-window-noborder' and contains(@style,'visibility: visible')]";
+						// 返回false，代表提示框已关闭
+						if (cmdBufferedReader.indexOf("false") != -1){
+							Driver.selectElementByXPath(xPath1 + "//button[contains(text(),'确定')]").click();
+						}else{
+							Print.log("添加附件失败，dialog框还存在。", 2);
+						}
+					}
+				}else{
+					Print.log("添加附件框没有找到。", 2);
+				}
+			}else{
+				Print.log(filePath+"文件不存在", 2);
+			}
+		}else{
+			if (WebElementByXPath.doesExist(By.xpath(xPath + "//button[contains(text(),'"+ key +"')]"))){
+				Driver.selectElementByXPath(xPath + "//button[contains(text(),'"+ key +"')]").click();
+			}else{
+				Print.log("没有找到按钮："+key, 2);
+			}
+		}
+		*/
+	}
+	
+	
 	
 	public static void main(String[] args){
 		
@@ -202,6 +288,9 @@ public class BaseRunKeyWordImpl {
 //		ArrayList<String> arrL = RegExp.matcherCharacters(a, "(?<=\\{)(.+?)(?=\\})");
 //		System.out.println();
 	}
+
+
+
 	
 }
 
