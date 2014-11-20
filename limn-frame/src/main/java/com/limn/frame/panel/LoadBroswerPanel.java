@@ -399,6 +399,7 @@ public class LoadBroswerPanel extends CustomPanel {
 	}
 
 	private void setWebElmentByLocator(WebElement web) {
+		
 		if (null == web) {
 			return;
 		}
@@ -427,10 +428,17 @@ public class LoadBroswerPanel extends CustomPanel {
 		String att_name = web.getAttribute("name");
 		String att_class = web.getAttribute("class");
 
+		
+		
+		
 		if (web.getTagName().equalsIgnoreCase("input")) {
 			text = text + " type=" + web.getAttribute("type");
 		}
 
+		if(null != web.getText() && !web.getText().isEmpty()){
+			text = text + " text=" + web.getText();
+		}
+		
 		if (null != att_id && !att_id.isEmpty()) {
 			text = text + " id=" + att_id;
 		}
@@ -467,17 +475,40 @@ public class LoadBroswerPanel extends CustomPanel {
 		public void run() {
 			loading();
 			int range = 0;
+			
+			findWebElements.clear();
+			showList.clear();
+			rangeList.clear();
+			webElementsList.removeAllElements();
+			
 			for (String tagName : FINDTAGNAME) {
 				filterWebElement.addItem(tagName);
 				int start = range;
 				for (WebElement webs : web.findElements(By.tagName(tagName))) {
 					findWebElements.put(range, webs);
-					String ident = getIdentifiedByWebElement(webs);
-					showList.put(range, ident);
 					
-					webElementsList.addElement(new DictoryKeyValue(range, ident));
+					String hidden = "false";
+					String display = "inline";
+					String inputHidden = "hidden";
+					try {
+						inputHidden = webs.getAttribute("type");
+						hidden = Driver.runScript("return arguments[0].hidden", webs).toString();
+						display = Driver.runScript("return document.defaultView.getComputedStyle(arguments[0],null).display", webs).toString();
+					} catch (SeleniumFindException e) {
+
+					}
+
+					if(!Boolean.valueOf(hidden) && !display.equalsIgnoreCase("none") && !inputHidden.equalsIgnoreCase("hidden")){
+						
+						String ident = getIdentifiedByWebElement(webs);
+						showList.put(range, ident);
+						
+						webElementsList.addElement(new DictoryKeyValue(range, ident));
+						
+						range++;
+					}
 					
-					range++;
+
 				}
 				rangeList.put(tagName, start + ":" + (range - 1));
 			}
