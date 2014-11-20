@@ -129,7 +129,6 @@ public class Variable {
 		for(Object key:props.keySet()){
 			expression.put((String) key, (String) props.get(key));
 		}
-		
 	}
 	
 	
