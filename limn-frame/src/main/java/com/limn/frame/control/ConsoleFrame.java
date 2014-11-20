@@ -543,7 +543,9 @@ public class ConsoleFrame extends JFrame {
 							// 当远程运行时,检查界面输入
 							checkIP(ipContent.getText());
 							checkURL(URLContent.getText());
-						}			
+						}else{
+							ipLablel.setText("");
+						}
 						checkKeyWordDriver();
 						saveParameters();
 						dispose();
@@ -563,8 +565,10 @@ public class ConsoleFrame extends JFrame {
 						
 						
 						//此处运行当前界面的配置
-
-						new Thread(new BeforeTest(xml.getNodeValueByTemplateIndex(0),keyWordDriver)).start();
+						do{
+							new BeforeTest(xml.getNodeValueByTemplateIndex(0),keyWordDriver).run();
+						}while(1==1);
+						
 //						new Thread(new BeforeTest(xml.getNodeValueByTemplateIndex(0))).start();
 						
 						
