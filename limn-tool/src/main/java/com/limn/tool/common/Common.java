@@ -15,6 +15,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.OutputFormat;
@@ -25,6 +26,10 @@ import com.limn.tool.exception.ParameterException;
 import com.limn.tool.external.XMLReader;
 import com.limn.tool.httpclient.StructureMethod;
 import com.limn.tool.parameter.Parameter;
+import com.limn.tool.parser.Parser;
+import com.limn.tool.parser.SyntaxTree;
+import com.limn.tool.regexp.RegExp;
+import com.limn.tool.variable.Variable;
 
 public class Common {
 
@@ -157,4 +162,46 @@ public class Common {
 		templatePath = file.toString();
 		return templatePath;
 	}
+	
+	/**
+	 * 获取用例变量值，支持变量再次运算
+	 * @param str 变量表达式
+	 * @return 解析后的结果
+	 * @throws ParameterException
+	 */
+	public static String getExpressionValue(String str) throws ParameterException {
+		String variableValue = null;
+		String exp = Variable.resolve(str);
+		SyntaxTree tree = new SyntaxTree();
+		Parser parser = new Parser();
+		String[] array = {};
+		if (RegExp.findCharacters(exp, "&")){
+			array = exp.split("&");
+		}
+		if (array.length == 0){
+			try{
+				variableValue = parser.eval(null, exp, tree, null).toString();
+			}catch(Exception e){
+//				throw new ParameterException("语法解析失败，表达式："+str);
+			}
+		}else{
+			for(int i=0;i<array.length;i++){
+				try{
+					array[i] = parser.eval(null, array[i], tree, null).toString();
+				}catch(Exception e){
+					
+				}finally{
+					array[i] = "'"+array[i]+"'";
+				}
+			}
+			String strArr = StringUtils.join(array,"&");
+			try {
+				variableValue = parser.eval(null, strArr, tree, null).toString();
+			} catch (Exception e) {
+//				throw new ParameterException("语法解析失败，表达式："+str);
+			}
+		}
+		return variableValue;
+	}
+
 }

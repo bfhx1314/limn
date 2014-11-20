@@ -6,6 +6,10 @@ function getLocatorByNode(node){
 	}
 	if(dict["id"]!=undefined){
 		return dict["id"];
+	}else if(dict["name"]!=undefined){
+		if(document.getElementsByName(dict["name"]).length==1){
+			return dict["name"];
+		}
 	}
 	return getXPathByNode(node);
 }

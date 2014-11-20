@@ -565,11 +565,11 @@ public class ConsoleFrame extends JFrame {
 						
 						
 						//此处运行当前界面的配置
-						do{
-							new BeforeTest(xml.getNodeValueByTemplateIndex(0),keyWordDriver).run();
-						}while(1==1);
+//						do{
+//							new BeforeTest(xml.getNodeValueByTemplateIndex(0),keyWordDriver).run();
+//						}while(1==1);
 						
-//						new Thread(new BeforeTest(xml.getNodeValueByTemplateIndex(0))).start();
+						new Thread(new BeforeTest(xml.getNodeValueByTemplateIndex(0),keyWordDriver)).start();
 						
 						
 					} catch (ParameterException e1) {	
@@ -592,7 +592,9 @@ public class ConsoleFrame extends JFrame {
 							// 当远程运行时,检查界面输入,启动远程控制
 							checkIP(ipContent.getText());
 							checkURL(URLContent.getText());	
-						}							
+						}else{
+							ipContent.setText("");
+						}
 						saveParameters();
 						dispose();
 						// TODO 运行配置的文件
