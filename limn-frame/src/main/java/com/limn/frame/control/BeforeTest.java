@@ -39,9 +39,9 @@ public class BeforeTest implements Runnable {
 
 	private XMLReader xmlReader = null;
 	
-	private String lastVersion = null;
+//	private String lastVersion = null;
 	
-	private static boolean isLoop = false;
+	private boolean isLoop = false;
 	
 	//本地化的RunLog
 	public BeforeTest(HashMap<String, String> map,KeyWordDriver kwd, boolean isLoop) {
@@ -63,6 +63,8 @@ public class BeforeTest implements Runnable {
 	
 	
 	private void beforeTest(){
+		Print.log("*******华丽分割线******", 4);
+		Print.log("用例执行开始", 4);
 		initParameter();
 		if(Parameter.DEBUGMODE){
 			//TODO 这里设置关键字驱动 和 Panel

@@ -2,3 +2,6 @@
 /.settings
 .classpath
 .project
+/temp
+/config
+/TestModule.txt
