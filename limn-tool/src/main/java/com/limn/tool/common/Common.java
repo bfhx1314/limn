@@ -204,4 +204,14 @@ public class Common {
 		return variableValue;
 	}
 
+	/**
+	 * 返回md5码
+	 * @param value
+	 * @return
+	 */
+	public static String getMD5(String value){
+		return EncryptUtil.md5(value);
+	}
+	
+	
 }

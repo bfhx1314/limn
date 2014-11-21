@@ -1,26 +1,10 @@
 package com.limn.frame.control;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-
-
-
-
-
-
-
-
-
 import org.openqa.selenium.NoSuchWindowException;
-
-import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.frame.results.RecordResult;
 import com.limn.frame.results.UploadServerData;
@@ -28,12 +12,10 @@ import com.limn.frame.testcase.TestCase;
 import com.limn.frame.testcase.TestCaseExcel;
 import com.limn.tool.log.RunLog;
 import com.limn.tool.parameter.Parameter;
-import com.limn.tool.common.CallBat;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.Screenshot;
 import com.limn.tool.exception.ExcelEditorException;
-import com.limn.tool.external.ExcelEditor;
 import com.limn.tool.regexp.RegExp;
 import com.thoughtworks.selenium.SeleniumException;
 
@@ -181,8 +163,7 @@ public class Test {
 
 		tc.saveFile();
 		Print.log("用例执行完毕", 4);
-		Print.log("************华丽结束分割线*************", 4);
-		Print.log("\n", 4);
+		Print.log("***************结束分割线***************\n", 4);
 		close();
 	}
 	

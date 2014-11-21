@@ -63,7 +63,7 @@ public class BeforeTest implements Runnable {
 	
 	
 	private void beforeTest(){
-		Print.log("************华丽开始分割线*************", 4);
+		Print.log("***************开始分割线***************", 4);
 		Print.log("用例执行开始", 4);
 		initParameter();
 		if(Parameter.DEBUGMODE){
@@ -186,8 +186,7 @@ public class BeforeTest implements Runnable {
 		}
 		
 //		Parameter.TESTNAME = new File(Parameter.TESTCASEPATH).getName();
-		Parameter.TESTNAME = FileUtil.getName(Parameter.TESTCASEPATH);
-		Parameter.TESTNAME = Parameter.TESTNAME.substring(0,Parameter.TESTNAME.lastIndexOf("."));
+
 //		Parameter.TESTNAME = Parameter.TESTNAME.replaceAll("[.][^.]+$", "");
 		if(new File(Parameter.TESTCASEPATH).isDirectory()){
 			Parameter.TESTCASEPATH = FileUtil.findFileByType(Parameter.TESTCASEPATH, "xls");
@@ -196,6 +195,8 @@ public class BeforeTest implements Runnable {
 		}
 		Parameter.TESTCASE_FOLDERPATH = FileUtil.getParent(Parameter.TESTCASEPATH);
 		
+		Parameter.TESTNAME = FileUtil.getName(Parameter.TESTCASEPATH);
+		Parameter.TESTNAME = Parameter.TESTNAME.substring(0,Parameter.TESTNAME.lastIndexOf("."));
 		
 		//TODO
 

@@ -9,7 +9,12 @@ import javax.swing.JComboBox;
 import com.limn.tool.common.FileUtil;
 
 
-
+/**
+ * 
+ * 自定义的下拉框
+ * @author limn
+ *
+ */
 public class FileComboBox extends JComboBox<Object> {
 
 	/**

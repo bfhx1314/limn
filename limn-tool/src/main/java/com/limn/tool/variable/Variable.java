@@ -121,7 +121,7 @@ public class Variable {
 		InputStreamReader isr = null;
 		
 		if(!new File(saveLocalVariablePath).exists()){
-			new File(saveLocalVariablePath).mkdirs();
+			new File(saveLocalVariablePath).getParentFile().mkdirs();
 			return ;
 		}
 		

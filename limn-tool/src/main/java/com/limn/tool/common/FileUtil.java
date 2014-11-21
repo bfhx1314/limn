@@ -325,7 +325,7 @@ public class FileUtil {
 			
 			if(f.isFile()){
 				set.add(f.getName());
-			}else if(f.isDirectory() == isDict){
+			}else if(f.isDirectory() == isDict && !RegExp.findCharacters(f.getName(),"^\\.")){
 				set.add(f.getName());
 			}
 		}
@@ -406,8 +406,7 @@ public class FileUtil {
 //	
 	
 //	public static void main(String[] args){
-//		String a = getFileAbsolutelyPath("d:\\zzz\\zdd\\ddddd","aaaa.a");
-//		System.out.println(a );
+//		System.out.println(RegExp.findCharacters("svn","^\\."));
 //	}
 	
 	
