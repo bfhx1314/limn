@@ -55,6 +55,7 @@ import org.dom4j.DocumentException;
 
 import com.limn.frame.panel.CustomPanel;
 import com.limn.tool.common.Common;
+import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
@@ -456,6 +457,7 @@ public class EditTestCasePanel extends CustomPanel {
 			public void actionPerformed(ActionEvent e) {
 				String path = openFile("请选择测试用例路径", true);
 				if (path != null) {
+					//TODO
 					eTestCase.openTestCase(path);
 					setUIControlEnable(true);
 					saveParameters(path);
@@ -597,7 +599,9 @@ public class EditTestCasePanel extends CustomPanel {
 			String paths = fileChooser.getSelectedFile().getAbsolutePath();
 			fileName = new File(paths);
 			writeFile(paths);
+
 			return paths;
+			
 		} else {
 			return null;
 		}

@@ -5,7 +5,9 @@ import java.util.HashMap;
 
 import com.limn.frame.testcase.TestCase;
 import com.limn.frame.testcase.TestCaseExcel;
+import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
+import com.limn.tool.parameter.Parameter;
 
 
 
@@ -26,7 +28,14 @@ public class EditTestCase{
 		
 	}
 	
+	/**
+	 * 加载测试用例
+	 * @param filePath
+	 */
 	public void openTestCase(String filePath){
+		Parameter.TESTCASEPATH = filePath;
+		Parameter.TESTCASE_FOLDERPATH = FileUtil.getParent(Parameter.TESTCASEPATH);
+		
 		testCase = new TestCaseExcel(filePath);
 		testCase.activateSheet(0);
 		refreshModuleData();
