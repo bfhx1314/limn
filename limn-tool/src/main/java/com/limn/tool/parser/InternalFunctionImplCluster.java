@@ -1,6 +1,8 @@
 package com.limn.tool.parser;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.parameter.Parameter;
@@ -23,6 +25,7 @@ import com.limn.tool.util.TypeConvertor;
  * IIF
  * IIFS
  * GetAutoIncrement
+ * GetHostName
  * </pre><p>
  * @author 王元和
  * @since YES1.0
@@ -233,6 +236,21 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 		}
 	}
 	
+	class GetHostName implements IFunctionImpl {
+
+		@Override
+		public Object calc(String name, IEvalContext context, Object[] arguments) {
+			InetAddress addr;
+			try {
+				addr = InetAddress.getLocalHost();
+			} catch (UnknownHostException e) {
+				return "unknow";
+			}
+			
+			return addr.getHostName().toString();
+		}
+	}
+	
 	@Override
 	protected Object[][] getImplTable() {
 		return new Object[][] {
@@ -247,7 +265,8 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 				{ "tostring", new ToStringImpl() },
 				{ "iif", new IIFImpl() },
 				{ "iifs", new IIFSImpl() },
-				{ "getAutoIncrement", new GetAutoincrement() }
+				{ "getAutoIncrement", new GetAutoincrement() },
+				{ "getHostName", new GetHostName() }
 		};
 	}
 

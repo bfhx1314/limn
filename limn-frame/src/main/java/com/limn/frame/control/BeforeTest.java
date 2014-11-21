@@ -5,7 +5,6 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Iterator;
 
-
 import com.limn.tool.exception.ParameterException;
 import com.limn.tool.external.XMLReader;
 import com.limn.frame.keyword.KeyWordDriver;
@@ -42,8 +41,11 @@ public class BeforeTest implements Runnable {
 	
 	private String lastVersion = null;
 	
+	private static boolean isLoop = false;
+	
 	//本地化的RunLog
-	public BeforeTest(HashMap<String, String> map,KeyWordDriver kwd) {
+	public BeforeTest(HashMap<String, String> map,KeyWordDriver kwd, boolean isLoop) {
+		this.isLoop = isLoop;
 		testParameter = map;
 		keyWordDriver = kwd;
 //		update = false;
@@ -51,8 +53,8 @@ public class BeforeTest implements Runnable {
 	}
 	
 	//连接服务器 RunLog
-	public BeforeTest(HashMap<String, String> map,Socket socket,KeyWordDriver kwd) {
-		
+	public BeforeTest(HashMap<String, String> map,Socket socket,KeyWordDriver kwd, boolean isLoop) {
+		this.isLoop = isLoop;
 		testParameter = map;
 		keyWordDriver = kwd;
 		this.socket = socket;
@@ -199,6 +201,7 @@ public class BeforeTest implements Runnable {
 //		Parameter.BROWSERTYPE = testParameter.get("BrowserType");
 		Parameter.EXECUTEMODE = testParameter.get("ExecuteMode");
 		Parameter.RUNMODE = testParameter.get("Computer");
+		
 		Parameter.REMOTEIP = testParameter.get("IP");
 //		Parameter.MIDDLEWARE = testParameter.get("Middleware");
 
@@ -240,8 +243,10 @@ public class BeforeTest implements Runnable {
 		}
 		
 		//生成结果目录
-		File resultFolder = new File(resultPath + "/" + Parameter.VERSION
-				+ "/" + Parameter.TESTNAME + "/" + DateFormat.getDate("yyyyMMdd_HHmmss"));
+//		File resultFolder = new File(resultPath + "/" + Parameter.VERSION
+//				+ "/" + Parameter.TESTNAME + "/" + DateFormat.getDate("yyyyMMdd_HHmmss"));
+		File resultFolder = new File(resultPath + "/" + Parameter.TESTNAME + "/" + DateFormat.getDate("yyyyMMdd_HHmmss"));
+		Print.log("测试结果成目录:" + resultFolder.getAbsolutePath(), 4);
 		resultFolder.mkdirs();
 		Parameter.RESULT_FOLDER = resultFolder.getAbsolutePath();
 		Parameter.RESULT_FOLDER_BITMAP = Parameter.RESULT_FOLDER + "/BitMap";
@@ -277,24 +282,18 @@ public class BeforeTest implements Runnable {
 			
 			for (int i = 0; i < xmlReader.getTemplateCount(); i++) {
 				HashMap<String,String> templateMap = xmlReader.getNodeValueByTemplateIndex(i);
-//				HashMap<String,String> coreMap = xmlReader.getCoreInfoByTemplateIndex(i);
-//				// 根据传入的coreMap中的内容对应修改core文件
-//				coreReader = new CoreReader(templateMap.get("Yigo"));
-//				Set<String> coreKey = coreMap.keySet();
-//				for(Iterator<String> it=coreKey.iterator();it.hasNext();){
-//					String key = it.next();
-//					String value = coreMap.get(key);
-//					coreReader.setValueByKey(key, value);
-//				}
 				testParameter = templateMap;
 				beforeTest();
-				
 				new Test(testParameter,keyWordDriver);
-//				new Test(testParameter);
 			}
 		}else{
 			new Test(testParameter,keyWordDriver);
 		}
+		if(isLoop){
+			new Thread(new BeforeTest(testParameter,keyWordDriver,isLoop)).start();
+		}
+
+
 	}
 
 }

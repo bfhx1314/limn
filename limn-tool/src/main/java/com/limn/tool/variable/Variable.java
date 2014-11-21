@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Properties;
 
@@ -20,7 +21,7 @@ import com.limn.tool.regexp.RegExp;
 public class Variable {
 
 	private static LinkedHashMap<String, String> expression = new LinkedHashMap<String, String>();
-
+	private static HashMap<String, String> externalVariable = new HashMap<String, String>();
 	private static String saveLocalVariablePath = Parameter.DEFAULT_TEMP_PATH + "/variableLocal.properties";
 	
 	
@@ -30,7 +31,9 @@ public class Variable {
 	 * @param value
 	 */
 	public static void setExpressionName(String key, String value) {
-		
+		if(expression.size()==0){
+			getLocal();
+		}
 		if(expression.containsKey(key)){
 			expression.replace(key, value);
 		}else{
@@ -79,7 +82,11 @@ public class Variable {
 	private static void saveLocal(){
 		Properties props = new Properties();
 		
-		props.putAll(expression);
+		for(String key:expression.keySet()){
+			if(!externalVariable.containsKey(key)){
+				props.put(key, expression.get(key));
+			}
+		}
 		
 		FileOutputStream fOut = null;
 		Writer out = null;
@@ -138,6 +145,10 @@ public class Variable {
 	 */
 	public static void addVariableLocal(String path){
 		
+		if(expression.size()==0){
+			getLocal();
+		}
+		
 		path = FileUtil.getFileAbsolutelyPath(Parameter.DEFAULT_CONF_PATH,path);
 		
 		Properties variableProps = new Properties();
@@ -152,6 +163,7 @@ public class Variable {
 						Print.log("警告:存在相同的变量名称:" + (String) key , 3);
 					}else{
 						expression.put((String) key, (String) variableProps.get(key));
+						externalVariable.put((String) key, (String) variableProps.get(key));
 					}
 				}
 				
