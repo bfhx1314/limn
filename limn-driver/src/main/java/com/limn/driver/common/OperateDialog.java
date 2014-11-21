@@ -137,7 +137,7 @@ public class OperateDialog {
 	 * @param clickY
 	 * @return
 	 */
-	private static String clickByXY(String dialogTitle, float clickX, float clickY){
+	public static String clickByXY(String dialogTitle, float clickX, float clickY){
 		String systemBit = GetSystemInfo.getBit();
 		if (systemBit.equals("64")){
 			return CallBat.returnExec(System.getProperty("user.dir")+"/bin/ClickByXY.exe " + dialogTitle + " " + clickX + " " + clickY);
@@ -168,7 +168,7 @@ public class OperateDialog {
 	 * @param buttonName
 	 * @return
 	 */
-	private static String clickButton(String dialogTitle, String buttonName){
+	public static String clickButton(String dialogTitle, String buttonName){
 		String systemBit = GetSystemInfo.getBit();
 		if (systemBit.equals("64")){
 			return CallBat.returnExec(System.getProperty("user.dir")+"/bin/ClickButton.exe " + dialogTitle + " " + buttonName);

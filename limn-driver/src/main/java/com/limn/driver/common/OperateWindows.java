@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
 import com.limn.driver.Driver;
+import com.limn.driver.exception.SeleniumFindException;
 import com.limn.tool.log.RunLog;
 import com.limn.tool.common.Print;
 
@@ -101,6 +102,42 @@ public class OperateWindows {
 	}
 	
 	/**
+	 * 切换到新弹出的浏览器
+	 * @throws SeleniumFindException
+	 */
+	public void switchNewBrowser() throws SeleniumFindException{
+		//不包括当前窗口
+		handles.remove(currentHandle);
+		int handlesSize = handles.size();
+		//存在窗口
+		if (handlesSize > 0) {
+			Print.log("存在"+ handlesSize +"个新窗口。", 3);
+			for(int i=0;i<handlesSize;i++){
+			    try{
+					//定位窗口
+			    	Driver.driver.switchTo().window(handles.iterator().next());
+			    	return;
+			    }catch(Exception e){
+			    	throw new SeleniumFindException("切换浏览器失败");
+			    }
+			}
+		}
+	}
+	
+	/**
+	 * 切回第一个浏览器
+	 * @throws SeleniumFindException 
+	 */
+	public void switchToDefaultBrowser() throws SeleniumFindException{
+		try{
+			Driver.driver.switchTo().window(currentHandle);
+	    }catch(Exception e){
+	    	throw new SeleniumFindException("切回第一个浏览器失败");
+	    }
+		
+	}
+	
+	/**
 	 * 关闭所有新窗口。
 	 * @param driver
 	 * @return
@@ -112,23 +149,21 @@ public class OperateWindows {
 		//存在窗口
 		if (handlesSize > 0) {
 			Print.log("存在"+ handlesSize +"个新窗口。", 3);
-			for(int i=0;i<handlesSize;){
+			for(int i=0;i<handlesSize;i++){
 			    try{
 					//定位窗口
 			    	Driver.driver.switchTo().window(handles.iterator().next());
 			    	Driver.driver.close();
-			        return true;
 			    }catch(Exception e){
 			        System.out.println(e.getMessage());
 			        Print.log(e.getMessage(), 2);
-			        return false;
 			    }
 			}
 			Driver.driver.switchTo().window(currentHandle);
 		}
-		System.out.println("Did not find window");
-		Print.log("Did not find window", 2);
-		return false;
+//		System.out.println("Did not find window");
+//		Print.log("Did not find window", 2);
+		return true;
 	}
 	 
 	//处理单个非alert弹窗

@@ -47,7 +47,7 @@ public class CallBat {
             //取得命令结果的输出流
             InputStream fis=p.getInputStream();
             //用一个读输出流类去读
-            InputStreamReader isr=new InputStreamReader(fis);
+            InputStreamReader isr=new InputStreamReader(fis,"GB2312");
             //用缓冲器读行
             BufferedReader br=new BufferedReader(isr);
             String line=null;
