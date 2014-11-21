@@ -107,6 +107,7 @@ public class ConsoleFrame extends JFrame {
 	private JButton initDBPathButton = new JButton("选择");
 	// 定义开始按钮
 	private JButton OKButton = new JButton("开始运行");
+	private JButton runLoop = new JButton("循环运行");
 	private JButton CancelButton = new JButton("取消");
 	// 定义文件选择框
 	private JFileChooser fileChooser = new JFileChooser();
@@ -506,101 +507,26 @@ public class ConsoleFrame extends JFrame {
 		// 布局确定、取消按钮
 		y=y+60;
 
-		setBoundsAtPanel(OKButton,175, y, 100, 30);
-		setBoundsAtPanel(CancelButton,425, y, 100, 30);
-		OKButton.addActionListener(new ActionListener() {
+		setBoundsAtPanel(OKButton,125, y, 100, 30);
+		setBoundsAtPanel(runLoop, 250, y, 100, 30);
+		
+		setBoundsAtPanel(CancelButton,525, y, 100, 30);
+		
+		runLoop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// 判断运行模式是否由当前配置参数
-				if (runModeContent.getSelectedIndex() == 0) {
-					try {
-						// 当选择运行模式为:由当前界面配置参数运行时,对必填项做基本检查
-						checkEmpty(URLContent.getText(), URLLabel.getText());
-//						if(!notServer.isSelected()){
-//							
-//							String testCasePath = testCaseContent.getSelectedItem().toString();
-//							
-//							if(!RegExp.findCharacters(testCasePath, ":")){
-//								testCasePath  = Parameter.DFAULT_TEST_PATH + "/testcase/" + testCasePath;
-//							}
-//							
-////							checkEmpty(YigoContent.getText(), YigoLabel.getText());
-//							checkEmpty(testCasePath, testCaseLabel.getText());
-////							checkExist(YigoContent.getText(), YigoLabel.getText());
-//							checkExist(testCasePath, testCaseLabel.getText());
-////							checkExist(YigoContent.getText()+"\\WEB-INF\\classes\\core.properties", "core.properties");
-//							
-//						}else{
-////							checkEmpty(configPathContent.getText(), configPathLabel.getText());
-////							checkExist(configPathContent.getText(), configPathLabel.getText());
-//						}
-						
-						if(upload.isSelected()){
-							checkUpload();
-						}
-						
-						// 判断指定电脑是否本机
-						if(computerContent.getSelectedIndex()==1){
-							// 当远程运行时,检查界面输入
-							checkIP(ipContent.getText());
-							checkURL(URLContent.getText());
-						}else{
-							ipLablel.setText("");
-						}
-						checkKeyWordDriver();
-						saveParameters();
-						dispose();
-						XMLReader xml = new XMLReader(templatePath, true);
-						try {
-							xml.clearCoreInfo(0);
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						} catch (DocumentException e1) {
-							e1.printStackTrace();
-						}
-						
-//						if(setCoreSwitch.getSelectedIndex()==0){
-//							cc = new CoreConfig(corePath, templatePath);
-//							cc.coreSave();
-//						}
-						
-						
-						//此处运行当前界面的配置
-//						do{
-//							new BeforeTest(xml.getNodeValueByTemplateIndex(0),keyWordDriver).run();
-//						}while(1==1);
-						
-						new Thread(new BeforeTest(xml.getNodeValueByTemplateIndex(0),keyWordDriver)).start();
-						
-						
-					} catch (ParameterException e1) {	
-						
-					}
-				} else {
-					try {				
-						// 当选择运行模式为:指定配置文件运行时,对必填项做基本检查
-						String xmlPath = filePathContent.getSelectedItem().toString();
-						if(!RegExp.findCharacters(xmlPath, ":")){
-							xmlPath  = Parameter.DFAULT_TEST_PATH + "/conf_module/" + xmlPath;
-						}
-						System.out.println(xmlPath);
-						checkEmpty(xmlPath,
-								filePathLabel.getText());
-						checkExist(xmlPath,
-								filePathLabel.getText());
-						// 判断指定电脑是否本机
-						if(computerContent.getSelectedIndex()==1){
-							// 当远程运行时,检查界面输入,启动远程控制
-							checkIP(ipContent.getText());
-							checkURL(URLContent.getText());	
-						}							
-						saveParameters();
-						dispose();
-						// TODO 运行配置的文件
-					} catch (ParameterException e1) {
-						
-					}
-				}
+		
+				start(true);
+
 			}
+		});
+		
+		OKButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				start(false);
+			}
+
 		});
 		CancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -624,6 +550,71 @@ public class ConsoleFrame extends JFrame {
 		add(panel);
 		setBounds((int) ((getScreenWidth() - 700) *0.5), (int) ((getScreenHeight() - 500) *0.5), 700, 500);
 		setVisible(true);
+	}
+	
+	private void start(boolean isLoop){
+	
+		// 判断运行模式是否由当前配置参数
+		if (runModeContent.getSelectedIndex() == 0) {
+			try {
+				// 当选择运行模式为:由当前界面配置参数运行时,对必填项做基本检查
+				checkEmpty(URLContent.getText(), URLLabel.getText());
+
+				if(upload.isSelected()){
+					checkUpload();
+				}
+				
+				// 判断指定电脑是否本机
+				if(computerContent.getSelectedIndex()==1){
+					// 当远程运行时,检查界面输入
+					checkIP(ipContent.getText());
+					checkURL(URLContent.getText());
+				}else{
+					ipLablel.setText("");
+				}
+				checkKeyWordDriver();
+				saveParameters();
+				dispose();
+				XMLReader xml = new XMLReader(templatePath, true);
+				try {
+					xml.clearCoreInfo(0);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				} catch (DocumentException e1) {
+					e1.printStackTrace();
+				}
+				
+				new Thread(new BeforeTest(xml.getNodeValueByTemplateIndex(0),keyWordDriver,isLoop)).start();
+				
+				
+			} catch (ParameterException e1) {	
+				
+			}
+		} else {
+			try {				
+				// 当选择运行模式为:指定配置文件运行时,对必填项做基本检查
+				String xmlPath = filePathContent.getSelectedItem().toString();
+				if(!RegExp.findCharacters(xmlPath, ":")){
+					xmlPath  = Parameter.DFAULT_TEST_PATH + "/conf_module/" + xmlPath;
+				}
+				System.out.println(xmlPath);
+				checkEmpty(xmlPath,
+						filePathLabel.getText());
+				checkExist(xmlPath,
+						filePathLabel.getText());
+				// 判断指定电脑是否本机
+				if(computerContent.getSelectedIndex()==1){
+					// 当远程运行时,检查界面输入,启动远程控制
+					checkIP(ipContent.getText());
+					checkURL(URLContent.getText());	
+				}							
+				saveParameters();
+				dispose();
+				// TODO 运行配置的文件
+			} catch (ParameterException e1) {
+				
+			}
+		}
 	}
 	
 	

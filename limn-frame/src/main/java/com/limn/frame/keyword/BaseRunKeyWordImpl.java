@@ -34,6 +34,11 @@ public class BaseRunKeyWordImpl {
 	 */
 	public static void startBrowser(String[] step) throws SeleniumFindException{
 		int stepLen = step.length;
+		
+		if(null == Parameter.RUNMODE || Parameter.RUNMODE.equals("本地")){
+			Parameter.REMOTEIP = null;
+		}
+		
 		for(int i=1;i<stepLen;i++){
 			if (RegExp.findCharacters(step[i], "(?i)^http|^https")){
 				if (stepLen <= i + 1) {

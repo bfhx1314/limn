@@ -181,6 +181,39 @@ public class Test {
 
 		tc.saveFile();
 		Print.log("用例执行完毕", 4);
+		close();
+	}
+	
+	private void close(){
+		tc = null;
+
+		relate = null;
+		
+		isRelate = false;
+		
+		resultPath = null;
+		
+		IP = null;
+
+		/**
+		 *  运行时记录用例步骤
+		 */
+		runTimeStepNum = 0;
+		runTimeSheetNum = 0;
+		runTimeRowNum = 0;
+
+		// 截图
+		screenshot = new Screenshot();
+		
+		isRestart = false;
+
+		
+		recordResult = new RecordResult();
+		
+		keyWordDriver = null;
+		
+		// 不是null 时, 标志执行场景还原
+		SR = null;
 	}
 
 	/**
