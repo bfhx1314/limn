@@ -181,7 +181,8 @@ public class Test {
 
 		tc.saveFile();
 		Print.log("用例执行完毕", 4);
-		Print.log("*******华丽分割线******", 4);
+		Print.log("************华丽结束分割线*************", 4);
+		Print.log("\n", 4);
 		close();
 	}
 	

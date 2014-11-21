@@ -63,7 +63,7 @@ public class BeforeTest implements Runnable {
 	
 	
 	private void beforeTest(){
-		Print.log("*******华丽分割线******", 4);
+		Print.log("************华丽开始分割线*************", 4);
 		Print.log("用例执行开始", 4);
 		initParameter();
 		if(Parameter.DEBUGMODE){
@@ -194,6 +194,7 @@ public class BeforeTest implements Runnable {
 		}else{
 
 		}
+		Parameter.TESTCASE_FOLDERPATH = FileUtil.getParent(Parameter.TESTCASEPATH);
 		
 		
 		//TODO
