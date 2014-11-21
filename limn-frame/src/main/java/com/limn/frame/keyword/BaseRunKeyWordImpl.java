@@ -2,26 +2,9 @@ package com.limn.frame.keyword;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-
-
-
-
-
-
-
-
-
-
-
-import org.apache.commons.lang.StringUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-
 import com.limn.driver.Driver;
 import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.control.Test;
-import com.limn.frame.control.WebElementByXPath;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.ConvertCharacter;
 import com.limn.tool.common.FileUtil;
@@ -29,8 +12,6 @@ import com.limn.tool.common.Print;
 import com.limn.tool.common.TransformationMap;
 import com.limn.tool.exception.ParameterException;
 import com.limn.tool.parameter.Parameter;
-import com.limn.tool.parser.Parser;
-import com.limn.tool.parser.SyntaxTree;
 import com.limn.tool.regexp.RegExp;
 import com.limn.tool.variable.Variable;
 
