@@ -225,7 +225,7 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 			int diff = digit - number.length();
 			if(diff>0){
 				String diffStr = "";
-				for(int i = 0 ; i <= diff ; i++){
+				for(int i = 0 ; i < diff ; i++){
 					diffStr += "0";
 				}
 				number = diffStr + number;

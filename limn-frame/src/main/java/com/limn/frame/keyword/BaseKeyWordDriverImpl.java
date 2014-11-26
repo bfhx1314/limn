@@ -76,8 +76,20 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 				BaseRunKeyWordImpl.executeExpression(step);
 				break;
 			case BaseKeyWordType.ADDATTACHMENT:
-				cheakKeyWordCount(step.length, 1);
+				cheakKeyWordCount(step.length, 2);
 				BaseRunKeyWordImpl.addAttachment(step);
+				break;
+			case BaseKeyWordType.GETWEBELEMENTVALUETOVAR:
+				cheakKeyWordCount(step.length, 2);
+				BaseRunKeyWordImpl.getWebElementValueToVar(step);
+				break;
+			case BaseKeyWordType.CHANGEBROTAB:
+				cheakKeyWordCount(step.length, 2);
+				BaseRunKeyWordImpl.changeBroTab(step);
+				break;
+			case BaseKeyWordType.CLOSEBROTAB:
+				cheakKeyWordCount(step.length, 2);
+				BaseRunKeyWordImpl.closeBroTab(step);
 				break;
 			//自定义关键字
 			default:

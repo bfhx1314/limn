@@ -657,7 +657,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 			try{
 				String[] steps = step.split("\n");
 				for (int j = 0; j < steps.length; j++){
-					if (RegExp.findCharacters(steps[j], ("^录入:"))){
+					if (RegExp.findCharacters(steps[j], ("^录入:")) || RegExp.findCharacters(steps[j], ("^获取:"))){
 						steps[j] = steps[j] + ":" + TransformationMap.transformationByMap(xpathName);
 					}
 				}

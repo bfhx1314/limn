@@ -2,7 +2,11 @@ package com.limn.frame.keyword;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.openqa.selenium.WebElement;
+
 import com.limn.driver.Driver;
+import com.limn.driver.common.OperateWindows;
 import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.control.Test;
 import com.limn.tool.common.Common;
@@ -235,7 +239,98 @@ public class BaseRunKeyWordImpl {
 		*/
 	}
 	
-	
+	/**
+	 * 获取webElement值
+	 * @param step
+	 * @throws SeleniumFindException 
+	 * @throws ParameterException 
+	 */
+	public static void getWebElementValueToVar(String[] step) throws SeleniumFindException, ParameterException {
+		HashMap<String,String> traXPath = null; 
+		if(RegExp.findCharacters(step[3], "^HASHMAP")){
+			traXPath = TransformationMap.transformationByString(step[3]);
+		}else{
+			String context = Test.getAssociatedProperites();
+			if(null == context){
+				traXPath = null;
+			}else{
+				traXPath = TransformationMap.transformationByString(context);
+			}
+		}
+		String xpath = null;
+		if(null != traXPath){
+			if(traXPath.containsKey(step[1])){
+				xpath = traXPath.get(step[1]);
+			}else{
+				xpath = step[1];
+			}
+		}else{
+			xpath = step[1];
+		}
+		WebElement verWeb = Driver.getWebElementBylocator(xpath);
+		String webElementValue = "";
+		if(verWeb.getTagName().equalsIgnoreCase("input") && verWeb.getTagName().equalsIgnoreCase("textarea")){
+			webElementValue = verWeb.getAttribute("value");
+		}else if(verWeb.getTagName().equalsIgnoreCase("table")){
+			// TODO
+		}else{
+			webElementValue = verWeb.getText();
+			if (webElementValue.equals("")){
+				webElementValue = verWeb.getAttribute("value");
+			}
+		}
+		if (RegExp.findCharacters(step[2], "^\\{.*\\}$")){
+			ArrayList<String> arrList = RegExp.matcherCharacters(step[2], "(?<=\\{)(.+?)(?=\\})");
+			String variable = arrList.get(0);
+			Variable.setExpressionName(variable, webElementValue);
+		}else{
+			throw new ParameterException("缺少“{ }”变量"+step[1]);
+		}
+	}
+
+	/**
+	 * 切换浏览器页面
+	 * @param step
+	 * @throws ParameterException 
+	 * @throws SeleniumFindException 
+	 */
+	public static void changeBroTab(String[] step) throws ParameterException, SeleniumFindException {
+		int index = -1;
+		try{
+			index = Integer.parseInt(step[1]);
+		}catch(Exception e){
+			throw new ParameterException(step[1]+"为非数字");
+		}
+		if (index>0){
+			OperateWindows ow = new OperateWindows();
+			ow.getNewBrowsers();
+			ow.switchNewBrowser(index);
+		}else{
+			throw new ParameterException("切换浏览器页面参数错误："+index);
+		}
+	}
+
+	/**
+	 * 关闭浏览器页面
+	 * @param step
+	 * @throws ParameterException 
+	 * @throws SeleniumFindException 
+	 */
+	public static void closeBroTab(String[] step) throws ParameterException, SeleniumFindException {
+		int index = -1;
+		try{
+			index = Integer.parseInt(step[1]);
+		}catch(Exception e){
+			throw new ParameterException(step[1]+"为非数字");
+		}
+		if (index>0){
+			OperateWindows ow = new OperateWindows();
+			ow.getNewBrowsers();
+			ow.closeNewBrowsers(index);
+		}else{
+			throw new ParameterException("关闭浏览器页面参数错误："+index);
+		}
+	}
 	
 	public static void main(String[] args){
 		
@@ -269,6 +364,15 @@ public class BaseRunKeyWordImpl {
 //		ArrayList<String> arrL = RegExp.matcherCharacters(a, "(?<=\\{)(.+?)(?=\\})");
 //		System.out.println();
 	}
+
+
+
+
+
+
+
+
+
 
 
 

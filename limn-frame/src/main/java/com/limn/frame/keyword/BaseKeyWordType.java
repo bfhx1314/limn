@@ -76,4 +76,28 @@ public class BaseKeyWordType {
 	 */
 	public final static String ADDATTACHMENT = "添加附件";
 
+	/**
+	 * 说明: 获取控件的值，存入变量中<br>
+	 * 参数1: xpath别名<br>
+	 * 参数2: 变量名<br>
+	 * 实例: 获取:xpath别名:{变量} <br>
+	 * 
+	 */
+	public final static String GETWEBELEMENTVALUETOVAR = "获取";
+	
+	/**
+	 * 说明: 切换浏览器页面（一步操作可能弹出新的浏览器页面）<br>
+	 * 参数1: 第i个页面<br>
+	 * 实例: 切换页面:2 （从1开始，1代表第一个浏览器） <br>
+	 * 
+	 */
+	public final static String CHANGEBROTAB = "切换页面";
+	
+	/**
+	 * 说明: 关闭浏览器页面<br>
+	 * 参数1: 第i个页面<br>
+	 * 实例: 关闭页面:2 （从1开始，1代表第一个浏览器） <br>
+	 * 
+	 */
+	public final static String CLOSEBROTAB = "关闭页面";
 }

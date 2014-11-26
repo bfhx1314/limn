@@ -1,5 +1,6 @@
 package com.limn.driver.common;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import org.openqa.selenium.Alert;
@@ -96,13 +97,18 @@ public class OperateWindows {
 	 */
 	public void getNewBrowsers(){
 		//当前窗口句柄
-		currentHandle = Driver.driver.getWindowHandle();
+		try {
+			currentHandle = Driver.driver.getWindowHandle();
+		}catch(Exception e){
+			Print.log("当前driver没有对象",3);
+		}
+		
 		//得到所有窗口的句柄
 		handles = Driver.driver.getWindowHandles();
 	}
 	
 	/**
-	 * 切换到新弹出的浏览器
+	 * 切换到新弹出的浏览器页面
 	 * @throws SeleniumFindException
 	 */
 	public void switchNewBrowser() throws SeleniumFindException{
@@ -123,9 +129,37 @@ public class OperateWindows {
 			}
 		}
 	}
-	
 	/**
-	 * 切回第一个浏览器
+	 * 切换到新弹出的浏览器页面
+	 * @param index 第几个页面
+	 * @throws SeleniumFindException
+	 */
+	public void switchNewBrowser(int index) throws SeleniumFindException{
+		//不包括第一个浏览器页面
+//		handles.remove(currentHandle);
+		int handlesSize = handles.size();
+		//存在窗口
+		if (handlesSize > 0) {
+			Print.log("存在"+ handlesSize +"个新窗口。", 3);
+		    try{
+				//定位窗口
+		    	int i = 1;
+	    		for(Iterator<?> ite = handles.iterator();ite.hasNext();){
+	    			String iter = (String) ite.next();
+	    			if (i == index){
+	    				Driver.driver.switchTo().window(iter);
+	    				return;
+	    			}else{
+	    				i++;
+	    			}
+	    		}
+		    }catch(Exception e){
+		    	throw new SeleniumFindException("切换浏览器失败");
+		    }
+		}
+	}
+	/**
+	 * 切回第一个浏览器页面
 	 * @throws SeleniumFindException 
 	 */
 	public void switchToDefaultBrowser() throws SeleniumFindException{
@@ -134,16 +168,14 @@ public class OperateWindows {
 	    }catch(Exception e){
 	    	throw new SeleniumFindException("切回第一个浏览器失败");
 	    }
-		
 	}
 	
 	/**
-	 * 关闭所有新窗口。
-	 * @param driver
+	 * 关闭所有浏览器页面(不包括第一个浏览器页面)。
 	 * @return
 	 */
 	public boolean closeNewBrowsers(){
-		//不包括当前窗口
+		//不包括第一个浏览器页面
 		handles.remove(currentHandle);
 		int handlesSize = handles.size();
 		//存在窗口
@@ -165,7 +197,38 @@ public class OperateWindows {
 //		Print.log("Did not find window", 2);
 		return true;
 	}
-	 
+	/**
+	 * 关闭浏览器页面。
+	 * @param index 第几个页面
+	 * @return
+	 */
+	public boolean closeNewBrowsers(int index){
+		//不包括当前窗口
+		int handlesSize = handles.size();
+		//存在窗口
+		if (handlesSize > 0) {
+			Print.log("存在"+ handlesSize +"个新窗口。", 3);
+		    try{
+				//定位窗口
+		    	int i = 1;
+	    		for(Iterator<?> ite = handles.iterator();ite.hasNext();){
+	    			String iter = (String) ite.next();
+	    			if (i == index){
+	    				Driver.driver.switchTo().window(iter);
+	    				Driver.driver.close();
+	    			}else{
+	    				i++;
+	    			}
+	    		}
+		    }catch(Exception e){
+		        System.out.println(e.getMessage());
+		        Print.log(e.getMessage(), 2);
+		    }
+		}
+//		System.out.println("Did not find window");
+//		Print.log("Did not find window", 2);
+		return true;
+	}
 	//处理单个非alert弹窗
 	public static boolean testNewBrowser(WebDriver driver){
 	    try{
