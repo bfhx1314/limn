@@ -120,7 +120,35 @@ function fireEvent(node,type){
 	}
 }
 
-
+//判断IE版本IE9.0。
+function getIeVersion(){
+	var browser=navigator.appName
+	var b_version=navigator.appVersion
+	var version=b_version.split(";");
+	var boolRe = -1;
+	for(var i=0;i<version.length;i++){
+		if (version[i].indexOf("MSIE") != -1){
+			var trim_Version=version[i].replace(/[ ]/g,"");
+			if(browser=="Microsoft Internet Explorer"){
+				if (trim_Version=="MSIE9.0"){
+					boolRe = 9;
+				}else if(trim_Version=="MSIE8.0"){
+					boolRe = 8;
+				}else if(trim_Version=="MSIE7.0"){
+					boolRe = 7;
+				}else if(trim_Version=="MSIE6.0"){
+					boolRe = 6;
+				}else if(trim_Version=="MSIE10.0"){
+					boolRe = 10;
+				}else if(trim_Version=="MSIE11.0"){
+					boolRe = 11;
+				}
+			}
+			break;
+		}
+	}
+	return boolRe;
+}
 
 
 
