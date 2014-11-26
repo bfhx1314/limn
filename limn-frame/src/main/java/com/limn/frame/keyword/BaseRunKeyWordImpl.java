@@ -109,30 +109,35 @@ public class BaseRunKeyWordImpl {
 	 * @throws ParameterException 
 	 */
 	public static void inputValue(String[] step) throws SeleniumFindException, ParameterException{
-		HashMap<String,String> traXPath = null; 
-		if(step.length >= 4 && RegExp.findCharacters(step[3], "^HASHMAP")){
-			traXPath = TransformationMap.transformationByString(step[3]);
-		}else{
-			String context = Test.getAssociatedProperites();
-			if(null == context){
-				traXPath = null;
+		try{
+			HashMap<String,String> traXPath = null; 
+			if(step.length >= 4 && RegExp.findCharacters(step[3], "^HASHMAP")){
+				traXPath = TransformationMap.transformationByString(step[3]);
 			}else{
-				traXPath = TransformationMap.transformationByString(context);
+				String context = Test.getAssociatedProperites();
+				if(null == context){
+					traXPath = null;
+				}else{
+					traXPath = TransformationMap.transformationByString(context);
+				}
 			}
-		}
-		String xpath = null;
-		if(null != traXPath){
-			if(traXPath.containsKey(step[1])){
-				xpath = traXPath.get(step[1]);
+
+			String xpath = null;
+			if(null != traXPath){
+				if(traXPath.containsKey(step[1])){
+					xpath = traXPath.get(step[1]);
+				}else{
+					xpath = step[1];
+				}
 			}else{
 				xpath = step[1];
 			}
-		}else{
-			xpath = step[1];
+	
+			Driver.setValue(xpath,step[2]);
+			
+		}catch(Exception e){
+			Print.log(e.getMessage(), 2);
 		}
-
-		Driver.setValue(xpath,step[2]);
-		
 	}
 
 	/**

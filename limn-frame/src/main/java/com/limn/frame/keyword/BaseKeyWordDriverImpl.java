@@ -113,6 +113,9 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 		} catch (ParameterException e) {
 			status = -2;
 			Print.log(e.getMessage(), 2);
+		} catch (Exception e){
+			status = -2;
+			Print.log(e.getMessage(), 2);
 		}
 		return status;
 
