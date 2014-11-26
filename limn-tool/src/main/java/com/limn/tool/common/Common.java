@@ -181,8 +181,11 @@ public class Common {
 		if (array.length == 0){
 			try{
 				variableValue = parser.eval(null, exp, tree, null).toString();
+				if(null == variableValue){
+					
+				}
 			}catch(Exception e){
-//				throw new ParameterException("语法解析失败，表达式："+str);
+				variableValue = exp;
 			}
 		}else{
 			for(int i=0;i<array.length;i++){

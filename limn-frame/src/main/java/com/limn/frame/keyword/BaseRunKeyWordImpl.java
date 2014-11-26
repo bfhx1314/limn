@@ -29,7 +29,7 @@ public class BaseRunKeyWordImpl {
 	public static void startBrowser(String[] step) throws SeleniumFindException{
 		int stepLen = step.length;
 		
-		if(null == Parameter.RUNMODE || Parameter.RUNMODE.equals("本地")){
+		if(null == Parameter.RUNMODE || Parameter.RUNMODE.equals("本机")){
 			Parameter.REMOTEIP = null;
 		}
 		
