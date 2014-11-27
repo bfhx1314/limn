@@ -498,7 +498,7 @@ public class LoadBroswerPanel extends CustomPanel {
 
 					}
 
-					if(!Boolean.valueOf(hidden) && !display.equalsIgnoreCase("none") && !inputHidden.equalsIgnoreCase("hidden")){
+					if(!Boolean.valueOf(hidden) && !display.equalsIgnoreCase("none") && null != inputHidden && !inputHidden.equalsIgnoreCase("hidden")){
 						
 						String ident = getIdentifiedByWebElement(webs);
 						showList.put(range, ident);
