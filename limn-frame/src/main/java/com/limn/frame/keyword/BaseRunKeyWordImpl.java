@@ -252,7 +252,7 @@ public class BaseRunKeyWordImpl {
 	 */
 	public static void getWebElementValueToVar(String[] step) throws SeleniumFindException, ParameterException {
 		HashMap<String,String> traXPath = null; 
-		if(RegExp.findCharacters(step[3], "^HASHMAP")){
+		if(step.length >= 4 && RegExp.findCharacters(step[3], "^HASHMAP")){
 			traXPath = TransformationMap.transformationByString(step[3]);
 		}else{
 			String context = Test.getAssociatedProperites();

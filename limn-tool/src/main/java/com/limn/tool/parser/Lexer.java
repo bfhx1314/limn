@@ -657,22 +657,22 @@ public class Lexer {
 			break;
 		default:
 			if (c == '@') {
-				if (pos < length) {
-					c = content.charAt(pos);
-				}
-
-				while (Character.isLetter(c)) {
-					++cnt;
-					++pos;
-					if (pos >= length) {
-						break;
-					}
-					c = content.charAt(pos);
-				}
-
-				id = LexDef.T_ID;
-				cacheLexID = "id";
-				cacheLexValue = content.substring(start, start + cnt);
+//				if (pos < length) {
+//					c = content.charAt(pos);
+//				}
+//
+//				while (Character.isLetter(c)) {
+//					++cnt;
+//					++pos;
+//					if (pos >= length) {
+//						break;
+//					}
+//					c = content.charAt(pos);
+//				}
+//
+//				id = LexDef.T_ID;
+//				cacheLexID = "id";
+//				cacheLexValue = content.substring(start, start + cnt);
 			} else if (Character.isLetter(c)) {
 				if (pos < length) {
 					c = content.charAt(pos);
@@ -715,6 +715,7 @@ public class Lexer {
 				if (pos < length) {
 					c = content.charAt(pos);
 					while (Character.isDigit(c) || c == '.') {
+//					while (Character.isDigit(c)) {
 						if (c == '.')
 							isInt = false;
 						++cnt;
