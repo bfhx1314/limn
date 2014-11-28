@@ -306,7 +306,7 @@ public class Test {
 			String[] steps = RegExp.splitWord(tc.getTestStep(), "\n");
 
 			if (!steps[0].isEmpty()) {
-				RunLog.setStepsForTextAreaByIndex(tc.getCurrentRow() + 1, steps);
+				RunLog.setStepsForTextAreaByIndex(tc.getCurrentRow() + 1, steps, tc.getTestCaseNo());
 				int stepNum = runTimeStepNum;
 				//测试结果集
 				recordResult.addCase(tc.getTestCaseNo());
@@ -382,18 +382,19 @@ public class Test {
 			Print.log("开始执行还原场景步骤",2);
 			executeTestCase();
 			
-		} catch (ExcelEditorException e) {
+		} catch (Exception e) {
 			
-			throw new SeleniumException("未找到还原场景步骤");
+			Print.log("未找到还原场景步骤",2);
 			
 		} finally{
 			SR = null;
+			tc.activateSheet(rtsheetn);
+			runTimeRowNum = rtrown;
+			runTimeSheetNum = rtsheetn;
+			runTimeStepNum = rtstepn;
 		}
 		
-		tc.activateSheet(rtsheetn);
-		runTimeRowNum = rtrown;
-		runTimeSheetNum = rtsheetn;
-		runTimeStepNum = rtstepn;
+
 	}
 	
 	

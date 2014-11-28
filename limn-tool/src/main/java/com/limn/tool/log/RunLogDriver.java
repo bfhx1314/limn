@@ -137,7 +137,7 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 	 * @param currentStep 步骤的描述
 	 * 
 	 */
-	public void setStepsForTextAreaByIndex(int currentStepNum, String[] currentStep) {
+	public void setStepsForTextAreaByIndex(int currentStepNum, String[] currentStep ,String testCaseNo) {
 		int eStepNum;
 		if (currentStepIndex <= currentStepNum) {
 			eStepNum = currentStepNum + currentStepIndex;
@@ -148,7 +148,7 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 		everySteplen = new int[currentStep.length + 1];
 		everyDescription = new int[currentStep.length + 1];
 		String firstDescription = "当前用例行: " + currentStepNum + " 总计用例行: "
-				+ stepCount + "\n";
+				+ stepCount + " 当前用例编号:" + testCaseNo + "\n";
 		
 		everySteplen[0] = firstDescription.length();
 		everyDescription[0] = firstDescription.length();
