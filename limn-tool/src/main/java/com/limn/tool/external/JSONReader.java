@@ -79,6 +79,24 @@ public class JSONReader {
 		return res;
 	}
 
+	/**
+	 * 获取解析数据
+	 * @param data JSONOBject or JSONArray
+	 * @param hierarchy 解析的层次    冒号分割
+	 * @return JSONArray or JSONObject
+	 */
+	public static Object getObejctByHierarchyByString(String data, String hierarchy){
+		Object res = JSONObject.fromObject(data);
+		String[] hie = hierarchy.split(":");
+		for(String key:hie){
+			if(res instanceof JSONObject){
+				res = ((JSONObject) res).get(key);
+			}else if(res instanceof JSONArray){
+				res = ((JSONArray) res).get(Integer.valueOf(key));
+			}
+		}
+		return res;
+	}
 	
 	
 

@@ -216,5 +216,36 @@ public class Common {
 		return EncryptUtil.md5(value);
 	}
 	
+	/**
+	 * 根据本地的环境自增
+	 * @param digit
+	 * @param key 标示
+	 * @return
+	 */
+	public static String getAutoIncrement(int digit, String key){
+		String number = null;
+		String path = Parameter.DEFAULT_TEMP_PATH + "/" + key + ".txt";
+		try {
+			number = FileUtil.getFileText(path);
+
+			number = String.valueOf(Integer.parseInt(number) + 1);
+			
+			FileUtil.setFileText(path, number);
+		} catch (IOException e) {
+
+		}
+		
+		int diff = digit - number.length();
+		if(diff>0){
+			String diffStr = "";
+			for(int i = 0 ; i < diff ; i++){
+				diffStr += "0";
+			}
+			number = diffStr + number;
+		}else{
+			number = number.substring(diff);
+		}
+		return number;
+	}
 	
 }
