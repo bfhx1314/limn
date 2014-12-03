@@ -4,7 +4,7 @@ import com.limn.tool.log.RunLog;
 
 public class Print {
 	
-	private static int level = 0;
+	private static int level = 1;
 	
 	
 	/**
