@@ -585,7 +585,7 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 		//设置单元格链接的地址
 		link.setAddress(path);
 		//在当前的单元格上生效
-		excelSheet.getRow(currentRow).getCell(index - 1).setHyperlink(link);
+		excelSheet.getRow(currentRow).getCell(index).setHyperlink(link);
 	}
 	
 	@Override

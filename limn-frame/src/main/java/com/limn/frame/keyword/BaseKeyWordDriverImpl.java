@@ -45,7 +45,6 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 			case BaseKeyWordType.INPUT:
 				cheakKeyWordCount(step.length, 2);
 				BaseRunKeyWordImpl.inputValue(step);
-				
 				break;
 			//提示框
 			case BaseKeyWordType.DIALOG:

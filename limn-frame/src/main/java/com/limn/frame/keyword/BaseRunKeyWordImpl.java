@@ -136,7 +136,8 @@ public class BaseRunKeyWordImpl {
 			Driver.setValue(xpath,step[2]);
 			
 		}catch(Exception e){
-			Print.log(e.getMessage(), 2);
+			new SeleniumFindException("错误:" + e.getMessage());
+//			Print.log(e.getMessage(), 2);
 		}
 	}
 

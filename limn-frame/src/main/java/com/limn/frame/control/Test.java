@@ -321,6 +321,8 @@ public class Test {
 						break;
 					}
 				}
+//				setHyperLink(tc.getCurrentRow(),resultPath + "/" + runTimeStepNum);
+				
 //				CollateData.initializationParameter();
 				runTimeStepNum = 0;
 			}
@@ -372,6 +374,7 @@ public class Test {
 		int rtstepn = runTimeStepNum;
 		int rtsheetn = runTimeSheetNum;
 		int rtrown = runTimeRowNum;
+		int currentRow = tc.getCurrentRow();
 		Print.log("环境出错,搜索还原场景步骤",2);
 		runTimeRowNum = 0;
 		runTimeStepNum = 0;
@@ -380,6 +383,7 @@ public class Test {
 			tc.activateSheet("Scenario Reduction");
 			
 			Print.log("开始执行还原场景步骤",2);
+			
 			executeTestCase();
 			
 		} catch (Exception e) {
@@ -392,6 +396,7 @@ public class Test {
 			runTimeRowNum = rtrown;
 			runTimeSheetNum = rtsheetn;
 			runTimeStepNum = rtstepn;
+			tc.setCurrentRow(currentRow);
 		}
 		
 
