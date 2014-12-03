@@ -147,8 +147,8 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 
 		everySteplen = new int[currentStep.length + 1];
 		everyDescription = new int[currentStep.length + 1];
-		String firstDescription = "当前用例行: " + currentStepNum + " 总计用例行: "
-				+ stepCount + " 当前用例编号:" + testCaseNo + "\n";
+		String firstDescription = "当前行: " + currentStepNum + " 总计: "
+				+ stepCount + " 编号:" + testCaseNo + "\n";
 		
 		everySteplen[0] = firstDescription.length();
 		everyDescription[0] = firstDescription.length();
