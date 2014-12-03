@@ -5,12 +5,15 @@ package com.limn.tool.httpclient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 
 
 
@@ -32,6 +35,19 @@ public class StructureMethod {
         PostMethod method = new UTF8PostMethod(url);
         method.setRequestBody(param);
         return method;
+	}
+	
+	/**
+	 * 获取GetMethod
+	 * @param param 所有参数
+	 * @param url 接口地址
+	 * @return PostMethod
+	 */
+	public static GetMethod getGetMethod(NameValuePair[] param, String url) {
+       
+        GetMethod getMethod = new GetMethod(url);
+        getMethod.setQueryString(param);
+        return getMethod;
 	}
 	
 	/**
@@ -69,6 +85,28 @@ public class StructureMethod {
 		}
 		return baos.toString();
 	}
+	
+	
+	public static NameValuePair[] getNameValuePair(HashMap<String,String> nameValue){
+		int size = nameValue.size();
+		for(String key : nameValue.keySet()){
+			if(null == nameValue.get(key)){
+				size--;
+			}
+		}
+		
+		NameValuePair[] param = new NameValuePair[size];
+		
+		int i = 0;
+		for(String key : nameValue.keySet()){
+			if(null != nameValue.get(key)){
+				param[i] = new NameValuePair(key,nameValue.get(key));
+				i++;
+			}
+		}
+		return param;
+	}
+	
 	
 }
 

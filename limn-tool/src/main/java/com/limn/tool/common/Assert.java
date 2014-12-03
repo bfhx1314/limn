@@ -17,7 +17,7 @@ public class Assert {
 			Print.log("expected:[" + expected + "] but found [null]", 2);
 			return;
 		}else if(null == actual && null == expected){
-			Print.log(expected + ":PASS", 1);
+			Print.debugLog(expected + ":PASS", 1);
 			executePass++;
 		}else if(null != actual && null == expected){
 			Print.log("expected:[null] but found [" + actual + "]", 2);
@@ -25,7 +25,7 @@ public class Assert {
 		}
 		
 		if(actual.equals(expected)){
-			Print.log(expected + ":PASS", 1);
+			Print.debugLog(expected + ":PASS", 1);
 			executePass++;
 		}else{
 			Print.log("expected:[" + expected + "] but found [" + actual + "]", 2);
@@ -38,23 +38,23 @@ public class Assert {
 		
 		testCase++;
 		if(null == actual && null != expected){
-			Print.log(annotate + "FAILk", 2);
+			Print.log(annotate + "FAIL", 2);
 			Print.log("expected:[" + expected + "] but found [null]", 2);
 			return;
 		}else if(null == actual && null == expected){
-			Print.log(annotate + ":PASS", 1);
+			Print.debugLog(annotate + ":PASS", 1);
 			executePass++;
 		}else if(null != actual && null == expected){
-			Print.log(annotate + "FAILk", 2);
+			Print.log(annotate + "FAIL", 2);
 			Print.log("expected:[null] but found [" + actual + "]", 2);
 			return;
 		}
 		
 		if(actual.equals(expected)){
-			Print.log(annotate + ":PASS", 1);
+			Print.debugLog(annotate + ":PASS", 1);
 			executePass++;
 		}else{
-			Print.log(annotate + "FAILk", 2);
+			Print.log(annotate + ":FAIL", 2);
 			Print.log("expected:" + expected + "but found " + actual, 2);
 		}
 	}

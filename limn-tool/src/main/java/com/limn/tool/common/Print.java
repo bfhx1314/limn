@@ -27,7 +27,7 @@ public class Print {
 	 * @param style 1 green , 2 red , 3 yellow ,4 sold black,else black
 	 */
 	public static void debugLog(String log,int style){
-		if(level>=0){
+		if(level>0){
 			return;
 		}
 		if(RunLog.isStart()){
