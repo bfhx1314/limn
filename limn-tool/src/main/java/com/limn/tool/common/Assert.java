@@ -72,12 +72,12 @@ public class Assert {
 	/**
 	 * 单元统计
 	 */
-	public static void statistics(){
+	public static void statistics(String title){
 		double avg = (double) executePass/testCase;
 		int percent = (int) (avg*100);
 		
 		String executePassPercent = percent + "%";
-		Print.log("总计执行:" + testCase + ",通过率:" + executePassPercent, 4);
+		Print.log(title + "执行:" + testCase + ",通过率:" + executePassPercent, 4);
 		executePass = 0;
 		testCase = 0;
 	}
