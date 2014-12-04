@@ -10,10 +10,13 @@ import java.util.HashMap;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+
+import com.limn.tool.common.Print;
 
 
 
@@ -47,6 +50,10 @@ public class StructureMethod {
        
         GetMethod getMethod = new GetMethod(url);
         getMethod.setQueryString(param);
+        try {
+			Print.debugLog("URL:" + getMethod.getURI(),4);
+		} catch (URIException e) {
+		}
         return getMethod;
 	}
 	
