@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.apache.commons.httpclient.Cookie;
@@ -247,5 +250,28 @@ public class Common {
 		}
 		return number;
 	}
+	
+	
+	public static Long getParseTimeStamp(String datatime){
+		SimpleDateFormat simpleDateFormat =new SimpleDateFormat("yyyy-MM-dd mm:hh:ss");
+		
+		
+		Date date = null;
+		try {
+			date = simpleDateFormat.parse(datatime);
+		} catch (ParseException e) {
+			Print.log("时间格式有误" + datatime , 2);
+		}
+	    return date.getTime();
+	} 
+	
+	public static void main(String[] args){
+		HashMap<String,String> a = new HashMap<String, String>();
+		a.put("aa", "2014-12-12 22:22:22");
+		
+		NameValuePair[] b= StructureMethod.getNameValuePair(a);
+		System.out.println(getParseTimeStamp("2010-02-02 22:22:22"));
+	}
+	
 	
 }

@@ -2,7 +2,7 @@ package com.limn.tool.httpclient;
 
 
 
-import java.io.ByteArrayOutputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -14,9 +14,10 @@ import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
 
+import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
+import com.limn.tool.regexp.RegExp;
 
 
 
@@ -48,8 +49,9 @@ public class StructureMethod {
 	 */
 	public static GetMethod getGetMethod(NameValuePair[] param, String url) {
        
-        GetMethod getMethod = new GetMethod(url);
+        GetMethod getMethod = new UTF8GetMethod(url);
         getMethod.setQueryString(param);
+//        getMethod.addRequestHeader("Content-type" , "text/html; charset=utf-8");
         try {
 			Print.debugLog("URL:" + getMethod.getURI(),4);
 		} catch (URIException e) {
@@ -71,7 +73,6 @@ public class StructureMethod {
 			hc.executeMethod(pm);
 			InputStream res = pm.getResponseBodyAsStream();
 			resutls = inputStream2String(res);
-//			resutls = pm.getResponseBodyAsString();
 			
 		} catch (HttpException e) {
 
@@ -85,12 +86,25 @@ public class StructureMethod {
 	}
 	
 	public static String inputStream2String(InputStream is) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		int i = -1;
-		while ((i = is.read()) != -1) {
-			baos.write(i);
+		StringBuilder sb1 = new StringBuilder();
+		byte[] bytes = new byte[4096];
+		int size = 0;
+
+		try {
+			while ((size = is.read(bytes)) > 0) {
+				String str = new String(bytes, 0, size, "UTF-8");
+				sb1.append(str);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		return baos.toString();
+		return sb1.toString();
 	}
 	
 	
@@ -107,6 +121,10 @@ public class StructureMethod {
 		int i = 0;
 		for(String key : nameValue.keySet()){
 			if(null != nameValue.get(key)){
+				String value = nameValue.get(key);
+				if(RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")){
+					value = String.valueOf(Common.getParseTimeStamp(value));
+				}
 				param[i] = new NameValuePair(key,nameValue.get(key));
 				i++;
 			}
@@ -119,6 +137,19 @@ public class StructureMethod {
 
 class UTF8PostMethod extends PostMethod {
 	public UTF8PostMethod(String url) {
+		super(url);
+	}
+
+	@Override
+	public String getRequestCharSet() {
+		// return super.getRequestCharSet();
+		return "UTF-8";
+	}
+}
+
+
+class UTF8GetMethod extends GetMethod {
+	public UTF8GetMethod(String url) {
 		super(url);
 	}
 

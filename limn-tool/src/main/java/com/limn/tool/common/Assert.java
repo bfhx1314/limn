@@ -77,7 +77,8 @@ public class Assert {
 		int percent = (int) (avg*100);
 		
 		String executePassPercent = percent + "%";
-		Print.log(title + "执行:" + testCase + ",通过率:" + executePassPercent, 4);
+		Print.log("[" + title + "]执行:" + testCase + ",通过率:" + executePassPercent, 4);
+		Print.log("", 4);
 		executePass = 0;
 		testCase = 0;
 	}
@@ -86,12 +87,29 @@ public class Assert {
 	 * 总计
 	 */
 	public static void statisticsAll(){
-		double avg = (double) executePassAll++/testCaseAll;
+		double avg = (double) executePassAll/testCaseAll;
 		int percent = (int) (avg*100);
 		
 		String executePassPercent = percent + "%";
+		
 		Print.log("总计执行:" + testCaseAll + ",通过率:" + executePassPercent, 4);
+		
 	}
 	
+	/**
+	 * 清除单元统计
+	 */
+	public static void clearStatistics(){
+		executePass = 0;
+		testCase = 0;
+	}
 
+	/**
+	 * 清除所有统计
+	 */
+	public static void clearStatisticsAll(){
+		executePassAll = 0;
+		testCaseAll = 0;
+	}
+	
 }
