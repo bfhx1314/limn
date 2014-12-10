@@ -3,6 +3,8 @@ package com.limn.tool.external;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.limn.tool.regexp.RegExp;
+
 import net.sf.ezmorph.object.DateMorpher;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -86,6 +88,9 @@ public class JSONReader {
 	 * @return JSONArray or JSONObject
 	 */
 	public static Object getObejctByHierarchyByString(String data, String hierarchy){
+		if(RegExp.findCharacters(data,"^\\(")){
+			data = data.substring(1, data.length()-1);
+		}
 		Object res = JSONObject.fromObject(data);
 		String[] hie = hierarchy.split(":");
 		for(String key:hie){
@@ -98,6 +103,9 @@ public class JSONReader {
 		return res;
 	}
 	
+	public static void main(String[] args){
+		getObejctByHierarchyByString("({'status':'1'})","status");
+	}
 	
 
 }
