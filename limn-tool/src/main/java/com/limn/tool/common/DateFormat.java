@@ -49,4 +49,10 @@ public class DateFormat {
 		return date;
 	}
 	
+	public static void main(String[] args){
+		String a = getDateToString();
+		System.out.println(System.currentTimeMillis());
+
+	}
+	
 }
