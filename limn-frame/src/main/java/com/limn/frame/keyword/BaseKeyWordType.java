@@ -100,4 +100,5 @@ public class BaseKeyWordType {
 	 * 
 	 */
 	public final static String CLOSEBROTAB = "关闭页面";
+	
 }
