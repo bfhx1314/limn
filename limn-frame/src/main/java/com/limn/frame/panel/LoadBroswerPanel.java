@@ -10,6 +10,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -373,6 +374,7 @@ public class LoadBroswerPanel extends CustomPanel {
 	private void traversal() {
 		currentHighWebElement = null;
 		WebElement web = null;
+//		List<WebElement> iframes = Driver.getWebElement(locator);
 		try {
 			web = Driver.getWebElement(By.xpath("/html"));
 			title.setText(Driver.getCurrentURL());
@@ -484,7 +486,8 @@ public class LoadBroswerPanel extends CustomPanel {
 			for (String tagName : FINDTAGNAME) {
 				filterWebElement.addItem(tagName);
 				int start = range;
-				for (WebElement webs : web.findElements(By.tagName(tagName))) {
+				List<WebElement> webTagElementsList = web.findElements(By.tagName(tagName));
+				for (WebElement webs : webTagElementsList) {
 					findWebElements.put(range, webs);
 					
 					String hidden = "false";

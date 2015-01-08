@@ -479,6 +479,7 @@ public class Test {
 	 * @return 字符串
 	 */
 	public static String getExpectedResult(){
+		excelExist();
 		return tc.getExpected();
 	}
 	
@@ -487,14 +488,16 @@ public class Test {
 	 * @return
 	 */
 	public static String getActulResult(){
+		excelExist();
 		return tc.getActual();
 	}
 	
 	/**
-	 * 获取excel实际结果内容，第6列
+	 * 获取excel关联属性，第6列
 	 * @return
 	 */
 	public static String getAssociatedProperites(){
+		excelExist();
 		return tc.getAssociatedProperites();
 	}
 	
@@ -505,6 +508,7 @@ public class Test {
 	 * @param value
 	 */
 	public static void setAcutal(String value){
+		excelExist();
 		tc.setAcutal(value);
 		recordResult.addActualResults(value.split("\n"));
 	}
@@ -513,6 +517,7 @@ public class Test {
 	 * @param value
 	 */
 	public static void setSqlResults(String value){
+		excelExist();
 		tc.setSQLResults(value);
 		
 	}
@@ -521,6 +526,7 @@ public class Test {
 	 * @param value
 	 */
 	public static void setAcutalResult(String value){
+		excelExist();
 		tc.setResult(value);
 	}
 	/**
@@ -528,6 +534,7 @@ public class Test {
 	 * @param value
 	 */
 	public static void setStyleAcutalResult(String value, String style){
+		excelExist();
 //		tc.setResult(value,style);
 		tc.setResult(value);
 	}
@@ -536,9 +543,32 @@ public class Test {
 	 * @param value
 	 */
 	public static void setAcutalResult(boolean value){
+		excelExist();
 		tc.setResult(String.valueOf(value));
 		recordResult.addExpectedResults(tc.getExpected().split("\n"));
 		recordResult.addResult(value);
+	}
+	
+	/**
+	 * 获取预期结果，第5列
+	 * @return 数组
+	 */
+	public static String[] getArrExpectedResult(){
+		excelExist();
+		String[] steps = new String[0];
+		String expectedStr = tc.getExpected();
+		if (!expectedStr.isEmpty()){
+			steps = RegExp.splitWord(expectedStr, "\n");
+		}else{
+			RunLog.printLog("预期结果为空！", 2);
+		}
+		return steps;
+	}
+	
+	public static void excelExist(){
+		if (tc == null){
+			throw new SeleniumException("Excel不存在。");
+		}
 	}
 	
 //	/**
@@ -578,19 +608,23 @@ public class Test {
 	 * @param path	超链接地址
 	 */
 	public static void setHyperLink(int index, String path){
+		excelExist();
 		tc.setHyperLinks(index, path);
 	}
 	
 	
 	public static int getCurrentRowCount(){
+		excelExist();
 		return tc.getSheetLastRowNumber();
 	}
 	
 	public static int getSheetIndex(){
+		excelExist();
 		return tc.getExcelSheetIndex();
 	}
 	
 	public static int getCurrentRow(){
+		excelExist();
 		return tc.getCurrentRow();
 	}
 	

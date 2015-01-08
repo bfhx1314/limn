@@ -6,8 +6,10 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 
+
 import com.limn.driver.common.OperateWindows;
 import com.limn.driver.exception.SeleniumFindException;
+import com.limn.frame.checkitems.CheckItems;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
 import com.limn.tool.exception.ParameterException;
@@ -89,6 +91,10 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 			case BaseKeyWordType.CLOSEBROTAB:
 				cheakKeyWordCount(step.length, 2);
 				BaseRunKeyWordImpl.closeBroTab(step);
+				break;
+			case BaseKeyWordType.VERIFICATION:
+				CheckItems checkItems = new CheckItems();
+				checkItems.branch(step);
 				break;
 			//自定义关键字
 			default:

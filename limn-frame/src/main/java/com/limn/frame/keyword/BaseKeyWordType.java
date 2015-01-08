@@ -101,4 +101,12 @@ public class BaseKeyWordType {
 	 */
 	public final static String CLOSEBROTAB = "关闭页面";
 	
+	/**
+	 * 说明: 验证界面上的数据，读取预期结果列<br>
+	 * 预期结果参数1: xpath别名<br>
+	 * 预期结果参数2: 控件值<br>
+	 * 实例: 验证， 预期结果：input[@id='test']:1<br>
+	 * 
+	 */
+	public final static String VERIFICATION = "验证";
 }
