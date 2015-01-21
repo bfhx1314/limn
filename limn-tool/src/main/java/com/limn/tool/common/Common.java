@@ -265,6 +265,9 @@ public class Common {
 	    return date.getTime();
 	} 
 	
+	
+
+	
 	public static void main(String[] args){
 		HashMap<String,String> a = new HashMap<String, String>();
 		a.put("aa", "2014-12-12 22:22:22");

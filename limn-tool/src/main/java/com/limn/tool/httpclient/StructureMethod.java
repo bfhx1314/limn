@@ -3,17 +3,22 @@ package com.limn.tool.httpclient;
 
 
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
 
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
@@ -125,12 +130,51 @@ public class StructureMethod {
 				if(RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")){
 					value = String.valueOf(Common.getParseTimeStamp(value));
 				}
-				param[i] = new NameValuePair(key,nameValue.get(key));
+				param[i] = new NameValuePair(key,value);
 				i++;
 			}
 		}
 		return param;
 	}
+	
+	/**
+	 * 上传附近
+	 * @param client
+	 * @param file
+	 * @param url
+	 */
+	public static String uploadFile(HttpClient client, File file, String url) {  
+        if (!file.exists()) {  
+            return null;  
+        }  
+        PostMethod postMethod = new PostMethod(url);  
+        try {  
+            //FilePart：用来上传文件的类  
+        FilePart fp = new FilePart("filedata", file);  
+            Part[] parts = { fp };  
+  
+            //对于MIME类型的请求，httpclient建议全用MulitPartRequestEntity进行包装  
+            MultipartRequestEntity mre = new MultipartRequestEntity(parts, postMethod.getParams());  
+            postMethod.setRequestEntity(mre);  
+            client.getHttpConnectionManager().getParams().setConnectionTimeout(50000);// 设置连接时间  
+            int status = client.executeMethod(postMethod);  
+            if (status == HttpStatus.SC_OK) {  
+                return postMethod.getResponseBodyAsString();  
+            } else {  
+                System.out.println("fail");  
+            }  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        } finally {  
+  
+        	
+            //释放连接  
+            postMethod.releaseConnection();  
+        }
+		return null;  
+    }  
+	
+	
 	
 	
 }

@@ -91,9 +91,9 @@ public class Assert {
 		int percent = (int) (avg*100);
 		
 		String executePassPercent = percent + "%";
-		
+		Print.log("--------------------------", 4);
 		Print.log("总计执行:" + testCaseAll + ",通过率:" + executePassPercent, 4);
-		
+		Print.log("--------------------------", 4);
 	}
 	
 	/**
