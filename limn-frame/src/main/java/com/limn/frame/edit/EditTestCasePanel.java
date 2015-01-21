@@ -767,6 +767,20 @@ public class EditTestCasePanel extends CustomPanel {
 		return steps.split("\n");
 	}
 	/**
+	 * 返回预期结果
+	 * @return
+	 */
+	public String[] getExceptResultStep() {
+		String steps = null;
+		int row = testCaseTable.getSelectedRow();
+		if (row != -1) {
+			steps = (String) testCaseTable.getValueAt(row, 4);
+		} else {
+			return null;
+		}
+		return steps.split("\n");
+	}
+	/**
 	 * 返回XPath用例
 	 * @return
 	 */
@@ -801,12 +815,21 @@ public class EditTestCasePanel extends CustomPanel {
 	 * @param steps
 	 */
 	public void setTestCaseStep(String steps) {
-
 		int row = testCaseTable.getSelectedRow();
 		if (row != -1) {
 			testCaseTable.setValueAt(steps, row, 3);
 		}
-
+	}
+	
+	/**
+	 * 设置预期结果
+	 * @param steps
+	 */
+	public void setExpectResult(String steps) {
+		int row = testCaseTable.getSelectedRow();
+		if (row != -1) {
+			testCaseTable.setValueAt(steps, row, 4);
+		}
 	}
 	
 	/**

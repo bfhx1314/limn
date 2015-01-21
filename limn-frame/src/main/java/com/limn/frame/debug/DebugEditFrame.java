@@ -32,7 +32,9 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import org.apache.bcel.generic.IF_ACMPEQ;
 import org.openqa.selenium.WebElement;
+import org.tmatesoft.sqljet.core.internal.lang.SqlParser.begin_stmt_return;
 
 import com.limn.frame.edit.EditTestCasePanel;
 import com.limn.frame.keyword.BaseKeyWordDriverImpl;
@@ -88,15 +90,23 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	private JScrollPane stepJScrollStep = new JScrollPane(editTestCase,
 			ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+	//预期结果编辑区
+	private JTable editExpect = new JTable();
+	private DefaultTableModel expectModel = new DefaultTableModel();
+	private JScrollPane expectJScrollStep = new JScrollPane(editExpect,
+			ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	
+	private static JButton addExpectResult = new JButton("添加预期");
 	private JButton execute = new JButton("执行");
 	private JButton insertExecute = new JButton("插入执行");
 	private JButton executeAgain = new JButton("执行");
 	private JButton deleteRow = new JButton("删除");
 	private JButton deleteXPath = new JButton("删除XPath别名");
 	
-	
+	// TAB页
 	JTabbedPane tabbedPane = new JTabbedPane();
+
 	JPanel pabelLog = new JPanel();
 	JPanel pabelTestCase = new JPanel();
 	
@@ -115,7 +125,10 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	private CustomPanel isShowPanel = null;
 	
 	private LinkedHashMap<String,CustomPanel> panelSet = new LinkedHashMap<String,CustomPanel>();
-	
+	/**
+	 * 关联TAB中的JScrollPane面板与TAB中的DefaultTableModel累中记录的用例步骤或者预期结果
+	 */
+	private LinkedHashMap<JTable, DefaultTableModel> paneMode = new LinkedHashMap<JTable,DefaultTableModel>();
 	// 存放XPATH与别名
 	private static LinkedHashMap<String, String> xpathName = new LinkedHashMap<String, String>();
 	public static LinkedHashMap<String, String> getXpathName() {
@@ -143,7 +156,13 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		}
 	}
 	
-	
+	/**
+	 * 设置“添加预期”按钮可交互
+	 * @param bool
+	 */
+	public static void setAddExpectButton(boolean bool){
+		addExpectResult.setEnabled(bool);
+	}
 
 	public DebugEditFrame(){
 		keyWordPanel = new KeyWordPanel();
@@ -176,16 +195,26 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		jframe.setLayout(null);
 		
 		setBoundsAt(testCaseJSP,2, 5, 300, 70);
-		setBoundsAt(execute,202, 80, 100, 20);
-		setBoundsAt(insertExecute,82, 80, 100, 20);
+		setBoundsAt(addExpectResult, 10, 80, 86, 20);
+		addExpectResult.setEnabled(false);
+		setBoundsAt(insertExecute,120, 80, 86, 20);
+		setBoundsAt(execute,230, 80, 70, 20);
 		
-		setBoundsAt(stepJScrollStep,2, 105, 300, 270);
+//		setBoundsAt(stepJScrollStep,2, 125, 300, 250);
 		executeAgain.setMargin(new Insets(0, 0, 0, 0));
 		setBoundsAt(executeAgain,215, 380, 50, 20);
 		deleteRow.setMargin(new Insets(0, 0, 0, 0));
 		setBoundsAt(deleteRow,145, 380, 50, 20);
 		deleteXPath.setMargin(new Insets(0, 0, 0, 0));
 		setBoundsAt(deleteXPath,20, 380, 105, 20);
+		
+		jframe.getContentPane().add(tabbedPane);
+		tabbedPane.setBounds(2, 105, 300, 270);
+		tabbedPane.addTab("用例步骤", null, stepJScrollStep, null);
+		tabbedPane.addTab("预期结果", null, expectJScrollStep, null);
+		// 关联TAB面板中组件与DefaultTableModel类
+		paneMode.put(editTestCase, model);
+		paneMode.put(editExpect, expectModel);
 		
 		deleteXPath.addActionListener(new ActionListener() {
 			
@@ -273,26 +302,56 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		
 		setBoundsAt(moveTestCase,303, 200, 46, 20);
 		setBoundsAt(moveEditTestCase,303, 250, 46, 20);
-
 		setBoundsAt(logJScrollLog,2, 405, 990, 165);
 
-		
-		
-
-		
 		writeLogPane.setPreferredSize(new Dimension(290, 234));
 		writeLogPane.setEditable(false);
-		
 //		writeStepPane.setPreferredSize(new Dimension(244, 234));
 //		writeStepPane.setEditable(false);
-		
 		writeLogPane.setDocument(new LogDocument(writeLogPane, 400));
+		
+		expectModel.addColumn("预期结果");
+		editExpect.setRowHeight(20);
+		editExpect.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); 
+		editExpect.setModel(expectModel);
+		addExpectResult.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(!isVerKeyWord){
+					int status = JOptionPane.showConfirmDialog(jframe, "关键字有误,是否继续执行", "警告" ,JOptionPane.YES_NO_OPTION);
+					if(status==1){
+						return; 
+					}
+				}
+				
+				String[] steps = testCase.getText().split("\n");
+				for(String evertStep:steps){
+					if (RegExp.findCharacters(evertStep, "^验证:")){
+						evertStep = evertStep.replace("验证:", "");
+					}
+					expectModel.addRow(new Object[]{evertStep});
+				}
+//				model.addRow(new Object[]{testCase.getText()});
+				int row = expectModel.getRowCount();
+				editExpect.setModel(expectModel);
+				editExpect.setRowSelectionInterval(0,row - 1);
+				
+				Rectangle rect = editExpect.getCellRect(row -1, 0, true);
+				editExpect.scrollRectToVisible(rect);
+				
+				executeStep(testCase.getText(),false);
+				testCase.setText("");
+				// 激活"预期结果"面板
+				tabbedPane.setSelectedComponent(expectJScrollStep);
+				addExpectResult.setEnabled(false);
+			}
+		});
 		
 		model.addColumn("用例步骤");
 		editTestCase.setRowHeight(20);
 		editTestCase.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); 
 		editTestCase.setModel(model);
-
+		
 		execute.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -317,7 +376,8 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 				
 				executeStep(testCase.getText(),false);
 				testCase.setText("");
-				
+				tabbedPane.setSelectedComponent(stepJScrollStep);
+				setAddExpectButton(false);
 			}
 		});
 		
@@ -325,15 +385,24 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(editTestCase.getSelectedRow()!=-1){
-					int row = editTestCase.getSelectedRow();
+				// 获取当前激活的TAB面板
+				Component selectComponent = tabbedPane.getSelectedComponent();
+				// 转换类型
+				JScrollPane selectComponentJScrollPane = (JScrollPane) selectComponent;
+				// 获取当前TAB面板中的组件，并且转换类型
+				JTable selectJTable = ((JTable) selectComponentJScrollPane.getViewport().getView());
+				// 获取组件对应的类
+				DefaultTableModel selectJTbaleMod = paneMode.get(selectJTable);
+				// TODO 执行按钮、删除XPath按钮也要更改
+				if(selectJTable.getSelectedRow()!=-1){
+					int row = selectJTable.getSelectedRow();
 //					int in = model.getColumnCount();
-					
-					String excelVaule = model.getValueAt(row, 0).toString();
+					String excelVaule = selectJTbaleMod.getValueAt(row, 0).toString();
 					String splitKey[] = RegExp.splitKeyWord(excelVaule);
-
 					if(splitKey.length>1 && splitKey[0].equals("录入")){
 						removeXpathName(splitKey[1]);
+					}else {
+						removeXpathName(splitKey[0]);
 					}
 //					String searchKey = RegExp.splitKeyWord(excelVaule)[1];
 //					String[] getNameXPath = testCasePanel.getSelectStepXPath();
@@ -358,20 +427,18 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 //						getNameXPath = ary;
 ////						testCasePanel.setAssProperties
 //					}
-					model.removeRow(row);
-
-					if(model.getRowCount()!=0 && model.getRowCount()>row){
-						editTestCase.setRowSelectionInterval(0,row);
-					}else if(model.getRowCount()!=0 && model.getRowCount()<=row){
-						editTestCase.setRowSelectionInterval(0,row - 1);
+					selectJTbaleMod.removeRow(row);
+					if(selectJTbaleMod.getRowCount()!=0 && selectJTbaleMod.getRowCount()>row){
+						selectJTable.setRowSelectionInterval(0,row);
+					}else if(selectJTbaleMod.getRowCount()!=0 && selectJTbaleMod.getRowCount()<=row){
+						selectJTable.setRowSelectionInterval(0,row - 1);
 					}
-					editTestCase.setModel(model);
+					selectJTable.setModel(selectJTbaleMod);
 				}
 			}
 		});
 		
 		insertExecute.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(editTestCase.getSelectedRow()!=-1){
@@ -389,7 +456,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 					executeStep(testCase.getText(),false);
 					testCase.setText("");
 				}
-				
+				setAddExpectButton(false);
 			}
 		});
 		
@@ -397,19 +464,28 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		executeAgain.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// 获取当前激活的TAB面板
+				Component selectComponent = tabbedPane.getSelectedComponent();
+				// 转换类型
+				JScrollPane selectComponentJScrollPane = (JScrollPane) selectComponent;
+				// 获取当前TAB面板中的组件，并且转换类型
+				JTable selectJTable = ((JTable) selectComponentJScrollPane.getViewport().getView());
+				// 获取组件对应的类
+				DefaultTableModel selectJTbaleMod = paneMode.get(selectJTable);
+				
 				String step = null;
-				if(editTestCase.getRowCount()!=0){
-					for(int i = 0 ;i<model.getRowCount();i++){	
+				if(selectJTable.getRowCount()!=0){
+					for(int i = 0 ;i<selectJTbaleMod.getRowCount();i++){	
 						if(null==step){
-							step = (String) model.getValueAt(i, 0);
+							step = (String) selectJTbaleMod.getValueAt(i, 0);
 						}else{
-							step = step + "\n" + (String) model.getValueAt(i, 0);
+							step = step + "\n" + (String) selectJTbaleMod.getValueAt(i, 0);
 						}
 					}
 					executeStep(step,true);
 					
 				}
-
+				
 			}
 		});
 		
@@ -425,9 +501,16 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 					}
 					testCasePanel.setTestCaseStep(steps);
 
-					testCasePanel.setAssProperties(TransformationMap.transformationByMap(xpathName));
 				}
-				
+				steps = null;
+				if(editExpect.getRowCount()!=0){
+					steps = (String) expectModel.getValueAt(0, 0);
+					for(int i = 1 ;i<expectModel.getRowCount();i++){
+						steps =  steps + "\n" +(String) expectModel.getValueAt(i, 0);
+					}
+					testCasePanel.setExpectResult(steps);
+				}
+				testCasePanel.setAssProperties(TransformationMap.transformationByMap(xpathName));
 			}
 		});
 		
@@ -440,8 +523,14 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 					for(String evertStep:steps){
 						model.addRow(new Object[]{evertStep});
 					}
-					
 					editTestCase.setModel(model);
+				}
+				steps = testCasePanel.getExceptResultStep();
+				if(steps!=null){
+					for(String evertStep:steps){
+						expectModel.addRow(new Object[]{evertStep});
+					}
+					editExpect.setModel(expectModel);
 				}
 				String assPro = testCasePanel.getSelectAssProperties();
 				if(null != assPro && !assPro.isEmpty()){
@@ -450,7 +539,6 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 				}else{
 					Print.log("未获取获取关联属性",0);
 				}
-				
 			}
 		});
 
@@ -461,6 +549,11 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 			@Override
 			public void keyTyped(KeyEvent e) {
 				isTyped = true;
+				if (RegExp.findCharacters(testCase.getText(), "^验证:")){
+					addExpectResult.setEnabled(true);
+				}else{
+					addExpectResult.setEnabled(false);
+				}
 			}
 			//释放
 			@Override
@@ -471,12 +564,21 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 					testCase.setCaretPosition(care);
 				}
 				isTyped = false;
+				if (RegExp.findCharacters(testCase.getText(), "^验证:")){
+					addExpectResult.setEnabled(true);
+				}else{
+					addExpectResult.setEnabled(false);
+				}
 			}
 			//按下
 			@Override
 			public void keyPressed(KeyEvent e) {
 				isTyped = false;
-				
+				if (RegExp.findCharacters(testCase.getText(), "^验证:")){
+					addExpectResult.setEnabled(true);
+				}else{
+					addExpectResult.setEnabled(false);
+				}
 			}
 		});
 //			

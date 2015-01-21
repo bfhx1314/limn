@@ -47,7 +47,7 @@ public class VerificationPanel extends JPanel{
 	public void setVerWebElement(WebElement web){
 		verWeb = web;
 		String value = "";
-		if(verWeb.getTagName().equalsIgnoreCase("input") && verWeb.getTagName().equalsIgnoreCase("textarea")){
+		if(verWeb.getTagName().equalsIgnoreCase("input") || verWeb.getTagName().equalsIgnoreCase("textarea")){
 			value = verWeb.getAttribute("value");
 		}else if(verWeb.getTagName().equalsIgnoreCase("table")){
 			

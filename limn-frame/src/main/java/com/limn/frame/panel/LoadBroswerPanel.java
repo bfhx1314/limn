@@ -144,8 +144,13 @@ public class LoadBroswerPanel extends CustomPanel {
 				
 				webElementsJSP.setVisible(false);
 				returnButton.setVisible(true);
-
-				
+				// 重写用例步骤
+				String step = DebugEditFrame.getStepTextArea(); 
+				if (RegExp.findCharacters(step, "^录入:")){
+					step = step.replace("录入:", "验证:");
+				}
+				DebugEditFrame.setStepTextArea(step);
+				DebugEditFrame.setAddExpectButton(true);
 			}
 		});
 		
@@ -297,8 +302,8 @@ public class LoadBroswerPanel extends CustomPanel {
 						currentHighWebElement = findWebElements.get(((DictoryKeyValue) webElements.getSelectedValue()).key());
 
 						setWebElmentByLocator(currentHighWebElement);
-
 						Driver.highLightWebElement(currentHighWebElement);
+						DebugEditFrame.setAddExpectButton(false);
 					} catch (SeleniumFindException e1) {
 //						e1.printStackTrace();
 					}

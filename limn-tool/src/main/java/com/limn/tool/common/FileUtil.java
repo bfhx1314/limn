@@ -33,7 +33,7 @@ public class FileUtil {
 	}
 	
 	/**
-	 * 文件是否存在
+	 * 创建文件
 	 * @param filePath 文件绝对路径
 	 * @return
 	 */
