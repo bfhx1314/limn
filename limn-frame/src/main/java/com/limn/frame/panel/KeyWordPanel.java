@@ -71,6 +71,9 @@ public class KeyWordPanel extends CustomPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) keyWordTree.getLastSelectedPathComponent();//返回最后选定的节点
+				if(null == selectedNode){
+					return ;
+				}
 				String name = selectedNode.toString();
 				if(keyWordAnnotate.containsKey(keyWord.get(name))){
 					helpPane.setText(keyWordAnnotate.get(keyWord.get(name)));

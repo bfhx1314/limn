@@ -26,6 +26,7 @@ public class Test {
 		Object result = null;
 		try {
 			String[] vScript = new String[] {
+					"123撒速度",
 					"getAutoIncrement(5)",
 					"asda",
 					"1+1*(8*3.0)",

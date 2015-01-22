@@ -176,19 +176,20 @@ public class BaseRunKeyWordImpl {
 	
 	public static void addAttachment(String[] step) throws SeleniumFindException, ParameterException {
 		if (step.length>1){
-			String filePath = ConvertCharacter.getHtmlChr(step[1]);  // 转回原来的字符串
+			String filePath = ConvertCharacter.getHtmlChr(step[2]);  // 转回原来的字符串
 			if (!RegExp.findCharacters(filePath, "^[a-zA-Z]:")){
-				filePath = Parameter.RESULT_FOLDER + "\\ExpExcel" + filePath;
+				filePath = Parameter.TESTCASE_FOLDERPATH +"\\"+ filePath;
 				String parentPath = FileUtil.getParent(filePath);
 				if (!FileUtil.exists(parentPath)){
 					FileUtil.createFloder(parentPath);
 				}
 			}
-			Print.log("导入路径："+filePath, 2);
+			Print.log("导入路径："+filePath, 1);
 //			OperateDialog.saveFile(path, step[0]);
 			//String xPath = "//div[@class=' x-window x-window-noborder' and contains(@style,'visibility: visible')]";
 			if (!step[1].equals("取消")){
 				if (FileUtil.exists(filePath)){
+					step[2] = filePath;
 //					if (WebElementByXPath.doesExist(By.xpath(xPath))){
 //						WebElement inputFile = Driver.getWebElementByXPath(xPath+"//input[@type='file']");
 //						inputFile.sendKeys(filePath);

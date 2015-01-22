@@ -87,7 +87,13 @@ public class Parser implements INameResolver {
 		
 		boolean finish = lexID == -1;
 		Stack<ParserRuleTrace> ruleTraceStack = new Stack<ParserRuleTrace>();
+		// 数字开头的字符串，会死循环。暂时210次循环后判断return。
+		int iTime = 0;
 		while ( !finish ) {
+			if (iTime>210){
+				return true;
+			}
+			iTime++;
 			// 预先解决延迟的规则
 			if ( delayRuleTrace != null ) {
 				delayPredict(rules, ruleTraceStack, syntaxTree, 
