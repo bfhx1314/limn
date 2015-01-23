@@ -72,7 +72,7 @@ public class LoadBroswerPanel extends CustomPanel {
 	private HashMap<String, String> rangeList = new HashMap<String, String>();
 
 	// 要搜索哪些元素
-	private final String[] FINDTAGNAME = { "input", "a", "button", "select", "table" ,"textarea" };
+	private final String[] FINDTAGNAME = { "input", "a", "button", "select", "table" ,"textarea","span" };
 	
 
 	private JButton refresh = new JButton("刷新");
@@ -506,14 +506,25 @@ public class LoadBroswerPanel extends CustomPanel {
 
 					}
 
-					if(!Boolean.valueOf(hidden) && !display.equalsIgnoreCase("none") && null != inputHidden && !inputHidden.equalsIgnoreCase("hidden")){
+					if(!Boolean.valueOf(hidden) && !display.equalsIgnoreCase("none") ){
+						if( null != inputHidden){
+							if(!inputHidden.equalsIgnoreCase("hidden")){
+								String ident = getIdentifiedByWebElement(webs);
+								showList.put(range, ident);
+								
+								webElementsList.addElement(new DictoryKeyValue(range, ident));
+								
+								range++;
+							}
+						}else{
 						
-						String ident = getIdentifiedByWebElement(webs);
-						showList.put(range, ident);
-						
-						webElementsList.addElement(new DictoryKeyValue(range, ident));
-						
-						range++;
+							String ident = getIdentifiedByWebElement(webs);
+							showList.put(range, ident);
+							
+							webElementsList.addElement(new DictoryKeyValue(range, ident));
+							
+							range++;
+						}
 					}
 					
 
@@ -543,7 +554,7 @@ public class LoadBroswerPanel extends CustomPanel {
 		public void run() {
 			loading();
 			
-			if(null != Driver.getWebElementBylocator(locator)){
+			if(null != Driver.getWebElementBylocator(locator) || null != Driver.getWebElementBylocator("/"+locator)){
 				setXPathName.setEnabled(true);
 				verificationButton.setEnabled(true);
 				recommendLocator.setText(locator);

@@ -150,6 +150,24 @@ function getIeVersion(){
 	return boolRe;
 }
 
+// 日期插件录入日期
+function setDatePluginsValue(htmlAttribute,attributeValue,setValue){
+	if (htmlAttribute == 'id'){
+		try{
+			$("input[id='"+attributeValue+"']").datepicker('setDate',setValue);
+		}catch(err){
+			$("input[id='"+attributeValue+"']")[0].setAttribute('value',setValue);
+		}
+	}else if(htmlAttribute == 'name'){
+		try{
+			$("input[name='"+attributeValue+"']").datepicker('setDate',setValue);
+		}catch(err){
+			$("input[name='"+attributeValue+"']")[0].setAttribute('value',setValue);
+		}
+	}
+}
 
-
+function $id(str){
+	return document.getElementById(str);
+}
 
