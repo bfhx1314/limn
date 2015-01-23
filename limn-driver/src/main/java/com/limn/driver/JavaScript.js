@@ -152,19 +152,38 @@ function getIeVersion(){
 
 // 日期插件录入日期
 function setDatePluginsValue(htmlAttribute,attributeValue,setValue){
-	if (htmlAttribute == 'id'){
-		try{
-			$("input[id='"+attributeValue+"']").datepicker('setDate',setValue);
-		}catch(err){
-			$("input[id='"+attributeValue+"']")[0].setAttribute('value',setValue);
-		}
-	}else if(htmlAttribute == 'name'){
-		try{
-			$("input[name='"+attributeValue+"']").datepicker('setDate',setValue);
-		}catch(err){
-			$("input[name='"+attributeValue+"']")[0].setAttribute('value',setValue);
+	var datePlugins = setDatePluginsType();
+	switch(datePlugins){
+		case 1:
+			$("input["+htmlAttribute+"='"+attributeValue+"']")[0].setAttribute('value',setValue);
+			break;
+		case 2:
+			$("input["+htmlAttribute+"='"+attributeValue+"']").datepicker('setDate',setValue);
+			break;
+	}
+}
+
+function setDatePluginsType(){
+	var type = -1;
+	var arrScript = document.head.getElementsByTagName('script');
+	var arrScriptLen = arrScript.length;
+	for(var i=0;i<arrScriptLen;i++){
+		var scriptSrc = arrScript[i].src;
+		if (scriptSrc.indexOf('datetimepicker.js') != -1){
+			type = 1;
+			break;
 		}
 	}
+	if (type == -1){
+		for(var i=0;i<arrScriptLen;i++){
+			var scriptSrc = arrScript[i].src;
+			if(scriptSrc.indexOf('datepicker.js') != -1){
+				type = 2;
+				break;
+			}
+		}
+	}
+	return type;
 }
 
 function $id(str){
