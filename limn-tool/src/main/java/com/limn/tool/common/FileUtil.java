@@ -246,8 +246,10 @@ public class FileUtil {
 	 */
 	public static void copyDirectiory(String sourceDir, String targetDir)
 			throws IOException {
-		// 新建目标目录
-		(new File(targetDir)).mkdirs();
+		if (!exists(targetDir)){
+			// 新建目标目录
+			(new File(targetDir)).mkdirs();
+		}
 		// 获取源文件夹当前下的文件或目录
 		File[] file = (new File(sourceDir)).listFiles();
 		for (int i = 0; i < file.length; i++) {

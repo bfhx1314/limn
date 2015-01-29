@@ -9,6 +9,9 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.XMLWriter;
 
+import com.limn.frame.report.GenerateCaseResultXMLSegment;
+import com.limn.frame.report.LogEngine;
+import com.limn.frame.report.NewDictionary;
 import com.limn.tool.parameter.Parameter;
 
 
@@ -26,6 +29,10 @@ public class XMLData implements DataResults{
 	private Element stepElement = null;
 	//存放路径
 	private String savePath = null;
+	/**
+	 * 存放报告需要的所有内容
+	 */
+	public static NewDictionary dicCaseInfo = null;
 	/**
 	 * 初始化xml
 	 */
@@ -140,15 +147,19 @@ public class XMLData implements DataResults{
 	public void addCustom(String node, String value) {
 		// TODO Auto-generated method stub
 		
-	}
+	} 
 
 
 	@Override
 	public void addTestCaseCount(String count) {
 		// TODO Auto-generated method stub
-		
 	}
 	
+	public static void addTestCaseReport(NewDictionary dicCaseInfo){
+		LogEngine.test();
+//		NewDictionary dicCaseInfo = new NewDictionary();
+		GenerateCaseResultXMLSegment.setXML(dicCaseInfo);
+	}
 	
 	
 }

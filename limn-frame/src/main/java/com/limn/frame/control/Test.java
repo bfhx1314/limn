@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import org.openqa.selenium.NoSuchWindowException;
+
 import com.limn.frame.keyword.KeyWordDriver;
+import com.limn.frame.report.NewDictionary;
 import com.limn.frame.results.RecordResult;
 import com.limn.frame.results.UploadServerData;
+import com.limn.frame.results.XMLData;
 import com.limn.frame.testcase.TestCase;
 import com.limn.frame.testcase.TestCaseExcel;
 import com.limn.tool.log.RunLog;
@@ -120,6 +124,9 @@ public class Test {
 			ArrayList<String> Path = RegExp.matcherCharacters(Parameter.TESTCASEPATH, "[^\\\\/]{1,}");
 			Parameter.EXCELNAME = RegExp.matcherCharacters(Path.get(Path.size() - 1), ".*(?=.xls)").get(0);
 			Parameter.TESTCASEPATH = Parameter.RESULT_FOLDER + "/test.xls";
+			// 新建报告目录
+			Parameter.RESULT_FOLDER_REPORT = Parameter.RESULT_FOLDER + "/Report";
+			FileUtil.copyDirectiory(Parameter.REPORT_PATH, Parameter.RESULT_FOLDER_REPORT);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -310,6 +317,9 @@ public class Test {
 				int stepNum = runTimeStepNum;
 				//测试结果集
 				recordResult.addCase(tc.getTestCaseNo());
+				// 报告
+				//TODO
+				XMLData.dicCaseInfo = new NewDictionary();
 				for (; stepNum < steps.length; stepNum++) {
 					runTimeStepNum = stepNum;
 					RunLog.highLightCurrentStep(stepNum);
@@ -321,6 +331,7 @@ public class Test {
 						break;
 					}
 				}
+				XMLData.addTestCaseReport(XMLData.dicCaseInfo);
 //				setHyperLink(tc.getCurrentRow(),resultPath + "/" + runTimeStepNum);
 				
 //				CollateData.initializationParameter();
