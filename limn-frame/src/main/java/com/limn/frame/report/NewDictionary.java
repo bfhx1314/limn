@@ -1,4 +1,4 @@
-package com.limn.tool.report;
+package com.limn.frame.report;
 
 import java.util.Collection;
 import java.util.HashMap;

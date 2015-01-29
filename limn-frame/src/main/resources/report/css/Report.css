@@ -1,0 +1,397 @@
+
+@charset "utf-8";
+
+H1 {
+	FONT-WEIGHT: normal;
+	FONT-SIZE: 18px;
+	COLOR: navy;
+	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+
+body {
+	font-family: Calibri;
+	font-size: 1em;
+	color: black;
+	padding: 0.6em;
+}
+
+.filename {
+	color: black;
+	font-weight: bold;
+}
+
+a:link {
+	color: Green;
+	text-decoration: none
+}
+
+a:visited {
+	color: Green;
+	text-decoration: none
+}
+
+a:hover {
+	color: springgreen;
+	text-decoration: underline
+}
+
+a:active {
+	color: springgreen;
+	text-decoration: none
+}
+
+
+
+a.two:link {
+	color: #FF0000;
+	text-decoration: none
+}
+
+a.two:visited {
+	color: #FF0000;
+	text-decoration: none
+}
+
+a.two:hover {
+	color: #F75000;
+	text-decoration: underline
+}
+
+a.two:active {
+	color: #F75000;
+	text-decoration: none
+}
+
+
+a.three:link {
+	color: #f9a600;
+	text-decoration: none
+}
+
+a.three:visited {
+	color: #f9a600;
+	text-decoration: none
+}
+
+a.three:hover {
+	color: #F9F900;
+	text-decoration: underline
+}
+
+a.three:active {
+	color: #F9F900;
+	text-decoration: none
+}
+
+
+table.CheckPoint {
+	
+}
+
+table.author {
+	text-align: right;
+	width: 100%;
+	color: black;
+	font-size: 0.8em;
+	padding: 0.1em;
+	font-style: italic;
+	font-weight: bold;
+}
+
+table.Information {
+	width: 100%;
+	margin: 0.5em 0em 0em 0em;
+	padding: 0em;
+	border-collapse: collapse;
+	margin: 0.5em 0em 0em 0em;
+	empty-cells: show;
+	background: white;
+}
+
+table.Testcase {
+	width: 100%;
+	margin: 0.5em 0em 0em 0em;
+	padding: 0em;
+	border-collapse: collapse;
+	margin: 0.5em 0em 0em 0em;
+	empty-cells: show;
+	background: white;
+	border: 1px solid #005AB5;
+}
+
+div.foldingbutton {
+	text-align: center;
+	line-height: 0.8em;
+	font-size: 1em;
+	margin: 0.1em 0.4em 0.1em 0.1em;
+	height: 0.8em;
+	width: 0.8em;
+	float: left;
+	text-decoration: none;
+	font-weight: bold;
+	border: 1px solid white;
+	color: black;
+}
+
+div.foldingbutton:hover {
+	border: 1px solid #005AB5;
+	color: #005AB5;
+}
+
+tr.checkpointrow {
+	background-color: white;
+}
+
+tr.inputoutput {
+	text-decoration: underline;
+	text-align: left;
+	width: 100%;
+	font-weight: bold;
+	color: green;
+	border: 1px solid #005AB5;
+	font-size: 18px;
+}
+
+td.maintitle {
+	text-align: center;
+	background-color: powderblue;
+	font-weight: bold;
+	color: white;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr=ghostwhite,
+		endColorStr=#005AB5 );
+}
+
+td.CP_title {
+	color: #FFFFFF;
+	text-align: center;
+	background-color: #005AB5;
+	font-weight: bold;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr=ghostwhite,
+		endColorStr=#005AB5 );
+}
+
+td.Info_Item {
+	text-align: left;
+	width: 20%;
+	font-weight: bold;
+	color: navy;
+	border: 1px solid #005AB5;
+}
+
+td.Info_Value {
+	text-align: left;
+	color: #005AB5;
+	border: 1px solid #005AB5;
+}
+
+td.parameter_Value {
+	text-align: left;
+	color: #005AB5;
+
+	border: 1px solid #005AB5;
+}
+
+td.Case_Item {
+	text-align: left;
+	border: 0px;
+	font-weight: bold;
+	color: navy;
+}
+
+td.Case_value {
+	text-align: left;
+	border: 0px;
+	color: #005AB5;
+}
+
+td.detailtext {
+	text-align: left;
+	color: #005AB5;
+	word-break: break-all;
+}
+
+td.centertext {
+	text-align: center;
+	color: #005AB5;
+}
+
+td.passedcentertext {
+	text-align: center;
+	color: green;
+}
+
+td.failedcentertext {
+	text-align: center;
+	color: red;
+}
+
+td.warningcentertext {
+	text-align: center;
+	color:  #f9a600;
+}
+
+td.notruncentertext {
+	text-align: center;
+	color: mediumblue;
+	border: 1px solid black;
+	background-color: darkgray;
+}
+
+td.col_graph {
+	border: 1px solid black;
+}
+
+.back {
+	float: right;
+	margin-right: 0.5em;
+}
+
+.graph {
+	position: relative;
+	border: 1px solid black;
+	width: 15em;
+	height: 0.75em;
+	padding: 0px;
+	background: #E9E9E9;
+}
+
+.graph b {
+	display: block;
+	position: relative;
+	height: 100%;
+	float: left;
+	font-size: 4px;
+}
+
+.ReportTitle {
+	font-family: Arial, Helvetica, sans-serif
+}
+
+.LOG {
+	color: #FF3300
+}
+div.Action {
+			width: 100%;    
+			margin: 0.5em 0em 0em 0em;
+			padding: 0em;
+			border-collapse: collapse;    
+			margin : 0.5em 0em 0em 0em;
+			empty-cells:show;
+			background:white;
+			border: 1px solid #005AB5;
+		}
+		
+		span.Case_Name{
+			margin:30px;
+			text-align: left;    
+			border: 0px ;   
+			color:#005AB5; 
+			font-weight:bold;
+		}
+		.CurrentTimeTitle{		
+			width:100px; 
+			text-align:left; 
+			display:inline-block;
+			font-weight:bold;
+			text-decoration: underline;
+		}
+		
+		.EventStatusTitle{
+			width:80px; 
+			text-align:left; 
+			display:inline-block;
+			font-weight:bold;
+			text-decoration: underline;
+		}
+		
+		.EventNameTitle{
+			width:10%; 
+			text-align:left; 
+			display:inline-block;
+			font-weight:bold;
+			text-decoration: underline;
+		}
+		
+		.EventContentTitle{
+			
+			text-align:left; 
+			display:inline-block;
+			font-weight:bold;
+			text-decoration: underline;		
+		}
+		
+		.CurrentTime{
+			width:100px; 
+			text-align:left; 
+			display:inline-block;
+			
+		}
+		
+		.EventName{
+			width:10%; 
+			text-align:left; 
+			display:inline-block;
+		}
+		
+		.EventContent{
+		
+		
+		}
+		
+		.EventPass{
+			width:80px; 
+			text-align:left; 
+			display:inline-block;
+			font-weight:bold;
+			color:green;
+		
+		}
+		
+		.EventFail{
+			width:80px; 
+			text-align:left; 
+			display:inline-block;
+			font-weight:bold;
+			color:red;		
+		}
+		
+		.EventWarning{
+			width:80px; 
+			text-align:left; 
+			display:inline-block;
+			font-weight:bold;
+			color:orange;
+		}
+		.EventDone{
+			width:80px; 
+			text-align:left; 
+			display:inline-block;
+			font-weight:bold;
+			color:gray;
+		}
+		
+		
+		.log-list{
+			padding:15px 0 0 0;
+		}
+		
+		.log-title{
+			height:31px;
+			line-height:31px;
+			padding:0 10px
+			border-bottom: 1px dotted #3C4A65;
+			color:#1683D7;
+			list-style-type : none;
+		}
+		.log-line{
+			list-style-type : none;
+			
+			
+		}
+		th.Info_Item{
+		border: 1px solid #005AB5;
+    color: navy;
+    font-weight: bold;
+    text-align: left;
+    width: 11%;
+		}

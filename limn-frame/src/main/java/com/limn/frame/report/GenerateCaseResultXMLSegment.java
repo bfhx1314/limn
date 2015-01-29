@@ -1,4 +1,4 @@
-package com.limn.tool.report;
+package com.limn.frame.report;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,13 +10,16 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.limn.tool.common.FileUtil;
+import com.limn.tool.parameter.Parameter;
+
 public class GenerateCaseResultXMLSegment {
 
-	public static void setXML(String xmlPath, NewDictionary dicCaseInfo){
+	public static void setXML(NewDictionary dicCaseInfo){
 		SAXReader saxReader = new SAXReader();
 		Document document = null;
 		try { 
-			document = saxReader.read("c:\\ReportSource.xml");
+			document = saxReader.read(Parameter.RESULT_FOLDER_REPORT + "/ReportSource.xml");
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
@@ -153,30 +156,10 @@ public class GenerateCaseResultXMLSegment {
 				new_Log.addText(lHashMap.get("EventContent"));
 			}
 		}
-		saveDocument(document,xmlPath);
+		FileUtil.setEmpty(Parameter.RESULT_FOLDER_REPORT+"/ReportSource.xml");
+		XmlEngine.saveDocument(document,Parameter.RESULT_FOLDER_REPORT + "/ReportSource.xml");
 	}
-    /** 
-     * 将文档输出到文件保存，可指定格式化输出,可指定字符编码。 
-     *  
-     * @param document 
-     * @param outputFile 
-     */  
-    public static void saveDocument(Document doc, String outputPath) {  
-        // 输出文件  
-        //File outputFile = new File(outputPath);  
-        try {  
-//            OutputFormat format = OutputFormat.createPrettyPrint();  
-//             指定XML编码,不指定的话，默认为UTF-8  
-//            format.setEncoding("UTF-8");  
-//        	 此方法保存后中文乱码，要用"gb2312"编码
-//            XMLWriter output = new XMLWriter(new FileWriter(outputFile), format);  
-        	OutputStreamWriter output = new OutputStreamWriter(new FileOutputStream(outputPath),"utf-8");  
-        	doc.write(output);  
-            output.close();  
-        } catch (IOException e) {  
-            System.out.println(e.getMessage());  
-        }  
-    }  
+
     
 	public static void main(String[] args) {
 		LogEngine.test();
@@ -216,7 +199,7 @@ public class GenerateCaseResultXMLSegment {
 		// ItemList
 		NewDictionary Dic_Item_List = new NewDictionary();
 		dicCaseInfo.addItem("ItemList", Dic_Item_List);
-		setXML("c:/testLog/ReportSource.xml",dicCaseInfo);
+//		setXML("c:/testLog/ReportSource.xml",dicCaseInfo);
 
 	}
 

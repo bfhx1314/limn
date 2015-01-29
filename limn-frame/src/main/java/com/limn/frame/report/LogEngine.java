@@ -1,4 +1,4 @@
-package com.limn.tool.report;
+package com.limn.frame.report;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,6 +12,9 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.limn.tool.common.FileUtil;
+import com.limn.tool.parameter.Parameter;
+
 
 
 public class LogEngine {
@@ -24,7 +27,7 @@ public class LogEngine {
 	public LogEngine(){
 		iEventIndex = 0;
 		DIC_TestLogContainer = new NewDictionary();
-		strLogFilePath = "C:\\File Template" + "\\TestLog.xml";
+		strLogFilePath = Parameter.RESULT_FOLDER_REPORT + "\\TestLog.xml";
 		strActionName = "TESTXML"; // Testcase Name
 		
 	}
@@ -88,33 +91,13 @@ public class LogEngine {
 			new_Log.addAttribute("Status", lHashMap.get("Status"));
 			new_Log.addText(lHashMap.get("EventContent"));
 			
-			saveDocument(document,"c:/testLog/TestLog.xml");
+			FileUtil.setEmpty(Parameter.RESULT_FOLDER_REPORT+"/TestLog.xml");
+			XmlEngine.saveDocument(document,Parameter.RESULT_FOLDER_REPORT+"/TestLog.xml");
 			
 		}
 		
 	}
-    /** 
-     * 将文档输出到文件保存，可指定格式化输出,可指定字符编码。 
-     *  
-     * @param document 
-     * @param outputFile 
-     */  
-    public void saveDocument(Document doc, String outputPath) {  
-        // 输出文件  
-        //File outputFile = new File(outputPath);  
-        try {  
-//            OutputFormat format = OutputFormat.createPrettyPrint();  
-//             指定XML编码,不指定的话，默认为UTF-8  
-//            format.setEncoding("UTF-8");  
-//        	 此方法保存后中文乱码，要用"gb2312"编码
-//            XMLWriter output = new XMLWriter(new FileWriter(outputFile), format);  
-        	OutputStreamWriter output = new OutputStreamWriter(new FileOutputStream(outputPath),"utf-8");  
-        	doc.write(output);  
-            output.close();  
-        } catch (IOException e) {  
-            System.out.println(e.getMessage());  
-        }  
-    }  
+
 	public static void test() {
 		LogEngine logEngine = new LogEngine();
 		logEngine.logEvent("1","case1","tetsset111");
