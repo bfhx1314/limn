@@ -49,7 +49,22 @@ public class FileUtil {
 //		createFloder("C:\\aa\\aaa");
 //		createFile("C:\\variable.properties");
 //	}
-	
+	/**
+	 * 清空文件内容
+	 * @param filePath 文件绝对路径
+	 */
+	public static void setEmpty(String filePath){
+		File file = new File(filePath);
+		FileWriter fw;
+		try {
+			fw = new FileWriter(file);
+			fw.write("");
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * 获取文件父路径
 	 * @param filePath 文件绝对路径
