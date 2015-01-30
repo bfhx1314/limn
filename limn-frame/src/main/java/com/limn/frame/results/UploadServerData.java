@@ -307,6 +307,12 @@ public class UploadServerData implements DataResults {
 		}
 		
 	}
+
+	@Override
+	public void addCaseReport() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 

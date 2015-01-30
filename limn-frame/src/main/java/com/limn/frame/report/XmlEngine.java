@@ -34,18 +34,18 @@ public class XmlEngine {
 		Element ExecutedOn_TextNode = (Element) document.selectSingleNode("//ExecutedOn");
 		Element TestStartTime_TextNode = (Element) document.selectSingleNode("//TestStartTime");
 		Element TestEndTime_TextNode = (Element) document.selectSingleNode("//TestEndTime");
-		Element ContinueExecution_TextNode = (Element) document.selectSingleNode("//ContinueExecution");
+//		Element ContinueExecution_TextNode = (Element) document.selectSingleNode("//ContinueExecution");
 		Element OverallStatus_TextNode = (Element) document.selectSingleNode("//OverallStatus");
 		
 		CurrentProductName_TextNode.setText(dicPlanInfo.getValue("ProductName").toString());
 		CurrentProductguiVersion_TextNode.setText(dicPlanInfo.getValue("ProductVersion").toString());
 		TestEnvironment_TextNode.setText(dicPlanInfo.getValue("TestEnvironment").toString());
 		RunMode_TextNode.setText(dicPlanInfo.getValue("RunMode").toString());
-		TestName_TextNode.setText(dicPlanInfo.getValue("QCTestName").toString());
+		TestName_TextNode.setText(dicPlanInfo.getValue("TestName").toString());
 		ExecutedOn_TextNode.setText(dicPlanInfo.getValue("ExecutedOn").toString());
 		TestStartTime_TextNode.setText(dicPlanInfo.getValue("StartTime").toString());
 		TestEndTime_TextNode.setText(dicPlanInfo.getValue("EndTime").toString());
-		ContinueExecution_TextNode.setText(dicPlanInfo.getValue("QCTestSet").toString());
+//		ContinueExecution_TextNode.setText(dicPlanInfo.getValue("ContinueExecution").toString());
 		OverallStatus_TextNode.setText(dicPlanInfo.getValue("OverallStatus").toString());
 		
 		FileUtil.setEmpty(Parameter.RESULT_FOLDER_REPORT+"/ReportSource.xml");
