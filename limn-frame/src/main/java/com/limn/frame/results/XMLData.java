@@ -12,6 +12,8 @@ import org.dom4j.io.XMLWriter;
 import com.limn.frame.report.GenerateCaseResultXMLSegment;
 import com.limn.frame.report.LogEngine;
 import com.limn.frame.report.NewDictionary;
+import com.limn.frame.report.XmlEngine;
+import com.limn.tool.common.DateFormat;
 import com.limn.tool.parameter.Parameter;
 
 
@@ -30,9 +32,13 @@ public class XMLData implements DataResults{
 	//存放路径
 	private String savePath = null;
 	/**
+	 * 存放报告的head部分
+	 */
+	private NewDictionary dicPlanInfoHead = null;
+	/**
 	 * 存放报告需要的所有内容
 	 */
-	public static NewDictionary dicCaseInfo = null;
+	private NewDictionary dicCaseInfo = null;
 	/**
 	 * 初始化xml
 	 */
@@ -41,6 +47,8 @@ public class XMLData implements DataResults{
 		savePath = Parameter.RESULT_FOLDER_WEB + "/results.xml";
 		document = DocumentHelper.createDocument();
 		save();
+		dicPlanInfoHead = new NewDictionary();
+		addXmlHead();
 	}
 	
 	
@@ -70,6 +78,17 @@ public class XMLData implements DataResults{
 	 */
 	@Override
 	public void addCase(String caseNo){
+		dicCaseInfo = new NewDictionary();
+		dicCaseInfo.addItem("Case Name", Parameter.TESTCASEMOUDLE);
+		dicCaseInfo.addItem("No", Parameter.TESTCASENO);
+		// TODO 报错信息
+		dicCaseInfo.addItem("Error Log", Parameter.ERRORLOG);
+		// TODO 产品提示信息
+		dicCaseInfo.addItem("Product message", Parameter.PRODUCTMESSAGE);
+		// TODO 报错时截图路径
+		dicCaseInfo.addItem("ErrorCapture", Parameter.ERRORCAPTURE);
+		// TODO 单条用例执行结果
+		dicCaseInfo.addItem("Case Status", Parameter.CASESTATUS);
 		caseElement = moudleElement.addElement("TestCase");
 		caseElement.addAttribute("CaseNo", caseNo);
 		save();
@@ -81,6 +100,7 @@ public class XMLData implements DataResults{
 	 */
 	@Override
 	public void addStep(String stepName,String result){
+//		dicCaseInfo.addItem(key, value);
 		stepElement = caseElement.addElement("Step");
 		stepElement.setText(stepName);
 		stepElement.addAttribute("Result", result);
@@ -152,14 +172,30 @@ public class XMLData implements DataResults{
 
 	@Override
 	public void addTestCaseCount(String count) {
-		// TODO Auto-generated method stub
+		XmlEngine xmlEngine = new XmlEngine();
+		Parameter.ENDTIME = DateFormat.getDateToString();
+		dicPlanInfoHead.addItem("EndTime", Parameter.ENDTIME);
+		dicPlanInfoHead.addItem("OverallStatus", Parameter.OVERALLSTATUS);
+		xmlEngine.update(dicPlanInfoHead);
 	}
 	
-	public static void addTestCaseReport(NewDictionary dicCaseInfo){
+	private void addXmlHead(){
+		dicPlanInfoHead.addItem("ProductName", Parameter.PRODUCTNAME);
+		dicPlanInfoHead.addItem("ProductVersion", Parameter.PLATVERSION);
+		dicPlanInfoHead.addItem("TestEnvironment", Parameter.TESTENVIRONMENT);
+		dicPlanInfoHead.addItem("RunMode", Parameter.RUNMODE);
+		dicPlanInfoHead.addItem("TestName", Parameter.TESTNAME);
+		dicPlanInfoHead.addItem("ExecutedOn", Parameter.OS);
+		dicPlanInfoHead.addItem("StartTime", Parameter.STARTTIME);
+		
+	}
+
+
+	@Override
+	public void addCaseReport() {
 		LogEngine.test();
 //		NewDictionary dicCaseInfo = new NewDictionary();
 		GenerateCaseResultXMLSegment.setXML(dicCaseInfo);
 	}
-	
 	
 }
