@@ -1,5 +1,7 @@
 package com.limn.tool.exception;
 
+import com.limn.tool.parameter.Parameter;
+
 
 /**
  * selenium��ܵ��쳣���࣬��ҪĿ����Ϊ����չException���Ӵ������code
@@ -23,6 +25,11 @@ public class SeleniumException extends Exception {
 	public SeleniumException(int code, String message) {
 		super(message);
 		this.code = code;
+		if (Parameter.ERRORLOG.equals("")){
+			Parameter.ERRORLOG = message;
+		}else{
+			Parameter.ERRORLOG = Parameter.ERRORLOG + " " + message;
+		}
 	}
 	
 	public int getCode() {

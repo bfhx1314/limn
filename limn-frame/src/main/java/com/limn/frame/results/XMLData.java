@@ -4,12 +4,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.XMLWriter;
-import org.tmatesoft.sqljet.core.internal.lang.SqlParser.select_core_return;
 
 import com.limn.frame.report.GenerateCaseResultXMLSegment;
 import com.limn.frame.report.LogEngine;
@@ -50,6 +48,10 @@ public class XMLData implements DataResults{
 	 */
 	private NewDictionary dicCheckPoint = null;
 	/**
+	 * 每条用例的详细日志
+	 */
+	private LogEngine logEngine = null;
+	/**
 	 * 初始化xml
 	 */
 	@Override
@@ -88,17 +90,11 @@ public class XMLData implements DataResults{
 	 */
 	@Override
 	public void addCase(String caseNo){
+		logEngine = new LogEngine();
 		dicCaseInfo = new NewDictionary();
 		dicCaseInfo.addItem("Case Name", Parameter.TESTCASEMOUDLE);
 		dicCaseInfo.addItem("No", Parameter.TESTCASENO);
-		// TODO 报错信息、需要增加区分错误等级
-		dicCaseInfo.addItem("Error Log", Parameter.ERRORLOG);
-		// TODO 产品提示信息
-		dicCaseInfo.addItem("Product message", Parameter.PRODUCTMESSAGE);
-		// TODO 报错时截图路径
-		dicCaseInfo.addItem("ErrorCapture", Parameter.ERRORCAPTURE);
-		// TODO 单条用例执行结果，是否成功，非验证
-		dicCaseInfo.addItem("Case Status", Parameter.CASESTATUS);
+
 		caseElement = moudleElement.addElement("TestCase");
 		caseElement.addAttribute("CaseNo", caseNo);
 		save();
@@ -110,6 +106,7 @@ public class XMLData implements DataResults{
 	 */
 	@Override
 	public void addStep(String stepName,String result){
+		
 //		dicCaseInfo.addItem(key, value);
 		stepElement = caseElement.addElement("Step");
 		stepElement.setText(stepName);
@@ -117,7 +114,16 @@ public class XMLData implements DataResults{
 		save();
 	}
 
-	
+	/**
+	 * 初始化每条用例的信息环境变量
+	 */
+	private void initStepInfo(){
+		Parameter.ERRORLOG = "";
+		Parameter.PRODUCTMESSAGE = "";
+		Parameter.ERRORCAPTURE = "";
+		Parameter.CASESTATUS = 0;
+		Parameter.VERSNAPSHOT = "";
+	}
 
 	@Override
 	public void addActualResults(String[] results) {
@@ -159,7 +165,7 @@ public class XMLData implements DataResults{
 		caseElement.addAttribute("Result", String.valueOf(isPass));
 		dicCheckPoint.addItem("Status", isPass);
 		// TODO 截图路径
-		dicCheckPoint.addItem("Snapshot", "截图");
+		dicCheckPoint.addItem("Snapshot", Parameter.VERSNAPSHOT);
 		dicCaseResult.addItem("检查点", dicCheckPoint);
 		dicCaseInfo.addItem("CaseResult", dicCaseResult);
 	}
@@ -180,6 +186,11 @@ public class XMLData implements DataResults{
 
 	@Override
 	public void addBitMap(String bitMapPath) {
+		
+		logEngine.logEvent("1","case1","tetsset111");
+		logEngine.logEvent("0","case2","tetsset111");
+		logEngine.logEvent("3","case3","tetsset111");
+		logEngine.logEvent("1","case4","tetsset111");
 		// TODO Auto-generated method stub
 		
 	}
@@ -222,10 +233,21 @@ public class XMLData implements DataResults{
 
 	@Override
 	public void addCaseReport() {
+		// TODO 报错信息、需要增加区分错误等级
+		dicCaseInfo.addItem("Error Log", Parameter.ERRORLOG);
+		// TODO 产品提示信息
+		dicCaseInfo.addItem("Product message", Parameter.PRODUCTMESSAGE);
+		// TODO 单条用例执行结果，是否成功，非验证
+		dicCaseInfo.addItem("Case Status", Parameter.CASESTATUS);
+		// TODO 报错时截图路径
+		dicCaseInfo.addItem("ErrorCapture", Parameter.ERRORCAPTURE);
 		//TODO 详细日志，需要在具体的步骤中增加
-		LogEngine.test();
-//		NewDictionary dicCaseInfo = new NewDictionary();
+
 		GenerateCaseResultXMLSegment.setXML(dicCaseInfo);
+		// 详细日志
+		logEngine.generateLogSegment();
+		// 初始化
+		initStepInfo();
 	}
 	
 	/**

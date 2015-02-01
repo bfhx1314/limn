@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.limn.tool.common.Print;
+import com.limn.tool.parameter.Parameter;
 
 
 
@@ -55,20 +56,16 @@ public class ParameterException extends Exception{
 		super(message);
 		printStackTrace();
 		JOptionPane.showMessageDialog(consoleFrame,message);
-
-
-		
+		Parameter.ERRORLOG = message;
 	}
 	public ParameterException(int code, String message){
 		super(message);
-
-
+		Parameter.ERRORLOG = message;
 	}
 	
 	public ParameterException( String message){
 		super(message);
-
-		
+		Parameter.ERRORLOG = message;
 	}
 	
 }

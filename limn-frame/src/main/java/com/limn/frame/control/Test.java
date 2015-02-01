@@ -326,10 +326,16 @@ public class Test {
 					//测试结果集
 					recordResult.addStep(steps[stepNum], String.valueOf(result));
 					result = runSingleStep(steps[stepNum],resultPath + "/" + runTimeStepNum);
+					Parameter.CASESTATUS = result;
 					if(result != ExecuteStatus.SUCCESS){
+						// 异常截图
+						String bitMapPath = Parameter.RESULT_FOLDER_BITMAP + "/" + resultPath + "/" + runTimeStepNum + "_"+ steps[stepNum].split(":")[0] + "_error";
+						bitMapPath = screenshot.snapShot(bitMapPath);
+						Parameter.ERRORCAPTURE = bitMapPath;
 						break;
 					}
 				}
+				
 				recordResult.addCaseReport();
 //				setHyperLink(tc.getCurrentRow(),resultPath + "/" + runTimeStepNum);
 				
@@ -369,8 +375,8 @@ public class Test {
 		
 		// 截图
 		String bitMapPath = Parameter.RESULT_FOLDER_BITMAP + "/" + path + "_"+ step.split(":")[0];
-		
 		bitMapPath = screenshot.snapShot(bitMapPath);
+		Parameter.CASESNAPSHOT = bitMapPath;
 		//记录结果集
 		recordResult.addBitMap(bitMapPath);
 		return results;
@@ -556,6 +562,7 @@ public class Test {
 		excelExist();
 		tc.setResult(String.valueOf(value));
 		recordResult.addExpectedResults(tc.getExpected().split("\n"));
+		Parameter.VERSNAPSHOT = Parameter.CASESNAPSHOT;
 		recordResult.addResult(value);
 	}
 	
