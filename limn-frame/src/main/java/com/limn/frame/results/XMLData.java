@@ -4,12 +4,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.XMLWriter;
-import org.tmatesoft.sqljet.core.internal.lang.SqlParser.select_core_return;
 
 import com.limn.frame.report.GenerateCaseResultXMLSegment;
 import com.limn.frame.report.LogEngine;
