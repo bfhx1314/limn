@@ -591,6 +591,11 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		testCasePanel.loadParameters();
 	}
 	
+	/**
+	 * 增加面板
+	 * @param name
+	 * @param cp
+	 */
 	public void addPanel(String name, CustomPanel cp){
 		panelSet.put(name, cp);
 		cp.setVisible(false);
@@ -598,7 +603,9 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	}
 	
 	
-	
+	/**
+	 * 刷新面板显示
+	 */
 	private void refreshPanel(){
 		int y = 5;
 		for(final String name : panelSet.keySet()){
