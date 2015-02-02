@@ -94,7 +94,7 @@ public class XMLData implements DataResults{
 		dicCaseInfo = new NewDictionary();
 		dicCaseInfo.addItem("Case Name", Parameter.TESTCASEMOUDLE);
 		if (caseNo.equals("")){
-			caseNo = "HAOWUTEST"+System.currentTimeMillis();
+			caseNo = String.valueOf(System.currentTimeMillis());
 		}
 		dicCaseInfo.addItem("No", caseNo);
 
