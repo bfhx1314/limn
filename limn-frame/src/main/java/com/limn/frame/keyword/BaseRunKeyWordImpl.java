@@ -94,6 +94,7 @@ public class BaseRunKeyWordImpl {
 			url = step[1] + ":" + step[2];
 		}
 		Print.log("URL:" + url,0);
+		Parameter.URL = url;
 		Driver.changeURL(url);
 	}
 	
@@ -108,7 +109,7 @@ public class BaseRunKeyWordImpl {
 	 * @throws SeleniumFindException
 	 * @throws ParameterException 
 	 */
-	public static void inputValue(String[] step) throws SeleniumFindException, ParameterException{
+	public static void inputValue(String[] step)throws SeleniumFindException {
 		try{
 			HashMap<String,String> traXPath = null; 
 			if(step.length >= 4 && RegExp.findCharacters(step[3], "^HASHMAP")){
@@ -136,7 +137,7 @@ public class BaseRunKeyWordImpl {
 			Driver.setValue(xpath,step[2]);
 			
 		}catch(Exception e){
-			new SeleniumFindException("错误:" + e.getMessage());
+			throw new SeleniumFindException("错误:" + e.getMessage());
 //			Print.log(e.getMessage(), 2);
 		}
 	}

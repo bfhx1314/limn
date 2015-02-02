@@ -18,7 +18,7 @@ public class Parameter {
 	public static String TESTCASE_FOLDERPATH = null;
 	
 	//测试地址
-	public static String URL = null;
+	public static String URL = "";
 	
 	//平台版本
 	public static String PLATVERSION = "";

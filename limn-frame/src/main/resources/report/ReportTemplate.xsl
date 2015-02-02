@@ -21,7 +21,7 @@ EN" indent="yes"/>
 				</tr>		
 			</xsl:for-each>	-->
 			<tr><td class="Info_Item">产品名称</td><td class="Info_Value"><xsl:value-of select="ProductName"/></td></tr>
-			<tr><td class="Info_Item">产品版本</td><td class="Info_Value"><xsl:value-of select="ProductVersion"/></td></tr>
+			<!--  <tr><td class="Info_Item">产品版本</td><td class="Info_Value"><xsl:value-of select="ProductVersion"/></td></tr>	-->
 			<tr><td class="Info_Item">测试环境</td><td class="Info_Value"><xsl:value-of select="TestEnvironment"/></td></tr>
 			<!-- <tr><td class="Info_Item">Company Code</td><td class="Info_Value"><xsl:value-of select="CompanyCode"/></td></tr> 	-->
 			<tr><td class="Info_Item">运行模式</td><td class="Info_Value"><xsl:value-of select="RunMode"/></td></tr>
@@ -32,7 +32,7 @@ EN" indent="yes"/>
 			<tr><td class="Info_Item">测试用例名</td><td class="Info_Value"><xsl:value-of select="TestName"/></td></tr>
 			<tr><td class="Info_Item">运行环境</td><td class="Info_Value"><xsl:value-of select="ExecutedOn"/></td></tr>
 			<!-- <tr><td class="Info_Item">代码总行数</td><td class="Info_Value"><xsl:value-of select="TotalScripts"/></td></tr> -->
-			<tr><td class="Info_Item">时区</td><td class="Info_Value"><xsl:value-of select="TimeZone"/></td></tr>
+			<!-- <tr><td class="Info_Item">时区</td><td class="Info_Value"><xsl:value-of select="TimeZone"/></td></tr> -->
 			<tr><td class="Info_Item">执行开始时间</td><td class="Info_Value"><xsl:value-of select="TestStartTime"/></td></tr>	
 			<tr><td class="Info_Item">执行结束时间</td><td class="Info_Value"><xsl:value-of select="TestEndTime"/></td></tr>	
 			<tr><td class="Info_Item">日志</td><td class="Info_Value"><a href="TestLog.xml" target = '_blank'>点击这里查看详细日志</a></td></tr>	
@@ -241,8 +241,8 @@ EN" indent="yes"/>
 				<table width = '100%' bordercolor='#99CCFF' class='CheckPoint'>
 				<tr class = 'inputoutput'>Check Point:</tr>
 				<tr><td class='CP_title' width='4%'>SN</td>
-				<td class='CP_title' width='20%'>CheckPoint Name</td>
-				<td class='CP_title' width='10%'>Executed Time</td>
+				<td class='CP_title' width='17%'>CheckPoint Name</td>
+				<td class='CP_title' width='13%'>Executed Time</td>
 				<td class='CP_title' width='6%'>Status</td>
 				<td class='CP_title' width='30%'>Expected Result</td>
 				<td class='CP_title' width='30%'>Actual Result</td></tr>

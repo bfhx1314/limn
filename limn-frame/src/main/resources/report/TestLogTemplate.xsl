@@ -28,8 +28,7 @@ EN" indent="yes"/>
 				<CENTER><H1 class="STYLE1">Compass Automation Execution Log</H1></CENTER>
 				<div id="logo">
 					<h1 align='right'>
-						<img src='image\SAP_logo.png' height='30'/>
-						<img src='image\HP_logo.png' height='30'/>
+						<img src='image\HW_logo.png' height='30'/>
 					</h1>
 				</div>
 				<table class="author"><tr><td>Developed by TCOE_COMPASS Team</td></tr></table>

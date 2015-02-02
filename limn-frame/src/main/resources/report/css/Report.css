@@ -177,12 +177,14 @@ td.Info_Item {
 	font-weight: bold;
 	color: navy;
 	border: 1px solid #005AB5;
+	text-indent:0.3em;
 }
 
 td.Info_Value {
 	text-align: left;
 	color: #005AB5;
 	border: 1px solid #005AB5;
+	text-indent:0.3em;
 }
 
 td.parameter_Value {

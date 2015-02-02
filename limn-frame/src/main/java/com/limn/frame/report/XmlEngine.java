@@ -28,35 +28,43 @@ public class XmlEngine {
 	
 	public void update(NewDictionary dicPlanInfo){
 		Element CurrentProductName_TextNode = (Element) document.selectSingleNode("//ProductName");
-		Element CurrentProductguiVersion_TextNode = (Element) document.selectSingleNode("//ProductVersion");
-		Element TestEnvironment_TextNode = (Element) document.selectSingleNode("//TestEnvironment");
+//		Element CurrentProductguiVersion_TextNode = (Element) document.selectSingleNode("//ProductVersion");
+		
 		Element RunMode_TextNode = (Element) document.selectSingleNode("//RunMode");
 		Element TestName_TextNode = (Element) document.selectSingleNode("//TestName");
 		Element ExecutedOn_TextNode = (Element) document.selectSingleNode("//ExecutedOn");
 		Element TestStartTime_TextNode = (Element) document.selectSingleNode("//TestStartTime");
-		Element TestEndTime_TextNode = (Element) document.selectSingleNode("//TestEndTime");
-//		Element ContinueExecution_TextNode = (Element) document.selectSingleNode("//ContinueExecution");
-		Element OverallStatus_TextNode = (Element) document.selectSingleNode("//OverallStatus");
-		
+
 		CurrentProductName_TextNode.setText(dicPlanInfo.getValue("ProductName").toString());
-		CurrentProductguiVersion_TextNode.setText(dicPlanInfo.getValue("ProductVersion").toString());
-		TestEnvironment_TextNode.setText(dicPlanInfo.getValue("TestEnvironment").toString());
+//		CurrentProductguiVersion_TextNode.setText(dicPlanInfo.getValue("ProductVersion").toString());
 		RunMode_TextNode.setText(dicPlanInfo.getValue("RunMode").toString());
 		TestName_TextNode.setText(dicPlanInfo.getValue("TestName").toString());
 		ExecutedOn_TextNode.setText(dicPlanInfo.getValue("ExecutedOn").toString());
 		TestStartTime_TextNode.setText(dicPlanInfo.getValue("StartTime").toString());
-//		TestEndTime_TextNode.setText(dicPlanInfo.getValue("EndTime").toString());
-//		ContinueExecution_TextNode.setText(dicPlanInfo.getValue("ContinueExecution").toString());
-//		OverallStatus_TextNode.setText(dicPlanInfo.getValue("OverallStatus").toString());
-		
+
 		FileUtil.setEmpty(Parameter.RESULT_FOLDER_REPORT+"/ReportSource.xml");
 		saveDocument(document,Parameter.RESULT_FOLDER_REPORT + "/ReportSource.xml");
 	}
 	
+	public void updateAtLast(NewDictionary dicPlanInfo){
+		Element TestEnvironment_TextNode = (Element) document.selectSingleNode("//TestEnvironment");
+		Element TestEndTime_TextNode = (Element) document.selectSingleNode("//TestEndTime");
+//		Element ContinueExecution_TextNode = (Element) document.selectSingleNode("//ContinueExecution");
+		Element OverallStatus_TextNode = (Element) document.selectSingleNode("//OverallStatus");
+		
+		TestEnvironment_TextNode.setText(dicPlanInfo.getValue("TestEnvironment").toString());
+		TestEndTime_TextNode.setText(dicPlanInfo.getValue("EndTime").toString());
+//		ContinueExecution_TextNode.setText(dicPlanInfo.getValue("ContinueExecution").toString());
+		OverallStatus_TextNode.setText(dicPlanInfo.getValue("OverallStatus").toString());
+		FileUtil.setEmpty(Parameter.RESULT_FOLDER_REPORT+"/ReportSource.xml");
+		saveDocument(document,Parameter.RESULT_FOLDER_REPORT + "/ReportSource.xml");
+	}
+	
+	
 	public NewDictionary load(){
 		
 		Element CurrentProductName_TextNode = (Element) document.selectSingleNode("//ProductName");
-		Element CurrentProductguiVersion_TextNode = (Element) document.selectSingleNode("//ProductVersion");
+//		Element CurrentProductguiVersion_TextNode = (Element) document.selectSingleNode("//ProductVersion");
 		Element TestEnvironment_TextNode = (Element) document.selectSingleNode("//TestEnvironment");
 		Element RunMode_TextNode = (Element) document.selectSingleNode("//RunMode");
 		Element TestName_TextNode = (Element) document.selectSingleNode("//TestName");
@@ -67,7 +75,7 @@ public class XmlEngine {
 		
 		NewDictionary dic_ResultHead = new NewDictionary();
 		dic_ResultHead.addItem("ProductName", CurrentProductName_TextNode.getText());
-		dic_ResultHead.addItem("ProductVersion", CurrentProductguiVersion_TextNode.getText());
+//		dic_ResultHead.addItem("ProductVersion", CurrentProductguiVersion_TextNode.getText());
 		dic_ResultHead.addItem("TestEnvironment", TestEnvironment_TextNode.getText());
 		dic_ResultHead.addItem("RunMode", RunMode_TextNode.getText());
 		dic_ResultHead.addItem("TestName", TestName_TextNode.getText());

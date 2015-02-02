@@ -365,15 +365,19 @@ public class Test {
 		}
 		int results = 1;
 		
-		try{
-			results = keyWordDriver.start(RegExp.splitKeyWord(step));
-		} catch (NoSuchWindowException e2){
-			Print.log(e2.getMessage(), 2);
-			return ExecuteStatus.FAILURE;
-		} catch (Exception e1){
-			Print.log(e1.getMessage(), 2);
-			return ExecuteStatus.FAILURE;
-		}
+//		try{
+		results = keyWordDriver.start(RegExp.splitKeyWord(step));
+//		} catch (NoSuchWindowException e2){
+//			errString = e2.getMessage(); 
+//			Print.log(errString, 2);
+//			Parameter.ERRORLOG = errString;
+//			return ExecuteStatus.FAILURE;
+//		} catch (Exception e1){
+//			errString = e1.getMessage(); 
+//			Print.log(e1.getMessage(), 2);
+//			Parameter.ERRORLOG = errString;
+//			return ExecuteStatus.FAILURE;
+//		}
 		
 		// 截图
 		String bitMapPath = Parameter.RESULT_FOLDER_BITMAP + "/" + path + "_"+ step.split(":")[0];

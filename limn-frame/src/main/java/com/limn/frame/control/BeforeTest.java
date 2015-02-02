@@ -194,7 +194,11 @@ public class BeforeTest implements Runnable {
 
 		}
 		Parameter.TESTCASE_FOLDERPATH = FileUtil.getParent(Parameter.TESTCASEPATH);
-		
+		Parameter.PRODUCTNAME = FileUtil.getParent(Parameter.TESTCASE_FOLDERPATH);
+		Parameter.PRODUCTNAME = FileUtil.getName(Parameter.PRODUCTNAME);
+		if (Parameter.PRODUCTNAME.equals("testcase")){
+			Parameter.PRODUCTNAME = "";
+		}
 		Parameter.TESTNAME = FileUtil.getName(Parameter.TESTCASEPATH);
 		Parameter.TESTNAME = Parameter.TESTNAME.substring(0,Parameter.TESTNAME.lastIndexOf("."));
 		
@@ -249,6 +253,9 @@ public class BeforeTest implements Runnable {
 		//生成结果目录
 //		File resultFolder = new File(resultPath + "/" + Parameter.VERSION
 //				+ "/" + Parameter.TESTNAME + "/" + DateFormat.getDate("yyyyMMdd_HHmmss"));
+		if (!Parameter.PRODUCTNAME.equals("")){
+			resultPath = resultPath + "/" + Parameter.PRODUCTNAME;
+		}
 		File resultFolder = new File(resultPath + "/" + Parameter.TESTNAME + "/" + DateFormat.getDate("yyyyMMdd_HHmmss"));
 		Print.log("测试结果成目录:" + resultFolder.getAbsolutePath(), 4);
 		resultFolder.mkdirs();

@@ -4,14 +4,14 @@
 <ReportRoot>
 	<Summary>
 		<ProductName>ESIT Compass</ProductName>
-		<ProductVersion>xxx</ProductVersion>
-		<TestEnvironment>xxx</TestEnvironment>
-		<RunMode>xxx</RunMode>
-		<TestName>xxx</TestName>
-		<ExecutedOn>xxx</ExecutedOn>
+		<!-- <ProductVersion>xxx</ProductVersion>-->
+		<TestEnvironment></TestEnvironment>
+		<RunMode></RunMode>
+		<TestName></TestName>
+		<ExecutedOn></ExecutedOn>
 		<OverallStatus>Fail</OverallStatus>
-		<TestStartTime>xxx</TestStartTime>
-		<TestEndTime>xxx</TestEndTime>
+		<TestStartTime></TestStartTime>
+		<TestEndTime></TestEndTime>
 		<ContinueExecution>True</ContinueExecution>
 	</Summary>
 

@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.limn.tool.common.ConvertCharacter;
+import com.limn.tool.parameter.Parameter;
 
 
 /**
@@ -142,6 +143,10 @@ public class RegExp {
 	 * 实例
 	 */
 	public static void main(String[] args){
+		String url = "http://172.16.10.13/hoss-web/hoss-v2/app/account/login.html".replace("http://", "");
+		url = url.split("/")[0];
+		boolean aa = findCharacters("http://172.16.10.13/hoss-web/hoss-v2/app/account/login.html","http://.*/");
+		ArrayList<String> bb = matcherCharacters("http://172.16.10.13/hoss-web/hoss-v2/app/account/login.html","([a-z0-9][a-z0-9\\-]*?\\.(?:com|cn|net|org|gov|info|la|cc|co)(?:\\.(?:cn|jp))?)$");
 		String ip = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."  
                 +"(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."  
                 +"(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."  

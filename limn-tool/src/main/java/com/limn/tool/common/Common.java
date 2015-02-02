@@ -6,7 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -265,7 +267,16 @@ public class Common {
 	    return date.getTime();
 	} 
 	
-	
+	public static String getIP(String name){
+		InetAddress address = null;
+		try {
+			address = InetAddress.getByName(name);
+		} catch (UnknownHostException e) {
+			Print.log(e.getMessage(), 2);
+			Print.log("获取失败",2);
+		}
+			return address.getHostAddress().toString();
+		}
 
 	
 	public static void main(String[] args){

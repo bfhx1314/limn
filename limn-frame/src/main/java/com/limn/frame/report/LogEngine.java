@@ -50,13 +50,13 @@ public class LogEngine {
 		case "FAIL":
 			lHashMap.put("Status", "Fail");
 			break;
-		case "0":
+		case "-2":
 			lHashMap.put("Status", "Fail");
 			break;
 		case "WARNING":
 			lHashMap.put("Status", "Warning");
 			break;
-		case "3":
+		case "-3":
 			lHashMap.put("Status", "Warning");
 			break;
 		default:

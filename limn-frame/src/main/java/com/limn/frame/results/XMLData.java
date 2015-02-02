@@ -9,10 +9,13 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.XMLWriter;
 
+import com.limn.driver.Driver;
+import com.limn.frame.control.ExecuteStatus;
 import com.limn.frame.report.GenerateCaseResultXMLSegment;
 import com.limn.frame.report.LogEngine;
 import com.limn.frame.report.NewDictionary;
 import com.limn.frame.report.XmlEngine;
+import com.limn.tool.common.Common;
 import com.limn.tool.common.DateFormat;
 import com.limn.tool.parameter.Parameter;
 
@@ -94,7 +97,7 @@ public class XMLData implements DataResults{
 		dicCaseInfo = new NewDictionary();
 		dicCaseInfo.addItem("Case Name", Parameter.TESTCASEMOUDLE);
 		if (caseNo.equals("")){
-			caseNo = "HAOWUTEST"+System.currentTimeMillis();
+			caseNo = String.valueOf(System.currentTimeMillis());
 		}
 		dicCaseInfo.addItem("No", caseNo);
 
@@ -215,13 +218,17 @@ public class XMLData implements DataResults{
 		Parameter.ENDTIME = DateFormat.getDateToString();
 		dicPlanInfoHead.addItem("EndTime", Parameter.ENDTIME);
 		dicPlanInfoHead.addItem("OverallStatus", Parameter.OVERALLSTATUS);
+		// 测试环境
+		String url = Parameter.URL.replace("http://", "");
+		url = url.split("/")[0];
+		Parameter.TESTENVIRONMENT = Common.getIP(url);
+		dicPlanInfoHead.addItem("TestEnvironment", Parameter.TESTENVIRONMENT);
 		xmlEngine.update(dicPlanInfoHead);
 	}
 	
 	private void addXmlHead(){
 		dicPlanInfoHead.addItem("ProductName", Parameter.PRODUCTNAME);
 		dicPlanInfoHead.addItem("ProductVersion", Parameter.PLATVERSION);
-		dicPlanInfoHead.addItem("TestEnvironment", Parameter.TESTENVIRONMENT);
 		dicPlanInfoHead.addItem("RunMode", Parameter.RUNMODE);
 		dicPlanInfoHead.addItem("TestName", Parameter.TESTNAME);
 		dicPlanInfoHead.addItem("ExecutedOn", Parameter.OS);
@@ -240,7 +247,6 @@ public class XMLData implements DataResults{
 		dicCaseInfo.addItem("Case Status", Parameter.CASESTATUS);
 		// TODO 报错时截图路径
 		dicCaseInfo.addItem("ErrorCapture", Parameter.ERRORCAPTURE);
-		//TODO 详细日志，需要在具体的步骤中增加
 
 		GenerateCaseResultXMLSegment.setXML(dicCaseInfo,logEngine);
 		// 详细日志
@@ -272,6 +278,9 @@ public class XMLData implements DataResults{
 
 	@Override
 	public void addCaseLog(String step, int result) {
+		if (result == ExecuteStatus.SUCCESS){
+			Parameter.ERRORLOG = "";
+		}
 		logEngine.logEvent(String.valueOf(result),step,Parameter.ERRORLOG);
 		Parameter.ERRORLOG = "";
 	}
