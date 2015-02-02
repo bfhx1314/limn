@@ -1,5 +1,6 @@
 package com.limn.frame.report;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -19,16 +20,16 @@ import com.limn.tool.parameter.Parameter;
 
 public class LogEngine {
 
-	public static NewDictionary DIC_TestLogContainer = null;
+	private NewDictionary DIC_TestLogContainer = null;
 	private String strLogFilePath = null;
-	private static int iEventIndex = -1;
+	private int iEventIndex = -1;
 	private String strActionName = null;
 	
 	public LogEngine(){
 		iEventIndex = 0;
 		DIC_TestLogContainer = new NewDictionary();
 		strLogFilePath = Parameter.RESULT_FOLDER_REPORT + "\\TestLog.xml";
-		strActionName = Parameter.TESTNAME; // Testcase Name
+		strActionName = Parameter.TESTNAME + " " + Parameter.TESTCASENO; // Testcase Name
 		
 	}
 	
@@ -74,7 +75,7 @@ public class LogEngine {
 		SAXReader saxReader = new SAXReader();
 		Document document = null;
 		try { 
-			document = saxReader.read(strLogFilePath);
+			document = saxReader.read(new File(strLogFilePath));
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
@@ -113,6 +114,10 @@ public class LogEngine {
 		logEngine.logEvent("3","case3","tetsset111");
 		logEngine.logEvent("1","case4","tetsset111");
 		logEngine.generateLogSegment();
+	}
+
+	public NewDictionary getDicTestLogContainer() {
+		return DIC_TestLogContainer;
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.limn.frame.report;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -15,11 +16,11 @@ import com.limn.tool.parameter.Parameter;
 
 public class GenerateCaseResultXMLSegment {
 
-	public static void setXML(NewDictionary dicCaseInfo){
+	public static void setXML(NewDictionary dicCaseInfo,LogEngine logEngine){
 		SAXReader saxReader = new SAXReader();
 		Document document = null;
 		try { 
-			document = saxReader.read(Parameter.RESULT_FOLDER_REPORT + "/ReportSource.xml");
+			document = saxReader.read(new File(Parameter.RESULT_FOLDER_REPORT + "/ReportSource.xml"));
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
@@ -43,7 +44,7 @@ public class GenerateCaseResultXMLSegment {
 		// '===Head information===
 		new_CaseName_Element.addText(dicCaseInfo.getValue("Case Name").toString());
 		new_Number_Element.addText(dicCaseInfo.getValue("No").toString());
-		new_Asset_Element.addText(dicCaseInfo.getValue("Asset").toString());
+//		new_Asset_Element.addText(dicCaseInfo.getValue("Asset").toString());
 		new_ErrorLog_Element.addText(dicCaseInfo.getValue("Error Log").toString());
 		new_SAPMessage_Element.addText(dicCaseInfo.getValue("Product message").toString());
 		new_CaseStatus_Element.addText(dicCaseInfo.getValue("Case Status").toString());
@@ -58,7 +59,7 @@ public class GenerateCaseResultXMLSegment {
 		
 //		'===inputs===
 //		'print dic_CaseInfo.item("InputData").count
-		NewDictionary inputData = (NewDictionary) dicCaseInfo.getValue("InputData");
+/*		NewDictionary inputData = (NewDictionary) dicCaseInfo.getValue("InputData");
 		int inputDataLen = inputData.getSize();
 		if (inputDataLen != 0){
 			for(int i=0;i<inputDataLen;i++){
@@ -69,11 +70,11 @@ public class GenerateCaseResultXMLSegment {
 				new_FieldName_Element.addText(inputData.getKey(i).toString());
 				new_FieldValue_Element.addText(inputData.getValue(i).toString());
 			}
-		}
+		}*/
 		
 //		'===outputs===
 //		'print dic_CaseInfo.item("OutputData").count
-		NewDictionary outputData = (NewDictionary) dicCaseInfo.getValue("OutputData");
+/*		NewDictionary outputData = (NewDictionary) dicCaseInfo.getValue("OutputData");
 		int outputDataLen = outputData.getSize();
 		if (outputDataLen != 0){
 			for(int i=0;i<outputDataLen;i++){
@@ -84,10 +85,10 @@ public class GenerateCaseResultXMLSegment {
 				new_FieldName_Element.addText(outputData.getKey(i).toString());
 				new_FieldValue_Element.addText(outputData.getValue(i).toString());
 			}
-		}
+		}*/
 		
 		//'==ItemList======
-		NewDictionary itemList = (NewDictionary) dicCaseInfo.getValue("ItemList");
+/*		NewDictionary itemList = (NewDictionary) dicCaseInfo.getValue("ItemList");
 		int itemListLen = itemList.getSize();
 		if (itemListLen != 0){
 			//'ColumnName
@@ -106,44 +107,46 @@ public class GenerateCaseResultXMLSegment {
 					new_ColumnValue_Element.addText(CRitem.get(iRowCount).toString());
 				}
 			}
-		}
+		}*/
 		
 //		'===checkpoints===
 //		'print dic_CaseInfo.item("CaseResult").count
 		NewDictionary caseResult = (NewDictionary) dicCaseInfo.getValue("CaseResult");
-		int caseResultLen = caseResult.getSize();
-		if (caseResultLen != 0){
-			for(int i=0;i<caseResultLen;i++){
-				Element new_CheckPoint_Element = new_CheckPoints_Element.addElement("CheckPoint");
-				
-				Element new_CPSN_Element = new_CheckPoint_Element.addElement("CPSN");
-				Element new_CPName_Element = new_CheckPoint_Element.addElement("CPName");
-				Element new_CPTime_Element = new_CheckPoint_Element.addElement("CPTime");
-				Element new_CPExpected_Element = new_CheckPoint_Element.addElement("CPExpected");
-				Element new_CPActual_Element = new_CheckPoint_Element.addElement("CPActual");
-				Element new_CPStatus_Element = new_CheckPoint_Element.addElement("CPStatus");
-				Element new_CPSnapshot_Element = new_CheckPoint_Element.addElement("CPSnapshot");
-				// 'value
-				new_CPSN_Element.addText(String.valueOf(i));
-				NewDictionary caseResultItem = (NewDictionary) caseResult.getValue(i);
-				new_CPName_Element.addText(caseResultItem.getValue("CheckPoint Name").toString());
-				new_CPTime_Element.addText(caseResultItem.getValue("Executed Time").toString());
-				new_CPExpected_Element.addText(caseResultItem.getValue("Expected Result").toString());
-				new_CPActual_Element.addText(caseResultItem.getValue("Actual Result").toString());
-				new_CPStatus_Element.addText(caseResultItem.getValue("Status").toString());
-				String snapshot = "";
-				try{
-					snapshot = caseResultItem.getValue("Snapshot").toString().replaceAll("\\", "/");
-				}catch(Exception e){
+		if (null != caseResult){
+			int caseResultLen = caseResult.getSize();
+			if (caseResultLen != 0){
+				for(int i=0;i<caseResultLen;i++){
+					Element new_CheckPoint_Element = new_CheckPoints_Element.addElement("CheckPoint");
 					
+					Element new_CPSN_Element = new_CheckPoint_Element.addElement("CPSN");
+					Element new_CPName_Element = new_CheckPoint_Element.addElement("CPName");
+					Element new_CPTime_Element = new_CheckPoint_Element.addElement("CPTime");
+					Element new_CPExpected_Element = new_CheckPoint_Element.addElement("CPExpected");
+					Element new_CPActual_Element = new_CheckPoint_Element.addElement("CPActual");
+					Element new_CPStatus_Element = new_CheckPoint_Element.addElement("CPStatus");
+					Element new_CPSnapshot_Element = new_CheckPoint_Element.addElement("CPSnapshot");
+					// 'value
+					new_CPSN_Element.addText(String.valueOf(i));
+					NewDictionary caseResultItem = (NewDictionary) caseResult.getValue(i);
+					new_CPName_Element.addText(caseResultItem.getValue("CheckPoint Name").toString());
+					new_CPTime_Element.addText(caseResultItem.getValue("Executed Time").toString());
+					new_CPExpected_Element.addText(caseResultItem.getValue("Expected Result").toString());
+					new_CPActual_Element.addText(caseResultItem.getValue("Actual Result").toString());
+					new_CPStatus_Element.addText(caseResultItem.getValue("Status").toString());
+					String snapshot = "";
+					try{
+						snapshot = caseResultItem.getValue("Snapshot").toString().replaceAll("\\", "/");
+					}catch(Exception e){
+						
+					}
+					new_CPSnapshot_Element.addText(snapshot);
 				}
-				new_CPSnapshot_Element.addText(snapshot);
 			}
 		}
 		
 		//'=======Test Log======='
 		Element new_TestLog_Element = newTestCaseElement.addElement("TestLog");
-		NewDictionary testLogContainer = LogEngine.DIC_TestLogContainer;
+		NewDictionary testLogContainer = logEngine.getDicTestLogContainer();//DIC_TestLogContainer;
 		int testLogContainerLen = testLogContainer.getSize();
 		if (testLogContainerLen != 0){
 			for(int i=0;i<testLogContainerLen;i++){

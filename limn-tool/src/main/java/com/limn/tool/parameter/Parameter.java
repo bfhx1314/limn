@@ -21,7 +21,7 @@ public class Parameter {
 	public static String URL = null;
 	
 	//平台版本
-	public static String PLATVERSION = null;
+	public static String PLATVERSION = "";
 	
 	//浏览器类型
 	public static int BROWSERTYPE = 1;

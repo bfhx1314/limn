@@ -1,5 +1,6 @@
 package com.limn.frame.report;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -18,7 +19,7 @@ public class XmlEngine {
 	private static Document document = null;
 	public XmlEngine(){
 		try { 
-			document = saxReader.read(Parameter.RESULT_FOLDER_REPORT + "/ReportSource.xml");
+			document = saxReader.read(new File(Parameter.RESULT_FOLDER_REPORT + "/ReportSource.xml"));
 		} catch (DocumentException e) {
 			// TODO
 			e.printStackTrace();
@@ -44,9 +45,9 @@ public class XmlEngine {
 		TestName_TextNode.setText(dicPlanInfo.getValue("TestName").toString());
 		ExecutedOn_TextNode.setText(dicPlanInfo.getValue("ExecutedOn").toString());
 		TestStartTime_TextNode.setText(dicPlanInfo.getValue("StartTime").toString());
-		TestEndTime_TextNode.setText(dicPlanInfo.getValue("EndTime").toString());
+//		TestEndTime_TextNode.setText(dicPlanInfo.getValue("EndTime").toString());
 //		ContinueExecution_TextNode.setText(dicPlanInfo.getValue("ContinueExecution").toString());
-		OverallStatus_TextNode.setText(dicPlanInfo.getValue("OverallStatus").toString());
+//		OverallStatus_TextNode.setText(dicPlanInfo.getValue("OverallStatus").toString());
 		
 		FileUtil.setEmpty(Parameter.RESULT_FOLDER_REPORT+"/ReportSource.xml");
 		saveDocument(document,Parameter.RESULT_FOLDER_REPORT + "/ReportSource.xml");

@@ -93,7 +93,10 @@ public class XMLData implements DataResults{
 		logEngine = new LogEngine();
 		dicCaseInfo = new NewDictionary();
 		dicCaseInfo.addItem("Case Name", Parameter.TESTCASEMOUDLE);
-		dicCaseInfo.addItem("No", Parameter.TESTCASENO);
+		if (caseNo.equals("")){
+			caseNo = "HAOWUTEST"+System.currentTimeMillis();
+		}
+		dicCaseInfo.addItem("No", caseNo);
 
 		caseElement = moudleElement.addElement("TestCase");
 		caseElement.addAttribute("CaseNo", caseNo);
@@ -239,7 +242,7 @@ public class XMLData implements DataResults{
 		dicCaseInfo.addItem("ErrorCapture", Parameter.ERRORCAPTURE);
 		//TODO 详细日志，需要在具体的步骤中增加
 
-		GenerateCaseResultXMLSegment.setXML(dicCaseInfo);
+		GenerateCaseResultXMLSegment.setXML(dicCaseInfo,logEngine);
 		// 详细日志
 		logEngine.generateLogSegment();
 		// 初始化

@@ -126,7 +126,8 @@ public class Test {
 			Parameter.TESTCASEPATH = Parameter.RESULT_FOLDER + "/test.xls";
 			// 新建报告目录
 			Parameter.RESULT_FOLDER_REPORT = Parameter.RESULT_FOLDER + "/Report";
-			FileUtil.copyDirectiory(Parameter.REPORT_PATH, Parameter.RESULT_FOLDER_REPORT);
+			FileUtil.copySourceToFolder("report", Parameter.RESULT_FOLDER_REPORT, this.getClass());
+//			FileUtil.copyDirectiory(Parameter.REPORT_PATH, Parameter.RESULT_FOLDER_REPORT);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

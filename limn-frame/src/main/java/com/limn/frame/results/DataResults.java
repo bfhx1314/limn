@@ -70,11 +70,12 @@ public interface DataResults {
 	
 	
 	public void addCaseReport();
-	
+
 	/**
 	 * 每一步的日志
 	 * @param step
 	 * @param result
 	 */
 	public void addCaseLog(String step, int result);
+
 }

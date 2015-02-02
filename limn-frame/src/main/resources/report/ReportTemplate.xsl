@@ -125,11 +125,7 @@ EN" indent="yes"/>
 					<H1 class="ReportTitle">自动化测试报告</H1>
 				</CENTER>
 				<div id="logo">
-					<h1 align='right'>
-					<!-- 
-						<img src='image\SAP_logo.png' height='30'/>
-						<img src='image\HP_logo.png' height='30'/>
-						 -->						
+					<h1 align='right'>					
 						<img src='image\HW_logo.png' height='30'/>
 					</h1>
 				</div>
