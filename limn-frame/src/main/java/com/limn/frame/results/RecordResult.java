@@ -8,7 +8,7 @@ public class RecordResult implements DataResults {
 	
 	
 	public RecordResult(){
-//		dataResults.add(new XMLData());
+		dataResults.add(new XMLData());
 	}
 	
 	public void addRecordData(DataResults DR){
@@ -99,6 +99,14 @@ public class RecordResult implements DataResults {
 	public void addTestCaseCount(String count) {
 		for(DataResults dr : dataResults){
 			dr.addTestCaseCount(count);
+		}
+		
+	}
+
+	@Override
+	public void addCaseReport() {
+		for(DataResults dr : dataResults){
+			dr.addCaseReport();
 		}
 		
 	}

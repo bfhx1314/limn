@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.swing.JButton;
@@ -29,6 +31,7 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
+import com.limn.tool.common.DateFormat;
 import com.limn.tool.exception.ParameterException;
 import com.limn.tool.external.XMLReader;
 import com.limn.frame.keyword.BaseKeyWordDriverImpl;
@@ -524,6 +527,7 @@ public class ConsoleFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Parameter.STARTTIME = DateFormat.getDateToString();
 				start(false);
 			}
 

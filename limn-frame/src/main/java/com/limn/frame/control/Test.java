@@ -219,8 +219,9 @@ public class Test {
 		//按模块执行
 		for (int i = 0 ; i < tc.getExcelModuleStartIndex().size(); i++) {
 			
+			Parameter.TESTCASEMOUDLE = tc.getExcelModuleName().get(i);
 			//测试结果集
-			recordResult.addModule(tc.getExcelModuleName().get(i));
+			recordResult.addModule(Parameter.TESTCASEMOUDLE);
 			
 			int m = tc.getExcelModuleStartIndex().get(i);
 			
@@ -236,7 +237,7 @@ public class Test {
 				result = runSteps(false);
 				if (result != ExecuteStatus.SUCCESS) {
 					
-					Print.log("跳过: " + tc.getExcelModuleName().get(i),2);
+					Print.log("跳过: " + Parameter.TESTCASEMOUDLE,2);
 					
 					tc.setResult("跳过下个模块");
 					
@@ -245,7 +246,7 @@ public class Test {
 					break;
 				} else{
 					if(null != SR){
-						Print.log("模块存在关联,跳过: " + tc.getExcelModuleName().get(i),2);
+						Print.log("模块存在关联,跳过: " + Parameter.TESTCASEMOUDLE,2);
 					}
 				}
 			}
@@ -286,9 +287,10 @@ public class Test {
 				scenarioReduction();
 				
 			}
+			Parameter.TESTCASENO = tc.getTestCaseNo();
 			if(isRelate){
-				Print.log("当前用例编号:" + tc.getTestCaseNo(),0);
-				String relateNo = relate.get(tc.getTestCaseNo());
+				Print.log("当前用例编号:" + Parameter.TESTCASENO,0);
+				String relateNo = relate.get(Parameter.TESTCASENO);
 				if (relateNo!=null && !relateNo.equals("")){
 					//记录原有的行列
 					Print.log("相关用例编号:" + relateNo, 0);
@@ -313,13 +315,10 @@ public class Test {
 			String[] steps = RegExp.splitWord(tc.getTestStep(), "\n");
 
 			if (!steps[0].isEmpty()) {
-				RunLog.setStepsForTextAreaByIndex(tc.getCurrentRow() + 1, steps, tc.getTestCaseNo());
+				RunLog.setStepsForTextAreaByIndex(tc.getCurrentRow() + 1, steps, Parameter.TESTCASENO);
 				int stepNum = runTimeStepNum;
 				//测试结果集
-				recordResult.addCase(tc.getTestCaseNo());
-				// 报告
-				//TODO
-				XMLData.dicCaseInfo = new NewDictionary();
+				recordResult.addCase(Parameter.TESTCASENO);
 				for (; stepNum < steps.length; stepNum++) {
 					runTimeStepNum = stepNum;
 					RunLog.highLightCurrentStep(stepNum);
@@ -327,11 +326,17 @@ public class Test {
 					//测试结果集
 					recordResult.addStep(steps[stepNum], String.valueOf(result));
 					result = runSingleStep(steps[stepNum],resultPath + "/" + runTimeStepNum);
+					Parameter.CASESTATUS = result;
 					if(result != ExecuteStatus.SUCCESS){
+						// 异常截图
+						String bitMapPath = Parameter.RESULT_FOLDER_BITMAP + "/" + resultPath + "/" + runTimeStepNum + "_"+ steps[stepNum].split(":")[0] + "_error";
+						bitMapPath = screenshot.snapShot(bitMapPath);
+						Parameter.ERRORCAPTURE = bitMapPath;
 						break;
 					}
 				}
-				XMLData.addTestCaseReport(XMLData.dicCaseInfo);
+				
+				recordResult.addCaseReport();
 //				setHyperLink(tc.getCurrentRow(),resultPath + "/" + runTimeStepNum);
 				
 //				CollateData.initializationParameter();
@@ -370,8 +375,8 @@ public class Test {
 		
 		// 截图
 		String bitMapPath = Parameter.RESULT_FOLDER_BITMAP + "/" + path + "_"+ step.split(":")[0];
-		
 		bitMapPath = screenshot.snapShot(bitMapPath);
+		Parameter.CASESNAPSHOT = bitMapPath;
 		//记录结果集
 		recordResult.addBitMap(bitMapPath);
 		return results;
@@ -557,6 +562,7 @@ public class Test {
 		excelExist();
 		tc.setResult(String.valueOf(value));
 		recordResult.addExpectedResults(tc.getExpected().split("\n"));
+		Parameter.VERSNAPSHOT = Parameter.CASESNAPSHOT;
 		recordResult.addResult(value);
 	}
 	

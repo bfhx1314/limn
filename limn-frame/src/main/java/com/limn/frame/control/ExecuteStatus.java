@@ -8,4 +8,10 @@ public class ExecuteStatus {
 	
 	public static final int FAILURE = -2;
 
+	public static final int WARNING = -3;
+	
+	public static final int ERROR = -4;
+	
+	public static final int FAIL = -5;
+	
 }

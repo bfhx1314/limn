@@ -257,8 +257,8 @@ EN" indent="yes"/>
 				
 				<!-- Error Message -->
 				<xsl:if test="CaseStatus = 'Error'">
-					<tr><td colspan='6' class='centertext'><div align='left' class='LOG'>SAP Log: <xsl:value-of select ="SAPMessage"/></div></td></tr>
-					<tr><td colspan='6' class='centertext'><div align='left' class='LOG'>QTP Log: <xsl:value-of select ="ErrorLog"/></div></td></tr>
+					<tr><td colspan='6' class='centertext'><div align='left' class='LOG'>Product Log: <xsl:value-of select ="ProductMessage"/></div></td></tr>
+					<tr><td colspan='6' class='centertext'><div align='left' class='LOG'>Selenium Log: <xsl:value-of select ="ErrorLog"/></div></td></tr>
 				</xsl:if>
 				</table>
 				
