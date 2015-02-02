@@ -116,6 +116,5 @@ public class RecordResult implements DataResults {
 		// TODO Auto-generated method stub
 		
 	}
-
 	
 }
