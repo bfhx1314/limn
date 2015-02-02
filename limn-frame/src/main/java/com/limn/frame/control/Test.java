@@ -327,6 +327,7 @@ public class Test {
 					recordResult.addStep(steps[stepNum], String.valueOf(result));
 					result = runSingleStep(steps[stepNum],resultPath + "/" + runTimeStepNum);
 					Parameter.CASESTATUS = result;
+					recordResult.addCaseLog(steps[stepNum], result);
 					if(result != ExecuteStatus.SUCCESS){
 						// 异常截图
 						String bitMapPath = Parameter.RESULT_FOLDER_BITMAP + "/" + resultPath + "/" + runTimeStepNum + "_"+ steps[stepNum].split(":")[0] + "_error";

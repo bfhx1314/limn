@@ -183,14 +183,10 @@ public class XMLData implements DataResults{
 		}
 	}
 
+	
 
 	@Override
 	public void addBitMap(String bitMapPath) {
-		
-		logEngine.logEvent("1","case1","tetsset111");
-		logEngine.logEvent("0","case2","tetsset111");
-		logEngine.logEvent("3","case3","tetsset111");
-		logEngine.logEvent("1","case4","tetsset111");
 		// TODO Auto-generated method stub
 		
 	}
@@ -268,5 +264,12 @@ public class XMLData implements DataResults{
 			str = results[0];
 		}
 		return str; 
+	}
+
+
+	@Override
+	public void addCaseLog(String step, int result) {
+		logEngine.logEvent(String.valueOf(result),step,Parameter.ERRORLOG);
+		Parameter.ERRORLOG = "";
 	}
 }

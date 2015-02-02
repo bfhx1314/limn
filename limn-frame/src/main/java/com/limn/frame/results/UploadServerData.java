@@ -13,6 +13,7 @@ import org.apache.tools.ant.taskdefs.optional.net.SetProxy;
 
 
 
+
 import com.limn.tool.exception.ParameterException;
 import com.limn.frame.control.Test;
 import com.limn.tool.parameter.Parameter;
@@ -310,6 +311,12 @@ public class UploadServerData implements DataResults {
 
 	@Override
 	public void addCaseReport() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addCaseLog(String step, int result) {
 		// TODO Auto-generated method stub
 		
 	}

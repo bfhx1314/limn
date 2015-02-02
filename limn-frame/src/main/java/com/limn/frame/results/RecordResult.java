@@ -111,5 +111,11 @@ public class RecordResult implements DataResults {
 		
 	}
 
+	@Override
+	public void addCaseLog(String step, int result) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }
