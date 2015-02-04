@@ -26,6 +26,8 @@ public class Test {
 		Object result = null;
 		try {
 			String[] vScript = new String[] {
+					"getDate()",
+					"getAfterDate(4)",
 					"123撒速度",
 					"getAutoIncrement(5)",
 					"asda",
@@ -34,7 +36,7 @@ public class Test {
 					"toint(left('123',2))+3",
 					"iif(1<2,2+2,3+3)"
 			};
-			result = parser.eval(null, vScript[0], tree, null);
+			result = parser.eval(null, vScript[1], tree, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

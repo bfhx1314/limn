@@ -32,10 +32,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-import org.apache.bcel.generic.IF_ACMPEQ;
-import org.openqa.selenium.WebElement;
-import org.tmatesoft.sqljet.core.internal.lang.SqlParser.begin_stmt_return;
-
 import com.limn.frame.edit.EditTestCasePanel;
 import com.limn.frame.keyword.BaseKeyWordDriverImpl;
 import com.limn.frame.keyword.BaseKeyWordType;
@@ -43,7 +39,6 @@ import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.frame.panel.CustomPanel;
 import com.limn.frame.panel.KeyWordPanel;
 import com.limn.frame.panel.LoadBroswerPanel;
-import com.limn.frame.panel.VerificationPanel;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.TransformationMap;
 import com.limn.tool.log.LogControlInterface;
@@ -102,6 +97,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	private JButton insertExecute = new JButton("插入执行");
 	private JButton executeAgain = new JButton("执行");
 	private JButton deleteRow = new JButton("删除");
+	private JButton deleteAllRow = new JButton("删除全部");
 	private JButton deleteXPath = new JButton("删除XPath别名");
 	
 	// TAB页
@@ -202,11 +198,14 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		
 //		setBoundsAt(stepJScrollStep,2, 125, 300, 250);
 		executeAgain.setMargin(new Insets(0, 0, 0, 0));
-		setBoundsAt(executeAgain,215, 380, 50, 20);
+		setBoundsAt(executeAgain,230, 380, 50, 20);
 		deleteRow.setMargin(new Insets(0, 0, 0, 0));
-		setBoundsAt(deleteRow,145, 380, 50, 20);
+		setBoundsAt(deleteRow,175, 380, 50, 20);
+		deleteAllRow.setMargin(new Insets(0, 0, 0, 0));
+		setBoundsAt(deleteAllRow,101, 380, 70, 20);
 		deleteXPath.setMargin(new Insets(0, 0, 0, 0));
-		setBoundsAt(deleteXPath,20, 380, 105, 20);
+		setBoundsAt(deleteXPath,2, 380, 95, 20);
+		
 		
 		jframe.getContentPane().add(tabbedPane);
 		tabbedPane.setBounds(2, 105, 300, 270);
@@ -381,6 +380,24 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 			}
 		});
 		
+		deleteAllRow.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 获取当前激活的TAB面板
+				Component selectComponent = tabbedPane.getSelectedComponent();
+				// 转换类型
+				JScrollPane selectComponentJScrollPane = (JScrollPane) selectComponent;
+				// 获取当前TAB面板中的组件，并且转换类型
+				JTable selectJTable = ((JTable) selectComponentJScrollPane.getViewport().getView());
+				// 获取组件对应的类
+				DefaultTableModel selectJTbaleMod = paneMode.get(selectJTable);
+				for(int i = selectJTbaleMod.getRowCount()-1 ;i>-1;i--){
+					selectJTbaleMod.removeRow(i);
+				}
+				removeXpathAll();
+			}
+		});
+		
 		deleteRow.addActionListener(new ActionListener() {
 			
 			@Override
@@ -399,7 +416,10 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 //					int in = model.getColumnCount();
 					String excelVaule = selectJTbaleMod.getValueAt(row, 0).toString();
 					String splitKey[] = RegExp.splitKeyWord(excelVaule);
-					if(splitKey.length>1 && splitKey[0].equals("录入")){
+					if(splitKey.length>1 && (splitKey[0].equals("录入")
+											||splitKey[0].equals("录入日期")
+											||splitKey[0].equals("添加附件")
+											||splitKey[0].equals("获取"))){
 						removeXpathName(splitKey[1]);
 					}else {
 						removeXpathName(splitKey[0]);
@@ -769,7 +789,8 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 					if (RegExp.findCharacters(steps[j], ("^录入:")) 
 
 							|| RegExp.findCharacters(steps[j], ("^录入日期:")) 
-							|| RegExp.findCharacters(steps[j], ("^获取:"))){
+							|| RegExp.findCharacters(steps[j], ("^获取:"))
+							|| RegExp.findCharacters(steps[j], ("^添加附件:"))){
 						steps[j] = steps[j] + ":" + TransformationMap.transformationByMap(xpathName);
 					}
 				}

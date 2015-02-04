@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import com.limn.tool.common.DateFormat;
 import com.limn.tool.common.FileUtil;
+import com.limn.tool.exception.SeleniumException;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.util.TypeConvertor;
 
@@ -251,6 +253,34 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 		}
 	}
 	
+	/**
+	 * 获取今天日期 yyyy-MM-dd
+	 *
+	 */
+	class GetDate implements IFunctionImpl {
+		@Override
+		public Object calc(String name, IEvalContext context, Object[] arguments) {
+			return DateFormat.getDateString();
+		}
+	}
+	
+	/**
+	 * 获取今天以后的日期 yyyy-MM-dd
+	 *
+	 */
+	class GetAfterDate implements IFunctionImpl {
+		@Override
+		public Object calc(String name, IEvalContext context, Object[] arguments) {
+			int num =  Integer.parseInt(String.valueOf(arguments[0])); 
+			try {
+				return DateFormat.getAfterDate(num);
+			} catch (SeleniumException e) {
+				return "";
+			}
+			
+		}
+	}
+	
 	@Override
 	protected Object[][] getImplTable() {
 		return new Object[][] {
@@ -266,7 +296,9 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 				{ "iif", new IIFImpl() },
 				{ "iifs", new IIFSImpl() },
 				{ "getAutoIncrement", new GetAutoincrement() },
-				{ "getHostName", new GetHostName() }
+				{ "getHostName", new GetHostName() },
+				{ "getDate", new GetDate() },
+				{ "getAfterDate", new GetAfterDate() }
 		};
 	}
 
