@@ -281,6 +281,17 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 		}
 	}
 	
+	/**
+	 * 获取当前时间 yyyy-MM-dd 24h:mm:ss
+	 *
+	 */
+	class GetTime implements IFunctionImpl {
+		@Override
+		public Object calc(String name, IEvalContext context, Object[] arguments) {
+			return DateFormat.getDateToString();
+		}
+	}
+	
 	@Override
 	protected Object[][] getImplTable() {
 		return new Object[][] {
@@ -298,7 +309,8 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 				{ "getAutoIncrement", new GetAutoincrement() },
 				{ "getHostName", new GetHostName() },
 				{ "getDate", new GetDate() },
-				{ "getAfterDate", new GetAfterDate() }
+				{ "getAfterDate", new GetAfterDate() },
+				{ "getTime", new GetTime() }
 		};
 	}
 

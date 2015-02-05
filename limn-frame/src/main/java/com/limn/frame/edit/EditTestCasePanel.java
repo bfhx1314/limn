@@ -775,6 +775,9 @@ public class EditTestCasePanel extends CustomPanel {
 		int row = testCaseTable.getSelectedRow();
 		if (row != -1) {
 			steps = (String) testCaseTable.getValueAt(row, 4);
+			if (null == steps){
+				return null;
+			}
 		} else {
 			return null;
 		}
