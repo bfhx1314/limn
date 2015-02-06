@@ -278,8 +278,13 @@ public class XMLData implements DataResults{
 
 	@Override
 	public void addCaseLog(String step, int result) {
+		String logInfo = "";
 		if (result == ExecuteStatus.SUCCESS){
+			logInfo = Parameter.ERRORLOG;
 			Parameter.ERRORLOG = "";
+		}else{
+			logInfo = Parameter.LOGINFO;
+			Parameter.LOGINFO = "";
 		}
 		logEngine.logEvent(String.valueOf(result),step,Parameter.ERRORLOG);
 		Parameter.ERRORLOG = "";

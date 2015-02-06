@@ -229,4 +229,9 @@ public class Parameter {
 	 * 验证时的截图路径
 	 */
 	public static String VERSNAPSHOT = "";
+	
+	/**
+	 * 日志详细信息
+	 */
+	public static String LOGINFO = "";
 }

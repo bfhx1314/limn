@@ -292,6 +292,17 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 		}
 	}
 	
+	/**
+	 * 获取当前时间 yyyy-MM-dd 24h:mm:ss
+	 *
+	 */
+	class GetCurrentTimeMillis implements IFunctionImpl {
+		@Override
+		public Object calc(String name, IEvalContext context, Object[] arguments) {
+			return DateFormat.getCurrentTimeMillis();
+		}
+	}
+	
 	@Override
 	protected Object[][] getImplTable() {
 		return new Object[][] {
@@ -310,7 +321,8 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 				{ "getHostName", new GetHostName() },
 				{ "getDate", new GetDate() },
 				{ "getAfterDate", new GetAfterDate() },
-				{ "getTime", new GetTime() }
+				{ "getTime", new GetTime() },
+				{ "getCurrentTimeMillis", new GetCurrentTimeMillis() }
 		};
 	}
 

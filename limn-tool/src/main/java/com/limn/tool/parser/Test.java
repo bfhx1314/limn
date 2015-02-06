@@ -26,6 +26,7 @@ public class Test {
 		Object result = null;
 		try {
 			String[] vScript = new String[] {
+					"getCurrentTimeMillis()",
 					"getTime()",
 					"getDate()",
 					"getAfterDate(4)",
