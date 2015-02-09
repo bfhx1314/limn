@@ -152,16 +152,16 @@ EN" indent="yes"/>
 				
 					<!-- Test Case General -->
 					<table width='100%'>
-					<tr><td width ='10%' class ="Case_Item">
+					<tr><td width ='15%' class ="Case_Item">
 					<div class='foldingbutton' id="suite{Number}_foldlink" onclick="toggle_child_visibility('suite{Number}');" style='display: none;'>-</div>
 					<div class='foldingbutton' id="suite{Number}_unfoldlink" onclick="toggle_child_visibility('suite{Number}');" style='display: block;'>+</div>
 					<span class='filename'>ÓÃÀý±àºÅ:  <xsl:value-of select="Number"/></span></td>
-					<td class = 'Case_value' width ='20%'><xsl:value-of select="CaseName"/></td> 
+					<td class = 'Case_value' width ='15%'><xsl:value-of select="CaseName"/></td> 
 				<!-- <td class ='Case_Item' width ='7%'>Asset:</td>
 					<td class = 'Case_value' width ='16%'><xsl:value-of select="Asset"/></td> -->
 					<td class ='Case_Item' width ='3%'>¼ì²éµã:</td>
-					<td class ='Case_value' width ='15%'><xsl:value-of select="count(CheckPoints/CheckPoint)"/></td>
-					<td class ='Case_Item' width ='7%'>Ö´ÐÐ×´Ì¬:</td>
+					<td class ='Case_value' width ='7%'><xsl:value-of select="count(CheckPoints/CheckPoint)"/></td>
+					<td class ='Case_Item' width ='10%'>Ö´ÐÐ×´Ì¬:</td>
 					<xsl:choose>
 						<xsl:when test="CaseStatus = 'Pass'">
 						<td width = '11%' class='passedcentertext'><a >&#x2714;</a></td>
