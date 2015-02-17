@@ -55,8 +55,8 @@ EN" indent="yes"/>
 					<li class = "log-title">
 						<span class = "CurrentTimeTitle">Time</span>
 						<span class ="EventStatusTitle">Status</span>
-						<span class = "EventNameTitle">Event Name</span>
-						<span class = "EventContentTitle">Event Content</span>
+						<span class = "EventNameTitle">Step Name</span>
+						<span class = "EventContentTitle">Step Content</span>
 					</li>
 					<xsl:for-each select="Log">
 						<xsl:apply-templates select="."/>				

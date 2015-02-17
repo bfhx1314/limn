@@ -26,6 +26,8 @@ public class Test {
 		Object result = null;
 		try {
 			String[] vScript = new String[] {
+					"getAfterDate(-4)",
+					"'啊是'&getAutoIncrement(4)",
 					"getCurrentTimeMillis()",
 					"getTime()",
 					"getDate()",

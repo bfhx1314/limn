@@ -38,12 +38,12 @@ public class DateFormat {
 	}
 	
 	/**
-	 * 获取今日以后的日期
-	 * @param num 今天开始计算的天数
+	 * 获取今日以后、以前的日期
+	 * @param num 今天开始计算的天数,负数为之前
 	 * @return yyyy-MM-dd
 	 * @throws SeleniumException
 	 */
-	public static String getAfterDate(int num) throws SeleniumException{
+	public static String getAddDay(int num) throws SeleniumException{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();  
         try {
@@ -88,7 +88,7 @@ public class DateFormat {
 	public static void main(String[] args){
 		String a = getDateString();
 		try {
-			a = getAfterDate(1);
+			a = getAddDay(1);
 		} catch (SeleniumException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

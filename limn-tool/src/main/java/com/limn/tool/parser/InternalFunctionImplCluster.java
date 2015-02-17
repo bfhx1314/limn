@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 
 import com.limn.tool.common.DateFormat;
 import com.limn.tool.common.FileUtil;
+import com.limn.tool.common.Print;
 import com.limn.tool.exception.SeleniumException;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.util.TypeConvertor;
@@ -213,15 +214,16 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 		 */
 		private String getAutoIncrement(int digit){
 			String number = null;
-			String path = Parameter.DEFAULT_TEMP_PATH + "/AutoIncrement.txt";
+			String path = Parameter.DEFAULT_TEMP_PATH + "/AutoIncrement"+digit+".txt";
 			try {
+				
 				number = FileUtil.getFileText(path);
 	
 				number = String.valueOf(Integer.parseInt(number) + 1);
 				
 				FileUtil.setFileText(path, number);
 			} catch (IOException e) {
-
+				Print.log(e.getMessage(), 2);
 			}
 			
 			int diff = digit - number.length();
@@ -268,12 +270,12 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 	 * 获取今天以后的日期 yyyy-MM-dd
 	 *
 	 */
-	class GetAfterDate implements IFunctionImpl {
+	class GetAddDay implements IFunctionImpl {
 		@Override
 		public Object calc(String name, IEvalContext context, Object[] arguments) {
 			int num =  Integer.parseInt(String.valueOf(arguments[0])); 
 			try {
-				return DateFormat.getAfterDate(num);
+				return DateFormat.getAddDay(num);
 			} catch (SeleniumException e) {
 				return "";
 			}
@@ -320,7 +322,7 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 				{ "getAutoIncrement", new GetAutoincrement() },
 				{ "getHostName", new GetHostName() },
 				{ "getDate", new GetDate() },
-				{ "getAfterDate", new GetAfterDate() },
+				{ "getAddDay", new GetAddDay() },
 				{ "getTime", new GetTime() },
 				{ "getCurrentTimeMillis", new GetCurrentTimeMillis() }
 		};
