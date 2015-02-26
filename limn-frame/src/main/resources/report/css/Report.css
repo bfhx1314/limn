@@ -208,10 +208,23 @@ td.Case_value {
 }
 
 td.detailtext {
+	font-size: 15px;
 	text-align: left;
 	color: #005AB5;
 	word-break: break-all;
 }
+
+td.detailName {
+	text-align: center;
+	color: #005AB5;
+	word-break: break-all;
+}
+td.detailTime {
+	text-align: center;
+	color: #005AB5;
+	word-break: break-all;
+}
+
 
 td.centertext {
 	text-align: center;

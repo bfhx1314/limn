@@ -113,8 +113,10 @@ public class BaseRunKeyWordImpl {
 		try{
 			HashMap<String,String> traXPath = null; 
 			if(step.length >= 4 && RegExp.findCharacters(step[3], "^HASHMAP")){
+				// DEBUG模式
 				traXPath = TransformationMap.transformationByString(step[3]);
 			}else{
+				// START模式
 				String context = Test.getAssociatedProperites();
 				if(null == context){
 					traXPath = null;

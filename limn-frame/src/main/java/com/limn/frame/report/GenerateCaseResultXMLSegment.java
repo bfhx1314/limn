@@ -133,13 +133,14 @@ public class GenerateCaseResultXMLSegment {
 					new_CPExpected_Element.addText(caseResultItem.getValue("Expected Result").toString());
 					new_CPActual_Element.addText(caseResultItem.getValue("Actual Result").toString());
 					new_CPStatus_Element.addText(caseResultItem.getValue("Status").toString());
-					String snapshot = "";
-					try{
-						snapshot = caseResultItem.getValue("Snapshot").toString().replaceAll("\\", "/");
-					}catch(Exception e){
-						
-					}
-					new_CPSnapshot_Element.addText(snapshot);
+					new_CPSnapshot_Element.addText(caseResultItem.getValue("Snapshot").toString());
+//					String snapshot = Parameter.VERSNAPSHOT;
+//					try{
+//						snapshot = caseResultItem.getValue("Snapshot").toString().replaceAll("\\", "/");
+//					}catch(Exception e){
+//						
+//					}
+//					new_CPSnapshot_Element.addText(snapshot);
 				}
 			}
 		}

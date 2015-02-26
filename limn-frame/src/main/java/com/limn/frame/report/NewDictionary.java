@@ -15,7 +15,7 @@ public class NewDictionary {
 	private LinkedHashMap<Object, Object> hashMap = null;
 	
 	public NewDictionary(){
-		hashMap = new LinkedHashMap<>();
+		hashMap = new LinkedHashMap<Object, Object>();
 	}
 	
 	public void addItem(String key,Object value){

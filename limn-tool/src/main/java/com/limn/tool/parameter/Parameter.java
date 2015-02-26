@@ -234,4 +234,9 @@ public class Parameter {
 	 * 日志详细信息
 	 */
 	public static String LOGINFO = "";
+	
+	/**
+	 * 检查点名
+	 */
+	public static String CHECKPOINTNAME = "";
 }

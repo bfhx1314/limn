@@ -20,8 +20,10 @@ import com.limn.frame.control.Test;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.ConvertCharacter;
 import com.limn.tool.common.Print;
+import com.limn.tool.common.Screenshot;
 import com.limn.tool.common.TransformationMap;
 import com.limn.tool.exception.ParameterException;
+import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
 import com.thoughtworks.selenium.SeleniumException;
 
@@ -110,7 +112,7 @@ public class CheckItems {
 		if (keys.length>1){
 			if (keys[1].equals("表格")){
 				if (!keys[2].equals("")){
-					setTableNameColNum(keys[2]);
+					setTableNameColNum(keys);
 				}else{
 					throw new ParameterException("验证表格的xpath为空。");
 				}
@@ -169,9 +171,41 @@ public class CheckItems {
 	
 	/**
 	 * 设置table的列名和坐标
-	 * @param tableLocator
+	 * @param step
+	 * @throws ParameterException 
 	 */
-	private void setTableNameColNum(String tableLocator){
+	private void setTableNameColNum(String[] step) throws ParameterException{
+		HashMap<String,String> traXPath = null; 
+		if(step.length >= 4 && RegExp.findCharacters(step[3], "^HASHMAP")){
+			// DEBUG模式
+			traXPath = TransformationMap.transformationByString(step[3]);
+		}else{
+			// START模式
+			String context = Test.getAssociatedProperites();
+			if(null == context){
+				traXPath = null;
+			}else{
+				traXPath = TransformationMap.transformationByString(context);
+			}
+		}
+//		if(step.length >= 4 && RegExp.findCharacters(step[3], "^HASHMAP")){
+//			traXPath = TransformationMap.transformationByString(step[3]);
+//		}else{
+//				throw new ParameterException("缺少表格对应的xpath");
+//		}
+		String tableLocator = null;
+		if(null != traXPath){
+			if(traXPath.containsKey(step[2])){
+				tableLocator = traXPath.get(step[2]);
+			}else{
+				tableLocator = step[2];
+			}
+		}else{
+			tableLocator = step[2];
+		}
+		if (null == tableLocator){
+			throw new ParameterException("对应的xpath为null。");
+		}
 		WebElement tableElement = Driver.getWebElementBylocator(tableLocator);
 		WebElement tableHead = tableElement.findElement(By.xpath(".//thead"));
 		List<WebElement> tableHeadTh = tableHead.findElements(By.xpath(".//th"));
@@ -181,18 +215,40 @@ public class CheckItems {
 		while(tableHeadThIte.hasNext()){
 			WebElement thIte = tableHeadThIte.next();
 			String colString = thIte.getText();
-			
 			LinkedList<String> valueList = new LinkedList<String>();
 			WebElement tableBody = tableElement.findElement(By.xpath(".//tbody"));
 			List<WebElement> tableBodyTrList = tableBody.findElements(By.xpath(".//tr"));
 			Iterator<WebElement> tableBodyTrIte = tableBodyTrList.iterator();
+			int tdNum = 1;
 			while(tableBodyTrIte.hasNext()){
 				WebElement trIte = tableBodyTrIte.next();
-				List<WebElement> tdElement = trIte.findElements(By.xpath(".//td["+tdIndex+"]"));
+				int tdInd = tdIndex;
+				// 获取第一个td的colspan属性
+				if (tdInd>1){
+					List<WebElement> tdFirstElementList = trIte.findElements(By.xpath(".//td[1]"));
+					WebElement tdFirstElement = tdFirstElementList.iterator().next();
+					String colspan = tdFirstElement.getAttribute("colspan");
+					if (null != colspan){ //  || !colspan.equals("")
+						int cols = Integer.parseInt(colspan);
+						if (tdInd <= cols){
+							continue;
+						}else{
+							tdInd = tdIndex - cols + 1;
+						}
+					}
+				}
+				
+				List<WebElement> tdElement = trIte.findElements(By.xpath(".//td["+tdInd+"]"));
 				WebElement tdEle = tdElement.iterator().next();
 				String colValue = tdEle.getText();
+//				if (colString.equals("客户信息")){
+//					System.out.print(colValue);
+//					
+//				}
+				if (RegExp.findCharacters(colValue, "\n")){
+					colValue = colValue.replaceAll("\n", "");
+				}
 				valueList.add(colValue);
-				// TODO 需要判断td的colspan属性
 			}
 			tableNameCol.put(colString, valueList);
 			tdIndex++;
@@ -209,13 +265,13 @@ public class CheckItems {
 		int atuLen = values.size();
 		if ((expectedKeys.length -1) != values.size()){
 			atuString = "预期结果个数与实际结果个数不一样：预期结果 "
-					+expectedLen+"个:"+expectedKeys.toString()
+					+expectedLen+"个:"+StringUtils.join(expectedKeys," ")
 					+"，实际结果 "+atuLen+"个:"+values.toString();
 			boolResult = false;
-			
+			atuString = atuString + "\n" + values.toString();
 //			throw new ParameterException(atuString);
 		}else{
-			for(int i=0;i<=expectedLen;i++){
+			for(int i=0;i<expectedLen;i++){
 				String autValue = values.get(i).toString();
 				if (!expectedKeys[i+1].equals(autValue)){
 					boolResult = false;
@@ -326,12 +382,15 @@ public class CheckItems {
 		}else{
 			acutalResults = acutalResults + "\n" + acutalAllStep;
 		}
-		Test.setAcutal(acutalResults);
+
+			new Screenshot().snapShot(Parameter.RESULT_FOLDER_REPORT +"/"+ Parameter.VERSNAPSHOT);
+		Parameter.VERSNAPSHOT = Parameter.VERSNAPSHOT + ".png";
 		Test.setAcutalResult(boolActul);
+		Test.setAcutal(acutalResults);
 	}
 	
 	/**
-	 * 处理 查看:单据 的预期结果
+	 * 处理 预期结果
 	 * @return
 	 */
 	private String[] getBillExpectedResult(){

@@ -320,6 +320,7 @@ public class Test {
 				int stepNum = runTimeStepNum;
 				//测试结果集
 				recordResult.addCase(Parameter.TESTCASENO);
+				Parameter.CASESTATUS = 1;
 				for (; stepNum < steps.length; stepNum++) {
 					runTimeStepNum = stepNum;
 					RunLog.highLightCurrentStep(stepNum);
@@ -327,13 +328,17 @@ public class Test {
 					//测试结果集
 					recordResult.addStep(steps[stepNum], String.valueOf(result));
 					result = runSingleStep(steps[stepNum],resultPath + "/" + runTimeStepNum);
-					Parameter.CASESTATUS = result;
+					
 					recordResult.addCaseLog(steps[stepNum], result);
 					if(result != ExecuteStatus.SUCCESS){
 						// 异常截图
+						Parameter.CASESTATUS = result;
 						String bitMapPath = Parameter.RESULT_FOLDER_BITMAP + "/" + resultPath + "/" + runTimeStepNum + "_"+ steps[stepNum].split(":")[0] + "_error";
 						bitMapPath = screenshot.snapShot(bitMapPath);
-						Parameter.ERRORCAPTURE = bitMapPath;
+						Parameter.VERSNAPSHOT = "snapshot/"+ runTimeSheetNum + "_" 
+								+ (resultPath + "/" + runTimeStepNum).replaceAll("/", "_") + "_error";
+						screenshot.snapShot(Parameter.RESULT_FOLDER_REPORT+"/"+Parameter.VERSNAPSHOT);
+//						Parameter.ERRORCAPTURE = bitMapPath;
 						break;
 					}
 				}
@@ -363,8 +368,14 @@ public class Test {
 		if(null != SR){
 			path = SR;
 		}
-		int results = 1;
 		
+		if (RegExp.findCharacters(step, "^验证:")){
+			Parameter.VERSNAPSHOT = "snapshot/"+ runTimeSheetNum + "_" 
+									+ path.replaceAll("/", "_") + "_result";
+			Parameter.CHECKPOINTNAME = step;
+		}
+		
+		int results = 1;
 //		try{
 		results = keyWordDriver.start(RegExp.splitKeyWord(step));
 //		} catch (NoSuchWindowException e2){
@@ -568,7 +579,7 @@ public class Test {
 		excelExist();
 		tc.setResult(String.valueOf(value));
 		recordResult.addExpectedResults(tc.getExpected().split("\n"));
-		Parameter.VERSNAPSHOT = Parameter.CASESNAPSHOT;
+//		Parameter.VERSNAPSHOT = Parameter.CASESNAPSHOT;
 		recordResult.addResult(value);
 	}
 	

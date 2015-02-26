@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -140,7 +141,8 @@ public class XMLData implements DataResults{
 		}
 		save();
 
-		String strActual = addHtmlBr(results);
+//		String strActual = addHtmlBr(results);
+		String strActual = StringUtils.join(results,"\r\n");
 		dicCheckPoint.addItem("Actual Result", strActual);
 	}
 
@@ -158,9 +160,10 @@ public class XMLData implements DataResults{
 		dicCheckPoint = new NewDictionary();
 		dicCheckPoint.addItem("SN", dicCaseResult.getSize()+1);
 		//TODO 检查点名
-		dicCheckPoint.addItem("CheckPoint Name", "检查点");
+		dicCheckPoint.addItem("CheckPoint Name", Parameter.CHECKPOINTNAME);
 		dicCheckPoint.addItem("Executed Time", DateFormat.getDateToString());
-		String strExpected = addHtmlBr(results);
+//		String strExpected = addHtmlBr(results);
+		String strExpected = StringUtils.join(results,"\r\n");
 		dicCheckPoint.addItem("Expected Result", strExpected);
 		dicCaseResult.addItem("检查点", dicCheckPoint);
 		dicCaseInfo.addItem("CaseResult", dicCaseResult);
@@ -169,8 +172,12 @@ public class XMLData implements DataResults{
 	@Override
 	public void addResult(boolean isPass){
 		caseElement.addAttribute("Result", String.valueOf(isPass));
-		dicCheckPoint.addItem("Status", isPass);
-		// TODO 截图路径
+		String isPassS = "Fail";
+		if (isPass){
+			isPassS = "Pass";
+		}
+		dicCheckPoint.addItem("Status", isPassS);
+		// TODO 验证截图路径
 		dicCheckPoint.addItem("Snapshot", Parameter.VERSNAPSHOT);
 		dicCaseResult.addItem("检查点", dicCheckPoint);
 		dicCaseInfo.addItem("CaseResult", dicCaseResult);
@@ -193,8 +200,7 @@ public class XMLData implements DataResults{
 
 	@Override
 	public void addBitMap(String bitMapPath) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 
@@ -223,7 +229,7 @@ public class XMLData implements DataResults{
 		url = url.split("/")[0];
 		Parameter.TESTENVIRONMENT = Common.getIP(url);
 		dicPlanInfoHead.addItem("TestEnvironment", Parameter.TESTENVIRONMENT);
-		xmlEngine.update(dicPlanInfoHead);
+		xmlEngine.updateAtLast(dicPlanInfoHead);
 	}
 	
 	private void addXmlHead(){
@@ -244,7 +250,13 @@ public class XMLData implements DataResults{
 		// TODO 产品提示信息
 		dicCaseInfo.addItem("Product message", Parameter.PRODUCTMESSAGE);
 		// TODO 单条用例执行结果，是否成功，非验证
-		dicCaseInfo.addItem("Case Status", Parameter.CASESTATUS);
+		String result = "";
+		if (Parameter.CASESTATUS == ExecuteStatus.SUCCESS){
+			result = "Pass";
+		}else if(Parameter.CASESTATUS == ExecuteStatus.FAILURE){
+			result = "Error";
+		}
+		dicCaseInfo.addItem("Case Status", result);
 		// TODO 报错时截图路径
 		dicCaseInfo.addItem("ErrorCapture", Parameter.ERRORCAPTURE);
 

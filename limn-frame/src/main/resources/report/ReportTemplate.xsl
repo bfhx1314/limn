@@ -48,8 +48,8 @@ EN" indent="yes"/>
 	<xsl:template match = "CheckPoint">
 		<tr class='checkpointrow' onMouseOver='mouseover(this)' onMouseOut='mouseout(this)'>
 		<td class='centertext'><xsl:value-of select = "CPSN + 1" /></td>
-		<td class='detailtext'><xsl:value-of select = "CPName" /></td>
-		<td class='detailtext'><xsl:value-of select = "CPTime" /></td>
+		<td class='detailName'><xsl:value-of select = "CPName" /></td>
+		<td class='detailTime'><xsl:value-of select = "CPTime" /></td>
 		<xsl:choose>
 			<xsl:when test="CPStatus = 'Pass'">
 			<td class='passedcentertext'><a id="checkpoint" href="{CPSnapshot}"  >&#x2713;Pass</a></td>
@@ -61,8 +61,16 @@ EN" indent="yes"/>
 			<td class='warningcentertext'><a id="checkpoint" class='three' href="{CPSnapshot}" >&#x2227;Warning</a></td>
 			</xsl:when>			
 		</xsl:choose>
-		<td class='detailtext'><xsl:value-of select = "CPExpected" /></td>
-		<td class='detailtext'><xsl:value-of select = "CPActual" /></td></tr>	
+		<td class='detailtext'>
+			<pre>
+				<xsl:value-of select = "CPExpected" />
+			</pre>
+		</td>
+		<td class='detailtext'>
+			<pre>
+				<xsl:value-of select = "CPActual" />
+			</pre>
+		</td></tr>	
 	</xsl:template>
 
 	<xsl:template match = "ColumnNames">
