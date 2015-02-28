@@ -33,7 +33,7 @@ public class GenerateCaseResultXMLSegment {
 		Element new_Number_Element = newTestCaseElement.addElement("Number");
 		Element new_Asset_Element = newTestCaseElement.addElement("Asset");
 		Element new_ErrorLog_Element = newTestCaseElement.addElement("ErrorLog");
-		Element new_SAPMessage_Element = newTestCaseElement.addElement("ProductMessage");
+		Element new_ProductMessage_Element = newTestCaseElement.addElement("ProductMessage");
 		Element new_CaseStatus_Element = newTestCaseElement.addElement("CaseStatus");
 		Element new_ErrorSnapshot_Element = newTestCaseElement.addElement("ErrorSnapshot");
 		Element new_InputDatas_Element = newTestCaseElement.addElement("InputDatas");
@@ -46,7 +46,7 @@ public class GenerateCaseResultXMLSegment {
 		new_Number_Element.addText(dicCaseInfo.getValue("No").toString());
 //		new_Asset_Element.addText(dicCaseInfo.getValue("Asset").toString());
 		new_ErrorLog_Element.addText(dicCaseInfo.getValue("Error Log").toString());
-		new_SAPMessage_Element.addText(dicCaseInfo.getValue("Product message").toString());
+		new_ProductMessage_Element.addText(dicCaseInfo.getValue("Product message").toString());
 		new_CaseStatus_Element.addText(dicCaseInfo.getValue("Case Status").toString());
 		String errorSnapshotPath = "";
 		try{

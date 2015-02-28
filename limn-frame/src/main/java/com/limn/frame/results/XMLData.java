@@ -19,6 +19,7 @@ import com.limn.frame.report.XmlEngine;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.DateFormat;
 import com.limn.tool.parameter.Parameter;
+import com.limn.tool.regexp.RegExp;
 
 
 public class XMLData implements DataResults{
@@ -292,13 +293,16 @@ public class XMLData implements DataResults{
 	public void addCaseLog(String step, int result) {
 		String logInfo = "";
 		if (result == ExecuteStatus.SUCCESS){
-			logInfo = Parameter.ERRORLOG;
-			Parameter.ERRORLOG = "";
-		}else{
 			logInfo = Parameter.LOGINFO;
 			Parameter.LOGINFO = "";
+			if (!RegExp.findCharacters(step, "^验证:")){
+				result = 0;
+			}
+		}else{
+			logInfo = Parameter.ERRORLOG;
+			Parameter.ERRORLOG = "";
 		}
-		logEngine.logEvent(String.valueOf(result),step,Parameter.ERRORLOG);
+		logEngine.logEvent(String.valueOf(result),step,logInfo);
 		Parameter.ERRORLOG = "";
 	}
 }

@@ -189,7 +189,7 @@ public class Variable {
 		String varFormat = null;
 		for(String var:variableList){
 			varFormat = RegExp.filterString(var, "{}");
-			content = resolve(content.replace(var, "'"+getExpressionValue(varFormat))+"'");
+			content = resolve(content.replace(var, "'"+getExpressionValue(varFormat)+"'"));
 		}
 		return content;
 	}

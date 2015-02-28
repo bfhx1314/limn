@@ -175,6 +175,9 @@ public class Common {
 	 * @throws ParameterException
 	 */
 	public static String getExpressionValue(String str) throws ParameterException {
+		if (!RegExp.findCharacters(str, "\\{.*?\\}")){
+			return str;
+		}
 		String variableValue = null;
 		String exp = Variable.resolve(str);
 		SyntaxTree tree = new SyntaxTree();

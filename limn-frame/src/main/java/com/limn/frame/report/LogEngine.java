@@ -59,6 +59,9 @@ public class LogEngine {
 		case "-3":
 			lHashMap.put("Status", "Warning");
 			break;
+		case "-5": // 验证失败
+			lHashMap.put("Status", "Fail");
+			break;
 		default:
 			lHashMap.put("Status", "Done");
 			break;

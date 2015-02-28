@@ -67,24 +67,24 @@ EN" indent="yes"/>
 	</xsl:template>
 	
 	<xsl:template match="Log" >
-		<li class = "log-line" onMouseOver='mouseover(this)' onMouseOut='mouseout(this)'>
-			<span class = "CurrentTime"><xsl:value-of select="@CurrentTime"/></span>	
+		<li class = "log-line" onMouseOver='mouseover(this)' onMouseOut='mouseout(this)' style="width:100%;">
+			<span style="width:14%;" class = "CurrentTime"><xsl:value-of select="@CurrentTime"/></span>	
 			<xsl:choose>
 				<xsl:when test="@Status='Pass'">					
-						<span class = "EventPass">Pass</span>						
+						<span style="width:6%;"  class = "EventPass">Pass</span>						
 				</xsl:when>
 				<xsl:when test="@Status='Fail'">					
-						<span class = "EventFail">Fail</span>						
+						<span style="width:6%;" class = "EventFail">Fail</span>						
 				</xsl:when>
 				<xsl:when test="@Status='Warning'">					
-						<span class = "EventWarning">Warning</span>						
+						<span style="width:6%;" class = "EventWarning">Warning</span>						
 				</xsl:when>		
 				<xsl:otherwise>
-						<span class = "EventDone">Done</span>
+						<span style="width:6%;" class = "EventDone">Done</span>
 				</xsl:otherwise>			
 			</xsl:choose>
-			<span class="EventName"><xsl:value-of select="@EventName"/></span>
-			<span class="EventContent"><xsl:value-of select="."/></span> 
+			<span style="width:40%;display:inline-block;" class="EventName"><xsl:value-of select="@EventName"/></span>
+			<span style="width:40%;display:inline-block;" class="EventContent"><xsl:value-of select="."/></span> 
 		</li>
 	</xsl:template>	
 </xsl:stylesheet>

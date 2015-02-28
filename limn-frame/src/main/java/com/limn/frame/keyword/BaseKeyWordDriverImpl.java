@@ -7,12 +7,14 @@ import java.util.LinkedHashMap;
 
 
 
+
 import com.limn.driver.common.OperateWindows;
 import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.checkitems.CheckItems;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
 import com.limn.tool.exception.ParameterException;
+import com.limn.tool.parameter.Parameter;
 
 /**
  * 基础关键字
@@ -95,6 +97,10 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 			case BaseKeyWordType.VERIFICATION:
 				CheckItems checkItems = new CheckItems();
 				checkItems.branch(step);
+				if (!checkItems.isBoolActul()){
+					status = -5;
+					Parameter.ERRORLOG = "预期结果与实际结果不一致。请看CHECKPOINT信息。";
+				}
 				break;
 			//自定义关键字
 			default:
@@ -121,6 +127,7 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 		} catch (Exception e){
 			status = -2;
 			Print.log(e.getMessage(), 2);
+			e.printStackTrace();
 		}
 		return status;
 

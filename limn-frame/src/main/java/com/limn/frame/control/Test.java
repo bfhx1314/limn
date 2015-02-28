@@ -237,7 +237,6 @@ public class Test {
 				tc.setCurrentRow(m);
 				result = runSteps(false);
 				if (result != ExecuteStatus.SUCCESS) {
-					
 					Print.log("跳过: " + Parameter.TESTCASEMOUDLE,2);
 					
 					tc.setResult("跳过下个模块");
@@ -331,6 +330,7 @@ public class Test {
 					
 					recordResult.addCaseLog(steps[stepNum], result);
 					if(result != ExecuteStatus.SUCCESS){
+
 						// 异常截图
 						Parameter.CASESTATUS = result;
 						String bitMapPath = Parameter.RESULT_FOLDER_BITMAP + "/" + resultPath + "/" + runTimeStepNum + "_"+ steps[stepNum].split(":")[0] + "_error";
@@ -338,7 +338,11 @@ public class Test {
 						Parameter.VERSNAPSHOT = "snapshot/"+ runTimeSheetNum + "_" 
 								+ (resultPath + "/" + runTimeStepNum).replaceAll("/", "_") + "_error";
 						screenshot.snapShot(Parameter.RESULT_FOLDER_REPORT+"/"+Parameter.VERSNAPSHOT);
-//						Parameter.ERRORCAPTURE = bitMapPath;
+						if (RegExp.findCharacters(steps[stepNum], "^验证:")){
+							result = 1;
+							continue;
+						}
+						Parameter.ERRORCAPTURE = Parameter.VERSNAPSHOT;
 						break;
 					}
 				}
@@ -579,6 +583,17 @@ public class Test {
 		excelExist();
 		tc.setResult(String.valueOf(value));
 		recordResult.addExpectedResults(tc.getExpected().split("\n"));
+//		Parameter.VERSNAPSHOT = Parameter.CASESNAPSHOT;
+		recordResult.addResult(value);
+	}
+	/**
+	 * 对比结果写入excel  true||false，第8列
+	 * @param value
+	 */
+	public static void setAcutalResult(String expectedResult, boolean value){
+		excelExist();
+		tc.setResult(String.valueOf(value));
+		recordResult.addExpectedResults(expectedResult.split("\n"));
 //		Parameter.VERSNAPSHOT = Parameter.CASESNAPSHOT;
 		recordResult.addResult(value);
 	}

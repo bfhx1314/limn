@@ -50,6 +50,9 @@ public class CheckItems {
 	 * 所有预期的结果true || false
 	 */
 	private boolean boolActul = true;
+	public boolean isBoolActul() {
+		return boolActul;
+	}
 	/**
 	 * 所有的结果内容
 	 */
@@ -88,6 +91,10 @@ public class CheckItems {
 	 * 存放表格中的值
 	 */
 	private String[][] tableNameValue = {};
+	/**
+	 * 重写预期结果（转换表达式）
+	 */
+	private LinkedList<String> expectedGetExpression = new LinkedList<String>();
 	
 	public CheckItems(){}
 
@@ -122,6 +129,7 @@ public class CheckItems {
 		this.expectedResults = Test.getArrExpectedResult();
 		for(int i=0;i<expectedResults.length;i++){
 			// 把用例中的"\:" "\;" 转义。
+			
 			expectedStr = ConvertCharacter.getHtmlAsc(expectedResults[i]);
 			expectedKeys = RegExp.splitKeyWord(expectedStr);
 			if (keys[0].equals("验证")){
@@ -144,8 +152,8 @@ public class CheckItems {
 		}
 		// 把结果写入excel。
 		writeResult();
-		System.out.println(Test.getActulResult());
-		System.out.println(boolActul);
+//		System.out.println(Test.getActulResult());
+//		System.out.println(boolActul);
 	}
 	
 	/**
@@ -246,7 +254,7 @@ public class CheckItems {
 //					
 //				}
 				if (RegExp.findCharacters(colValue, "\n")){
-					colValue = colValue.replaceAll("\n", "");
+					colValue = colValue.replaceAll("\n", " ");
 				}
 				valueList.add(colValue);
 			}
@@ -258,30 +266,38 @@ public class CheckItems {
 	
 	private String[] checkTableData() throws ParameterException {
 		boolean boolResult = true; // 结果 true||false
-		String atuString = "";
+		String acutalString = "";
 		String[] arr = new String[2];
 		LinkedList<?> values = tableNameCol.get(expectedKeys[0]);
 		int expectedLen = expectedKeys.length -1;
 		int atuLen = values.size();
 		if ((expectedKeys.length -1) != values.size()){
-			atuString = "预期结果个数与实际结果个数不一样：预期结果 "
+			acutalString = "预期结果个数与实际结果个数不一样：预期结果 "
 					+expectedLen+"个:"+StringUtils.join(expectedKeys," ")
 					+"，实际结果 "+atuLen+"个:"+values.toString();
 			boolResult = false;
-			atuString = atuString + "\n" + values.toString();
+			acutalString = acutalString + "\n" + values.toString();
 //			throw new ParameterException(atuString);
 		}else{
+			String[] acutalTempArr = expectedKeys;
 			for(int i=0;i<expectedLen;i++){
+				acutalTempArr[i+1] = Common.getExpressionValue(expectedKeys[i+1]);
+				expectedKeys[i+1] = acutalTempArr[i+1];
+//				expectAllStr = expectTempArr
+//				String expectTemp = expectedKeys[i+1];
 				String autValue = values.get(i).toString();
-				if (!expectedKeys[i+1].equals(autValue)){
+				if (!acutalTempArr[i+1].equals(autValue)){
 					boolResult = false;
-					expectedKeys[i+1] = autValue;
+					acutalTempArr[i+1] = autValue;
 				}
 			}
-			atuString = StringUtils.join(expectedKeys," ");
+			expectedStr = StringUtils.join(expectedKeys," ");
+			// 重写预期结果（转换表达式）
+			expectedGetExpression.add(expectedStr);
+			acutalString = StringUtils.join(acutalTempArr," ");
 		}
 		
-		arr[0] = atuString;
+		arr[0] = acutalString;
 		arr[1] = String.valueOf(boolResult);
 		return arr;
 	}
@@ -385,7 +401,10 @@ public class CheckItems {
 
 			new Screenshot().snapShot(Parameter.RESULT_FOLDER_REPORT +"/"+ Parameter.VERSNAPSHOT);
 		Parameter.VERSNAPSHOT = Parameter.VERSNAPSHOT + ".png";
-		Test.setAcutalResult(boolActul);
+		// 重写预期结果（转换表达式）
+		String[] expectedTemp = new String[expectedGetExpression.size()];
+		expectedTemp = expectedGetExpression.toArray(expectedTemp);
+		Test.setAcutalResult(StringUtils.join(expectedTemp,"\n"), boolActul);
 		Test.setAcutal(acutalResults);
 	}
 	
