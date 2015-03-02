@@ -179,9 +179,10 @@ EN" indent="yes"/>
 						</xsl:when>						
 						<xsl:when test="CaseStatus = 'Error'">
 						<td width = '11%' class='failedcentertext'><a id="checkpoint" class="two"  href="{ErrorSnapshot}" >&#x2718;Error</a></td>
-						
-						
-						</xsl:when>						
+						</xsl:when>	
+						<xsl:otherwise>
+							<td width = '11%' class='failedcentertext'><a id="checkpoint" class="two"  href="{ErrorSnapshot}" >DONE</a></td>
+						</xsl:otherwise>			
 					</xsl:choose>
 					</tr>
 					</table>

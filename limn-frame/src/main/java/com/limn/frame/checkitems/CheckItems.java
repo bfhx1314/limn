@@ -271,18 +271,25 @@ public class CheckItems {
 		LinkedList<?> values = tableNameCol.get(expectedKeys[0]);
 		int expectedLen = expectedKeys.length -1;
 		int atuLen = values.size();
+		String[] acutalTempArr = expectedKeys.clone();
+		for(int i=0;i<expectedLen;i++){
+			acutalTempArr[i+1] = Common.getExpressionValue(expectedKeys[i+1]);
+			expectedKeys[i+1] = acutalTempArr[i+1];
+			
+		}
 		if ((expectedKeys.length -1) != values.size()){
 			acutalString = "预期结果个数与实际结果个数不一样：预期结果 "
 					+expectedLen+"个:"+StringUtils.join(expectedKeys," ")
 					+"，实际结果 "+atuLen+"个:"+values.toString();
 			boolResult = false;
-			acutalString = acutalString + "\n" + values.toString();
+//			acutalString = acutalString + "\n" + values.toString();
 //			throw new ParameterException(atuString);
 		}else{
-			String[] acutalTempArr = expectedKeys;
+			
 			for(int i=0;i<expectedLen;i++){
-				acutalTempArr[i+1] = Common.getExpressionValue(expectedKeys[i+1]);
-				expectedKeys[i+1] = acutalTempArr[i+1];
+//				acutalTempArr[i+1] = Common.getExpressionValue(expectedKeys[i+1]);
+//				expectedKeys[i+1] = acutalTempArr[i+1];
+				
 //				expectAllStr = expectTempArr
 //				String expectTemp = expectedKeys[i+1];
 				String autValue = values.get(i).toString();
@@ -291,11 +298,12 @@ public class CheckItems {
 					acutalTempArr[i+1] = autValue;
 				}
 			}
-			expectedStr = StringUtils.join(expectedKeys," ");
-			// 重写预期结果（转换表达式）
-			expectedGetExpression.add(expectedStr);
 			acutalString = StringUtils.join(acutalTempArr," ");
 		}
+		expectedStr = StringUtils.join(expectedKeys," ");
+		// 重写预期结果（转换表达式）
+		expectedGetExpression.add(expectedStr);
+		
 		
 		arr[0] = acutalString;
 		arr[1] = String.valueOf(boolResult);

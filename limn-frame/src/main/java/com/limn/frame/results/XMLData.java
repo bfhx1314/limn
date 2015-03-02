@@ -256,6 +256,8 @@ public class XMLData implements DataResults{
 			result = "Pass";
 		}else if(Parameter.CASESTATUS == ExecuteStatus.FAILURE){
 			result = "Error";
+		}else{
+			result = "Fail";
 		}
 		dicCaseInfo.addItem("Case Status", result);
 		// TODO 报错时截图路径

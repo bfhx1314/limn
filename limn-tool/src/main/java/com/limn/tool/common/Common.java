@@ -175,9 +175,9 @@ public class Common {
 	 * @throws ParameterException
 	 */
 	public static String getExpressionValue(String str) throws ParameterException {
-		if (!RegExp.findCharacters(str, "\\{.*?\\}")){
-			return str;
-		}
+//		if (!RegExp.findCharacters(str, "\\{.*?\\}")){
+//			return str;
+//		}
 		String variableValue = null;
 		String exp = Variable.resolve(str);
 		SyntaxTree tree = new SyntaxTree();
@@ -209,6 +209,8 @@ public class Common {
 			try {
 				variableValue = parser.eval(null, strArr, tree, null).toString();
 			} catch (Exception e) {
+				Print.log("语法解析失败，表达式："+str, 2);
+				return exp;
 //				throw new ParameterException("语法解析失败，表达式："+str);
 			}
 		}

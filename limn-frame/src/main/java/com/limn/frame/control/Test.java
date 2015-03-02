@@ -338,11 +338,13 @@ public class Test {
 						Parameter.VERSNAPSHOT = "snapshot/"+ runTimeSheetNum + "_" 
 								+ (resultPath + "/" + runTimeStepNum).replaceAll("/", "_") + "_error";
 						screenshot.snapShot(Parameter.RESULT_FOLDER_REPORT+"/"+Parameter.VERSNAPSHOT);
+						Parameter.VERSNAPSHOT = Parameter.VERSNAPSHOT + ".png";
+						Parameter.ERRORCAPTURE = Parameter.VERSNAPSHOT;
 						if (RegExp.findCharacters(steps[stepNum], "^验证:")){
 							result = 1;
 							continue;
 						}
-						Parameter.ERRORCAPTURE = Parameter.VERSNAPSHOT;
+
 						break;
 					}
 				}

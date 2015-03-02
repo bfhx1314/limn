@@ -13,6 +13,7 @@ import org.dom4j.io.SAXReader;
 
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.parameter.Parameter;
+import com.limn.tool.regexp.RegExp;
 
 public class GenerateCaseResultXMLSegment {
 
@@ -50,7 +51,11 @@ public class GenerateCaseResultXMLSegment {
 		new_CaseStatus_Element.addText(dicCaseInfo.getValue("Case Status").toString());
 		String errorSnapshotPath = "";
 		try{
-			errorSnapshotPath = dicCaseInfo.getValue("ErrorSnapshot").toString().replaceAll("\\", "/");
+			errorSnapshotPath = dicCaseInfo.getValue("ErrorCapture").toString();
+			if (RegExp.findCharacters(errorSnapshotPath, "\\\\")){
+				errorSnapshotPath = errorSnapshotPath.replaceAll("\\\\", "/");
+			}
+
 		}catch(Exception e){
 			errorSnapshotPath = "";
 		}

@@ -45,18 +45,18 @@ EN" indent="yes"/>
 	
 	<xsl:template name ="Action" match="Action" >
 		<xsl:param name="ActionIndex" ></xsl:param>
-		<div class = "Action" id = "{$ActionIndex}">		
+		<div class = "Action" id = "{$ActionIndex}" >		
 			<div class='foldingbutton' id="suite{$ActionIndex}_foldlink" onclick="toggle_child_visibility('suite{$ActionIndex}');" style='display: none;'>-</div>
 			<div class='foldingbutton' id="suite{$ActionIndex}_unfoldlink" onclick="toggle_child_visibility('suite{$ActionIndex}');" style='display: block;'>+</div>
 			<span class='filename'>NO. <xsl:value-of select="$ActionIndex"/></span>      <span class = 'Case_Name' ><xsl:value-of select="@Name"/></span>		
 		
 			<div id='suite{$ActionIndex}_children' style='display: none;'>
-				<ul id = "log-list">
-					<li class = "log-title">
-						<span class = "CurrentTimeTitle">Time</span>
-						<span class ="EventStatusTitle">Status</span>
-						<span class = "EventNameTitle">Step Name</span>
-						<span class = "EventContentTitle">Step Content</span>
+				<ul id = "log-list" >
+					<li class = "log-title" style="width:100%;">
+						<span style="width:150px;" class = "CurrentTimeTitle">Time</span>
+						<span style="width:60px;" class ="EventStatusTitle">Status</span>
+						<span style="width:30%;" class = "EventNameTitle">Step Name</span>
+						<span style="width:30%;" class = "EventContentTitle">Step Content</span>
 					</li>
 					<xsl:for-each select="Log">
 						<xsl:apply-templates select="."/>				
@@ -68,23 +68,39 @@ EN" indent="yes"/>
 	
 	<xsl:template match="Log" >
 		<li class = "log-line" onMouseOver='mouseover(this)' onMouseOut='mouseout(this)' style="width:100%;">
-			<span style="width:14%;" class = "CurrentTime"><xsl:value-of select="@CurrentTime"/></span>	
+			<span style="width:150px;" class = "CurrentTime"><xsl:value-of select="@CurrentTime"/></span>	
 			<xsl:choose>
 				<xsl:when test="@Status='Pass'">					
-						<span style="width:6%;"  class = "EventPass">Pass</span>						
+						<span style="width:60px;"  class = "EventPass">Pass</span>						
 				</xsl:when>
 				<xsl:when test="@Status='Fail'">					
-						<span style="width:6%;" class = "EventFail">Fail</span>						
+						<span style="width:60px;" class = "EventFail">Fail</span>						
 				</xsl:when>
 				<xsl:when test="@Status='Warning'">					
-						<span style="width:6%;" class = "EventWarning">Warning</span>						
+						<span style="width:60px;" class = "EventWarning">Warning</span>						
 				</xsl:when>		
 				<xsl:otherwise>
-						<span style="width:6%;" class = "EventDone">Done</span>
+						<span style="width:60px;" class = "EventDone">Done</span>
 				</xsl:otherwise>			
 			</xsl:choose>
-			<span style="width:40%;display:inline-block;" class="EventName"><xsl:value-of select="@EventName"/></span>
-			<span style="width:40%;display:inline-block;" class="EventContent"><xsl:value-of select="."/></span> 
+			<span style="width:30%;" class="EventName"><xsl:value-of select="@EventName"/></span>
+			
+			<xsl:choose>
+				<xsl:when test="@Status='Pass'">					
+						<span style="width:40%;"  class = "EventContent"><xsl:value-of select="."/></span> 						
+				</xsl:when>
+				<xsl:when test="@Status='Fail'">					
+						<span style="width:40%;color:red;" class = "EventContent"><xsl:value-of select="."/></span> 						
+				</xsl:when>
+				<xsl:when test="@Status='Warning'">					
+						<span style="width:40%;color:yellow;" class = "EventContent"><xsl:value-of select="."/></span> 						
+				</xsl:when>		
+				<xsl:otherwise>
+						<span style="width:40%;" class = "EventContent"><xsl:value-of select="."/></span> 
+				</xsl:otherwise>			
+			</xsl:choose>
+			
+			<!--<span style="width:43%;" class="EventContent"><xsl:value-of select="."/></span> -->
 		</li>
 	</xsl:template>	
 </xsl:stylesheet>

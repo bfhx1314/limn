@@ -53,7 +53,9 @@ public class Variable {
 			getLocal();
 		}
 		if (expression.containsKey(key)){
-			return expression.get(key);
+			String valueString = expression.get(key);
+			Print.log("变量："+key+"="+valueString, 0);
+			return valueString;
 		}else{
 			Print.log("不存在变量：" + key, 2);
 			return null;
@@ -189,7 +191,8 @@ public class Variable {
 		String varFormat = null;
 		for(String var:variableList){
 			varFormat = RegExp.filterString(var, "{}");
-			content = resolve(content.replace(var, "'"+getExpressionValue(varFormat)+"'"));
+			String tempString = content.replace(var, "'"+getExpressionValue(varFormat)+ "'");
+			content = resolve(tempString);
 		}
 		return content;
 	}
@@ -197,6 +200,7 @@ public class Variable {
 	
 	
 	public static void main(String[] args){
+		resolve("2015-02-22");
 //		Variable.setExpressionName("zzzz", "ccccc");
 		Variable.addVariableLocal("apply.properties");
 		System.out.println(Variable.getExpressionValue("Manager"));

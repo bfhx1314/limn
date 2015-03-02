@@ -120,12 +120,15 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 			}
 		} catch (SeleniumFindException e) {
 			status = -2;
+			Parameter.PRODUCTMESSAGE = e.getMessage();
 			Print.log(e.getMessage(), 2);
 		} catch (ParameterException e) {
 			status = -2;
+			Parameter.PRODUCTMESSAGE = e.getMessage();
 			Print.log(e.getMessage(), 2);
 		} catch (Exception e){
 			status = -2;
+			Parameter.ERRORLOG = e.getMessage();
 			Print.log(e.getMessage(), 2);
 			e.printStackTrace();
 		}
