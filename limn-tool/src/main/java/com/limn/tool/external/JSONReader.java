@@ -20,15 +20,22 @@ import net.sf.json.util.JSONUtils;
  */
 public class JSONReader {
 
-	public static HashMap<String, Object> getMapFromJson(String jsonString) {
-		setDataFormat2JAVA();
-		JSONObject jsonObject = JSONObject.fromObject(jsonString);
+	
+	public static HashMap<String,Object> getMapFromJson(JSONObject jsonObject){
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		for (Iterator<?> iter = jsonObject.keys(); iter.hasNext();) {
 			String key = (String) iter.next();
 			map.put(key, jsonObject.get(key));
 		}
 		return map;
+	}
+	
+	
+	
+	public static HashMap<String, Object> getMapFromJson(String jsonString) {
+		setDataFormat2JAVA();
+		JSONObject jsonObject = JSONObject.fromObject(jsonString);
+		return getMapFromJson(jsonObject);
 	}
 
 	private static void setDataFormat2JAVA() {

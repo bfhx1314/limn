@@ -1,6 +1,7 @@
 package com.limn.tool.log;
 
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -15,7 +16,11 @@ import javax.swing.text.Document;
 import com.limn.tool.common.Print;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -45,6 +50,10 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 	
 	public JFrame jFrame = new JFrame("RunLog");
 	
+	private boolean isMoved;  
+    private Point pre_point;  
+    private Point end_point;  
+	
 	private boolean isStart = false;
 	/**
 	 * 默认的日志界面
@@ -69,6 +78,7 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 		init();		
 	}
 	
+	@SuppressWarnings("restriction")
 	private void init(){
 		isStart = true;
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -97,12 +107,25 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 		southPanel.add(socketConnect);	
 		southPanel.add(progressBar);
 
+		JButton close = new JButton("X");
+		close.setBounds(650, 5, 50, 20);
+		southPanel.add(close);
+		
+		close.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				jFrame.dispose();
+			}
+		});
+		
 
 		// 整体的布局
 		panel.setLayout(null);
-		logJScrollLog.setBounds(0, 0, 380, 330);
-		logJScrollStep.setBounds(380,0, 315, 330);
-		southPanel.setBounds(0, 332, 700, 40);
+		logJScrollLog.setBounds(0, 50, 380, 330);
+		logJScrollStep.setBounds(380,50, 315, 330);
+		southPanel.setBounds(0, 10, 700, 40);
 		
 
 		panel.add(logJScrollLog);
@@ -110,6 +133,11 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 		panel.add(southPanel);
 		
 		jFrame.add(panel);
+		
+		jFrame.setUndecorated(true);
+		jFrame.setOpacity(0.5f);
+		
+		setDragable(jFrame);
 
 		jFrame.setAlwaysOnTop(true);
 		jFrame.setResizable(false);
@@ -293,5 +321,36 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 	public boolean isStart() {
 		return isStart;
 	}
+	
+	
+	public static void main(String[] args){
+		new RunLogDriver();
+	}
+	
+	 private void setDragable(final JFrame lui) {  
+		 lui.addMouseListener(new java.awt.event.MouseAdapter() {  
+	            public void mouseReleased(java.awt.event.MouseEvent e) {  
+	                isMoved = false;// 鼠标释放了以后，是不能再拖拽的了  
+	                lui.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));  
+	            }  
+	  
+	            public void mousePressed(java.awt.event.MouseEvent e) {  
+	                isMoved = true;  
+	                pre_point = new Point(e.getX(), e.getY());// 得到按下去的位置  
+	                lui.setCursor(new Cursor(Cursor.MOVE_CURSOR));  
+	            }  
+	        });  
+	        //拖动时当前的坐标减去鼠标按下去时的坐标，就是界面所要移动的向量。  
+		 lui.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {  
+	            public void mouseDragged(java.awt.event.MouseEvent e) {  
+	                if (isMoved) {// 判断是否可以拖拽  
+	                    end_point = new Point(lui.getLocation().x + e.getX() - pre_point.x,  
+	                            lui.getLocation().y + e.getY() - pre_point.y);  
+	                    lui.setLocation(end_point);  
+	                }  
+	            }  
+	        });  
+	    }  
+	
 	
 }

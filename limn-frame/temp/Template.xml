@@ -25,7 +25,7 @@
       <NotServer>false</NotServer>  
       <UploadResults>false</UploadResults>  
       <StartPlatform>true</StartPlatform>  
-      <EditExcelPath>F:\haowu_selenium\deploy\haowu-test-deploy\testcase\新房流程\新房流程.xls</EditExcelPath> 
+      <EditExcelPath>D:\用户目录\Documents\zzz.xls</EditExcelPath> 
     </Template> 
   </Templates>  
   <Cores> 
