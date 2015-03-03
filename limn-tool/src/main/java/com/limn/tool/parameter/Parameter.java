@@ -239,4 +239,9 @@ public class Parameter {
 	 * 检查点名
 	 */
 	public static String CHECKPOINTNAME = "";
+	
+	/**
+	 * 每一步的截图路径
+	 */
+	public static String LOGSNAPSHOT = "";
 }

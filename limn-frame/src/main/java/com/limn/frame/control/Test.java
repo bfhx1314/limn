@@ -20,6 +20,7 @@ import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.Screenshot;
 import com.limn.tool.exception.ExcelEditorException;
+import com.limn.tool.exception.ParameterException;
 import com.limn.tool.regexp.RegExp;
 import com.thoughtworks.selenium.SeleniumException;
 
@@ -327,7 +328,6 @@ public class Test {
 					//测试结果集
 					recordResult.addStep(steps[stepNum], String.valueOf(result));
 					result = runSingleStep(steps[stepNum],resultPath + "/" + runTimeStepNum);
-					
 					recordResult.addCaseLog(steps[stepNum], result);
 					if(result != ExecuteStatus.SUCCESS){
 
@@ -396,10 +396,20 @@ public class Test {
 //			return ExecuteStatus.FAILURE;
 //		}
 		
-		// 截图
+		// 截图		
+		Parameter.LOGSNAPSHOT = "snapshot/"+ runTimeSheetNum + "_" 
+								+ path.replaceAll("/", "_") + "_log.png";
+		
 		String bitMapPath = Parameter.RESULT_FOLDER_BITMAP + "/" + path + "_"+ step.split(":")[0];
 		bitMapPath = screenshot.snapShot(bitMapPath);
-		Parameter.CASESNAPSHOT = bitMapPath;
+		try {
+			FileUtil.copyFile(new File(bitMapPath), new File(Parameter.RESULT_FOLDER_REPORT+"/"+Parameter.LOGSNAPSHOT));
+		} catch (IOException e) {
+			results = -2;
+			Parameter.ERRORLOG = e.getMessage();
+			Print.log(e.getMessage(), 2);
+			e.printStackTrace();
+		}
 		//记录结果集
 		recordResult.addBitMap(bitMapPath);
 		return results;
@@ -585,7 +595,6 @@ public class Test {
 		excelExist();
 		tc.setResult(String.valueOf(value));
 		recordResult.addExpectedResults(tc.getExpected().split("\n"));
-//		Parameter.VERSNAPSHOT = Parameter.CASESNAPSHOT;
 		recordResult.addResult(value);
 	}
 	/**
@@ -596,7 +605,6 @@ public class Test {
 		excelExist();
 		tc.setResult(String.valueOf(value));
 		recordResult.addExpectedResults(expectedResult.split("\n"));
-//		Parameter.VERSNAPSHOT = Parameter.CASESNAPSHOT;
 		recordResult.addResult(value);
 	}
 	

@@ -25,6 +25,34 @@ EN" indent="yes"/>
 				<script type="text/javascript" src="js/jquery.fancybox-1.3.4.pack.js"></script>			
 			</head> 			
 			<body  bgColor="aliceblue" align="top">
+			<script type="text/javascript" >
+
+			$(document).ready(function() { 
+				/* This is basic - uses default settings */ 
+				$("a#logStatus").fancybox({
+				
+					'showCloseButton' :	true,
+					'transitionIn' : 'elastic',
+					'transitionOut' : 'fade',
+					'zoomSpeedIn': 500, 
+					'zoomSpeedOut': 300,
+					'titleShow' : true,					
+					'hideOnContentClick': true 
+									
+				}); 				
+				
+			});
+			$(function(){ 
+				$("a[rel=group]").fancybox({ 
+					'titlePosition' : 'over', 
+					'cyclic'        : true, 
+					'titleFormat'    : function(title, currentArray, currentIndex, currentOpts) { 
+								return '<span id="fancybox-title-over">' + (currentIndex + 1) + 
+			 ' / ' + currentArray.length + (title.length ? '   ' + title : '') + '</span>'; 
+							} 
+				}); 
+			}); 
+			</script>
 				<CENTER><H1 class="STYLE1">Compass Automation Execution Log</H1></CENTER>
 				<div id="logo">
 					<h1 align='right'>
@@ -67,20 +95,25 @@ EN" indent="yes"/>
 	</xsl:template>
 	
 	<xsl:template match="Log" >
+		<xsl:variable name="LogSnapshotPaht"><xsl:value-of select="@LogSnapshot"/></xsl:variable>
 		<li class = "log-line" onMouseOver='mouseover(this)' onMouseOut='mouseout(this)' style="width:100%;">
 			<span style="width:150px;" class = "CurrentTime"><xsl:value-of select="@CurrentTime"/></span>	
 			<xsl:choose>
-				<xsl:when test="@Status='Pass'">					
-						<span style="width:60px;"  class = "EventPass">Pass</span>						
+				<xsl:when test="@Status='Pass'">		
+					<a rel="group" class = "EventPass" style="width:60px;" id="logStatus" href="{$LogSnapshotPaht}"  >Pass</a>				
+						<!-- <span style="width:60px;"  class = "EventPass">Pass</span> -->			
 				</xsl:when>
-				<xsl:when test="@Status='Fail'">					
-						<span style="width:60px;" class = "EventFail">Fail</span>						
+				<xsl:when test="@Status='Fail'">			
+					<a  rel="group" class = "EventFail" style="width:60px;" id="logStatus" href="{$LogSnapshotPaht}"  >Fail</a>
+						<!-- <span style="width:60px;" class = "EventFail">Fail</span> -->							
 				</xsl:when>
 				<xsl:when test="@Status='Warning'">					
-						<span style="width:60px;" class = "EventWarning">Warning</span>						
+					<a  rel="group" class = "EventWarning" style="width:60px;" id="logStatus" href="{$LogSnapshotPaht}"  >Warning</a>
+						<!-- <span style="width:60px;" class = "EventWarning">Warning</span> -->							
 				</xsl:when>		
 				<xsl:otherwise>
-						<span style="width:60px;" class = "EventDone">Done</span>
+					<a  rel="group" class = "EventDone" style="width:60px;color:gray;" id="logStatus" href="{$LogSnapshotPaht}"  >Done</a>
+					<!-- <span style="width:60px;" class = "EventDone">Done</span> -->
 				</xsl:otherwise>			
 			</xsl:choose>
 			<span style="width:30%;" class="EventName"><xsl:value-of select="@EventName"/></span>

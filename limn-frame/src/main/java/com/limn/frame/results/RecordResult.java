@@ -2,6 +2,8 @@ package com.limn.frame.results;
 
 import java.util.HashSet;
 
+import com.limn.tool.exception.ParameterException;
+
 public class RecordResult implements DataResults {
 	
 	HashSet<DataResults> dataResults = new HashSet<DataResults>();
@@ -112,7 +114,7 @@ public class RecordResult implements DataResults {
 	}
 
 	@Override
-	public void addCaseLog(String step, int result) {
+	public void addCaseLog(String step, int result){
 		for(DataResults dr : dataResults){
 			dr.addCaseLog(step, result);
 		}

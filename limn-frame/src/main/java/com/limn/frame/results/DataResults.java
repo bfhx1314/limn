@@ -1,5 +1,7 @@
 package com.limn.frame.results;
 
+import com.limn.tool.exception.ParameterException;
+
 public interface DataResults {
 
 	
@@ -75,7 +77,9 @@ public interface DataResults {
 	 * 每一步的日志
 	 * @param step
 	 * @param result
+	 * @throws ParameterException 
 	 */
 	public void addCaseLog(String step, int result);
+
 
 }

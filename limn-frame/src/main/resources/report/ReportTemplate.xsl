@@ -62,6 +62,7 @@ EN" indent="yes"/>
 			</xsl:when>			
 		</xsl:choose>
 		<td class='detailtext'>
+			
 			<pre>
 				<xsl:value-of select = "CPExpected" />
 			</pre>
@@ -178,7 +179,7 @@ EN" indent="yes"/>
 						<td width = '11%' class='failedcentertext'><a class="two" >&#x2718;</a></td>
 						</xsl:when>						
 						<xsl:when test="CaseStatus = 'Error'">
-						<td width = '11%' class='failedcentertext'><a id="checkpoint" class="two"  href="{ErrorSnapshot}" >&#x2718;Error</a></td>
+							<td width = '11%' class='failedcentertext'><a id="checkpoint" class="two"  href="{ErrorSnapshot}" >&#x2718;Error</a></td>
 						</xsl:when>	
 						<xsl:otherwise>
 							<td width = '11%' class='failedcentertext'><a id="checkpoint" class="two"  href="{ErrorSnapshot}" >DONE</a></td>
