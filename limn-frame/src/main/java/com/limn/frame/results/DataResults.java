@@ -78,4 +78,5 @@ public interface DataResults {
 	 */
 	public void addCaseLog(String step, int result);
 
+
 }

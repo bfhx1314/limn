@@ -396,10 +396,20 @@ public class Test {
 //			return ExecuteStatus.FAILURE;
 //		}
 		
-		// 截图
+		// 截图		
+		Parameter.LOGSNAPSHOT = "snapshot/"+ runTimeSheetNum + "_" 
+								+ path.replaceAll("/", "_") + "_log.png";
+		
 		String bitMapPath = Parameter.RESULT_FOLDER_BITMAP + "/" + path + "_"+ step.split(":")[0];
 		bitMapPath = screenshot.snapShot(bitMapPath);
-		Parameter.CASESNAPSHOT = bitMapPath;
+		try {
+			FileUtil.copyFile(new File(bitMapPath), new File(Parameter.RESULT_FOLDER_REPORT+"/"+Parameter.LOGSNAPSHOT));
+		} catch (IOException e) {
+			results = -2;
+			Parameter.ERRORLOG = e.getMessage();
+			Print.log(e.getMessage(), 2);
+			e.printStackTrace();
+		}
 		//记录结果集
 		recordResult.addBitMap(bitMapPath);
 		return results;
@@ -585,7 +595,6 @@ public class Test {
 		excelExist();
 		tc.setResult(String.valueOf(value));
 		recordResult.addExpectedResults(tc.getExpected().split("\n"));
-//		Parameter.VERSNAPSHOT = Parameter.CASESNAPSHOT;
 		recordResult.addResult(value);
 	}
 	/**
@@ -596,7 +605,6 @@ public class Test {
 		excelExist();
 		tc.setResult(String.valueOf(value));
 		recordResult.addExpectedResults(expectedResult.split("\n"));
-//		Parameter.VERSNAPSHOT = Parameter.CASESNAPSHOT;
 		recordResult.addResult(value);
 	}
 	

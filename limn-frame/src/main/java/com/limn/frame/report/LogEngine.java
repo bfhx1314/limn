@@ -33,7 +33,8 @@ public class LogEngine {
 		
 	}
 	
-	public void logEvent(String strStatus, String strEventName, String strEvenContent){
+	public void logEvent(String strStatus, String strEventName, String strEvenContent
+							,String logSnapshot){
 		LinkedHashMap<String, String> lHashMap = new LinkedHashMap<String, String>();
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 		String time = df.format(new Date());// new Date()为获取当前系统时间
@@ -66,6 +67,7 @@ public class LogEngine {
 			lHashMap.put("Status", "Done");
 			break;
 		}
+		lHashMap.put("LogSnapshot", logSnapshot);
  		DIC_TestLogContainer.addItem(iEventIndex, lHashMap);
 		iEventIndex++;
 	}
@@ -93,6 +95,7 @@ public class LogEngine {
 			new_Log.addAttribute("CurrentTime", lHashMap.get("CurrentTime"));
 			new_Log.addAttribute("EventName", lHashMap.get("EventName"));
 			new_Log.addAttribute("Status", lHashMap.get("Status"));
+			new_Log.addAttribute("LogSnapshot",lHashMap.get("LogSnapshot"));
 			new_Log.addText(lHashMap.get("EventContent"));
 			
 			FileUtil.setEmpty(Parameter.RESULT_FOLDER_REPORT+"/TestLog.xml");
@@ -103,20 +106,20 @@ public class LogEngine {
 	}
 
 	public static void test() {
-		LogEngine logEngine = new LogEngine();
-		logEngine.logEvent("1","case1","tetsset111");
-		logEngine.logEvent("0","case2","tetsset111");
-		logEngine.logEvent("3","case3","tetsset111");
-		logEngine.logEvent("1","case4","tetsset111");
-		logEngine.generateLogSegment();
+//		LogEngine logEngine = new LogEngine();
+//		logEngine.logEvent("1","case1","tetsset111");
+//		logEngine.logEvent("0","case2","tetsset111");
+//		logEngine.logEvent("3","case3","tetsset111");
+//		logEngine.logEvent("1","case4","tetsset111");
+//		logEngine.generateLogSegment();
 	}
 	public static void main(String[] args) {
-		LogEngine logEngine = new LogEngine();
-		logEngine.logEvent("1","case1","tetsset111");
-		logEngine.logEvent("0","case2","tetsset111");
-		logEngine.logEvent("3","case3","tetsset111");
-		logEngine.logEvent("1","case4","tetsset111");
-		logEngine.generateLogSegment();
+//		LogEngine logEngine = new LogEngine();
+//		logEngine.logEvent("1","case1","tetsset111");
+//		logEngine.logEvent("0","case2","tetsset111");
+//		logEngine.logEvent("3","case3","tetsset111");
+//		logEngine.logEvent("1","case4","tetsset111");
+//		logEngine.generateLogSegment();
 	}
 
 	public NewDictionary getDicTestLogContainer() {

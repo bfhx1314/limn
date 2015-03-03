@@ -304,7 +304,8 @@ public class XMLData implements DataResults{
 			logInfo = Parameter.ERRORLOG;
 			Parameter.ERRORLOG = "";
 		}
-		logEngine.logEvent(String.valueOf(result),step,logInfo);
+		
+		logEngine.logEvent(String.valueOf(result),step,logInfo,Parameter.LOGSNAPSHOT);
 		Parameter.ERRORLOG = "";
 	}
 }
