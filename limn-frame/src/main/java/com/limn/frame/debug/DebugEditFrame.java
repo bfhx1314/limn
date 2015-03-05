@@ -101,7 +101,11 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	private JButton deleteXPath = new JButton("删除XPath别名");
 	
 	// TAB页
-	JTabbedPane tabbedPane = new JTabbedPane();
+	private static JTabbedPane tabbedPane = new JTabbedPane();
+//
+//	public static JTabbedPane getTabbedPane() {
+//		return tabbedPane;
+//	}
 
 	JPanel pabelLog = new JPanel();
 	JPanel pabelTestCase = new JPanel();
@@ -115,8 +119,6 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	private LoadBroswerPanel loadPanel = new LoadBroswerPanel();
 	
 	private static boolean isVerKeyWord = false;
-	
-	private boolean isRunning = false;
 	
 	private CustomPanel isShowPanel = null;
 	
@@ -303,7 +305,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		setBoundsAt(moveEditTestCase,303, 250, 46, 20);
 		setBoundsAt(logJScrollLog,2, 405, 990, 165);
 
-		writeLogPane.setPreferredSize(new Dimension(290, 234));
+//		writeLogPane.setSize(new Dimension(290, 234));
 		writeLogPane.setEditable(false);
 //		writeStepPane.setPreferredSize(new Dimension(244, 234));
 //		writeStepPane.setEditable(false);
@@ -338,7 +340,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 				Rectangle rect = editExpect.getCellRect(row -1, 0, true);
 				editExpect.scrollRectToVisible(rect);
 				
-				executeStep(testCase.getText(),false);
+//				executeStep(testCase.getText(),false);
 				testCase.setText("");
 				// 激活"预期结果"面板
 				tabbedPane.setSelectedComponent(expectJScrollStep);
@@ -384,15 +386,19 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 获取当前激活的TAB面板
-				Component selectComponent = tabbedPane.getSelectedComponent();
-				// 转换类型
-				JScrollPane selectComponentJScrollPane = (JScrollPane) selectComponent;
-				// 获取当前TAB面板中的组件，并且转换类型
-				JTable selectJTable = ((JTable) selectComponentJScrollPane.getViewport().getView());
-				// 获取组件对应的类
-				DefaultTableModel selectJTbaleMod = paneMode.get(selectJTable);
-				for(int i = selectJTbaleMod.getRowCount()-1 ;i>-1;i--){
-					selectJTbaleMod.removeRow(i);
+//				Component selectComponent = tabbedPane.getSelectedComponent();
+				int tabPaneLan = tabbedPane.getComponentCount();
+				for(int j=0;j<tabPaneLan;j++){
+					// 转换类型
+//					JScrollPane selectComponentJScrollPane = (JScrollPane) selectComponent;
+					JScrollPane selectComponentJScrollPane = (JScrollPane) tabbedPane.getComponentAt(j);
+					// 获取当前TAB面板中的组件，并且转换类型
+					JTable selectJTable = ((JTable) selectComponentJScrollPane.getViewport().getView());
+					// 获取组件对应的类
+					DefaultTableModel selectJTbaleMod = paneMode.get(selectJTable);
+					for(int i = selectJTbaleMod.getRowCount()-1 ;i>-1;i--){
+						selectJTbaleMod.removeRow(i);
+					}
 				}
 				removeXpathAll();
 			}
@@ -528,8 +534,8 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 					for(int i = 1 ;i<expectModel.getRowCount();i++){
 						steps =  steps + "\n" +(String) expectModel.getValueAt(i, 0);
 					}
-					testCasePanel.setExpectResult(steps);
 				}
+				testCasePanel.setExpectResult(steps);
 				testCasePanel.setAssProperties(TransformationMap.transformationByMap(xpathName));
 			}
 		});
@@ -707,7 +713,6 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	}
 	
 	private void executeStep(String step,boolean isExeAg){
-		isRunning = true;
 		execute.setEnabled(false);
 		insertExecute.setEnabled(false);
 		executeAgain.setEnabled(false);
@@ -723,6 +728,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	public static void main(String[] args){
 		DebugEditFrame a = new DebugEditFrame();
 		new RunLog(a);
+		Print.log("1232132132112321321321312321321321321312321321321312321321321312321232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132133", 1);
 	}
 
 	/**
@@ -730,7 +736,13 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	 * @param step
 	 */
 	public static void setStepTextArea(String step){
-		testCase.setText(step);
+		String stepTemp = step;
+		String strTemp = RegExp.splitKeyWord(step)[0];
+		String tabPanelName = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
+		if (tabPanelName.equals("预期结果")){
+			stepTemp = step.replaceFirst(strTemp+":", "验证:");
+		}
+		testCase.setText(stepTemp);
 		setKeyWordHigh();
 	}
 	
@@ -799,14 +811,15 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 					if(isExecuteAgain){
 						editTestCase.setRowSelectionInterval(0,i);
 					}
-
-					keyWordDriver.start(key);
+					// debug时判断关键字，验证时不执行
+					if (!key[0].equals("验证")){
+						keyWordDriver.start(key);
+					}
 				}
 			}finally{
 				execute.setEnabled(true);
 				insertExecute.setEnabled(true);
 				executeAgain.setEnabled(true);
-				isRunning = false;
 			}
 			
 		}

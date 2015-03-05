@@ -7,11 +7,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.ComboBoxEditor;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -21,8 +24,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -201,15 +206,16 @@ public class LoadBroswerPanel extends CustomPanel {
 				}while(flag);
 				String value = "";
 				String currentStep = DebugEditFrame.getStepTextArea();
+				String keyword = "录入:";
 				if(!currentStep.isEmpty()){
 					String[] step = RegExp.splitKeyWord(currentStep);
+					keyword = step[0] + ":";
 					if(step.length >= 3){
 						value = step[2];
 					}
 				}
-				
 				// 传入用例输入框
-				String step = "录入:" + name + ":" + value;
+				String step = keyword + name + ":" + value;
 				DebugEditFrame.setStepTextArea(step);
 
 			}
@@ -472,52 +478,63 @@ public class LoadBroswerPanel extends CustomPanel {
 	class SearchWebElement implements Runnable{
 
 		private WebElement web = null;
+		private String TagName = null;
+		private int range = 0;
 		
 		public SearchWebElement(WebElement web){
 			this.web = web;	
+		}
+		
+		public SearchWebElement(WebElement web, String tagName){
+			this.web = web;
+			this.TagName = tagName;
 		}
 		
 		
 		@Override
 		public void run() {
 			loading();
-			int range = 0;
+			if(null == TagName){
+				
+				findWebElements.clear();
+				showList.clear();
+				rangeList.clear();
+				webElementsList.removeAllElements();
+				range = 0;
+				
+				for (String tagName : FINDTAGNAME) {
+					serach(tagName);
+				}
+			}else{
+				serach(TagName);
+			}
 			
-			findWebElements.clear();
-			showList.clear();
-			rangeList.clear();
-			webElementsList.removeAllElements();
-			
-			for (String tagName : FINDTAGNAME) {
-				filterWebElement.addItem(tagName);
-				int start = range;
-				List<WebElement> webTagElementsList = web.findElements(By.tagName(tagName));
-				for (WebElement webs : webTagElementsList) {
-					findWebElements.put(range, webs);
-					
-					String hidden = "false";
-					String display = "inline";
-					String inputHidden = "hidden";
-					try {
-						inputHidden = webs.getAttribute("type");
-						hidden = Driver.runScript("return arguments[0].hidden", webs).toString();
-						display = Driver.runScript("return document.defaultView.getComputedStyle(arguments[0],null).display", webs).toString();
-					} catch (SeleniumFindException e) {
+			complete();
+		}
+		
+		
+		
+		private void serach(String tagName){
+			filterWebElement.addItem(tagName);
+			int start = range;
+			List<WebElement> webTagElementsList = web.findElements(By.tagName(tagName));
+			for (WebElement webs : webTagElementsList) {
+				findWebElements.put(range, webs);
+				
+				String hidden = "false";
+				String display = "inline";
+				String inputHidden = "hidden";
+				try {
+					inputHidden = webs.getAttribute("type");
+					hidden = Driver.runScript("return arguments[0].hidden", webs).toString();
+					display = Driver.runScript("return document.defaultView.getComputedStyle(arguments[0],null).display", webs).toString();
+				} catch (SeleniumFindException e) {
 
-					}
+				}
 
-					if(!Boolean.valueOf(hidden) && !display.equalsIgnoreCase("none") ){
-						if( null != inputHidden){
-							if(!inputHidden.equalsIgnoreCase("hidden")){
-								String ident = getIdentifiedByWebElement(webs);
-								showList.put(range, ident);
-								
-								webElementsList.addElement(new DictoryKeyValue(range, ident));
-								
-								range++;
-							}
-						}else{
-						
+				if(!Boolean.valueOf(hidden) && !display.equalsIgnoreCase("none") ){
+					if( null != inputHidden){
+						if(!inputHidden.equalsIgnoreCase("hidden")){
 							String ident = getIdentifiedByWebElement(webs);
 							showList.put(range, ident);
 							
@@ -525,14 +542,22 @@ public class LoadBroswerPanel extends CustomPanel {
 							
 							range++;
 						}
-					}
+					}else{
 					
-
+						String ident = getIdentifiedByWebElement(webs);
+						showList.put(range, ident);
+						
+						webElementsList.addElement(new DictoryKeyValue(range, ident));
+						
+						range++;
+					}
 				}
-				rangeList.put(tagName, start + ":" + (range - 1));
+				
+
 			}
-			complete();
+			rangeList.put(tagName, start + ":" + (range - 1));
 		}
+		
 		
 	}
 	
@@ -559,9 +584,10 @@ public class LoadBroswerPanel extends CustomPanel {
 				verificationButton.setEnabled(true);
 				recommendLocator.setText(locator);
 				recommendLocator.setForeground(Color.GREEN.darker());
+				String keyword = "录入:";
 //				locatorXPath = locator;
 				// 点击xpath时传入用例输入框
-				String step = "录入:" + locator + ":";
+				String step = keyword + locator + ":";
 				DebugEditFrame.setStepTextArea(step);
 			}else{
 				recommendLocator.setText("未能定位");
@@ -575,4 +601,3 @@ public class LoadBroswerPanel extends CustomPanel {
 	
 	
 }
-
