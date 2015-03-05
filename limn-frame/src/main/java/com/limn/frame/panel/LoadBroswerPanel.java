@@ -21,6 +21,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionEvent;
@@ -201,15 +202,16 @@ public class LoadBroswerPanel extends CustomPanel {
 				}while(flag);
 				String value = "";
 				String currentStep = DebugEditFrame.getStepTextArea();
+				String keyword = "录入:";
 				if(!currentStep.isEmpty()){
 					String[] step = RegExp.splitKeyWord(currentStep);
+					keyword = step[0] + ":";
 					if(step.length >= 3){
 						value = step[2];
 					}
 				}
-				
 				// 传入用例输入框
-				String step = "录入:" + name + ":" + value;
+				String step = keyword + name + ":" + value;
 				DebugEditFrame.setStepTextArea(step);
 
 			}
@@ -559,9 +561,10 @@ public class LoadBroswerPanel extends CustomPanel {
 				verificationButton.setEnabled(true);
 				recommendLocator.setText(locator);
 				recommendLocator.setForeground(Color.GREEN.darker());
+				String keyword = "录入:";
 //				locatorXPath = locator;
 				// 点击xpath时传入用例输入框
-				String step = "录入:" + locator + ":";
+				String step = keyword + locator + ":";
 				DebugEditFrame.setStepTextArea(step);
 			}else{
 				recommendLocator.setText("未能定位");

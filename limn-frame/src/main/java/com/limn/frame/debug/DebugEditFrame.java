@@ -101,7 +101,11 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	private JButton deleteXPath = new JButton("删除XPath别名");
 	
 	// TAB页
-	JTabbedPane tabbedPane = new JTabbedPane();
+	private static JTabbedPane tabbedPane = new JTabbedPane();
+//
+//	public static JTabbedPane getTabbedPane() {
+//		return tabbedPane;
+//	}
 
 	JPanel pabelLog = new JPanel();
 	JPanel pabelTestCase = new JPanel();
@@ -338,7 +342,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 				Rectangle rect = editExpect.getCellRect(row -1, 0, true);
 				editExpect.scrollRectToVisible(rect);
 				
-				executeStep(testCase.getText(),false);
+//				executeStep(testCase.getText(),false);
 				testCase.setText("");
 				// 激活"预期结果"面板
 				tabbedPane.setSelectedComponent(expectJScrollStep);
@@ -730,7 +734,13 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	 * @param step
 	 */
 	public static void setStepTextArea(String step){
-		testCase.setText(step);
+		String stepTemp = step;
+		String strTemp = RegExp.splitKeyWord(step)[0];
+		String tabPanelName = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
+		if (tabPanelName.equals("预期结果")){
+			stepTemp = step.replaceFirst(strTemp+":", "验证:");
+		}
+		testCase.setText(stepTemp);
 		setKeyWordHigh();
 	}
 	
