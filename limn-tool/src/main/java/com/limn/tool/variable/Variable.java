@@ -54,7 +54,7 @@ public class Variable {
 		}
 		if (expression.containsKey(key)){
 			String valueString = expression.get(key);
-			Print.log("变量："+key+"="+valueString, 0);
+			
 			return valueString;
 		}else{
 			Print.log("不存在变量：" + key, 2);
@@ -191,7 +191,9 @@ public class Variable {
 		String varFormat = null;
 		for(String var:variableList){
 			varFormat = RegExp.filterString(var, "{}");
-			String tempString = content.replace(var, "'"+getExpressionValue(varFormat)+ "'");
+			String valueString = getExpressionValue(varFormat);
+			Print.log("变量："+varFormat+"="+valueString, 0);
+			String tempString = content.replace(var, "'"+valueString+ "'");
 			content = resolve(tempString);
 		}
 		return content;

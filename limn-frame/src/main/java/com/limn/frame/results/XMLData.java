@@ -3,6 +3,7 @@ package com.limn.frame.results;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -18,8 +19,11 @@ import com.limn.frame.report.NewDictionary;
 import com.limn.frame.report.XmlEngine;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.DateFormat;
+import com.limn.tool.common.Print;
+import com.limn.tool.exception.ParameterException;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
+import com.limn.tool.variable.Variable;
 
 
 public class XMLData implements DataResults{
@@ -304,7 +308,30 @@ public class XMLData implements DataResults{
 			logInfo = Parameter.ERRORLOG;
 			Parameter.ERRORLOG = "";
 		}
-		logEngine.logEvent(String.valueOf(result),step,logInfo);
+		String getExpessionValue = getExpValue(step);
+		if (!logInfo.equals("")){
+			logInfo = getExpessionValue + "\r\n" + logInfo;
+		}else{
+			logInfo = getExpessionValue;
+		}
+		logEngine.logEvent(String.valueOf(result),step,logInfo,Parameter.LOGSNAPSHOT);
 		Parameter.ERRORLOG = "";
 	}
+	
+	private static String getExpValue(String content){
+		String str = "";
+		ArrayList<String> variableList = RegExp.matcherCharacters(content, "\\{.*?\\}");
+		String varFormat = null;
+		for(String var:variableList){
+			varFormat = RegExp.filterString(var, "{}");
+			String tempString =Variable.getExpressionValue(varFormat);
+			str = str + var +"="+ tempString + ";";
+		}
+		return str;
+	}
+	
+	public static void main(String[] args){
+		getExpValue("表达式:{bIncrementNum}={cityName}");
+	}
+	
 }
