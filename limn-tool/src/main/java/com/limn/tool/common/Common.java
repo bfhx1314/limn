@@ -223,6 +223,9 @@ public class Common {
 	 * @return
 	 */
 	public static String getMD5(String value){
+		if(null == value || value.isEmpty()){
+			return value;
+		}
 		return EncryptUtil.md5(value);
 	}
 	

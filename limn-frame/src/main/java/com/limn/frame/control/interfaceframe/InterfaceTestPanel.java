@@ -53,7 +53,9 @@ public class InterfaceTestPanel extends CustomPanel {
 			public void valueChanged(TreeSelectionEvent e) {
 				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) interfaceTree.getLastSelectedPathComponent();// 返回最后选定的节点
 				String sel = selectedNode.toString();
-				interfaceTestEdit.load(sel);
+				if(selectedNode.isLeaf() && !selectedNode.isRoot()){
+					interfaceTestEdit.load(sel);
+				}
 			}
 		});
 
@@ -160,7 +162,5 @@ public class InterfaceTestPanel extends CustomPanel {
 		}
 		return keyWordNode;
 	}
-
-	private static DefaultMutableTreeNode keyWordNode = new DefaultMutableTreeNode("关键字列表");
 
 }

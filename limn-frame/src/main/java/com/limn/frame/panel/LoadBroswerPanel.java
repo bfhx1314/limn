@@ -240,7 +240,40 @@ public class LoadBroswerPanel extends CustomPanel {
 				}
 			}
 		});
-
+		filterWebElement.setEditable(true);
+		Component comp = filterWebElement.getEditor().getEditorComponent();
+		comp.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (!e.getSource().toString().isEmpty()) {
+					if (e.getKeyCode() == KeyEvent.VK_ENTER) // 判断按下的键是否是回车键
+					{
+						WebElement web = null;
+//		
+						try {
+							web = Driver.getWebElement(By.xpath("/html"));
+						} catch (SeleniumFindException e1) {
+							
+						}
+						new Thread(new SearchWebElement(web,e.getSource().toString())).start();
+					}
+				}
+				
+			}
+		});
 		setBoundsAt(filterWebElement, 515, 78, 100, 20);
 		// 选中过滤
 		filterWebElement.addItemListener(new ItemListener() {
