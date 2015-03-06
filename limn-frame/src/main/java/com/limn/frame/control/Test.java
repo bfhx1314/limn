@@ -375,7 +375,7 @@ public class Test {
 			path = SR;
 		}
 		
-		if (RegExp.findCharacters(step, "^验证:")){
+		if (RegExp.findCharacters(step, "^验证")){
 			Parameter.VERSNAPSHOT = "snapshot/"+ runTimeSheetNum + "_" 
 									+ path.replaceAll("/", "_") + "_result";
 			Parameter.CHECKPOINTNAME = step;

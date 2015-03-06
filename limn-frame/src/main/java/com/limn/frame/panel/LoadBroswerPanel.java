@@ -258,7 +258,7 @@ public class LoadBroswerPanel extends CustomPanel {
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (!e.getSource().toString().isEmpty()) {
+				if (!filterWebElement.getEditor().getItem().toString().isEmpty()) {
 					if (e.getKeyCode() == KeyEvent.VK_ENTER) // 判断按下的键是否是回车键
 					{
 						WebElement web = null;
@@ -268,7 +268,8 @@ public class LoadBroswerPanel extends CustomPanel {
 						} catch (SeleniumFindException e1) {
 							
 						}
-						new Thread(new SearchWebElement(web,e.getSource().toString())).start();
+						
+						new Thread(new SearchWebElement(web,filterWebElement.getEditor().getItem().toString())).start();
 					}
 				}
 				
@@ -550,6 +551,10 @@ public class LoadBroswerPanel extends CustomPanel {
 		private void serach(String tagName){
 			filterWebElement.addItem(tagName);
 			int start = range;
+			if (null == web){
+				Print.log("没有", 2);
+				return;
+			}
 			List<WebElement> webTagElementsList = web.findElements(By.tagName(tagName));
 			for (WebElement webs : webTagElementsList) {
 				findWebElements.put(range, webs);

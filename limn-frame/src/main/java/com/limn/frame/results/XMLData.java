@@ -135,6 +135,7 @@ public class XMLData implements DataResults{
 		Parameter.ERRORCAPTURE = "";
 		Parameter.CASESTATUS = 0;
 		Parameter.VERSNAPSHOT = "";
+		Parameter.CHECKPOINTNAME = "";
 	}
 
 	@Override
@@ -301,7 +302,7 @@ public class XMLData implements DataResults{
 		if (result == ExecuteStatus.SUCCESS){
 			logInfo = Parameter.LOGINFO;
 			Parameter.LOGINFO = "";
-			if (!RegExp.findCharacters(step, "^验证:")){
+			if (!RegExp.findCharacters(step, "^验证")){
 				result = 0;
 			}
 		}else{

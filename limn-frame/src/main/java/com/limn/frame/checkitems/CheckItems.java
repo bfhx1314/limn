@@ -354,6 +354,7 @@ public class CheckItems {
 //						acutalResult = arrNewAct[0];
 //					}
 //				}
+		String[] acutalTempArr = expectedKeys.clone();
 		String expectValue = null;
 		try {
 			try{
@@ -363,21 +364,22 @@ public class CheckItems {
 				expectValue = Common.getExpressionValue(expectedKeys[1]);
 			}
 			expectedKeys[1] = expectValue == null ? expectedKeys[1] : expectValue;
-			
+			acutalTempArr[1] = expectedKeys[1];
 		} catch (ParameterException e) {
-			
 			throw new ParameterException("语法解析失败，表达式：" + expectedKeys[1]);
-			
 		}
 		
-				if (!ConvertCharacter.getHtmlChr(expectedKeys[1]).equals(acutalResult)){
-					boolResult = false;
-//					expectedKeys[1] = acutalResult;
-				}
+		if (!ConvertCharacter.getHtmlChr(expectedKeys[1]).equals(acutalResult)){
+			boolResult = false;
+			acutalTempArr[1] = acutalResult;
+		}
 //			}
 			expectedKeys[1] = acutalResult;
+			expectedStr = StringUtils.join(expectedKeys," ");
+			// 重写预期结果（转换表达式）
+			expectedGetExpression.add(expectedStr);
 //		}
-		String[] arr = {StringUtils.join(expectedKeys," "), String.valueOf(boolResult)};
+		String[] arr = {StringUtils.join(acutalTempArr," "), String.valueOf(boolResult)};
 		return arr;
 	}
 	
@@ -492,7 +494,7 @@ public class CheckItems {
 			
 			webElement = Driver.getWebElementBylocator(xpath);
 			if (webElement != null){
-				acutalResult = webElement.getAttribute("value");
+				acutalResult = webElement.getText();
 //				if (isMultiDict){
 //					if (acutalResult.indexOf(";") != -1){
 //						acutalResult = acutalResult.replaceAll(";", ",");
