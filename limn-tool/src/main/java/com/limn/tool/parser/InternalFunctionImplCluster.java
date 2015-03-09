@@ -3,12 +3,17 @@ package com.limn.tool.parser;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
+import org.apache.poi.hssf.record.ObjectProtectRecord;
 
 import com.limn.tool.common.DateFormat;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
 import com.limn.tool.exception.SeleniumException;
 import com.limn.tool.parameter.Parameter;
+import com.limn.tool.regexp.RegExp;
 import com.limn.tool.util.TypeConvertor;
 
 
@@ -305,6 +310,34 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 		}
 	}
 	
+	/**
+	 * 加密手机号：131****0000
+	 *
+	 */
+	class EncryptPhone implements IFunctionImpl {
+		@Override
+		public Object calc(String name, IEvalContext context, Object[] arguments) {
+			String phone =  String.valueOf(arguments[0]);
+			String leftStr = phone.substring(0, 3);
+			String rightStr = phone.substring(phone.length()-4, phone.length());
+//			RegExp.findCharacters(phone, "^\\d{11}$");
+			return leftStr + "****" + rightStr;
+		}
+	}
+	
+	/**
+	 * 转化金额为 千分位+2位数字
+	 *
+	 */
+	class NumberFormat implements IFunctionImpl{
+		@Override
+		public Object calc(String name, IEvalContext context, Object[] arguments){
+			double str = Double.valueOf(String.valueOf(arguments[0]));
+			DecimalFormat nf = new DecimalFormat(",###.00");
+			return nf.format(str);
+		}
+	}
+	
 	@Override
 	protected Object[][] getImplTable() {
 		return new Object[][] {
@@ -324,7 +357,9 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 				{ "getDate", new GetDate() },
 				{ "getAddDay", new GetAddDay() },
 				{ "getTime", new GetTime() },
-				{ "getCurrentTimeMillis", new GetCurrentTimeMillis() }
+				{ "getCurrentTimeMillis", new GetCurrentTimeMillis() },
+				{ "encryptPhone", new EncryptPhone() },
+				{ "numberFormat", new NumberFormat() }
 		};
 	}
 

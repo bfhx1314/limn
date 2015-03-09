@@ -356,18 +356,18 @@ public class CheckItems {
 //				}
 		String[] acutalTempArr = expectedKeys.clone();
 		String expectValue = null;
-		try {
-			try{
-				int inT = Integer.parseInt(expectedKeys[1]);
-				expectValue = null;
-			}catch(Exception e){
+//		try {
+//			try{
+//				int inT = Integer.parseInt(expectedKeys[1]);
+//				expectValue = null;
+//			}catch(Exception e){
 				expectValue = Common.getExpressionValue(expectedKeys[1]);
-			}
+//			}
 			expectedKeys[1] = expectValue == null ? expectedKeys[1] : expectValue;
 			acutalTempArr[1] = expectedKeys[1];
-		} catch (ParameterException e) {
-			throw new ParameterException("语法解析失败，表达式：" + expectedKeys[1]);
-		}
+//		} catch (ParameterException e) {
+//			throw new ParameterException("语法解析失败，表达式：" + expectedKeys[1]);
+//		}
 		
 		if (!ConvertCharacter.getHtmlChr(expectedKeys[1]).equals(acutalResult)){
 			boolResult = false;

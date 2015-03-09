@@ -193,6 +193,7 @@ public class Common {
 					
 				}
 			}catch(Exception e){
+				Print.log(e.getMessage(), 2);
 				variableValue = exp;
 			}
 		}else{
