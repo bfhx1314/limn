@@ -630,6 +630,14 @@ public class Test {
 		}
 	}
 	
+	/**
+	 * 获取用例所有要执行的用例个数
+	 * @return
+	 */
+	public static int getAllCaseSum(){
+		return tc.getAllCase();
+	}
+	
 //	/**
 //	 * 获取实际生成的sql， 第10列
 //	 * @return

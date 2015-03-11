@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -289,8 +290,30 @@ public class Common {
 			return address.getHostAddress().toString();
 		}
 
+	/**
+	 * 百分比
+	 * @param numerator 分子
+	 * @param denominator 分母
+	 * @return
+	 */
+	public static String getNumPercent(Object numerator, Object denominator){
+	   //这里的数后面加“D”是表明它是Double类型，否则相除的话取整，无法正常使用
+	   double percent = Double.parseDouble(String.valueOf(numerator))
+			   			/ Double.parseDouble(String.valueOf(denominator));
+	   //输出一下，确认你的小数无误
+	   System.out.println("小数：" + percent);
+	   //获取格式化对象
+	   NumberFormat nt = NumberFormat.getPercentInstance();
+	   //设置百分数精确度2即保留两位小数
+	   nt.setMinimumFractionDigits(2);
+	   //最后格式化并输出
+	   return nt.format(percent);
+		
+	}
 	
 	public static void main(String[] args){
+		String aString = getNumPercent(3,3);
+		
 		HashMap<String,String> a = new HashMap<String, String>();
 		a.put("aa", "2014-12-12 22:22:22");
 		

@@ -34,6 +34,10 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 	private int excelSheetIndex;
 	//当前的行
 	private int currentRow;
+	/**
+	 * 所有要执行的用例个数
+	 */
+	private int allCase = 0;
 	
 	/**
 	 * 
@@ -591,6 +595,28 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 	@Override
 	public void setHyperLinks(int index, String path) {
 		setExcelHyperLinks(index,path);
+	}
+
+
+	@Override
+	public int getAllCase() {
+		int allCase = 0;
+		int sheetCount = getSheetSize();
+		int currentSheetIndex = getExcelSheetIndex();
+		for(int i=0;i<sheetCount;i++){
+			activateSheet(i);
+			setCurrentRow(0);
+			for(int j=0;j<=getSheetLastRowNumber();j++){
+				setCurrentRow(j);
+				String isExecute = getCurrentCell(0);
+				if (null != isExecute && isExecute.toString().equals("Y")){
+					allCase++;
+				}
+			}
+		}
+		activateSheet(currentSheetIndex);
+		this.allCase = allCase;
+		return this.allCase;
 	}
 
 

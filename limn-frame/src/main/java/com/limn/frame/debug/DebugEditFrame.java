@@ -341,7 +341,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 				editExpect.scrollRectToVisible(rect);
 				
 //				executeStep(testCase.getText(),false);
-				testCase.setText("");
+				testCase.setText("验证:");
 				// 激活"预期结果"面板
 				tabbedPane.setSelectedComponent(expectJScrollStep);
 				addExpectResult.setEnabled(false);

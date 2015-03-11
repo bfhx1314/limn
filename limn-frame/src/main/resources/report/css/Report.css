@@ -23,11 +23,13 @@ body {
 
 a:link {
 	color: Green;
+	font-weight: bold;
 	text-decoration: none
 }
 
 a:visited {
 	color: Green;
+	font-weight: bold;
 	text-decoration: none
 }
 

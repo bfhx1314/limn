@@ -6,6 +6,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -13,6 +14,7 @@ import org.dom4j.io.XMLWriter;
 
 import com.limn.driver.Driver;
 import com.limn.frame.control.ExecuteStatus;
+import com.limn.frame.control.Test;
 import com.limn.frame.report.GenerateCaseResultXMLSegment;
 import com.limn.frame.report.LogEngine;
 import com.limn.frame.report.NewDictionary;
@@ -41,6 +43,18 @@ public class XMLData implements DataResults{
 	//存放路径
 	private String savePath = null;
 	/**
+	 * 用例执行总数
+	 */
+	private int executedCase = 0;
+	/**
+	 * 用例通过总数
+	 */
+	private int successedCase = 0;
+	/**
+	 * 用例总数
+	 */
+	private int sumCaseCount = 0;
+	/**
 	 * 存放报告的head部分
 	 */
 	private NewDictionary dicPlanInfoHead = null;
@@ -61,6 +75,14 @@ public class XMLData implements DataResults{
 	 */
 	private LogEngine logEngine = null;
 	/**
+	 * 全部用例执行结果
+	 */
+	private boolean boolAllResult = true;
+	/**
+	 * 第一个错误的用例
+	 */
+	private String failCase = "";
+	/**
 	 * 初始化xml
 	 */
 	@Override
@@ -70,6 +92,7 @@ public class XMLData implements DataResults{
 		save();
 		dicPlanInfoHead = new NewDictionary();
 		addXmlHead();
+		sumCaseCount = 0;
 	}
 	
 	
@@ -81,6 +104,7 @@ public class XMLData implements DataResults{
 		sheetElement = document.addElement("sheets");
 		sheetElement.addAttribute("Index",String.valueOf(index));
 		save();
+		sumCaseCount = sumCaseCount + Test.tc.getSheetLastRowNumber();
 	}
 	
 	/**
@@ -110,6 +134,11 @@ public class XMLData implements DataResults{
 		caseElement = moudleElement.addElement("TestCase");
 		caseElement.addAttribute("CaseNo", caseNo);
 		save();
+		
+		executedCase++;
+//		int currentRow = Test.tc.getCurrentRow() + 1;
+//		sumCaseCount = sumCaseCount -  (currentRow - executedCase) - 1;
+		
 	}
 	
 	
@@ -229,12 +258,29 @@ public class XMLData implements DataResults{
 		XmlEngine xmlEngine = new XmlEngine();
 		Parameter.ENDTIME = DateFormat.getDateToString();
 		dicPlanInfoHead.addItem("EndTime", Parameter.ENDTIME);
-		dicPlanInfoHead.addItem("OverallStatus", Parameter.OVERALLSTATUS);
+//		dicPlanInfoHead.addItem("OverallStatus", Parameter.OVERALLSTATUS);
 		// 测试环境
 		String url = Parameter.URL.replace("http://", "");
 		url = url.split("/")[0];
 		Parameter.TESTENVIRONMENT = Common.getIP(url);
 		dicPlanInfoHead.addItem("TestEnvironment", Parameter.TESTENVIRONMENT);
+		
+		sumCaseCount = Test.tc.getAllCase();
+		String rateOfExecutation = "执行率："+executedCase+"/"+sumCaseCount
+										+"，"+Common.getNumPercent(executedCase, sumCaseCount)
+									+"、通过率："+successedCase+"/"+sumCaseCount
+										+"，"+Common.getNumPercent(successedCase, sumCaseCount)
+									+"、执行通过率："+successedCase+"/"+executedCase
+										+"，"+Common.getNumPercent(successedCase, executedCase)+"。";
+		String resultStr = "";
+		if (boolAllResult){
+			resultStr = "通过。";
+		}else{
+			resultStr = "不通过："+failCase;
+		}
+		dicPlanInfoHead.addItem("OverallStatus", resultStr);
+		dicPlanInfoHead.addItem("OverallResult", boolAllResult);
+		dicPlanInfoHead.addItem("RateOfExecutation", rateOfExecutation);
 		xmlEngine.updateAtLast(dicPlanInfoHead);
 	}
 	
@@ -258,16 +304,27 @@ public class XMLData implements DataResults{
 		// TODO 单条用例执行结果，是否成功，非验证
 		String result = "";
 		if (Parameter.CASESTATUS == ExecuteStatus.SUCCESS){
+			successedCase++;
 			result = "Pass";
 		}else if(Parameter.CASESTATUS == ExecuteStatus.FAILURE){
 			result = "Error";
+			if (boolAllResult){
+				failCase = failCase + " " + dicCaseInfo.getValue("No").toString();
+				boolAllResult = false;
+			}
 		}else{
 			result = "Fail";
+			if (boolAllResult){
+				if (failCase.equals("")){
+					failCase = dicCaseInfo.getValue("No").toString();
+				}else{
+					failCase = failCase +";"+ dicCaseInfo.getValue("No").toString();
+				}
+				boolAllResult = false;
+			}
 		}
 		dicCaseInfo.addItem("Case Status", result);
-		// TODO 报错时截图路径
 		dicCaseInfo.addItem("ErrorCapture", Parameter.ERRORCAPTURE);
-
 		GenerateCaseResultXMLSegment.setXML(dicCaseInfo,logEngine);
 		// 详细日志
 		logEngine.generateLogSegment();
