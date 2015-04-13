@@ -13,7 +13,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
-import com.limn.tool.common.Print;
+
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -78,7 +78,7 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 		init();		
 	}
 	
-	@SuppressWarnings("restriction")
+
 	private void init(){
 		isStart = true;
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

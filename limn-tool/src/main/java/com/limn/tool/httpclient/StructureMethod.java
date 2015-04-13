@@ -137,6 +137,33 @@ public class StructureMethod {
 		return param;
 	}
 	
+	public static NameValuePair[] getNameValuePairDatetime(HashMap<String,String> nameValue){
+		int size = nameValue.size();
+		for(String key : nameValue.keySet()){
+			if(null == nameValue.get(key)){
+				size--;
+			}
+		}
+		
+		NameValuePair[] param = new NameValuePair[size];
+		
+		int i = 0;
+		for(String key : nameValue.keySet()){
+			if(null != nameValue.get(key)){
+				String value = nameValue.get(key);
+//				if(RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")){
+//					value = String.valueOf(Common.getParseTimeStamp(value));
+//				}
+				param[i] = new NameValuePair(key,value);
+				i++;
+			}
+		}
+		return param;
+	}
+	
+	
+	
+	
 	/**
 	 * 上传附近
 	 * @param client

@@ -3,11 +3,13 @@ package com.limn.tool.log;
 
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -227,5 +229,22 @@ public abstract class PrintLogDriver implements LogControlInterface{
 		}
 	
 	}
+	
+	
+	
+	
+//	class MyJTextPane extends JTextPane {
+//	    public boolean getScrollableTracksViewportWidth() {
+//	        return false;
+//	    }
+//	    public void setSize(Dimension d) {
+//	        if (d.width < getParent().getSize().width) {
+//	            d.width = getParent().getSize().width;
+//	        }
+//	        d.width += 100;
+//	        super.setSize(d);
+//	    }
+//	
+//	}
 	
 }

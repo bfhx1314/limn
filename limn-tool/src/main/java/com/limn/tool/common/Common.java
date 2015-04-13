@@ -202,7 +202,7 @@ public class Common {
 				}catch(Exception e){
 					
 				}finally{
-					array[i] = "'"+array[i]+"'";
+					array[i] = "'" + array[i] + "'";
 				}
 			}
 			String strArr = StringUtils.join(array,"&");
@@ -263,7 +263,7 @@ public class Common {
 	
 	
 	public static Long getParseTimeStamp(String datatime){
-		SimpleDateFormat simpleDateFormat =new SimpleDateFormat("yyyy-MM-dd mm:hh:ss");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		
 		
 		Date date = null;

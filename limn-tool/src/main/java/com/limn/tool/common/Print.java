@@ -31,7 +31,7 @@ public class Print {
 			return;
 		}
 		if(RunLog.isStart()){
-			RunLog.printLog("debug:" + log, 0);
+			RunLog.printLog("debug:" + log, style);
 		}else{
 			System.out.println(log);
 		}
