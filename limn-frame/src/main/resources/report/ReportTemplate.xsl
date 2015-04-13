@@ -34,7 +34,16 @@ EN" indent="yes"/>
 			<!-- <tr><td class="Info_Item">代码总行数</td><td class="Info_Value"><xsl:value-of select="TotalScripts"/></td></tr> -->
 			<!-- <tr><td class="Info_Item">时区</td><td class="Info_Value"><xsl:value-of select="TimeZone"/></td></tr> -->
 			<tr><td class="Info_Item">执行开始时间</td><td class="Info_Value"><xsl:value-of select="TestStartTime"/></td></tr>	
-			<tr><td class="Info_Item">执行结束时间</td><td class="Info_Value"><xsl:value-of select="TestEndTime"/></td></tr>	
+			<tr><td class="Info_Item">执行结束时间</td><td class="Info_Value"><xsl:value-of select="TestEndTime"/></td></tr>
+			<xsl:choose>
+				<xsl:when test="OverallResult = 'true'">
+				<tr><td class="Info_Item">用例执行结果</td><td class="Info_Value" style='color: green;'><xsl:value-of select="OverallStatus"/></td></tr>
+				</xsl:when>
+				<xsl:when test="OverallResult = 'false'">
+				<tr><td class="Info_Item">用例执行结果</td><td class="Info_Value" style='color: red;'><xsl:value-of select="OverallStatus"/></td></tr>
+				</xsl:when>	
+			</xsl:choose>
+			<tr><td class="Info_Item">用例执行百分比</td><td class="Info_Value"><xsl:value-of select="RateOfExecutation"/></td></tr>
 			<tr><td class="Info_Item">日志</td><td class="Info_Value"><a href="TestLog.xml" target = '_blank'>点击这里查看详细日志</a></td></tr>	
 		</table>	
 	</xsl:template>

@@ -52,11 +52,15 @@ public class XmlEngine {
 		Element TestEndTime_TextNode = (Element) document.selectSingleNode("//TestEndTime");
 //		Element ContinueExecution_TextNode = (Element) document.selectSingleNode("//ContinueExecution");
 		Element OverallStatus_TextNode = (Element) document.selectSingleNode("//OverallStatus");
+		Element OverallResult_TextNode = (Element) document.selectSingleNode("//OverallResult");
+		Element RateOfExecutation_TextNode = (Element) document.selectSingleNode("//RateOfExecutation");
 		
 		TestEnvironment_TextNode.setText(dicPlanInfo.getValue("TestEnvironment").toString());
 		TestEndTime_TextNode.setText(dicPlanInfo.getValue("EndTime").toString());
 //		ContinueExecution_TextNode.setText(dicPlanInfo.getValue("ContinueExecution").toString());
 		OverallStatus_TextNode.setText(dicPlanInfo.getValue("OverallStatus").toString());
+		OverallResult_TextNode.setText(dicPlanInfo.getValue("OverallResult").toString());
+		RateOfExecutation_TextNode.setText(dicPlanInfo.getValue("RateOfExecutation").toString());
 		FileUtil.setEmpty(Parameter.RESULT_FOLDER_REPORT+"/ReportSource.xml");
 		saveDocument(document,Parameter.RESULT_FOLDER_REPORT + "/ReportSource.xml");
 	}

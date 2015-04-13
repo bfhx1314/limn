@@ -223,5 +223,11 @@ public interface TestCase {
 	 * @param path 超链接地址
 	 */
 	public void setHyperLinks(int index, String path);
+	
+	/**
+	 * 获取用例所有要执行的用例个数
+	 * @return
+	 */
+	public int getAllCase();
 
 }

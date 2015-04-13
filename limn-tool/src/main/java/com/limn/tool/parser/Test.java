@@ -26,7 +26,10 @@ public class Test {
 		Object result = null;
 		try {
 			String[] vScript = new String[] {
-					"getAfterDate(-4)",
+					"numberFormat(13512345678)",
+					"encryptPhone(13512345678)",
+					"87,654,321.00",
+					"getAddDay(-4)",
 					"'啊是'&getAutoIncrement(4)",
 					"getCurrentTimeMillis()",
 					"getTime()",

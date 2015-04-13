@@ -375,7 +375,7 @@ public class Test {
 			path = SR;
 		}
 		
-		if (RegExp.findCharacters(step, "^验证:")){
+		if (RegExp.findCharacters(step, "^验证")){
 			Parameter.VERSNAPSHOT = "snapshot/"+ runTimeSheetNum + "_" 
 									+ path.replaceAll("/", "_") + "_result";
 			Parameter.CHECKPOINTNAME = step;
@@ -628,6 +628,14 @@ public class Test {
 		if (tc == null){
 			throw new SeleniumException("Excel不存在。");
 		}
+	}
+	
+	/**
+	 * 获取用例所有要执行的用例个数
+	 * @return
+	 */
+	public static int getAllCaseSum(){
+		return tc.getAllCase();
 	}
 	
 //	/**

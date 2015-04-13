@@ -10,6 +10,9 @@
 		<TestName></TestName>
 		<ExecutedOn></ExecutedOn>
 		<OverallStatus>Fail</OverallStatus>
+		<OverallResult></OverallResult>
+		<OverallResult></OverallResult>
+		<RateOfExecutation></RateOfExecutation>
 		<TestStartTime></TestStartTime>
 		<TestEndTime></TestEndTime>
 		<ContinueExecution>True</ContinueExecution>

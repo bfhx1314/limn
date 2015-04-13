@@ -341,7 +341,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 				editExpect.scrollRectToVisible(rect);
 				
 //				executeStep(testCase.getText(),false);
-				testCase.setText("");
+				testCase.setText("验证:");
 				// 激活"预期结果"面板
 				tabbedPane.setSelectedComponent(expectJScrollStep);
 				addExpectResult.setEnabled(false);
@@ -553,10 +553,14 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 				}
 				steps = testCasePanel.getExceptResultStep();
 				if(steps!=null){
-					for(String evertStep:steps){
-						expectModel.addRow(new Object[]{evertStep});
+					if (steps.length != 0){
+						if (!steps[0].equals("")){
+							for(String evertStep:steps){
+								expectModel.addRow(new Object[]{evertStep});
+							}
+							editExpect.setModel(expectModel);
+						}
 					}
-					editExpect.setModel(expectModel);
 				}
 				String assPro = testCasePanel.getSelectAssProperties();
 				if(null != assPro && !assPro.isEmpty()){
@@ -728,7 +732,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	public static void main(String[] args){
 		DebugEditFrame a = new DebugEditFrame();
 		new RunLog(a);
-		Print.log("1232132132112321321321312321321321321312321321321312321321321312321232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132133", 1);
+//		Print.log("1232132132112321321321312321321321321312321321321312321321321312321232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132133", 1);
 	}
 
 	/**
