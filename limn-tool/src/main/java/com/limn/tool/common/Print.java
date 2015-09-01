@@ -6,6 +6,9 @@ public class Print {
 	
 	private static int level = 1;
 	
+	public static final int INFO = 1;
+	
+	public static final int DEBUG = 0;
 	
 	/**
 	 * 输出
@@ -24,7 +27,7 @@ public class Print {
 	/**
 	 * 输出
 	 * @param log
-	 * @param style 1 green , 2 red , 3 yellow ,4 sold black,else black
+	 * @param style 1 green , 2 red , 3 yellow ,4 sold black, else black
 	 */
 	public static void debugLog(String log,int style){
 		if(level>0){
