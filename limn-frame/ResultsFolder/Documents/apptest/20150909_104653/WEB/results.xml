@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sheets Index="0"><ModuleName ModuleName="基本功能"><TestCase CaseNo="1441766845551"><Step Result="1">M启动:/Users/limengnan/Downloads/HaowuAgent.apk</Step><Step Result="1">M滑动:Left</Step><Step Result="1">M滑动:Left</Step><Step Result="1">M滑动:Left</Step><Step Result="1">M录入:btn_enter:[Click]</Step><Step Result="1">M录入:et_name:15921788936</Step><Step Result="1">M录入:et_passwd:123456</Step><Step Result="1">M录入:button_login:[Click]</Step></TestCase></ModuleName></sheets>

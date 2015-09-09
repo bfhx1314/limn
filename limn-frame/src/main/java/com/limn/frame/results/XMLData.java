@@ -126,7 +126,7 @@ public class XMLData implements DataResults{
 		logEngine = new LogEngine();
 		dicCaseInfo = new NewDictionary();
 		dicCaseInfo.addItem("Case Name", Parameter.TESTCASEMOUDLE);
-		if (caseNo.equals("")){
+		if (null == caseNo || caseNo.equals("")){
 			caseNo = String.valueOf(System.currentTimeMillis());
 		}
 		dicCaseInfo.addItem("No", caseNo);

@@ -14,6 +14,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.zip.ZipException;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -24,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileFilter;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -31,15 +33,24 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
+import com.limn.tool.common.Common;
 import com.limn.tool.common.DateFormat;
 import com.limn.tool.exception.ParameterException;
 import com.limn.tool.external.XMLReader;
+import com.limn.app.driver.AppDriver;
+import com.limn.app.driver.exception.AppiumException;
+import com.limn.frame.keyword.BaseAppKeyWordDriverImpl;
+import com.limn.frame.keyword.BaseAppKeyWordType;
 import com.limn.frame.keyword.BaseKeyWordDriverImpl;
 import com.limn.frame.keyword.BaseKeyWordType;
 import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.frame.panel.KeyWordPanel;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
+import com.sinaapp.msdxblog.apkUtil.entity.ApkInfo;
+import com.sinaapp.msdxblog.apkUtil.utils.ApkUtil;
+
+import net.erdfelt.android.apk.AndroidApk;
 
 
 /**
@@ -66,6 +77,12 @@ public class ConsoleFrame extends JFrame {
 	private JComboBox<String> computerContent = new JComboBox<String>(new String[]{"本机", "远程"});
 	private JLabel ipLablel = new JLabel("IP及服务端口号:");
 	private JTextField ipContent = new JTextField();
+	
+	//定义运行测试类型
+	private JLabel runTestModelLabel = new JLabel("测试类型:");
+	private JComboBox<String> runTestModelContent = new JComboBox<>(new String[]{"浏览器","Android","IOS"});
+	
+	
 	// 定义运行方式
 	private JLabel runModeLabel = new JLabel("脚本运行方式:");
 	private JComboBox<String> runModeContent = new JComboBox<String>(new String[]{"由当前界面配置参数运行", "指定配置文件运行"});
@@ -73,12 +90,24 @@ public class ConsoleFrame extends JFrame {
 	private JLabel filePathLabel = new JLabel("*配置文件存放路径:");
 	private FileComboBox filePathContent = new FileComboBox(Parameter.DEFAULT_CONF_MODULE_PATH, "xml");
 	private JButton filePathButton = new JButton("选择");
+	
+	
+	//Android IOS
+	private JLabel appFilePathLabel = new JLabel("APP存放路径:"); 
+	private FileComboBox appFilePathContent = new FileComboBox(Parameter.DEFAULT_CONF_MODULE_PATH, "app");
+	private JButton appFilePathButton = new JButton("选择");
+	
+	private JLabel appInfoLabel = new JLabel();
+	
 	// 定义浏览器类型
 	private JLabel browserTypeLabel = new JLabel("浏览器类型:");
 	private JComboBox<String> browserTypeContent = new JComboBox<String>(new String[] { "Firefox", "Chrome", "IE" });
 	// 定义URL地址
 	private JLabel URLLabel = new JLabel("* URL:");
 	private JTextField URLContent = new JTextField();
+	
+	
+	
 	// 定义中间件启动路径
 //	private JLabel MiddlewareLabel = new JLabel("中间件启动路径:");
 //	private JTextField MiddlewareContent = new JTextField();
@@ -161,9 +190,11 @@ public class ConsoleFrame extends JFrame {
 //	private KeyWordDriver keyWordDriver = null;
 	private static BaseKeyWordDriverImpl keyWordDriver = new BaseKeyWordDriverImpl();
 	
+
 	public ConsoleFrame() throws Exception{
 		super("脚本运行参数配置界面");
 		addKeyWordDriver("基础关键字", new BaseKeyWordDriverImpl(), BaseKeyWordType.class);
+		addKeyWordDriver("App基础关键字", new BaseAppKeyWordDriverImpl(), BaseAppKeyWordType.class);
 		panel.setLayout(null);
 		// 定义界面数据存放路径
 		templatePath = getTemplatePath();
@@ -215,6 +246,22 @@ public class ConsoleFrame extends JFrame {
 				}
 			}
 		});	
+		
+		//布局测试类型
+		y=y+40;
+		setBoundsAtPanel(runTestModelLabel,50,y,130,30);
+		setBoundsAtPanel(runTestModelContent,180,y,450,30);
+		runTestModelContent.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				if (runTestModelContent.getSelectedIndex() == 0){
+					setTestTypeVisible(false);
+				}else{
+					setTestTypeVisible(true);
+				}
+			}
+		});	
+		setTestTypeVisible(runTestModelContent.getSelectedIndex() != 0);
+		
 		// 布局配置文件路径
 		y=y+40;
 		setBoundsAtPanel(filePathLabel,50,y,130,30);
@@ -242,6 +289,48 @@ public class ConsoleFrame extends JFrame {
 				}
 			}
 		});
+		
+		//布局appfilepath
+		setBoundsAtPanel(appFilePathLabel,50,y,130,30);
+		setBoundsAtPanel(appFilePathContent,180,y,400,30);
+		setBoundsAtPanel(appFilePathButton,580,y,50,30);
+		appFilePathButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				fileChooser.setDialogTitle("请选择文件路径");
+				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				
+				
+				String filePath = appFilePathContent.getItemCount()>0?appFilePathContent.getSelectedItem().toString():"";
+				
+				if(filePath!=""){
+					fileChooser.setSelectedFile(new File(filePath));
+				}
+				int a = fileChooser.showOpenDialog(null);
+				if (a == JFileChooser.APPROVE_OPTION) {
+//					testCaseContent.setText(fileChooser.getSelectedFile().toString());
+					appFilePathContent.addItem(fileChooser.getSelectedFile().toString());
+					appFilePathContent.setSelectedItem(fileChooser.getSelectedFile().toString());
+					
+					try {
+						ApkInfo APKInfo = new ApkUtil().getApkInfo(fileChooser.getSelectedFile().toString());
+						appInfoLabel.setText(APKInfo.getApplicationLable() + 
+								": {PackageName:" + APKInfo.getPackageName() + 
+								",Version:" + APKInfo.getVersionName() + 
+								",VersionCode:" + APKInfo.getVersionCode()
+								+ "}");
+					} catch (Exception e1) {
+						//TODO 
+						e1.printStackTrace();
+					}
+				
+					
+					
+				}
+			}
+		});
+		
+		
+		
 		// 布局浏览器类型
 		setBoundsAtPanel(browserTypeLabel,50,y,130,30);
 		setBoundsAtPanel(browserTypeContent,180,y,450,30);
@@ -249,6 +338,9 @@ public class ConsoleFrame extends JFrame {
 		y=y+40;
 		setBoundsAtPanel(URLLabel,50,y,130,30);
 		setBoundsAtPanel(URLContent,180,y,450,30);
+		
+		setBoundsAtPanel(appInfoLabel,130,y,600,30);
+		
 		// 布局中间件启动路径
 //		y=y+40;
 //		setBoundsAtPanel(MiddlewareLabel,50,y,130,30);
@@ -552,7 +644,7 @@ public class ConsoleFrame extends JFrame {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		add(panel);
-		setBounds((int) ((getScreenWidth() - 700) *0.5), (int) ((getScreenHeight() - 500) *0.5), 700, 500);
+		setBounds((int) ((getScreenWidth() - 700) *0.5), (int) ((getScreenHeight() - 550) *0.5), 700, 550);
 		setVisible(true);
 	}
 	
@@ -769,6 +861,21 @@ public class ConsoleFrame extends JFrame {
 		
 	}
 	
+	
+	
+	private void setTestTypeVisible(Boolean isVisible){
+		appFilePathButton.setVisible(isVisible);
+		appFilePathContent.setVisible(isVisible);
+		appFilePathLabel.setVisible(isVisible);
+		appInfoLabel.setVisible(isVisible);
+		
+		URLLabel.setVisible(!isVisible);
+		URLContent.setVisible(!isVisible);
+		browserTypeLabel.setVisible(!isVisible);
+		browserTypeContent.setVisible(!isVisible);
+	}
+	
+	
 	/**
 	 * 批量设置控制参数控件是否可见
 	 * @param isVisible
@@ -887,6 +994,16 @@ public class ConsoleFrame extends JFrame {
 		if (!hm.get("BrowserType").isEmpty()) {
 			browserTypeContent.setSelectedItem(hm.get("BrowserType"));
 		}
+		
+		if(hm.containsKey("RunTestModel") && !hm.get("runTestModel").isEmpty()){
+			runTestModelContent.setSelectedItem(hm.get("runTestModel"));
+		}
+		
+		if(hm.containsKey("AppFilePath") && !hm.get("AppFilePath").isEmpty()){
+			appFilePathContent.addItem(hm.get("AppFilePath"));
+		}
+		
+		
 		URLContent.setText(hm.get("URL"));
 //		MiddlewareContent.setText(hm.get("Middleware"));
 //		YigoContent.setText(hm.get("Yigo"));
@@ -895,8 +1012,9 @@ public class ConsoleFrame extends JFrame {
 //		}
 		String excelPath = hm.get("ExcelPath");
 		
+		
 		if(!excelPath.isEmpty()){
-			if(RegExp.findCharacters(excelPath, "^[A-Za-z]:")){
+			if(Common.isAbsolutePath(excelPath)){
 				testCaseContent.addItem(excelPath);
 			}
 			testCaseContent.setSelectedItem(excelPath);
@@ -954,7 +1072,9 @@ public class ConsoleFrame extends JFrame {
 	private void saveParameters(){
 		XMLReader xml = new XMLReader(templatePath,true);
 		try {
+			xml.setNodeValueByTemplateIndex(0, "RunTestModel", runTestModelContent.getSelectedItem().toString());
 			xml.setNodeValueByTemplateIndex(0, "BrowserType", browserTypeContent.getSelectedItem().toString());
+			xml.setNodeValueByTemplateIndex(0, "AppFilePath", appFilePathContent.getSelectedItem().toString());
 			xml.setNodeValueByTemplateIndex(0, "URL", URLContent.getText());
 //			xml.setNodeValueByTemplateIndex(0, "Middleware", MiddlewareContent.getText());
 //			xml.setNodeValueByTemplateIndex(0, "Yigo", YigoContent.getText());
@@ -1053,7 +1173,7 @@ public class ConsoleFrame extends JFrame {
 	
 	private String getTemplatePath() {
 		String templatePath = null;
-		File file = new File(Parameter.DEFAULT_TEMP_PATH + "\\Template.xml");
+		File file = new File(Parameter.DEFAULT_TEMP_PATH + "/Template.xml");
 		// 判断系统目录下是否存在模板文件
 		if (!file.exists()) {
 			// 不存在就将jar包里的ParameterValues.xml复制到指定路径下

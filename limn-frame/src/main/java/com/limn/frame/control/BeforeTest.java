@@ -11,6 +11,7 @@ import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.tool.log.LogInformation;
 import com.limn.tool.log.RunLog;
 import com.limn.tool.parameter.Parameter;
+import com.limn.tool.common.Common;
 import com.limn.tool.common.DateFormat;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
@@ -180,8 +181,9 @@ public class BeforeTest implements Runnable {
 		
 //		Parameter.YIGOPATH = testParameter.get("Yigo");
 		
+
 		Parameter.TESTCASEPATH = testParameter.get("ExcelPath");
-		if(!RegExp.findCharacters(Parameter.TESTCASEPATH, ":")){
+		if(!Common.isAbsolutePath(Parameter.TESTCASEPATH)){
 			Parameter.TESTCASEPATH  = Parameter.DFAULT_TEST_PATH + "/testcase/" + Parameter.TESTCASEPATH;
 		}
 		

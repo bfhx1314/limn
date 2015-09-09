@@ -33,6 +33,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import com.limn.frame.edit.EditTestCasePanel;
+import com.limn.frame.keyword.BaseAppKeyWordDriverImpl;
+import com.limn.frame.keyword.BaseAppKeyWordType;
 import com.limn.frame.keyword.BaseKeyWordDriverImpl;
 import com.limn.frame.keyword.BaseKeyWordType;
 import com.limn.frame.keyword.KeyWordDriver;
@@ -165,6 +167,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	public DebugEditFrame(){
 		keyWordPanel = new KeyWordPanel();
 		addKeyWordDriver("基础关键字", new BaseKeyWordDriverImpl(), BaseKeyWordType.class);
+		addKeyWordDriver("App基础关键字", new BaseAppKeyWordDriverImpl(), BaseAppKeyWordType.class);
 		//TODO
 		init();
 	}

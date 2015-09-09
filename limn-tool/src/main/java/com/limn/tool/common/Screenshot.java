@@ -74,4 +74,10 @@ public class Screenshot {
 		}
 		return bitMapPath + "." + imageFormat;
 	}
+	
+	
+	
+	
+	
+	
 }

@@ -5,13 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.openqa.selenium.NoSuchWindowException;
 
+import com.limn.app.driver.AppDriver;
+import com.limn.app.driver.exception.AppiumException;
 import com.limn.frame.keyword.KeyWordDriver;
-import com.limn.frame.report.NewDictionary;
 import com.limn.frame.results.RecordResult;
 import com.limn.frame.results.UploadServerData;
-import com.limn.frame.results.XMLData;
 import com.limn.frame.testcase.TestCase;
 import com.limn.frame.testcase.TestCaseExcel;
 import com.limn.tool.log.RunLog;
@@ -19,8 +18,6 @@ import com.limn.tool.parameter.Parameter;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.Screenshot;
-import com.limn.tool.exception.ExcelEditorException;
-import com.limn.tool.exception.ParameterException;
 import com.limn.tool.regexp.RegExp;
 import com.thoughtworks.selenium.SeleniumException;
 
@@ -70,13 +67,26 @@ public class Test {
 	
 	private static KeyWordDriver keyWordDriver = null;
 	
+	private static boolean isAPPScreenshot = false;
+	
+	
 	// 不是null 时, 标志执行场景还原
 	private String SR = null;
 	
 	public Test(HashMap<String, String> map,KeyWordDriver kwd) {
 		
+		if(!map.get("RunTestModel").equalsIgnoreCase("浏览器")){
+			
+			try {
+				isAPPScreenshot = true;
+				AppDriver.init(map.get("AppFilePath"));
+			} catch (AppiumException e) {
+				Print.log(e.getMessage(), 2);
+				return;
+			}
+			
+		}
 		keyWordDriver = kwd;
-		
 		if (Parameter.RUNMODE!=null && Parameter.RUNMODE.equals("远程")) {
 			IP = Parameter.REMOTEIP;
 		}
@@ -334,10 +344,10 @@ public class Test {
 						// 异常截图
 						Parameter.CASESTATUS = result;
 						String bitMapPath = Parameter.RESULT_FOLDER_BITMAP + "/" + resultPath + "/" + runTimeStepNum + "_"+ steps[stepNum].split(":")[0] + "_error";
-						bitMapPath = screenshot.snapShot(bitMapPath);
-						Parameter.VERSNAPSHOT = "snapshot/"+ runTimeSheetNum + "_" 
+						bitMapPath = screenshot(bitMapPath);
+						Parameter.VERSNAPSHOT = "snapshot/" + runTimeSheetNum + "_" 
 								+ (resultPath + "/" + runTimeStepNum).replaceAll("/", "_") + "_error";
-						screenshot.snapShot(Parameter.RESULT_FOLDER_REPORT+"/"+Parameter.VERSNAPSHOT);
+						screenshot(Parameter.RESULT_FOLDER_REPORT + "/" + Parameter.VERSNAPSHOT);
 						Parameter.VERSNAPSHOT = Parameter.VERSNAPSHOT + ".png";
 						Parameter.ERRORCAPTURE = Parameter.VERSNAPSHOT;
 						if (RegExp.findCharacters(steps[stepNum], "^验证:")){
@@ -401,7 +411,8 @@ public class Test {
 								+ path.replaceAll("/", "_") + "_log.png";
 		
 		String bitMapPath = Parameter.RESULT_FOLDER_BITMAP + "/" + path + "_"+ step.split(":")[0];
-		bitMapPath = screenshot.snapShot(bitMapPath);
+		bitMapPath = screenshot(bitMapPath);
+//		bitMapPath = screenshot.snapShot(bitMapPath);
 		try {
 			FileUtil.copyFile(new File(bitMapPath), new File(Parameter.RESULT_FOLDER_REPORT+"/"+Parameter.LOGSNAPSHOT));
 		} catch (IOException e) {
@@ -450,6 +461,18 @@ public class Test {
 		
 
 	}
+	
+	private static String screenshot(String bitMapPath){
+		String path = null;
+		if(isAPPScreenshot){
+			path = AppDriver.screenshot(bitMapPath);
+		}else{
+			path = screenshot.snapShot(bitMapPath);
+		}
+		
+		return path;
+	}
+	
 	
 	
 	

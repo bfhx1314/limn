@@ -81,15 +81,15 @@ public class Parameter {
 	//中间件路径
 	public static String MIDDLEWARE = null;
 
-	public static String DEFAULT_TESTCASE_PATH = System.getProperty("user.dir") + "\\testcase";
+	public static String DEFAULT_TESTCASE_PATH = System.getProperty("user.dir") + "/testcase";
 	
-	public static String DEFAULT_CONF_MODULE_PATH = System.getProperty("user.dir") + "\\conf_module";
+	public static String DEFAULT_CONF_MODULE_PATH = System.getProperty("user.dir") + "/conf_module";
 	
-	public static String DEFAULT_TEMP_PATH = System.getProperty("user.dir") + "\\temp";
+	public static String DEFAULT_TEMP_PATH = System.getProperty("user.dir") + "/temp";
 	
-	public static String DEFAULT_CONF_PATH = System.getProperty("user.dir") + "\\config";
+	public static String DEFAULT_CONF_PATH = System.getProperty("user.dir") + "/config";
 	
-	public static String DEFAULT_BIN_PATH = System.getProperty("user.dir") + "\\bin";
+	public static String DEFAULT_BIN_PATH = System.getProperty("user.dir") + "/bin";
 	
 	/**
 	 * 环境路径
@@ -100,12 +100,12 @@ public class Parameter {
 	 * tmp路径
 	 */
 	
-	public static String TMP = System.getProperty("java.io.tmpdir") + "\\auto-limn";
+	public static String TMP = System.getProperty("java.io.tmpdir") + "/auto-limn";
 	
 	/**
 	 * 报告模板路径
 	 */
-	public static String REPORT_PATH = System.getProperty("user.dir") + "\\src\\main\\resources\\report";
+	public static String REPORT_PATH = System.getProperty("user.dir") + "/src/main/resources/report";
 	
 	/**
 	 * 调试模式
@@ -115,6 +115,7 @@ public class Parameter {
 	/**
 	 * OS = "Windows"
 	 * OS = "Linux"
+	 * OS = "Mac"
 	 */
 	public static String OS = null;
 	

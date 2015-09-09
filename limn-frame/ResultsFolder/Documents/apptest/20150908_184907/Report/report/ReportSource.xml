@@ -1,0 +1,25 @@
+<?xml version="1.0" standalone="no"?>
+<?xml-stylesheet type="text/xsl" href="ReportTemplate.xsl"?>
+
+<ReportRoot>
+	<Summary>
+		<ProductName>ESIT Compass</ProductName>
+		<!-- <ProductVersion>xxx</ProductVersion>-->
+		<TestEnvironment></TestEnvironment>
+		<RunMode></RunMode>
+		<TestName></TestName>
+		<ExecutedOn></ExecutedOn>
+		<OverallStatus>Fail</OverallStatus>
+		<OverallResult></OverallResult>
+		<OverallResult></OverallResult>
+		<RateOfExecutation></RateOfExecutation>
+		<TestStartTime></TestStartTime>
+		<TestEndTime></TestEndTime>
+		<ContinueExecution>True</ContinueExecution>
+	</Summary>
+
+	<Detail>
+		
+		
+	</Detail>
+</ReportRoot>

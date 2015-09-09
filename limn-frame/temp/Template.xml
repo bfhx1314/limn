@@ -10,7 +10,7 @@
       <Middleware/>  
       <Yigo/>  
       <Version/>  
-      <ExcelPath>F:\zzz.xls</ExcelPath>  
+      <ExcelPath>/Users/limengnan/Documents/testcase/apptest.xls</ExcelPath>  
       <ExecuteMode>固定模式执行</ExecuteMode>  
       <SheetsNum/>  
       <FrontSteps>需要</FrontSteps>  
@@ -25,7 +25,10 @@
       <NotServer>false</NotServer>  
       <UploadResults>false</UploadResults>  
       <StartPlatform>true</StartPlatform>  
-      <EditExcelPath>D:\用户目录\Documents\zzz.xls</EditExcelPath> 
+      <EditExcelPath>/Users/limengnan/Documents/testcase/apptest.xls</EditExcelPath>  
+      <runTestModel>Android</runTestModel>  
+      <RunTestModel>Android</RunTestModel>  
+      <AppFilePath>/Users/limengnan/Downloads/HaowuAgent.apk</AppFilePath> 
     </Template> 
   </Templates>  
   <Cores> 

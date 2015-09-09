@@ -121,7 +121,7 @@ public class Common {
 	}
 	
 	public static void saveTemplateData(String key,String value){
-		XMLReader xml = new XMLReader(Parameter.DEFAULT_TEMP_PATH + "\\Template.xml",true);
+		XMLReader xml = new XMLReader(Parameter.DEFAULT_TEMP_PATH + "/Template.xml",true);
 		try {
 			xml.setNodeValueByTemplateIndex(0,key ,value );
 		} catch (DocumentException e) {
@@ -134,7 +134,7 @@ public class Common {
 	
 	private static String getTemplatePath() {
 		String templatePath = null;
-		File file = new File(Parameter.DEFAULT_TEMP_PATH + "\\Template.xml");
+		File file = new File(Parameter.DEFAULT_TEMP_PATH + "/Template.xml");
 		// 判断系统目录下是否存在模板文件
 		if (!file.exists()) {
 			// 不存在就将jar包里的ParameterValues.xml复制到指定路径下
@@ -310,6 +310,37 @@ public class Common {
 	   return nt.format(percent);
 		
 	}
+	
+	
+	/**
+	 * 判断是否是相对路径
+	 * @param path
+	 * @return
+	 */
+	public static boolean isAbsolutePath(String path){
+		boolean isAP = true;
+		if(Parameter.OS == null){
+			getOSName();
+		}
+		if(Parameter.OS == "Windows" && !RegExp.findCharacters(path, "^[A-Za-z]:") ){
+			isAP = false;
+		}
+		return 	isAP;
+	}
+	
+	
+	
+	public static String getOSName(){
+		if(RegExp.findCharacters(System.getProperty("os.name"),"Mac")){
+			Parameter.OS = "Mac";
+		}else if(RegExp.findCharacters(System.getProperty("os.name"),"Linux")){
+			Parameter.OS = "Linux";
+		}else{
+			Parameter.OS = "Windows";
+		}
+		return Parameter.OS;
+	}
+	
 	
 	public static void main(String[] args){
 		String aString = getNumPercent(3,3);

@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.JarURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
@@ -436,6 +437,23 @@ public class FileUtil {
 		}
 	}
 
+	
+	public static void copyFile(File file, String filePath){
+		if(file.isDirectory()){
+			for(File childFile : file.listFiles()){
+				copyFile(childFile,filePath + "/" + file.getName());
+			}
+		}else{
+			try {
+				createFloder(filePath);
+				saveToFile(filePath + "/" + file.getName(), new FileInputStream(file));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
 	/**
 	 * 返回文件绝对路径
 	 * 
@@ -458,12 +476,20 @@ public class FileUtil {
 		
 //		URL resource = clasz.getClass().getResource(sourceFilePath);
 		URL resource = clasz.getClassLoader().getResource(sourceFilePath);
-		URLConnection urlConnection = null;
 		try {
-			urlConnection = resource.openConnection();
-			copyJarResourcesRecursively(file, (JarURLConnection)urlConnection);
-		} catch (IOException e1) {
+			if(resource.openConnection() instanceof JarURLConnection){
+				JarURLConnection urlConnection = (JarURLConnection) resource.openConnection();
+				copyJarResourcesRecursively(file, urlConnection);
+			}else{
+				File files = new File(resource.toURI());
+				for(File fileChild : files.listFiles()){
+					copyFile(fileChild,filePath);
+				}
+			}
+		} catch (IOException e2) {
 			
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
 		}
 		
 		

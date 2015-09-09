@@ -28,7 +28,7 @@ public class LogEngine {
 	public LogEngine(){
 		iEventIndex = 0;
 		DIC_TestLogContainer = new NewDictionary();
-		strLogFilePath = Parameter.RESULT_FOLDER_REPORT + "\\TestLog.xml";
+		strLogFilePath = Parameter.RESULT_FOLDER_REPORT + "/TestLog.xml";
 		strActionName = Parameter.TESTNAME + " " + Parameter.TESTCASENO; // Testcase Name
 		
 	}

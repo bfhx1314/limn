@@ -193,7 +193,7 @@ public class XMLReader{
 			List<Element> template = document.selectNodes("//Template");
 			template.get(0).addAttribute("id", "s1");	
 			template.get(0).addAttribute("core", "s1");			
-			list = document.selectNodes("//Core");
+			list = document.selectNodes("/Core");
 		}
 		Element element = list.get(index);		
 		Iterator<Element> iterator = element.elementIterator();		

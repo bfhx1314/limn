@@ -135,7 +135,7 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 		jFrame.add(panel);
 		
 		jFrame.setUndecorated(true);
-		jFrame.setOpacity(0.5f);
+//		jFrame.setOpacity(0.5f);
 		
 		setDragable(jFrame);
 
