@@ -1,5 +1,7 @@
 /target
 /.settings
+.classpath
+.project
 /temp
 /config
-/bin/
+/temp

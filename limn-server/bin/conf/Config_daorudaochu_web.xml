@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<QTP test="daorudaochu">
+	<Templates ExecutionNum="2" SumNum="4">
+		<Template name="Test" Execution="true" id="s2" Core="s1">
+			<ExcelPath>daorudaochu</ExcelPath>
+			<FrontSteps>不需要</FrontSteps>
+			<PlatformType>web</PlatformType>
+			<StartPlatform>false</StartPlatform>
+			<Specify>不指定</Specify>
+			<Version>1.6</Version>
+			<URL>http://localhost:8089/Yigo/web2/</URL>
+			<Yigo>[Automation]\[DEFAULT_YIGO]</Yigo>
+			<Middleware>[Automation]\[DEFAULT_MIDDLEWARE]</Middleware>
+			<InitDB>需要</InitDB>
+			<SqlData></SqlData>
+		</Template>
+		<Template name="Test" Execution="true" id="s1" Core="s2">
+			<ExcelPath>daorudaochu</ExcelPath>
+			<FrontSteps>不需要</FrontSteps>
+			<PlatformType>web</PlatformType>
+			<StartPlatform>false</StartPlatform>
+			<Specify>不指定</Specify>
+			<Version>1.6</Version>
+			<URL>http://localhost:8089/Yigo/web2/</URL>
+			<Yigo>[Automation]\[DEFAULT_YIGO]</Yigo>
+			<Middleware>[Automation]\[DEFAULT_MIDDLEWARE]</Middleware>
+			<InitDB>需要</InitDB>
+			<SqlData></SqlData>
+		</Template>
+	</Templates>
+	<Cores>
+		<Core id="s1">
+			<server.path></server.path>
+			<server.config>[Automation]/{QSConfig}</server.config>
+			<server.dsn.dbtype>1</server.dsn.dbtype>
+			<server.dsn.default>Y</server.dsn.default>
+			<server.dsn.description>Yigo</server.dsn.description>
+			<server.dsn.name>Oracle</server.dsn.name>
+			<server.db.Oracle.conntype>jdbc</server.db.Oracle.conntype>
+			<server.db.Oracle.dbtype>1</server.db.Oracle.dbtype>
+			<server.db.Oracle.driver>oracle.jdbc.driver.OracleDriver</server.db.Oracle.driver>
+			<server.db.Oracle.url>jdbc:oracle:thin:@test:1521:TEST</server.db.Oracle.url>
+			<server.db.Oracle.user>daorudaochu_web</server.db.Oracle.user>
+			<server.db.Oracle.pass>daorudaochu_web</server.db.Oracle.pass>
+		</Core>
+		<Core id="s2">
+			<server.path></server.path>
+			<server.config>[Automation]/{QSConfig}</server.config>
+			<server.dsn.dbtype>2</server.dsn.dbtype>
+			<server.dsn.default>Y</server.dsn.default>
+			<server.dsn.description>Yigo</server.dsn.description>
+			<server.dsn.name>SQLServer</server.dsn.name>
+			<server.db.SQLServer.conntype>jdbc</server.db.SQLServer.conntype>
+			<server.db.SQLServer.dbtype>2</server.db.SQLServer.dbtype>
+			<server.db.SQLServer.driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</server.db.SQLServer.driver>
+			<server.db.SQLServer.url>jdbc:sqlserver://test:1433;databaseName=daorudaochu_web</server.db.SQLServer.url>
+			<server.db.SQLServer.user>sa</server.db.SQLServer.user>
+			<server.db.SQLServer.pass>root</server.db.SQLServer.pass>
+		</Core>
+	</Cores>
+</QTP>
