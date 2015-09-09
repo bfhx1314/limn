@@ -1,14 +1,0 @@
-09-08 19:07:16-->An element could not be located on the page using the given search parameters. (WARNING: The server did not provide any stacktrace information)
-Command duration or timeout: 216 milliseconds
-For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
-Build info: version: '2.45.0', revision: '5017cb8e7ca8e37638dc3091b2440b90a1d8686f', time: '2015-02-27 09:10:26'
-System info: host: 'limengnandeMacBook-Pro.local', ip: '172.16.14.9', os.name: 'Mac OS X', os.arch: 'x86_64', os.version: '10.10.5', java.version: '1.8.0_60'
-Driver info: io.appium.java_client.android.AndroidDriver
-Capabilities [{app=/Users/limengnan/Downloads/HaowuAgent.apk, appPackage=cn.haowu.agent, networkConnectionEnabled=true, warnings={}, databaseEnabled=false, deviceName=50da2922, platform=LINUX, desired={app=/Users/limengnan/Downloads/HaowuAgent.apk, appPackage=cn.haowu.agent, paltformVersion=4.4, unicodeKeyboard=true, platformName=Android, deviceName=Android Emulator, resetKeyboard=true}, platformVersion=5.0.1, paltformVersion=4.4, webStorageEnabled=false, locationContextEnabled=false, browserName=Android, takesScreenshot=true, javascriptEnabled=true, unicodeKeyboard=true, platformName=Android, resetKeyboard=true}]
-Session ID: 7e49f484-5c6f-4f24-828a-acfca894fdbb
-*** Element info: {Using=id, value=cn.haowu.agent:id/et_password}
-09-08 19:07:24-->跳过: 基本功能
-09-08 19:07:24-->用例执行完毕
-09-08 19:07:24-->***************结束分割线***************
-
-
