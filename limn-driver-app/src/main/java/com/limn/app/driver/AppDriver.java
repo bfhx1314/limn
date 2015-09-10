@@ -23,6 +23,7 @@ import net.erdfelt.android.apk.AndroidApk;
 
 public class AppDriver {
 
+	
 	private static AppiumDriver<AndroidElement> driver = null;
 
 	public static int HEIGTH = 0;
@@ -32,9 +33,22 @@ public class AppDriver {
 
 	private static AndroidApk APKInfo = null;
 
+	
+	
 	public static void init(String filePath) throws AppiumException {
+		init(filePath, "127.0.0.1:4723");
+	}
+	
+	
+	public static void init(String filePath, String IP) throws AppiumException {
+		
+		
 		if(null != driver){
 			return;
+		}
+		
+		if(null == IP || IP.isEmpty()){
+			IP = "127.0.0.1:4723";
 		}
 		
 		AppDriver.appFilePath = filePath;
@@ -54,7 +68,7 @@ public class AppDriver {
 		dcb.setCapability("resetKeyboard", "true");
 
 		try {
-			driver = new AndroidDriver<>(new URL("http://127.0.0.1:4723/wd/hub"), dcb);
+			driver = new AndroidDriver<>(new URL("http://" + IP + "/wd/hub"), dcb);
 		} catch (MalformedURLException e) {
 			throw new AppiumException("driver hub无法连接");
 		}
@@ -122,8 +136,7 @@ public class AppDriver {
 	/**
 	 * 滑动屏幕
 	 * 
-	 * @param startx
-	 *            起始x
+	 * @param startx 起始x
 	 * @param starty
 	 * @param endx
 	 * @param endy

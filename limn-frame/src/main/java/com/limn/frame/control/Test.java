@@ -74,23 +74,26 @@ public class Test {
 	private String SR = null;
 	
 	public Test(HashMap<String, String> map,KeyWordDriver kwd) {
+
+		keyWordDriver = kwd;
+		if (Parameter.RUNMODE != null && Parameter.RUNMODE.equals("远程")) {
+			IP = Parameter.REMOTEIP;
+		}
+
 		
 		if(!map.get("RunTestModel").equalsIgnoreCase("浏览器")){
 			
 			try {
 				isAPPScreenshot = true;
-				AppDriver.init(map.get("AppFilePath"));
+				AppDriver.init(map.get("AppFilePath"), IP);
 			} catch (AppiumException e) {
 				Print.log(e.getMessage(), 2);
 				return;
 			}
 			
 		}
-		keyWordDriver = kwd;
-		if (Parameter.RUNMODE!=null && Parameter.RUNMODE.equals("远程")) {
-			IP = Parameter.REMOTEIP;
-		}
-
+		
+		
 		// 根据界面上的浏览器类型设置,赋值BrowerType
 //		browserType = Parameter.BROWSERTYPE;
 		
