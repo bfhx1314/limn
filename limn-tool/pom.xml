@@ -7,6 +7,12 @@
 	<groupId>com.limn.tool</groupId>
 	<artifactId>limn-tool</artifactId>
 	<version>1.0</version>
+	<parent>
+		<groupId>com.limn.main</groupId>
+		<artifactId>limn-main</artifactId>
+		<version>1.0</version>
+		<relativePath>../limn-main</relativePath>
+	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
