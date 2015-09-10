@@ -45,7 +45,7 @@ public class BaseRunAppKeyWordImpl {
 		String path = "";
 		//windows系统存在:字符需要合并
 		for(int i = 1 ;  i <= steps.length ; i++){
-			path = path + steps[i];
+			path = path + steps[i-1];
 		}
 		AppDriver.init(path);
 	}

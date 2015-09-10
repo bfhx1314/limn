@@ -39,6 +39,7 @@ import com.limn.tool.exception.ParameterException;
 import com.limn.tool.external.XMLReader;
 import com.limn.app.driver.AppDriver;
 import com.limn.app.driver.exception.AppiumException;
+import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.keyword.BaseAppKeyWordDriverImpl;
 import com.limn.frame.keyword.BaseAppKeyWordType;
 import com.limn.frame.keyword.BaseKeyWordDriverImpl;
@@ -1171,37 +1172,38 @@ public class ConsoleFrame extends JFrame {
 //		}
 	}
 	
-	private String getTemplatePath() {
+	private String getTemplatePath() throws SeleniumFindException {
 		String templatePath = null;
-		File file = new File(Parameter.DEFAULT_TEMP_PATH + "/Template.xml");
+		File file = new File(Parameter.DEFAULT_CONF_PATH + "/Template.xml");
 		// 判断系统目录下是否存在模板文件
 		if (!file.exists()) {
+			throw new SeleniumFindException("缺少界面加载配置文件");
 			// 不存在就将jar包里的ParameterValues.xml复制到指定路径下
-			File f = new File(Parameter.DEFAULT_TEMP_PATH);
-			f.mkdirs();
-			URL parameterPath = this.getClass().getResource("ParameterValues.xml");
-			try {
-				Document document = new SAXReader().read(parameterPath.toString());
-				try {
-					FileOutputStream out = new FileOutputStream(file);
-					OutputFormat format = OutputFormat.createPrettyPrint();
-					format.setEncoding("utf-8");
-					XMLWriter output = new XMLWriter(out, format);
-					try {
-						output.write(document);
-						output.close();
-						out.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (UnsupportedEncodingException e1) {
-					e1.printStackTrace();
-				}
-			} catch (DocumentException e) {
-				e.printStackTrace();
-			}
+//			File f = new File(Parameter.DEFAULT_TEMP_PATH);
+//			f.mkdirs();
+//			URL parameterPath = this.getClass().getResource("ParameterValues.xml");
+//			try {
+//				Document document = new SAXReader().read(parameterPath.toString());
+//				try {
+//					FileOutputStream out = new FileOutputStream(file);
+//					OutputFormat format = OutputFormat.createPrettyPrint();
+//					format.setEncoding("utf-8");
+//					XMLWriter output = new XMLWriter(out, format);
+//					try {
+//						output.write(document);
+//						output.close();
+//						out.close();
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//				} catch (FileNotFoundException e) {
+//					e.printStackTrace();
+//				} catch (UnsupportedEncodingException e1) {
+//					e1.printStackTrace();
+//				}
+//			} catch (DocumentException e) {
+//				e.printStackTrace();
+//			}
 		} 
 		
 		templatePath = file.toString();
