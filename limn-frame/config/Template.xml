@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<QTP> 
+  <Templates> 
+    <Template id="s1" Core="s1"> 
+      <Computer>远程</Computer>  
+      <IP>172.16.24.185</IP>  
+      <BrowserType>Firefox</BrowserType>  
+      <URL>http://www.baidu.com</URL>  
+      <Middleware/>  
+      <Yigo/>  
+      <Version/>  
+      <ExcelPath>/Users/limengnan/Documents/testcase/apptest.xls</ExcelPath>  
+      <ExecuteMode>固定模式执行</ExecuteMode>  
+      <SheetsNum/>  
+      <FrontSteps>需要</FrontSteps>  
+      <InitDB>需要</InitDB>  
+      <SqlData/>  
+      <FilePath/>  
+      <Specify>不指定</Specify>  
+      <SpecifySheet/>  
+      <SpecifyRow/>  
+      <SpecifyStep/>  
+      <Debug>false</Debug>  
+      <NotServer>false</NotServer>  
+      <UploadResults>false</UploadResults>  
+      <StartPlatform>true</StartPlatform>  
+      <EditExcelPath>/Users/limengnan/Documents/testcase/apptest.xls</EditExcelPath>  
+      <runTestModel>Android</runTestModel>  
+      <RunTestModel>Android</RunTestModel>  
+      <AppFilePath>/Users/limengnan/Downloads/HaowuAgent.apk</AppFilePath> 
+    </Template> 
+  </Templates>  
+  <Cores> 
+    <Core id="s1"/> 
+  </Cores> 
+</QTP>
