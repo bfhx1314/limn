@@ -1,7 +1,15 @@
 package com.limn.frame.keyword;
 
+import java.util.HashMap;
+
 import com.limn.app.driver.AppDriver;
 import com.limn.app.driver.exception.AppiumException;
+import com.limn.driver.Driver;
+import com.limn.driver.exception.SeleniumFindException;
+import com.limn.frame.control.Test;
+import com.limn.tool.common.Print;
+import com.limn.tool.common.TransformationMap;
+import com.limn.tool.regexp.RegExp;
 
 public class BaseRunAppKeyWordImpl {
 	
@@ -10,12 +18,52 @@ public class BaseRunAppKeyWordImpl {
 	 * @param steps
 	 * @throws AppiumException
 	 */
-	public static void input(String[] steps) throws AppiumException{
-		if(steps[2].equalsIgnoreCase("[Click]")){
-			AppDriver.click(steps[1]);
-		}else{
-			AppDriver.setValue(steps[1], steps[2]);
+	public static void input(String[] step) throws AppiumException{
+		
+		try{
+			HashMap<String,String> traXPath = null; 
+			if(step.length >= 4 && RegExp.findCharacters(step[3], "^HASHMAP")){
+				// DEBUG模式
+				traXPath = TransformationMap.transformationByString(step[3]);
+				Print.debugLog("加载别名数据完成", 1);
+			}else{
+				// START模式
+				traXPath = Test.TRA_NAME;
+				
+				
+//				String context = Test.getAssociatedProperites();
+//				if(null == context){
+//					traXPath = null;
+//				}else{
+//					traXPath = TransformationMap.transformationByString(context);
+//					Print.log("加载别名数据完成", 1);
+//				}
+			}
+
+			String xpath = null;
+			if(null != traXPath){
+				if(traXPath.containsKey(step[1])){
+					xpath = traXPath.get(step[1]);
+					Print.log("获取[" + xpath + "] 别名:" + step[1], 0);
+				}else{
+					xpath = step[1];
+				}
+			}else{
+				xpath = step[1];
+			}
+	
+			if(step[2].equalsIgnoreCase("[Click]")){
+				AppDriver.click(xpath);
+			}else{
+				AppDriver.setValue(xpath, step[2]);
+			}
+			
+		}catch(Exception e){
+			throw new AppiumException("错误:" + e.getMessage());
 		}
+		
+		
+	
 	}
 	
 	

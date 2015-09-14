@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.limn.app.driver.exception.AppiumException;
@@ -71,6 +72,8 @@ public class AppDriver {
 			driver = new AndroidDriver<>(new URL("http://" + IP + "/wd/hub"), dcb);
 		} catch (MalformedURLException e) {
 			throw new AppiumException("driver hub无法连接");
+		} catch(SessionNotCreatedException e){
+			throw new AppiumException("请重新启动 Driver HUB,A new session could not be created");
 		}
 		AppDriver.HEIGTH = driver.manage().window().getSize().getHeight();
 		AppDriver.WIDTH = driver.manage().window().getSize().getWidth();

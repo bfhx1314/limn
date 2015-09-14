@@ -117,12 +117,13 @@ public class BaseRunKeyWordImpl {
 				traXPath = TransformationMap.transformationByString(step[3]);
 			}else{
 				// START模式
-				String context = Test.getAssociatedProperites();
-				if(null == context){
-					traXPath = null;
-				}else{
-					traXPath = TransformationMap.transformationByString(context);
-				}
+				traXPath = Test.TRA_NAME;
+//				String context = Test.getAssociatedProperites();
+//				if(null == context){
+//					traXPath = null;
+//				}else{
+//					traXPath = TransformationMap.transformationByString(context);
+//				}
 			}
 
 			String xpath = null;

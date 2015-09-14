@@ -18,6 +18,7 @@ import com.limn.tool.parameter.Parameter;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.Screenshot;
+import com.limn.tool.common.TransformationMap;
 import com.limn.tool.regexp.RegExp;
 import com.thoughtworks.selenium.SeleniumException;
 
@@ -50,6 +51,8 @@ public class Test {
 	// 定义远程电脑IP
 	private String IP = null;
 
+	public static HashMap<String,String> TRA_NAME = null; 
+	
 	/**
 	 *  运行时记录用例步骤
 	 */
@@ -62,7 +65,6 @@ public class Test {
 	
 	private boolean isRestart = false;
 
-	
 	private static RecordResult recordResult = new RecordResult();
 	
 	private static KeyWordDriver keyWordDriver = null;
@@ -88,6 +90,7 @@ public class Test {
 				AppDriver.init(map.get("AppFilePath"), IP);
 			} catch (AppiumException e) {
 				Print.log(e.getMessage(), 2);
+				Print.log("用例停止执行", 2);
 				return;
 			}
 			
@@ -280,6 +283,8 @@ public class Test {
 	 */
 	private int runSteps(boolean isRelated) {
 		
+		
+		
 		int result = ExecuteStatus.SUCCESS;
 		
 		if(!isRelated){
@@ -289,6 +294,18 @@ public class Test {
 		}
 		
 		if (tc.isExecute()) {
+			
+
+			//加载别名数据
+			String context = Test.getAssociatedProperites();
+			TRA_NAME = null;
+			if(null != context){
+				Print.debugLog("开始加载别名数据", 0);
+				TRA_NAME = TransformationMap.transformationByString(context);
+				Print.log("加载别名数据完成", 0);
+			}
+			
+			
 			
 			if(null != SR){
 				
@@ -324,11 +341,12 @@ public class Test {
 					tc.setCurrentRow(originalRow);
 				}
 			}
+			String[] steps = null;
+			if(null != tc.getTestStep()){
+				steps = RegExp.splitWord(tc.getTestStep(), "\n");
+			}
 			
-			
-			String[] steps = RegExp.splitWord(tc.getTestStep(), "\n");
-
-			if (!steps[0].isEmpty()) {
+			if (null != steps && !steps[0].isEmpty()) {
 				RunLog.setStepsForTextAreaByIndex(tc.getCurrentRow() + 1, steps, Parameter.TESTCASENO);
 				int stepNum = runTimeStepNum;
 				//测试结果集
@@ -393,6 +411,9 @@ public class Test {
 									+ path.replaceAll("/", "_") + "_result";
 			Parameter.CHECKPOINTNAME = step;
 		}
+		
+		
+		
 		
 		int results = 1;
 //		try{

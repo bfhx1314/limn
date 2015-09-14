@@ -3,7 +3,7 @@
 <QTP> 
   <Templates> 
     <Template id="s1" Core="s1"> 
-      <Computer>远程</Computer>  
+      <Computer>本机</Computer>  
       <IP>172.16.24.185</IP>  
       <BrowserType>Firefox</BrowserType>  
       <URL>http://www.baidu.com</URL>  
