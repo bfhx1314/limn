@@ -245,7 +245,7 @@ public class Evaluator {
 		case DataType.INT: {
 			Long l1 = TypeConvertor.toLong(E1.getValue());
 			Long l2 = TypeConvertor.toLong(E2.getValue());
-			factor.setValue(l1 + l2);
+			factor.setValue(l1 - l2);
 		}
 			break;
 		case DataType.NUMERIC: {

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
 
 /**
@@ -66,19 +67,23 @@ public class CallBat {
 	 * @param processName 进程名 、PID
 	 */
 	public static void closeProcess(String processName){
-		Runtime rt = Runtime.getRuntime();
-//		String[] command1=new String[]{"cmd","cd","C://Program Files//Thunder"};
-	    String command = "taskkill /F /IM " + processName;    
-	    try
-	    {
-//	      rt.exec(command1);//返回一个进程
-	      rt.exec(command);
-//	      System.out.println("success closed："+processName);
-	    }
-	    catch (IOException e)
-	    {
-	      e.printStackTrace();
-	    }
+		
+		if(Parameter.OS != null && Parameter.OS.equalsIgnoreCase("Windows")){
+			
+			Runtime rt = Runtime.getRuntime();
+	//		String[] command1=new String[]{"cmd","cd","C://Program Files//Thunder"};
+		    String command = "taskkill /F /IM " + processName;    
+		    try
+		    {
+	//	      rt.exec(command1);//返回一个进程
+		      rt.exec(command);
+	//	      System.out.println("success closed："+processName);
+		    }
+		    catch (IOException e)
+		    {
+		      e.printStackTrace();
+		    }
+		}
 	}
 	
 	

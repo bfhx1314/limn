@@ -343,14 +343,21 @@ public class Common {
 	
 	
 	public static void main(String[] args){
-		String aString = getNumPercent(3,3);
 		
-		HashMap<String,String> a = new HashMap<String, String>();
-		a.put("aa", "2014-12-12 22:22:22");
+		String a;
+		try {
+			a = Common.getCodeByPictureURL("http://172.16.10.105/hhr_system/account/captcha?v=55fbb4fc9dbec");
+			System.out.println(a);
+		} catch (ParameterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		NameValuePair[] b= StructureMethod.getNameValuePair(a);
-		System.out.println(getParseTimeStamp("2010-02-02 22:22:22"));
+		
+		
 	}
+	
+	
 	
 	
 }

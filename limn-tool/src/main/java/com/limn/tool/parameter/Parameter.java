@@ -245,4 +245,22 @@ public class Parameter {
 	 * 每一步的截图路径
 	 */
 	public static String LOGSNAPSHOT = "";
+	
+	
+	/**
+	 * 初始化环境变量
+	 */
+	public static void init(){
+		
+		if(System.getProperties().getProperty("os.name").contains("Windows")){
+			Parameter.OS = "Windows";
+		}else{
+			Parameter.OS = "Linux";
+		}
+		
+		
+	}
+	
+	
+	
 }
