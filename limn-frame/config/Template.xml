@@ -5,7 +5,7 @@
     <Template id="s1" Core="s1"> 
       <Computer>本机</Computer>  
       <IP>172.16.24.185</IP>  
-      <BrowserType>Firefox</BrowserType>  
+      <BrowserType>Chrome</BrowserType>  
       <URL>http://www.baidu.com</URL>  
       <Middleware/>  
       <Yigo/>  

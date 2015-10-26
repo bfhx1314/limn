@@ -1254,6 +1254,7 @@ public class ConsoleFrame extends JFrame {
 //	}
 
 	public static void main(String args[]) throws Exception{	
+		Parameter.init();
 		new ConsoleFrame();
 	}
 }

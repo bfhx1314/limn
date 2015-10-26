@@ -4,7 +4,6 @@ package com.limn.frame.debug;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -41,12 +40,15 @@ import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.frame.panel.CustomPanel;
 import com.limn.frame.panel.KeyWordPanel;
 import com.limn.frame.panel.LoadBroswerPanel;
+import com.limn.frame.panel.UIViewPanel;
+import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.TransformationMap;
 import com.limn.tool.log.LogControlInterface;
 import com.limn.tool.log.LogDocument;
 import com.limn.tool.log.PrintLogDriver;
 import com.limn.tool.log.RunLog;
+import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
 
 
@@ -62,7 +64,9 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	
 	private JFrame jframe = new JFrame("用例调试器 V1.0");
 	
+	//用例编辑执行框
 	private static JTextPane testCase = new JTextPane();
+	//增加滚动条
 	private JScrollPane testCaseJSP = new JScrollPane(testCase,
 			ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -115,6 +119,8 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	private static BaseKeyWordDriverImpl keyWordDriver = new BaseKeyWordDriverImpl();
 	
 	private EditTestCasePanel testCasePanel = new EditTestCasePanel();
+	
+	private UIViewPanel uiViewPanel = new UIViewPanel();
 	
 //	public VerificationPanel verificationPanel = new VerificationPanel();
 	//载入面板
@@ -246,6 +252,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		addPanel("编辑", testCasePanel);
 		addPanel("定位", loadPanel);
 		addPanel("关键字", keyWordPanel);
+		addPanel("MView",uiViewPanel);
 //		addPanel("验证", verificationPanel);
 		testCasePanel.setVisible(true);
 		isShowPanel = testCasePanel;
@@ -616,7 +623,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		});
 //			
 		//基本设置
-		jframe.setAlwaysOnTop(true);
+//		jframe.setAlwaysOnTop(true);
 		jframe.setResizable(false);
 		jframe.validate();
 		jframe.setVisible(true);
@@ -733,9 +740,9 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	}
 	
 	public static void main(String[] args){
-		DebugEditFrame a = new DebugEditFrame();
-		new RunLog(a);
-//		Print.log("1232132132112321321321312321321321321312321321321312321321321312321232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132131232132132133", 1);
+		Parameter.init();
+		Print.setLevel(Print.INFO);
+		new RunLog(new DebugEditFrame());
 	}
 
 	/**
@@ -809,6 +816,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 
 							|| RegExp.findCharacters(steps[j], ("^录入日期:")) 
 							|| RegExp.findCharacters(steps[j], ("^获取:"))
+							|| RegExp.findCharacters(steps[j], ("^M录入:"))
 							|| RegExp.findCharacters(steps[j], ("^添加附件:"))){
 						steps[j] = steps[j] + ":" + TransformationMap.transformationByMap(xpathName);
 					}
@@ -819,9 +827,15 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 						editTestCase.setRowSelectionInterval(0,i);
 					}
 					// debug时判断关键字，验证时不执行
+					//TODO
 					if (!key[0].equals("验证")){
 						keyWordDriver.start(key);
+						if(uiViewPanel.isVisible() && uiViewPanel.isLoad){
+							Common.wait(2000);
+							uiViewPanel.loadUI();
+						}
 					}
+					
 				}
 			}finally{
 				execute.setEnabled(true);

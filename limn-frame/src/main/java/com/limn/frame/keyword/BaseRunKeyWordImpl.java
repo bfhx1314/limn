@@ -163,6 +163,7 @@ public class BaseRunKeyWordImpl {
 						ArrayList<String> arrL = RegExp.matcherCharacters(arrT[0], "(?<=\\{)(.+?)(?=\\})");
 						variable = arrL.get(0);
 						Variable.setExpressionName(variable, variableValue);
+						Print.log("变量:" + variable + "  值:" + Variable.getExpressionValue(variable), 1);
 					}else{
 						throw new ParameterException("语法解析失败，表达式："+arrT[1]);
 					}

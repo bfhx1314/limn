@@ -92,8 +92,8 @@ public class BaseRunAppKeyWordImpl {
 	public static void start(String[] steps) throws AppiumException{
 		String path = "";
 		//windows系统存在:字符需要合并
-		for(int i = 1 ;  i <= steps.length ; i++){
-			path = path + steps[i-1];
+		for(int i = 1 ;  i < steps.length ; i++){
+			path = path + steps[i];
 		}
 		AppDriver.init(path);
 	}

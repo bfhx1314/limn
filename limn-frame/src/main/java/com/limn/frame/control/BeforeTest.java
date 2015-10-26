@@ -173,11 +173,12 @@ public class BeforeTest implements Runnable {
 	 */
 	private void initParameter(){
 		
-		if(System.getProperties().getProperty("os.name").contains("Windows")){
-			Parameter.OS = "Windows";
-		}else{
-			Parameter.OS = "Linux";
-		}
+		
+//		if(System.getProperties().getProperty("os.name").contains("Windows")){
+//			Parameter.OS = "Windows";
+//		}else{
+//			Parameter.OS = "Linux";
+//		}
 		
 //		Parameter.YIGOPATH = testParameter.get("Yigo");
 		
