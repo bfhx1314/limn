@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 import java.util.zip.ZipException;
 
 import org.apache.commons.io.FileUtils;
@@ -12,12 +13,15 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.UnreachableBrowserException;
 
 import com.limn.app.driver.exception.AppiumException;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
+import com.limn.tool.regexp.RegExp;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileCommand;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import net.erdfelt.android.apk.AndroidApk;
@@ -25,7 +29,7 @@ import net.erdfelt.android.apk.AndroidApk;
 public class AppDriver {
 
 	
-	private static AppiumDriver<AndroidElement> driver = null;
+	public static AppiumDriver<AndroidElement> driver = null;
 
 	public static int HEIGTH = 0;
 	public static int WIDTH = 0;
@@ -38,6 +42,14 @@ public class AppDriver {
 	
 	public static void init(String filePath) throws AppiumException {
 		init(filePath, "127.0.0.1:4723");
+	}
+	
+	public static void runScript(String driverCommand, Map<String,?> parameters){
+		if(null == driver){
+			return;
+		}
+		
+		driver.execute(driverCommand, parameters);
 	}
 	
 	
@@ -74,6 +86,8 @@ public class AppDriver {
 			throw new AppiumException("driver hub无法连接");
 		} catch(SessionNotCreatedException e){
 			throw new AppiumException("请重新启动 Driver HUB,A new session could not be created");
+		} catch(UnreachableBrowserException e){
+			throw new AppiumException("Appium未连接 Connect to " + IP);
 		}
 		AppDriver.HEIGTH = driver.manage().window().getSize().getHeight();
 		AppDriver.WIDTH = driver.manage().window().getSize().getWidth();
@@ -91,13 +105,17 @@ public class AppDriver {
 	 */
 	public static void setValue(By by, String value) throws AppiumException {
 		check();
-		driver.findElement(by).sendKeys(value);
+		getAndroidElement(by).sendKeys(value);
 	}
 
 	public static void setValue(String id, String value) throws AppiumException {
 		check();
 		try{
-			getAndroidElement(By.id(AppDriver.APKInfo.getPackageName() + ":id/" + id)).sendKeys(value);
+			String key = id;
+			if(!RegExp.findCharacters(id, "^" + AppDriver.APKInfo.getPackageName() + ":id/")){
+				key = AppDriver.APKInfo.getPackageName() + ":id/" + id;
+			}
+			getAndroidElement(By.id(key)).sendKeys(value);
 		} catch(AppiumException e){
 			throw new AppiumException(e.getMessage() + AppDriver.APKInfo.getPackageName() + ":id/" + id);
 		}
@@ -146,6 +164,7 @@ public class AppDriver {
 	 * @throws AppiumException
 	 */
 	public static void swipe(int startx, int starty, int endx, int endy) throws AppiumException {
+		
 		check();
 		driver.swipe(startx, starty, endx, endy, 1000);
 	}
@@ -179,6 +198,12 @@ public class AppDriver {
 	 * @param bitMapPath
 	 */
 	public static String  screenshot(String bitMapPath) {
+		try {
+			check();
+		} catch (AppiumException e1) {
+			Print.log("截图失败",2);
+			e1.printStackTrace();
+		}
 		File scrFile = driver.getScreenshotAs(OutputType.FILE);
 		try {
 			FileUtils.copyFile(scrFile, new File(bitMapPath));
