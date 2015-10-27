@@ -9,6 +9,7 @@ import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.control.Test;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.TransformationMap;
+import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
 
 public class BaseRunAppKeyWordImpl {
@@ -91,10 +92,17 @@ public class BaseRunAppKeyWordImpl {
 	 */
 	public static void start(String[] steps) throws AppiumException{
 		String path = "";
-		//windows系统存在:字符需要合并
-		for(int i = 1 ;  i < steps.length ; i++){
-			path = path + steps[i];
+		if(Parameter.OS.equalsIgnoreCase("Windows")){
+			path = steps[1] + ":";
+			//windows系统存在:字符需要合并
+			for(int i = 2 ;  i < steps.length ; i++){
+				path = path + steps[i];
+			}
+		}else{
+			path = steps[1];
 		}
+		
+		
 		AppDriver.init(path);
 	}
 	

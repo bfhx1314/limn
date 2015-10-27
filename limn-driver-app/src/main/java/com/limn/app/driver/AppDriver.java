@@ -188,6 +188,7 @@ public class AppDriver {
 		} catch (ZipException e) {
 			throw new AppiumException("文件占用异常");
 		} catch (IOException e) {
+			Print.log("apkFile:" + AppDriver.appFilePath , 2);
 			throw new AppiumException("文件异常");
 		}
 	}

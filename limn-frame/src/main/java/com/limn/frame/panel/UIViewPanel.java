@@ -75,18 +75,21 @@ public class UIViewPanel extends CustomPanel {
 
 	// 设置别名
 	private static JButton setXPathName = new JButton("设置别名");
+	private static JButton setSDK = new JButton("设置SDK");
 
 	private String elementId = null;
 
-	//页面是否加载
-	public  boolean isLoad = false;
-	
+	// 页面是否加载
+	public boolean isLoad = false;
+
 	public UIViewPanel() {
 
 		setLayout(null);
 		JButton button = new JButton("加载");
-		setBoundsAt(button, 320, 5, 40, 20);
-		setBoundsAt(setXPathName, 370, 5, 100, 20);
+		setBoundsAt(button, 320, 5, 60, 20);
+		setBoundsAt(setXPathName, 390, 5, 100, 20);
+		setBoundsAt(setSDK, 500, 5, 100, 20);
+		
 		attributeModel.addColumn("属性");
 		attributeModel.addColumn("值");
 		attributeModel.addRow(new Object[] { "resource_id", "" });
@@ -104,7 +107,8 @@ public class UIViewPanel extends CustomPanel {
 
 		setBoundsAt(attributeJScroll, 320, 30, 300, 390);
 
-		System.setProperty("com.android.uiautomator.bindir", "/Users/limengnan/Documents/tool/sdk/tools");
+		// System.setProperty("com.android.uiautomator.bindir",
+		// "/Users/limengnan/Documents/tool/sdk/tools");
 
 		DebugBridge.init();
 		// 初始化需要时间
@@ -135,8 +139,7 @@ public class UIViewPanel extends CustomPanel {
 					if (name != null && !name.equals("")) {
 						HashMap<String, String> hm = DebugEditFrame.getXpathName();
 						if (hm.containsKey(name)) {
-							int status = JOptionPane.showConfirmDialog(UIViewPanel.this, "存在重复的关联属性:" + name + ",是否覆盖",
-									"警告", JOptionPane.OK_CANCEL_OPTION);
+							int status = JOptionPane.showConfirmDialog(UIViewPanel.this, "存在重复的关联属性:" + name + ",是否覆盖", "警告", JOptionPane.OK_CANCEL_OPTION);
 							if (status == 0) {
 								DebugEditFrame.setXpathName(name, elementId);
 								flag = false;
@@ -165,7 +168,35 @@ public class UIViewPanel extends CustomPanel {
 
 			}
 		});
+		
+		
+		//设置SDK目录
+		setSDK.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String defaultSDK = "";
+				if(checkSDKHome()){
+					defaultSDK = System.getProperty("com.android.uiautomator.bindir");
+				}
+				String sdk = JOptionPane.showInputDialog(UIViewPanel.this, "设置SDKHOME", defaultSDK);
+				
+				if(null == sdk || sdk.isEmpty()){
+					
+				}else{
+					if(new File(sdk).exists()){
+						System.setProperty("com.android.uiautomator.bindir",sdk);
+						Print.log("设置SDK_HOME成功." + sdk,1);
+					}else{
+						Print.log("设置SDK_HOME失败,目录不存在." + sdk,2);
+					}
+				}
+			}
+		});
 
+	}
+
+	public static void main(String[] args) {
+		System.out.println(System.getenv("ANDROID_HOME"));
 	}
 
 	/**
@@ -191,30 +222,58 @@ public class UIViewPanel extends CustomPanel {
 			recursiveElement(e, reindex);
 		}
 	}
-	
-	
-	
+
+
+	private boolean checkSDKHome() {
+		boolean isLoad = false;
+		if (System.getProperty("com.android.uiautomator.bindir") == null) {
+			if (Parameter.OS.equalsIgnoreCase("Windows")) {
+				String sdk = System.getenv("ANDROID_HOME");
+				if (sdk != null && !sdk.isEmpty()) {
+					Print.log("获取SDK目录:" + sdk, 1);
+					System.setProperty("com.android.uiautomator.bindir", sdk);
+					isLoad = true;
+				} else {
+					Print.log("无法获取SDK目录", 2);
+				}
+			} else {
+				Print.log("无法获取SDK目录", 2);
+			}
+		}else{
+			if(new File(System.getProperty("com.android.uiautomator.bindir")).exists()){
+				isLoad = true;
+			}
+		}
+		return isLoad;
+	}
+
 	/**
 	 * 加载APP界面
 	 */
-	public void loadUI(){
-		//清楚界面上的所有控件
+	public void loadUI() {
+
+		// 无法加载到SDKhome 直接退出
+		if (!checkSDKHome()) {
+			return;
+		}
+
+		// 清楚界面上的所有控件
 		if (imagePanel != null) {
 			imagePanel.removeAll();
 		}
-		
+
 		imagePanel = new ImagePanel(AppDriver.screenshot(SCREENSHOTPATH));
 		imagePanel.setLayout(null);
-//		imagePanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+		// imagePanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 
 		try {
-			//加载截图，并设置到界面上
+			// 加载截图，并设置到界面上
 			BufferedImage image = ImageIO.read(new File(SCREENSHOTPATH));
 			setBoundsAt(imagePanel, 20, 5, image.getWidth() / 5, image.getHeight() / 5);
 		} catch (IOException e2) {
 			setBoundsAt(imagePanel, 20, 5, 300, 400);
 		}
-		
+
 		imagePanel.addMouseListener(new MouseListener() {
 
 			@Override
@@ -239,8 +298,7 @@ public class UIViewPanel extends CustomPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
-				
+
 				if (hightElement != null) {
 					Print.debugLog("CLick", 1);
 					if (hightElement != null && !hightElement.resource_id.isEmpty()) {
@@ -248,8 +306,8 @@ public class UIViewPanel extends CustomPanel {
 						String[] id = RegExp.splitWord(hightElement.resource_id, ":id/");
 						elementId = id[1];
 						String step = "M录入:" + elementId + ":";
-						
-						if(hightElement._class.equalsIgnoreCase("android.widget.Button")){
+
+						if (hightElement._class.equalsIgnoreCase("android.widget.Button")) {
 							step = step + "[Click]";
 						}
 						DebugEditFrame.setStepTextArea(step);
@@ -257,7 +315,7 @@ public class UIViewPanel extends CustomPanel {
 				}
 			}
 		});
-		
+
 		imagePanel.addMouseMotionListener(new MouseMotionListener() {
 			@Override
 			public void mouseMoved(MouseEvent e) {
@@ -266,14 +324,13 @@ public class UIViewPanel extends CustomPanel {
 
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				
+
 			}
 		});
 
 		repaint();
 
-		
-		//加载界面元素的xml
+		// 加载界面元素的xml
 		String xml = AppDriver.driver.getPageSource();
 
 		Document document = null;
@@ -288,10 +345,8 @@ public class UIViewPanel extends CustomPanel {
 		elementSet = new ArrayList<ElementSet>();
 		recursiveElement(root, 0);
 		isLoad = true;
-		
+
 	}
-	
-	
 
 	/**
 	 * 添加控件
@@ -323,10 +378,9 @@ public class UIViewPanel extends CustomPanel {
 		jl.setOpaque(false);
 		jl.setBorder(BorderFactory.createLineBorder(Color.red));
 		jl.setBounds(x, y, width, height);
-//		jl.addMouseListener(new AppMouseListener());
+		// jl.addMouseListener(new AppMouseListener());
 		return jl;
 	}
-	
 
 	private JTextField setFieldBoundsAtImage(int x, int y, int width, int height) {
 		JTextField jf = new JTextField();
@@ -334,15 +388,15 @@ public class UIViewPanel extends CustomPanel {
 		jf.setBorder(BorderFactory.createLineBorder(Color.blue));
 		jf.setBounds(x, y, width, height);
 		jf.addFocusListener(new FocusListener() {
-			
+
 			@Override
 			public void focusLost(FocusEvent e) {
 				String step = DebugEditFrame.getStepTextArea();
 				String[] steps = RegExp.splitKeyWord(step);
-				String newStep = steps[0] + ":" + steps[1] + ":" + ((JTextField)e.getSource()).getText();
+				String newStep = steps[0] + ":" + steps[1] + ":" + ((JTextField) e.getSource()).getText();
 				DebugEditFrame.setStepTextArea(newStep);
 			}
-			
+
 			@Override
 			public void focusGained(FocusEvent e) {
 				if (hightElement != null) {
@@ -355,10 +409,10 @@ public class UIViewPanel extends CustomPanel {
 						DebugEditFrame.setStepTextArea(step);
 					}
 				}
-				
+
 			}
 		});
-		
+
 		return jf;
 	}
 
@@ -413,19 +467,21 @@ public class UIViewPanel extends CustomPanel {
 				for (int i = 0; i < imagePanel.getComponentCount(); i++) {
 					imagePanel.remove(i);
 				}
-				
+
 				Print.debugLog("start:" + tempES.x_start + " end:" + tempES.y_start, 5);
-//				if (tempES._class.equalsIgnoreCase("android.widget.EditText")) {
-//					JTextField jl = setFieldBoundsAtImage(tempES.x_start, tempES.y_start, tempES.x_end - tempES.x_start,
-//							tempES.y_end - tempES.y_start);
-//					imagePanel.add(jl);
-//				} else{
-//					JLabel jl = setBoundsAtImage(tempES.x_start, tempES.y_start, tempES.x_end - tempES.x_start,
-//							tempES.y_end - tempES.y_start, tempES.element_index);
-//					imagePanel.add(jl);
-//				}
-				JLabel jl = setBoundsAtImage(tempES.x_start, tempES.y_start, tempES.x_end - tempES.x_start,
-						tempES.y_end - tempES.y_start, tempES.element_index);
+				// if
+				// (tempES._class.equalsIgnoreCase("android.widget.EditText")) {
+				// JTextField jl = setFieldBoundsAtImage(tempES.x_start,
+				// tempES.y_start, tempES.x_end - tempES.x_start,
+				// tempES.y_end - tempES.y_start);
+				// imagePanel.add(jl);
+				// } else{
+				// JLabel jl = setBoundsAtImage(tempES.x_start, tempES.y_start,
+				// tempES.x_end - tempES.x_start,
+				// tempES.y_end - tempES.y_start, tempES.element_index);
+				// imagePanel.add(jl);
+				// }
+				JLabel jl = setBoundsAtImage(tempES.x_start, tempES.y_start, tempES.x_end - tempES.x_start, tempES.y_end - tempES.y_start, tempES.element_index);
 				imagePanel.add(jl);
 				hightElement = tempES;
 				imagePanel.repaint();
@@ -457,14 +513,14 @@ public class UIViewPanel extends CustomPanel {
 		}
 		return columns;
 	}
-	
-	
+
 	/**
 	 * 界面元素事件
+	 * 
 	 * @author limengnan
-	 *
+	 * 
 	 */
-	class AppMouseListener implements MouseListener{
+	class AppMouseListener implements MouseListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
@@ -475,8 +531,8 @@ public class UIViewPanel extends CustomPanel {
 					String[] id = RegExp.splitWord(hightElement.resource_id, ":id/");
 					elementId = id[1];
 					String step = "M录入:" + elementId + ":";
-					
-					if(hightElement._class.equalsIgnoreCase("android.widget.Button")){
+
+					if (hightElement._class.equalsIgnoreCase("android.widget.Button")) {
 						step = step + "[Click]";
 					}
 					DebugEditFrame.setStepTextArea(step);
@@ -486,38 +542,33 @@ public class UIViewPanel extends CustomPanel {
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			
+
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			
+
 		}
 
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			
+
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
-			
-			
-			
+
 		}
-		
+
 	}
 
 }
-
-
-
 
 /**
  * 元素集合
  * 
  * @author limengnan
- *
+ * 
  */
 class ElementSet {
 
