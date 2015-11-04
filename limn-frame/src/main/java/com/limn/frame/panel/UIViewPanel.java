@@ -83,7 +83,9 @@ public class UIViewPanel extends CustomPanel {
 	public boolean isLoad = false;
 
 	public UIViewPanel() {
-
+		System.setProperty("com.android.uiautomator.bindir","/Users/limengnan/Documents/tool/sdk");
+		
+		
 		setLayout(null);
 		JButton button = new JButton("加载");
 		setBoundsAt(button, 320, 5, 60, 20);

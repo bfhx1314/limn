@@ -490,6 +490,7 @@ public class EditTestCasePanel extends CustomPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				saveModuleCase();
 				eTestCase.save();
 			}
 
