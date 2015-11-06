@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipException;
 
@@ -21,7 +22,7 @@ import com.limn.tool.common.Print;
 import com.limn.tool.regexp.RegExp;
 
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.MobileCommand;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import net.erdfelt.android.apk.AndroidApk;
@@ -124,6 +125,13 @@ public class AppDriver {
 	
 	private static AndroidElement getAndroidElement(By by) throws AppiumException{
 		AndroidElement ae = null;
+		
+		//判断元素是否存在多个
+		List<AndroidElement> listEle= driver.findElements(by);
+		if(listEle.size()>1){
+			throw new AppiumException("存在多个此元素:");
+		}
+		
 		try{
 			ae = driver.findElement(by);
 		} catch(NoSuchElementException e){
@@ -168,6 +176,14 @@ public class AppDriver {
 		check();
 		driver.swipe(startx, starty, endx, endy, 1000);
 	}
+	
+	
+	public static void touchAction(By by){
+		TouchAction action = new TouchAction(driver);
+		action.longPress(driver.findElement(By.id("xx"))).waitAction(1000).release().perform();
+	}
+	
+	
 
 	private static void check() throws AppiumException {
 		if (driver == null) {

@@ -102,9 +102,10 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	private JButton execute = new JButton("执行");
 	private JButton insertExecute = new JButton("插入执行");
 	private JButton executeAgain = new JButton("执行");
+	private JButton clearLog = new JButton("清空日志");
 	private JButton deleteRow = new JButton("删除");
 	private JButton deleteAllRow = new JButton("删除全部");
-	private JButton deleteXPath = new JButton("删除XPath别名");
+	private JButton deleteXPath = new JButton("删除别名");
 	
 	// TAB页
 	private static JTabbedPane tabbedPane = new JTabbedPane();
@@ -209,13 +210,16 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		
 //		setBoundsAt(stepJScrollStep,2, 125, 300, 250);
 		executeAgain.setMargin(new Insets(0, 0, 0, 0));
-		setBoundsAt(executeAgain,230, 380, 50, 20);
+		setBoundsAt(executeAgain,210, 380, 50, 20);
+		clearLog.setMargin(new Insets(0, 0, 0, 0));
+		setBoundsAt(clearLog,265, 380, 70, 20);
+		
 		deleteRow.setMargin(new Insets(0, 0, 0, 0));
-		setBoundsAt(deleteRow,175, 380, 50, 20);
+		setBoundsAt(deleteRow,155, 380, 50, 20);
 		deleteAllRow.setMargin(new Insets(0, 0, 0, 0));
-		setBoundsAt(deleteAllRow,101, 380, 70, 20);
+		setBoundsAt(deleteAllRow,80, 380, 70, 20);
 		deleteXPath.setMargin(new Insets(0, 0, 0, 0));
-		setBoundsAt(deleteXPath,2, 380, 95, 20);
+		setBoundsAt(deleteXPath,5, 380, 70, 20);
 		
 		
 		jframe.getContentPane().add(tabbedPane);
@@ -231,6 +235,14 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				DebugEditFrame.removeXpathAll();
+			}
+		});
+		
+		clearLog.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				clearLog();
 			}
 		});
 		

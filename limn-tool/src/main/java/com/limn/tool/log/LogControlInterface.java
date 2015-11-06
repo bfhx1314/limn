@@ -8,4 +8,6 @@ public interface LogControlInterface {
 
 	public boolean isStart();
 	
+	public void clearLog();
+	
 }

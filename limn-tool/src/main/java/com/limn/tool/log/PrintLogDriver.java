@@ -231,6 +231,15 @@ public abstract class PrintLogDriver implements LogControlInterface{
 	}
 	
 	
+	public void clearLog(){
+		try {
+			writeLogPane.getDocument().remove(0, writeLogPane.getDocument().getLength());
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	
 	
 //	class MyJTextPane extends JTextPane {

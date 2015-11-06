@@ -3,12 +3,7 @@ package com.limn.frame.panel;
 import java.awt.Component;
 import java.awt.Dialog;
 
-
-
-
-
-
-
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -67,6 +62,13 @@ public class VerificationPanel extends JPanel{
 		comp.setBounds(x, y, width, height);
 		this.add(comp);
 	}
+	
+	
+	
+	
+	
+	
+	
 	
 
 }

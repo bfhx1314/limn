@@ -8,6 +8,8 @@ import java.util.HashMap;
 
 import com.limn.app.driver.AppDriver;
 import com.limn.app.driver.exception.AppiumException;
+import com.limn.driver.Driver;
+import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.frame.results.RecordResult;
 import com.limn.frame.results.UploadServerData;
@@ -94,6 +96,14 @@ public class Test {
 				return;
 			}
 			
+		}else{
+			// 浏览器类型，URL地址
+			Driver.setDriver(Parameter.BROWSERTYPE, Parameter.URL, IP);
+			try {
+				Driver.startBrowser();
+			} catch (SeleniumFindException e) {
+				Print.log(e.getMessage(), 2);
+			}
 		}
 		
 		
@@ -124,8 +134,8 @@ public class Test {
 //			isRestart = true;
 //		}
 		
-		// 浏览器类型，URL地址
-//		Driver.setDriver(browserType, URL, IP);
+		
+		
 
 		// 是否提交服务器
 		if(map.containsKey("UploadResults") && Boolean.valueOf(map.get("UploadResults"))){

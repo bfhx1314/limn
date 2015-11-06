@@ -350,7 +350,7 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 	                }  
 	            }  
 	        });  
-	    }  
+	    }
 	
 	
 }

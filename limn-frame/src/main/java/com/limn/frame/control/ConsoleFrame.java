@@ -996,8 +996,8 @@ public class ConsoleFrame extends JFrame {
 			browserTypeContent.setSelectedItem(hm.get("BrowserType"));
 		}
 		
-		if(hm.containsKey("RunTestModel") && !hm.get("runTestModel").isEmpty()){
-			runTestModelContent.setSelectedItem(hm.get("runTestModel"));
+		if(hm.containsKey("RunTestModel") && !hm.get("RunTestModel").isEmpty()){
+			runTestModelContent.setSelectedItem(hm.get("RunTestModel"));
 		}
 		
 		if(hm.containsKey("AppFilePath") && !hm.get("AppFilePath").isEmpty()){
