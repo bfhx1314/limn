@@ -8,6 +8,8 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -262,10 +264,12 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 
 		
 		addPanel("编辑", testCasePanel);
-		addPanel("定位", loadPanel);
 		addPanel("关键字", keyWordPanel);
-		addPanel("MView",uiViewPanel);
+		addPanel("Web", loadPanel);
+		addPanel("Mobile",uiViewPanel);
 //		addPanel("验证", verificationPanel);
+		
+		
 		testCasePanel.setVisible(true);
 		isShowPanel = testCasePanel;
 //		setBoundsAt(eidt, 303, 5, 46, 20);
@@ -844,7 +848,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 						keyWordDriver.start(key);
 						if(uiViewPanel.isVisible() && uiViewPanel.isLoad){
 							Common.wait(2000);
-							uiViewPanel.loadUI();
+							uiViewPanel.loadUI(true);
 						}
 					}
 					

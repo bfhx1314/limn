@@ -14,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -38,15 +39,19 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 
 import com.limn.android.tool.DebugBridge;
 import com.limn.app.driver.AppDriver;
 import com.limn.frame.debug.DebugEditFrame;
 import com.limn.tool.common.Common;
+import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
 import com.limn.tool.exception.ParameterException;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
+import com.limn.tool.variable.Variable;
 
 public class UIViewPanel extends CustomPanel {
 
@@ -66,8 +71,7 @@ public class UIViewPanel extends CustomPanel {
 	// 高亮的元素标示
 	private int elementHighIndex = -1;
 
-	// 屏幕截图存放位置
-	private String SCREENSHOTPATH = Parameter.DEFAULT_TEMP_PATH + "/Android_Screenshot.png";
+	
 
 	// 定位元素的属性Table
 	private JScrollPane attributeJScroll = new JScrollPane();
@@ -83,13 +87,19 @@ public class UIViewPanel extends CustomPanel {
 	// 页面是否加载
 	public boolean isLoad = false;
 	
+	// 界面截图显示大小
+	private BigDecimal scaling = null;
+	private int imageWidth = 0;
+	private int imageHeight = 0;
 	
-	private static BigDecimal scaling = null;
-
+	//历史文件记录
+	// 屏幕截图存放位置
+	private String SCREENSHOTPATH = Parameter.DEFAULT_TEMP_PATH + "/Android_Screenshot.png";
+	private String androidXML = Parameter.DEFAULT_TEMP_PATH + "/androidui.xml";
+	
 	public UIViewPanel() {
-//		System.setProperty("com.android.uiautomator.bindir","/Users/limengnan/Documents/tool/sdk");
 		
-		
+		loadUI(false);
 		setLayout(null);
 		JButton button = new JButton("加载");
 		setBoundsAt(button, 320, 5, 60, 20);
@@ -113,9 +123,6 @@ public class UIViewPanel extends CustomPanel {
 
 		setBoundsAt(attributeJScroll, 320, 30, 300, 390);
 
-		// System.setProperty("com.android.uiautomator.bindir",
-		// "/Users/limengnan/Documents/tool/sdk/tools");
-
 		DebugBridge.init();
 		// 初始化需要时间
 		Common.wait(1000);
@@ -123,7 +130,7 @@ public class UIViewPanel extends CustomPanel {
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				loadUI();
+				loadUI(true);
 			}
 		});
 
@@ -260,7 +267,7 @@ public class UIViewPanel extends CustomPanel {
 	/**
 	 * 加载APP界面
 	 */
-	public void loadUI() {
+	public void loadUI(boolean loadApp) {
 
 		// 无法加载到SDKhome 直接退出
 		if (!checkSDKHome()) {
@@ -269,115 +276,97 @@ public class UIViewPanel extends CustomPanel {
 
 		// 清楚界面上的所有控件
 		if (imagePanel != null) {
-			imagePanel.removeAll();
+			imagePanel = null;
 		}
-
-		imagePanel = new ImagePanel(AppDriver.screenshot(SCREENSHOTPATH));
-		imagePanel.setLayout(null);
-		// imagePanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
-
+		
+		//截图路径
+		if(loadApp){
+			AppDriver.screenshot(SCREENSHOTPATH);
+		}else if(!new File(SCREENSHOTPATH).exists()){
+			return;
+		}
+		
+		BufferedImage image = null;
 		try {
-			// 加载截图，并设置到界面上
-
-			
-			
-			BufferedImage image = ImageIO.read(new File(SCREENSHOTPATH));
-			getZoomForImage(image.getWidth(),image.getHeight());
-			
-			
-			int width = new Double(image.getWidth() / scaling.doubleValue()).intValue();
-			int height = new Double(image.getHeight() / scaling.doubleValue()).intValue();
-			
-			setBoundsAt(imagePanel, 20, 5, width, height);
-		} catch (IOException e2) {
-			setBoundsAt(imagePanel, 20, 5, 300, 400);
+			image = ImageIO.read(new File(SCREENSHOTPATH));
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
+		//获取最优的比例
+		getZoomForImage(image.getWidth(),image.getHeight());
+		
+		imagePanel = new ImagePanel(SCREENSHOTPATH);
+		imagePanel.setLayout(null);
 
-		imagePanel.addMouseListener(new MouseListener() {
+		// 加载截图，并设置到界面上
+		setBoundsAt(imagePanel, 20, 5, imageWidth, imageHeight);
 
-			@Override
-			public void mouseReleased(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-
-				if (hightElement != null) {
-					Print.debugLog("CLick", 1);
-					if (hightElement != null && !hightElement.resource_id.isEmpty()) {
-
-						String[] id = RegExp.splitWord(hightElement.resource_id, ":id/");
-						elementId = id[1];
-						String step = "M录入:" + elementId + ":";
-
-						if (hightElement._class.equalsIgnoreCase("android.widget.Button")) {
-							step = step + "[Click]";
-						}
-						DebugEditFrame.setStepTextArea(step);
-					}
-				}
-			}
-		});
-
+		imagePanel.addMouseListener(new AppMouseListener());
+		
 		imagePanel.addMouseMotionListener(new MouseMotionListener() {
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				highlightElement(e.getX(), e.getY());
 			}
-
 			@Override
-			public void mouseDragged(MouseEvent e) {
-
-			}
+			public void mouseDragged(MouseEvent e) {}
 		});
 
 		repaint();
 
-		// 加载界面元素的xml
-		String xml = AppDriver.driver.getPageSource();
-
 		Document document = null;
+		String xml = null;
+		if(loadApp){
+			// 加载界面元素的xml
+			xml = AppDriver.driver.getPageSource();
+		}else if(new File(androidXML).exists()){
+			//加载本地文件
+			try {
+				xml = FileUtil.getFileText(androidXML);
+			} catch (IOException e1) {
+				Print.log("androidxml本地文件读取失败", 3);
+				return;
+			}
+		}else{
+			return;
+		}
+		
 		try {
 			document = DocumentHelper.parseText(xml);
 		} catch (DocumentException e1) {
 			e1.printStackTrace();
 		}
+
 		Element root = document.getRootElement();
 		elementSet.clear();
 		elementSet = null;
 		elementSet = new ArrayList<ElementSet>();
 		recursiveElement(root, 0);
 		isLoad = true;
+		
+		
+		
+		//保存界面xml文件至temp目录
+		XMLWriter output = null;
+		try {
+			OutputFormat format = OutputFormat.createPrettyPrint();   
+			format.setEncoding("utf-8");  
+			output = new XMLWriter(new FileOutputStream(androidXML), format);	
+			output.write(document);
+		} catch (IOException e1) {
+			Print.log("UIXML文件保存失败", 3);
+		} finally{
+			try {
+				output.close();
+			} catch (IOException e1) {
+				Print.log("UIXML流对象关闭失败", 3);
+			}
+		}
 
 	}
 
 	
-	private void getZoomForImage(int width,int height){
-		BigDecimal x = new BigDecimal(width*1.00/300);
-		BigDecimal  y = new BigDecimal(height*1.00/390);
-		if(x.compareTo(y)>0){
-			scaling = x;
-		}else{
-			scaling = y;
-		}
-		Print.debugLog("截图缩放比例:" + scaling, 0);
-	}
+	
 	
 	/**
 	 * 添加控件
@@ -470,7 +459,7 @@ public class UIViewPanel extends CustomPanel {
 		if (Coordinate.size() < 4) {
 			throw new ParameterException("bounds元素错误：" + bounds);
 		}
-		//TODO
+		
 		es.x_start = new Double(new Double(Coordinate.get(0)) / scaling.doubleValue()).intValue();
 		es.y_start = new Double(new Double(Coordinate.get(1)) / scaling.doubleValue()).intValue();
 	
@@ -502,18 +491,7 @@ public class UIViewPanel extends CustomPanel {
 				}
 
 				Print.debugLog("start:" + tempES.x_start + " end:" + tempES.y_start, 5);
-				// if
-				// (tempES._class.equalsIgnoreCase("android.widget.EditText")) {
-				// JTextField jl = setFieldBoundsAtImage(tempES.x_start,
-				// tempES.y_start, tempES.x_end - tempES.x_start,
-				// tempES.y_end - tempES.y_start);
-				// imagePanel.add(jl);
-				// } else{
-				// JLabel jl = setBoundsAtImage(tempES.x_start, tempES.y_start,
-				// tempES.x_end - tempES.x_start,
-				// tempES.y_end - tempES.y_start, tempES.element_index);
-				// imagePanel.add(jl);
-				// }
+				
 				JLabel jl = setBoundsAtImage(tempES.x_start, tempES.y_start, tempES.x_end - tempES.x_start, tempES.y_end - tempES.y_start, tempES.element_index);
 				imagePanel.add(jl);
 				hightElement = tempES;
@@ -536,6 +514,25 @@ public class UIViewPanel extends CustomPanel {
 		} else {
 			Print.debugLog("not find it", 1);
 		}
+	}
+	
+	/**
+	 * 通过界面大小所处缩小比例
+	 * @param width
+	 * @param height
+	 */
+	private void getZoomForImage(int width,int height){
+		BigDecimal x = new BigDecimal(width*1.00/300);
+		BigDecimal  y = new BigDecimal(height*1.00/390);
+		if(x.compareTo(y)>0){
+			scaling = x;
+		}else{
+			scaling = y;
+		}
+		imageWidth = new Double(width / scaling.doubleValue()).intValue();
+		imageHeight = new Double(height / scaling.doubleValue()).intValue();
+				
+		Print.debugLog("截图缩放比例:" + scaling.doubleValue(), 0);
 	}
 
 	private TableColumnModel getColumn(JTable table, int[] width) {
@@ -605,17 +602,20 @@ public class UIViewPanel extends CustomPanel {
 
 		public ImagePanel(String imagePath) {
 			imageFile = new File(imagePath);
+			
 		}
 
+		
+		
 		@Override
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Image image1 = null;
 			
-
-			
 			try {
 				BufferedImage image = ImageIO.read(imageFile);
+				//获取最优的比例
+				getZoomForImage(image.getWidth(),image.getHeight());
 				int width = new Double(image.getWidth() / scaling.doubleValue()).intValue();
 				int height = new Double(image.getHeight() / scaling.doubleValue()).intValue();
 				image1 = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);

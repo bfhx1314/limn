@@ -43,6 +43,21 @@ public class Variable {
 	}
 	
 	
+	public static void setExpressionName(String key, int value) {
+		if(expression.size()==0){
+			getLocal();
+		}
+		if(expression.containsKey(key)){
+			expression.replace(key, String.valueOf(value));
+		}else{
+			expression.put(key, String.valueOf(value));
+		}
+		saveLocal();
+	}
+	
+	
+	
+	
 	/**
 	 * 
 	 * @param key
