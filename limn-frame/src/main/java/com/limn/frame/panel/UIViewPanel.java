@@ -15,6 +15,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -81,9 +82,12 @@ public class UIViewPanel extends CustomPanel {
 
 	// 页面是否加载
 	public boolean isLoad = false;
+	
+	
+	private static BigDecimal scaling = null;
 
 	public UIViewPanel() {
-		System.setProperty("com.android.uiautomator.bindir","/Users/limengnan/Documents/tool/sdk");
+//		System.setProperty("com.android.uiautomator.bindir","/Users/limengnan/Documents/tool/sdk");
 		
 		
 		setLayout(null);
@@ -198,7 +202,11 @@ public class UIViewPanel extends CustomPanel {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(System.getenv("ANDROID_HOME"));
+		double x = 1650*1.00/300.00*1.00;
+		double y = 1890/400;
+		System.out.println(x + "   " + y);
+		
+		
 	}
 
 	/**
@@ -270,8 +278,17 @@ public class UIViewPanel extends CustomPanel {
 
 		try {
 			// 加载截图，并设置到界面上
+
+			
+			
 			BufferedImage image = ImageIO.read(new File(SCREENSHOTPATH));
-			setBoundsAt(imagePanel, 20, 5, image.getWidth() / 5, image.getHeight() / 5);
+			getZoomForImage(image.getWidth(),image.getHeight());
+			
+			
+			int width = new Double(image.getWidth() / scaling.doubleValue()).intValue();
+			int height = new Double(image.getHeight() / scaling.doubleValue()).intValue();
+			
+			setBoundsAt(imagePanel, 20, 5, width, height);
 		} catch (IOException e2) {
 			setBoundsAt(imagePanel, 20, 5, 300, 400);
 		}
@@ -350,6 +367,18 @@ public class UIViewPanel extends CustomPanel {
 
 	}
 
+	
+	private void getZoomForImage(int width,int height){
+		BigDecimal x = new BigDecimal(width*1.00/300);
+		BigDecimal  y = new BigDecimal(height*1.00/390);
+		if(x.compareTo(y)>0){
+			scaling = x;
+		}else{
+			scaling = y;
+		}
+		Print.debugLog("截图缩放比例:" + scaling, 0);
+	}
+	
 	/**
 	 * 添加控件
 	 * 
@@ -441,10 +470,12 @@ public class UIViewPanel extends CustomPanel {
 		if (Coordinate.size() < 4) {
 			throw new ParameterException("bounds元素错误：" + bounds);
 		}
-		es.x_start = Integer.valueOf(Coordinate.get(0)) / 5;
-		es.y_start = Integer.valueOf(Coordinate.get(1)) / 5;
-		es.x_end = Integer.valueOf(Coordinate.get(2)) / 5;
-		es.y_end = Integer.valueOf(Coordinate.get(3)) / 5;
+		//TODO
+		es.x_start = new Double(new Double(Coordinate.get(0)) / scaling.doubleValue()).intValue();
+		es.y_start = new Double(new Double(Coordinate.get(1)) / scaling.doubleValue()).intValue();
+	
+		es.x_end = new Double(new Double(Coordinate.get(2)) / scaling.doubleValue()).intValue();
+		es.y_end = new Double(new Double(Coordinate.get(3)) / scaling.doubleValue()).intValue();
 
 		es.element_index = ++elementCount;
 		es.z_order = reindex;
@@ -563,6 +594,40 @@ public class UIViewPanel extends CustomPanel {
 		}
 
 	}
+	
+	class ImagePanel extends JPanel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private File imageFile = null;
+
+		public ImagePanel(String imagePath) {
+			imageFile = new File(imagePath);
+		}
+
+		@Override
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			Image image1 = null;
+			
+
+			
+			try {
+				BufferedImage image = ImageIO.read(imageFile);
+				int width = new Double(image.getWidth() / scaling.doubleValue()).intValue();
+				int height = new Double(image.getHeight() / scaling.doubleValue()).intValue();
+				image1 = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+			} catch (IOException e) {
+
+				e.printStackTrace();
+			}
+			g.drawImage(image1, 0, 0, null);
+
+		}
+
+	}
 
 }
 
@@ -590,31 +655,4 @@ class ElementSet {
 
 }
 
-class ImagePanel extends JPanel {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private File imageFile = null;
-
-	public ImagePanel(String imagePath) {
-		imageFile = new File(imagePath);
-	}
-
-	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Image image1 = null;
-		try {
-			BufferedImage image = ImageIO.read(imageFile);
-			image1 = image.getScaledInstance(image.getWidth() / 5, image.getHeight() / 5, Image.SCALE_SMOOTH);
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-		g.drawImage(image1, 0, 0, null);
-
-	}
-
-}
