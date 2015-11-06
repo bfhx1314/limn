@@ -2,6 +2,8 @@ package com.limn.frame.keyword;
 
 import java.util.HashMap;
 
+import org.openqa.selenium.WebDriverException;
+
 import com.limn.app.driver.AppDriver;
 import com.limn.app.driver.exception.AppiumException;
 import com.limn.driver.Driver;
@@ -23,7 +25,7 @@ public class BaseRunAppKeyWordImpl {
 		
 		try{
 			HashMap<String,String> traXPath = null; 
-			if(step.length >= 4 && RegExp.findCharacters(step[3], "^HASHMAP")){
+			if(step.length >= 4 && RegExp.findCharacters(step[step.length-1], "^HASHMAP")){
 				// DEBUG模式
 				traXPath = TransformationMap.transformationByString(step[3]);
 				Print.debugLog("加载别名数据完成", 1);
@@ -55,16 +57,27 @@ public class BaseRunAppKeyWordImpl {
 	
 			if(step[2].equalsIgnoreCase("[Click]")){
 				AppDriver.click(xpath);
+			}else if(step[2].equalsIgnoreCase("[Touth]")){
+				int time = 1000;
+				if(step.length>3){
+					try{
+						time = Integer.valueOf(step[3]) * 1000;
+					}catch(NumberFormatException e){
+						if(!RegExp.findCharacters(step[3], "^HASHMAP")){
+							Print.log("无法解析长按秒数:" + step[3] + ",默认1秒", 3);
+						}
+						time = 1000;
+					}
+				}
+				AppDriver.touchAction(xpath,time);
 			}else{
 				AppDriver.setValue(xpath, step[2]);
 			}
-			
+		}catch(WebDriverException e){
+			Print.log("WebDriverException 异常报错 ", 3);
 		}catch(Exception e){
 			throw new AppiumException("错误:" + e.getMessage());
 		}
-		
-		
-	
 	}
 	
 	

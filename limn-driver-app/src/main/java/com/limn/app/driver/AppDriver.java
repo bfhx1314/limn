@@ -178,11 +178,46 @@ public class AppDriver {
 	}
 	
 	
-	public static void touchAction(By by){
-		TouchAction action = new TouchAction(driver);
-		action.longPress(driver.findElement(By.id("xx"))).waitAction(1000).release().perform();
+	/**
+	 * 长按控件
+	 * @param id
+	 * @param time
+	 * @throws AppiumException
+	 */
+	public static void touchAction(String id, int time) throws AppiumException{
+		if(time == 0){
+			time = 1000;
+		}
+		check();
+
+		try{
+			AndroidElement ae = getAndroidElement(By.id(AppDriver.APKInfo.getPackageName() + ":id/" + id));
+			TouchAction action = new TouchAction(driver);
+			action.longPress(ae).waitAction(time).release().perform();
+		} catch (AppiumException e) {
+			throw new AppiumException(e.getMessage() + AppDriver.APKInfo.getPackageName() + ":id/" + id);
+		}	
 	}
 	
+	/**
+	 * 长按控件
+	 * @param by
+	 * @param time
+	 * @throws AppiumException
+	 */
+	public static void touchAction(By by, int time) throws AppiumException{
+		if(time == 0){
+			time = 1000;
+		}
+		check();
+		try{
+			AndroidElement ae = getAndroidElement(by);
+			TouchAction action = new TouchAction(driver);
+			action.longPress(ae).waitAction(time).release().perform();
+		} catch (AppiumException e) {
+			throw new AppiumException(e.getMessage() + by.toString());
+		}
+	}
 	
 
 	private static void check() throws AppiumException {

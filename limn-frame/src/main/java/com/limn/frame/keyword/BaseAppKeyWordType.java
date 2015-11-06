@@ -5,9 +5,10 @@ public class BaseAppKeyWordType {
 	/**
 	 * 说明: 界面控件录入<br>
 	 * 参数1: 定位    元素ID 或者 xpath<br>
-	 * 参数2: 录入数据或者事件  id 或者 [Click]<br>
+	 * 参数2: 录入数据或者事件  id 或者 [Click] 或者 [Touth]<br>
 	 * 用法: M录入:[定位]:[数据]<br>
 	 * 实例: M录入:username:limn-manager<br>
+	 * 实例: M录入:button:[Touth]<br>
 	 */
 	public static final String M_INPUT = "M录入";
 	
