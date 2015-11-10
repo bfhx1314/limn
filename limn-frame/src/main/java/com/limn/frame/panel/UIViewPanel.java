@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -34,6 +35,10 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -49,6 +54,7 @@ import com.limn.tool.common.Common;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
 import com.limn.tool.exception.ParameterException;
+import com.limn.tool.external.XMLXPath;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
 import com.limn.tool.variable.Variable;
@@ -97,6 +103,9 @@ public class UIViewPanel extends CustomPanel {
 	private String SCREENSHOTPATH = Parameter.DEFAULT_TEMP_PATH + "/Android_Screenshot.png";
 	private String androidXML = Parameter.DEFAULT_TEMP_PATH + "/androidui.xml";
 	
+	
+	private Document document = null;
+	private XPath xpath = null;
 	public UIViewPanel() {
 		
 		loadUI(false);
@@ -114,6 +123,8 @@ public class UIViewPanel extends CustomPanel {
 		attributeModel.addRow(new Object[] { "index", "" });
 		attributeModel.addRow(new Object[] { "bounds", "" });
 		attributeModel.addRow(new Object[] { "层级", "" });
+		attributeModel.addRow(new Object[] { "text", "" });
+		attributeModel.addRow(new Object[] { "XPath", "" });
 
 		attributeTable.setModel(attributeModel);
 
@@ -123,6 +134,9 @@ public class UIViewPanel extends CustomPanel {
 
 		setBoundsAt(attributeJScroll, 320, 30, 300, 390);
 
+		XPathFactory factory = XPathFactory.newInstance();
+        xpath = factory.newXPath();
+		
 		DebugBridge.init();
 		// 初始化需要时间
 		Common.wait(1000);
@@ -293,8 +307,14 @@ public class UIViewPanel extends CustomPanel {
 			e1.printStackTrace();
 		}
 		//获取最优的比例
-		getZoomForImage(image.getWidth(),image.getHeight());
-		
+		try{
+			getZoomForImage(image.getWidth(),image.getHeight());
+		}catch(NullPointerException e){
+			if(null == scaling){
+				Common.wait(500);
+				getZoomForImage(image.getWidth(),image.getHeight());
+			}
+		}
 		imagePanel = new ImagePanel(SCREENSHOTPATH);
 		imagePanel.setLayout(null);
 
@@ -314,7 +334,7 @@ public class UIViewPanel extends CustomPanel {
 
 		repaint();
 
-		Document document = null;
+		
 		String xml = null;
 		if(loadApp){
 			// 加载界面元素的xml
@@ -343,8 +363,6 @@ public class UIViewPanel extends CustomPanel {
 		elementSet = new ArrayList<ElementSet>();
 		recursiveElement(root, 0);
 		isLoad = true;
-		
-		
 		
 		//保存界面xml文件至temp目录
 		XMLWriter output = null;
@@ -425,6 +443,8 @@ public class UIViewPanel extends CustomPanel {
 
 						String[] id = RegExp.splitWord(hightElement.resource_id, ":id/");
 						elementId = id[1];
+						
+						//TODO
 						String step = "M录入:" + elementId + ":";
 						DebugEditFrame.setStepTextArea(step);
 					}
@@ -435,6 +455,26 @@ public class UIViewPanel extends CustomPanel {
 
 		return jf;
 	}
+	
+	
+	
+	
+	/**
+	 * 根据节点元素返回xpath路径
+	 * @param element 界面元素
+	 * @return xpath路径
+	 */
+	private String getXPath(Element element){
+		try {
+			xpath.evaluate("", document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			Print.log("xpath数据异常:", 2);			
+		}
+		return null;
+	}
+	
+	
+	
 
 	/**
 	 * 设置元素
@@ -445,13 +485,18 @@ public class UIViewPanel extends CustomPanel {
 	 */
 	private void setListElement(Element e, int reindex) throws ParameterException {
 		ElementSet es = new ElementSet();
+		es.element = e;
 		es.resource_id = e.attributeValue("resource-id");
 		es._class = e.attributeValue("class");
 		es._package = e.attributeValue("package");
-		es.index = e.attributeValue("index");
+		if(null == e.attributeValue("index")){
+			es.index = -1;
+		}else{
+			es.index = Integer.valueOf(e.attributeValue("index"));
+		}
 		String bounds = e.attributeValue("bounds");
 		es.bounds = bounds;
-
+		es.text = e.attributeValue("text");
 		if (bounds == null) {
 			return;
 		}
@@ -478,11 +523,18 @@ public class UIViewPanel extends CustomPanel {
 			if (es.x_start < x && es.x_end > x && es.y_start < y && es.y_end > y) {
 				if (z_order < es.z_order) {
 					tempES = es;
+					z_order = tempES.z_order;
+				}else if(z_order == es.z_order && es.index > tempES.index){
+					tempES = es;
 				}
 			}
 		}
 		if (tempES != null) {
 
+			if(null == imagePanel){
+				return;
+			}
+			
 			Print.debugLog("find it " + tempES.resource_id, 1);
 			if (elementHighIndex != tempES.element_index) {
 
@@ -503,7 +555,30 @@ public class UIViewPanel extends CustomPanel {
 				attributeModel.setValueAt(tempES.index, 3, 1);
 				attributeModel.setValueAt(tempES.bounds, 4, 1);
 				attributeModel.setValueAt(tempES.z_order, 5, 1);
+				attributeModel.setValueAt(tempES.text, 6, 1);
+				
+				LinkedList<String> rule = new LinkedList<String>();
+				rule.add("resource-id");
+				rule.add("text");
+				rule.add("index");
+				
+				XMLXPath xmlXpath = new XMLXPath(rule);
+				String xpath = xmlXpath.getXPath(tempES.element);
 
+				String[] list = RegExp.splitWord(xpath, ":");
+				xpath = list[0];
+				for(int i = 1 ; i < list.length ; i ++){
+					xpath = xpath + "\\:" + list[i];		
+				}
+				boolean searchIt = XMLXPath.search("//" + tempES.element.getName() + "[@resource-id='" + tempES.resource_id + "']", tempES.element);
+				if(searchIt){
+					String[] id = RegExp.splitWord(tempES.resource_id, ":id/");
+					if(id.length>1){
+						xpath = id[1];
+					}
+				}	
+				hightElement.xpath = xpath;
+				attributeModel.setValueAt(xpath, 7, 1);
 				attributeTable.setModel(attributeModel);
 
 				elementHighIndex = tempES.element_index;
@@ -556,17 +631,17 @@ public class UIViewPanel extends CustomPanel {
 		public void mouseClicked(MouseEvent e) {
 			if (hightElement != null) {
 				Print.debugLog("CLick", 1);
-				if (hightElement != null && !hightElement.resource_id.isEmpty()) {
-
-					String[] id = RegExp.splitWord(hightElement.resource_id, ":id/");
-					elementId = id[1];
-					String step = "M录入:" + elementId + ":";
+//				if (hightElement != null && !hightElement.resource_id.isEmpty()) {
+//
+//					String[] id = RegExp.splitWord(hightElement.resource_id, ":id/");
+//					elementId = id[1];
+					String step = "M录入:" + hightElement.xpath + ":";
 
 					if (hightElement._class.equalsIgnoreCase("android.widget.Button")) {
 						step = step + "[Click]";
 					}
 					DebugEditFrame.setStepTextArea(step);
-				}
+//				}
 			}
 		}
 
@@ -645,13 +720,14 @@ class ElementSet {
 	public int y_end = 0;
 	public int z_order = -1;
 	public String resource_id = "";
-	public String index = "";
+	public int index = -1;
 	public String _class = "";
 	public String _package = "";
 	public String xpath = "";
 	public int element_index = -1;
-
+	public Element element = null;
 	public String bounds = "";
+	public String text = "";
 
 }
 

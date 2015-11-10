@@ -20,6 +20,7 @@ import com.limn.app.driver.exception.AppiumException;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
 import com.limn.tool.regexp.RegExp;
+import com.limn.tool.variable.Variable;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
@@ -97,66 +98,88 @@ public class AppDriver {
 		
 	}
 
+//	/**
+//	 * 录入数据
+//	 * 
+//	 * @param element
+//	 * @param value
+//	 * @throws AppiumException
+//	 */
+//	public static void setValue(By by, String value) throws AppiumException {
+//		check();
+//		getAndroidElement(by).sendKeys(value);
+//	}
+
+	
 	/**
-	 * 录入数据
 	 * 
-	 * @param element
-	 * @param value
+	 * @param id or xpath 
+	 * @param value 支持变量
 	 * @throws AppiumException
 	 */
-	public static void setValue(By by, String value) throws AppiumException {
-		check();
-		getAndroidElement(by).sendKeys(value);
-	}
-
 	public static void setValue(String id, String value) throws AppiumException {
 		check();
+		
+		// 录入前先获取变量值
+		if (RegExp.findCharacters(value, "\\{.*\\}")){
+			String var = RegExp.filterString(id, "{}");
+			id = Variable.getExpressionValue(var);
+		}
+		
 		try{
-			String key = id;
-			if(!RegExp.findCharacters(id, "^" + AppDriver.APKInfo.getPackageName() + ":id/")){
-				key = AppDriver.APKInfo.getPackageName() + ":id/" + id;
-			}
-			getAndroidElement(By.id(key)).sendKeys(value);
+		
+			getAndroidElement(id).sendKeys(value);
 		} catch(AppiumException e){
 			throw new AppiumException(e.getMessage() + AppDriver.APKInfo.getPackageName() + ":id/" + id);
 		}
 	}
 
 	
-	private static AndroidElement getAndroidElement(By by) throws AppiumException{
-		AndroidElement ae = null;
-		
+
+	private static AndroidElement getAndroidElement(String key) throws AppiumException{
 		//判断元素是否存在多个
-		List<AndroidElement> listEle= driver.findElements(by);
-		if(listEle.size()>1){
+		List<AndroidElement> listEle = null;
+		if(RegExp.findCharacters(key, "^/")){
+			listEle = driver.findElementsByXPath(key);
+		}else{	
+			
+			
+			if(!RegExp.findCharacters(key, "^" + AppDriver.APKInfo.getPackageName() + ":id/")){
+				key = AppDriver.APKInfo.getPackageName() + ":id/" + key;
+			}
+			listEle= driver.findElements(By.id(key));
+		}
+		
+		if(null == listEle ){
+			throw new AppiumException("不存在:");
+		}else if(listEle.size()>1){
 			throw new AppiumException("存在多个此元素:");
 		}
-		
-		try{
-			ae = driver.findElement(by);
-		} catch(NoSuchElementException e){
-			throw new AppiumException("元素未找到:");
-		}
-		return ae;
+		return listEle.get(0);
 		
 	}
 	
 	
+//	/**
+//	 * 点击
+//	 * 
+//	 * @param by
+//	 * @throws AppiumException
+//	 */
+//	public static void click(By by) throws AppiumException {
+//		check();
+//		getAndroidElement(by).click();
+//	}
+
 	/**
-	 * 点击
 	 * 
-	 * @param by
+	 * @param id or xpath
 	 * @throws AppiumException
 	 */
-	public static void click(By by) throws AppiumException {
-		check();
-		getAndroidElement(by).click();
-	}
-
 	public static void click(String id) throws AppiumException {
 		check();
 		try{
-			getAndroidElement(By.id(AppDriver.APKInfo.getPackageName() + ":id/" + id)).click();
+			getAndroidElement(id).click();
 		} catch (AppiumException e) {
 			throw new AppiumException(e.getMessage() + AppDriver.APKInfo.getPackageName() + ":id/" + id);
 		}
@@ -180,7 +203,7 @@ public class AppDriver {
 	
 	/**
 	 * 长按控件
-	 * @param id
+	 * @param id or xpath
 	 * @param time
 	 * @throws AppiumException
 	 */
@@ -191,7 +214,7 @@ public class AppDriver {
 		check();
 
 		try{
-			AndroidElement ae = getAndroidElement(By.id(AppDriver.APKInfo.getPackageName() + ":id/" + id));
+			AndroidElement ae = getAndroidElement(id);
 			TouchAction action = new TouchAction(driver);
 			action.longPress(ae).waitAction(time).release().perform();
 		} catch (AppiumException e) {
@@ -199,25 +222,27 @@ public class AppDriver {
 		}	
 	}
 	
-	/**
-	 * 长按控件
-	 * @param by
-	 * @param time
-	 * @throws AppiumException
-	 */
-	public static void touchAction(By by, int time) throws AppiumException{
-		if(time == 0){
-			time = 1000;
-		}
-		check();
-		try{
-			AndroidElement ae = getAndroidElement(by);
-			TouchAction action = new TouchAction(driver);
-			action.longPress(ae).waitAction(time).release().perform();
-		} catch (AppiumException e) {
-			throw new AppiumException(e.getMessage() + by.toString());
-		}
-	}
+	
+	
+//	/**
+//	 * 长按控件
+//	 * @param by
+//	 * @param time
+//	 * @throws AppiumException
+//	 */
+//	public static void touchAction(By by, int time) throws AppiumException{
+//		if(time == 0){
+//			time = 1000;
+//		}
+//		check();
+//		try{
+//			AndroidElement ae = getAndroidElement(by);
+//			TouchAction action = new TouchAction(driver);
+//			action.longPress(ae).waitAction(time).release().perform();
+//		} catch (AppiumException e) {
+//			throw new AppiumException(e.getMessage() + by.toString());
+//		}
+//	}
 	
 
 	private static void check() throws AppiumException {
@@ -249,7 +274,7 @@ public class AppDriver {
 	 * 保存截图
 	 * @param bitMapPath
 	 */
-	public static String  screenshot(String bitMapPath) {
+	public static String screenshot(String bitMapPath) {
 		try {
 			check();
 		} catch (AppiumException e1) {
