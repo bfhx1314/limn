@@ -73,7 +73,7 @@ public class Variable {
 		}
 		if (expression.containsKey(key)){
 			String valueString = expression.get(key);
-			
+			Print.log("获取变量 " + key + ":" + valueString, 0);
 			return valueString;
 		}else{
 			Print.log("不存在变量：" + key, 2);

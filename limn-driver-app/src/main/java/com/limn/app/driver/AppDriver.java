@@ -81,7 +81,8 @@ public class AppDriver {
 		dcb.setCapability("appPackage", APKInfo.getPackageName());
 		dcb.setCapability("unicodeKeyboard", "true");
 		dcb.setCapability("resetKeyboard", "true");
-
+		//Didn't get a new command in 600 secs, shutting down...
+		dcb.setCapability("newCommandTimeout", 600);
 		try {
 			driver = new AndroidDriver<>(new URL("http://" + IP + "/wd/hub"), dcb);
 		} catch (MalformedURLException e) {
@@ -93,7 +94,6 @@ public class AppDriver {
 		}
 		AppDriver.HEIGTH = driver.manage().window().getSize().getHeight();
 		AppDriver.WIDTH = driver.manage().window().getSize().getWidth();
-
 		Common.wait(7000);
 		
 	}

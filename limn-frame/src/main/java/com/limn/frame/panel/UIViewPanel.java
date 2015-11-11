@@ -88,7 +88,7 @@ public class UIViewPanel extends CustomPanel {
 	private static JButton setXPathName = new JButton("设置别名");
 	private static JButton setSDK = new JButton("设置SDK");
 
-	private String elementId = null;
+//	private String elementId = null;
 
 	// 页面是否加载
 	public boolean isLoad = false;
@@ -165,9 +165,17 @@ public class UIViewPanel extends CustomPanel {
 					name = JOptionPane.showInputDialog(UIViewPanel.this, "设置别名", "");
 					if (name != null && !name.equals("")) {
 						HashMap<String, String> hm = DebugEditFrame.getXpathName();
+						String[] keys = RegExp.splitKeyWord(DebugEditFrame.getStepTextArea());
+						String elementId = null;
+						if(keys.length>1){
+							elementId = keys[1];
+						}else{
+							return;
+						}
 						if (hm.containsKey(name)) {
 							int status = JOptionPane.showConfirmDialog(UIViewPanel.this, "存在重复的关联属性:" + name + ",是否覆盖", "警告", JOptionPane.OK_CANCEL_OPTION);
 							if (status == 0) {
+								
 								DebugEditFrame.setXpathName(name, elementId);
 								flag = false;
 							}
@@ -420,41 +428,41 @@ public class UIViewPanel extends CustomPanel {
 		return jl;
 	}
 
-	private JTextField setFieldBoundsAtImage(int x, int y, int width, int height) {
-		JTextField jf = new JTextField();
-		jf.setOpaque(false);
-		jf.setBorder(BorderFactory.createLineBorder(Color.blue));
-		jf.setBounds(x, y, width, height);
-		jf.addFocusListener(new FocusListener() {
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				String step = DebugEditFrame.getStepTextArea();
-				String[] steps = RegExp.splitKeyWord(step);
-				String newStep = steps[0] + ":" + steps[1] + ":" + ((JTextField) e.getSource()).getText();
-				DebugEditFrame.setStepTextArea(newStep);
-			}
-
-			@Override
-			public void focusGained(FocusEvent e) {
-				if (hightElement != null) {
-					Print.log("CLick", 1);
-					if (hightElement != null && !hightElement.resource_id.isEmpty()) {
-
-						String[] id = RegExp.splitWord(hightElement.resource_id, ":id/");
-						elementId = id[1];
-						
-						//TODO
-						String step = "M录入:" + elementId + ":";
-						DebugEditFrame.setStepTextArea(step);
-					}
-				}
-
-			}
-		});
-
-		return jf;
-	}
+//	private JTextField setFieldBoundsAtImage(int x, int y, int width, int height) {
+//		JTextField jf = new JTextField();
+//		jf.setOpaque(false);
+//		jf.setBorder(BorderFactory.createLineBorder(Color.blue));
+//		jf.setBounds(x, y, width, height);
+//		jf.addFocusListener(new FocusListener() {
+//
+//			@Override
+//			public void focusLost(FocusEvent e) {
+//				String step = DebugEditFrame.getStepTextArea();
+//				String[] steps = RegExp.splitKeyWord(step);
+//				String newStep = steps[0] + ":" + steps[1] + ":" + ((JTextField) e.getSource()).getText();
+//				DebugEditFrame.setStepTextArea(newStep);
+//			}
+//
+//			@Override
+//			public void focusGained(FocusEvent e) {
+//				if (hightElement != null) {
+//					Print.log("CLick", 1);
+//					if (hightElement != null && !hightElement.resource_id.isEmpty()) {
+//
+//						String[] id = RegExp.splitWord(hightElement.resource_id, ":id/");
+//						elementId = id[1];
+//						
+//						//TODO
+//						String step = "M录入:" + elementId + ":";
+//						DebugEditFrame.setStepTextArea(step);
+//					}
+//				}
+//
+//			}
+//		});
+//
+//		return jf;
+//	}
 	
 	
 	

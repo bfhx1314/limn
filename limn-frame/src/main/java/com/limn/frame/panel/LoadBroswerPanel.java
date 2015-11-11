@@ -40,6 +40,7 @@ import com.limn.frame.debug.DebugEditFrame;
 import com.limn.renderer.WebElementCellRenderer;
 import com.limn.tool.common.Print;
 import com.limn.tool.regexp.RegExp;
+import com.limn.tool.variable.Variable;
 
 public class LoadBroswerPanel extends CustomPanel {
 
@@ -609,6 +610,7 @@ public class LoadBroswerPanel extends CustomPanel {
 		private String locator = null;
 		
 		public FindWebElement(String locator){
+			locator = Variable.resolve(locator);
 			this.locator = locator;	
 		}
 		
