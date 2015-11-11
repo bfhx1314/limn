@@ -209,7 +209,15 @@ public class BeforeTest implements Runnable {
 
 		Parameter.URL = testParameter.get("URL");
 //		Parameter.PLATVERSION = testParameter.get("Version");
-//		Parameter.BROWSERTYPE = testParameter.get("BrowserType");
+		
+		if(testParameter.get("BrowserType").equalsIgnoreCase("Chrome")){
+			Parameter.BROWSERTYPE = 2;
+		}else if(testParameter.get("BrowserType").equalsIgnoreCase("IE")){
+			Parameter.BROWSERTYPE = 3;
+		}else{
+			Parameter.BROWSERTYPE = 1;
+		}
+		
 		Parameter.EXECUTEMODE = testParameter.get("ExecuteMode");
 		Parameter.RUNMODE = testParameter.get("Computer");
 		

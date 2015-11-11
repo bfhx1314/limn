@@ -35,7 +35,9 @@ public class Variable {
 			getLocal();
 		}
 		if(expression.containsKey(key)){
-			expression.replace(key, value);
+//			expression.replace(key, value);
+			expression.remove(key);
+			expression.put(key, value);
 		}else{
 			expression.put(key, value);
 		}
@@ -48,7 +50,9 @@ public class Variable {
 			getLocal();
 		}
 		if(expression.containsKey(key)){
-			expression.replace(key, String.valueOf(value));
+//			expression.replace(key, String.valueOf(value));
+			expression.remove(key);
+			expression.put(key, String.valueOf(value));
 		}else{
 			expression.put(key, String.valueOf(value));
 		}

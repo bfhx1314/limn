@@ -279,16 +279,16 @@ public class Common {
 	    return date.getTime();
 	} 
 	
-	public static String getIP(String name){
+	public static String getIP(String name) {
 		InetAddress address = null;
 		try {
 			address = InetAddress.getByName(name);
 		} catch (UnknownHostException e) {
-			Print.log(e.getMessage(), 2);
-			Print.log("获取失败",2);
+			Print.log("获取失败本机IP失败", 3);
+			return "e.getMessage()";
 		}
-			return address.getHostAddress().toString();
-		}
+		return address.getHostAddress().toString();
+	}
 
 	/**
 	 * 百分比
