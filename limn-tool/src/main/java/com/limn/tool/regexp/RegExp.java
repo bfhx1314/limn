@@ -143,20 +143,25 @@ public class RegExp {
 	 * 实例
 	 */
 	public static void main(String[] args){
-		String url = "http://172.16.10.13/hoss-web/hoss-v2/app/account/login.html".replace("http://", "");
-		url = url.split("/")[0];
-		boolean aa = findCharacters("http://172.16.10.13/hoss-web/hoss-v2/app/account/login.html","http://.*/");
-		ArrayList<String> bb = matcherCharacters("http://172.16.10.13/hoss-web/hoss-v2/app/account/login.html","([a-z0-9][a-z0-9\\-]*?\\.(?:com|cn|net|org|gov|info|la|cc|co)(?:\\.(?:cn|jp))?)$");
-		String ip = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."  
-                +"(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."  
-                +"(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."  
-                +"(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
-		String ip1 = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])(\\.(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5][1-9\\d]|\\d)){3}";
-		String a = "登陆:\\:\\1:aaaaa";
-		a = "1.1.1.1";
-		System.out.println(RegExp.findCharacters(a, ip));
-		String[] b = RegExp.splitKeyWord(a);
-		System.out.println(b);
+//		String url = "http://172.16.10.13/hoss-web/hoss-v2/app/account/login.html".replace("http://", "");
+//		url = url.split("/")[0];
+//		boolean aa = findCharacters("http://172.16.10.13/hoss-web/hoss-v2/app/account/login.html","http://.*/");
+//		ArrayList<String> bb = matcherCharacters("http://172.16.10.13/hoss-web/hoss-v2/app/account/login.html","([a-z0-9][a-z0-9\\-]*?\\.(?:com|cn|net|org|gov|info|la|cc|co)(?:\\.(?:cn|jp))?)$");
+//		String ip = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."  
+//                +"(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."  
+//                +"(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."  
+//                +"(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
+//		String ip1 = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])(\\.(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5][1-9\\d]|\\d)){3}";
+//		String a = "登陆:\\:\\1:aaaaa";
+//		a = "1.1.1.1";
+//		System.out.println(RegExp.findCharacters(a, ip));
+//		String[] b = RegExp.splitKeyWord(a);
+//		System.out.println(b);\
+		
+		ArrayList a = RegExp.matcherCharacters("必须在报备1分钟后才能发起带看", "\\d{1,}");
+		System.out.println(a);
+		
+		
 	}
 	
 	

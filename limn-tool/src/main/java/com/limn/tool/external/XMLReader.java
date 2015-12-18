@@ -1,13 +1,15 @@
 package com.limn.tool.external;
 
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -41,7 +43,12 @@ public class XMLReader{
 			this.inputPath = inputPath;
 			try{
 				saxReader = new SAXReader();
-				document = saxReader.read(inputPath);		
+				File file = new File(inputPath);
+				if(file.exists() && file.isFile()){
+					document = saxReader.read(inputPath);
+				}else{
+					document = DocumentHelper.parseText(source);
+				}
 			}catch(DocumentException e){
 				System.out.println(e.getMessage());
 			}
@@ -52,7 +59,23 @@ public class XMLReader{
 				e.printStackTrace();
 			}
 		}
+
 	}
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * 取得XML中定义的Template个数
@@ -234,5 +257,41 @@ public class XMLReader{
 		return document.selectSingleNode("//" + element).getText();
 
 	}
+	
+	
+	private static String source ="<?xml version='1.0' encoding='utf-8'?>" +
+			"<QTP>" + 
+			"<Templates>" + 
+				"<Template id='s1' Core='s1'>" +
+					"<Computer></Computer>" +
+					"<IP></IP>" +
+					"<BrowserType></BrowserType>" +
+					"<URL></URL>" +
+					"<Middleware></Middleware>" +
+					"<Yigo></Yigo>" +
+					"<Version></Version>" +
+					"<ExcelPath></ExcelPath>" +
+					"<ExecuteMode></ExecuteMode>" +
+					"<SheetsNum></SheetsNum>" +
+					"<FrontSteps></FrontSteps>" +
+					"<InitDB></InitDB>" +
+					"<SqlData></SqlData>" +
+					"<FilePath></FilePath>" +
+				"</Template>" +
+			"</Templates>" +
+			"<Cores>" +
+				"<Core id='s1'>" +
+					"<server.path></server.path>" +
+					"<server.config></server.config>" +
+					"<server.dsn.dbtype></server.dsn.dbtype>" +
+					"<server.dsn.default></server.dsn.default>" +
+					"<server.dsn.description></server.dsn.description>" +
+					"<server.dsn.name></server.dsn.name>" +
+				"</Core>" +
+			"</Cores>" +
+			"</QTP>";
+	
+	
+	
 	
 }

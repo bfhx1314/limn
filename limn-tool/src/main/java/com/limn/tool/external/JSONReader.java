@@ -122,7 +122,7 @@ public class JSONReader {
 				res = ((JSONObject) res).get(key);
 			} else if (res instanceof JSONArray) {
 				res = ((JSONArray) res).get(Integer.valueOf(key));
-			}
+			} 
 		}
 		return res.toString();
 	}

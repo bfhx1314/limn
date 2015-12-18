@@ -57,10 +57,10 @@ public class StructureMethod {
         GetMethod getMethod = new UTF8GetMethod(url);
         getMethod.setQueryString(param);
 //        getMethod.addRequestHeader("Content-type" , "text/html; charset=utf-8");
-        try {
-			Print.debugLog("URL:" + getMethod.getURI(),4);
-		} catch (URIException e) {
-		}
+//        try {
+//			Print.debugLog("URL:" + getMethod.getURI(),4);
+//		} catch (URIException e) {
+//		}
         return getMethod;
 	}
 	
