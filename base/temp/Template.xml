@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Selenium> 
+  <Templates> 
+    <Template id="s1" Core="s1"> 
+      <Computer/>  
+      <IP/>  
+      <BrowserType/>  
+      <URL/>  
+      <Middleware/>  
+      <Version/>  
+      <ExcelPath/>  
+      <ExecuteMode/>  
+      <SheetsNum/>  
+      <FrontSteps/>  
+      <InitDB/>  
+      <SqlData/>  
+      <FilePath/>  
+      <EditExcelPath>D:\AutomationTest\AutoTestTool\deploy\testcase\OS\Apollo_OS_NewPortal_UIBase.xls</EditExcelPath> 
+    </Template> 
+  </Templates>  
+  <Cores> 
+    <Core id="s1"> 
+      <server.path/>  
+      <server.config/>  
+      <server.dsn.dbtype/>  
+      <server.dsn.default/>  
+      <server.dsn.description/>  
+      <server.dsn.name/> 
+    </Core> 
+  </Cores> 
+</Selenium>
