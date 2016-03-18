@@ -6,12 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 import com.limn.app.driver.exception.AppiumException;
-import com.limn.driver.common.OperateWindows;
-import com.limn.driver.exception.SeleniumFindException;
-import com.limn.frame.checkitems.CheckItems;
-import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
-import com.limn.tool.exception.ParameterException;
 import com.limn.tool.parameter.Parameter;
 
 /**

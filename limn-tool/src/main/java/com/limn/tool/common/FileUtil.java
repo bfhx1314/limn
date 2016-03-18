@@ -109,6 +109,18 @@ public class FileUtil {
 		return new File(filePath).getName();
 	}
 
+	/**
+	 * 获取文件后缀名
+	 * @param filePath
+	 * @return
+	 */
+	public static String getFileType(String filePath){
+		String fileName = getName(filePath);
+		String prefix = fileName.substring(fileName.lastIndexOf(".")+1);
+		return prefix;
+	}
+	
+	
 	@SuppressWarnings("resource")
 	public static long getSize(String filePath) throws IOException {
 		File f = new File(filePath);

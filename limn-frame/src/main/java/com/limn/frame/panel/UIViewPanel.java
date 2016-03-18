@@ -7,8 +7,6 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -30,8 +28,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -57,7 +53,6 @@ import com.limn.tool.exception.ParameterException;
 import com.limn.tool.external.XMLXPath;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
-import com.limn.tool.variable.Variable;
 
 public class UIViewPanel extends CustomPanel {
 
@@ -76,8 +71,6 @@ public class UIViewPanel extends CustomPanel {
 
 	// 高亮的元素标示
 	private int elementHighIndex = -1;
-
-	
 
 	// 定位元素的属性Table
 	private JScrollPane attributeJScroll = new JScrollPane();
@@ -100,8 +93,8 @@ public class UIViewPanel extends CustomPanel {
 	
 	//历史文件记录
 	// 屏幕截图存放位置
-	private String SCREENSHOTPATH = Parameter.DEFAULT_TEMP_PATH + "/Android_Screenshot.png";
-	private String androidXML = Parameter.DEFAULT_TEMP_PATH + "/androidui.xml";
+	private String SCREENSHOTPATH = Parameter.DEFAULT_TEMP_PATH + "/AppScreenshot.png";
+	private String androidXML = Parameter.DEFAULT_TEMP_PATH + "/AppUI.xml";
 	
 	
 	private Document document = null;
@@ -117,18 +110,18 @@ public class UIViewPanel extends CustomPanel {
 		
 		attributeModel.addColumn("属性");
 		attributeModel.addColumn("值");
-		attributeModel.addRow(new Object[] { "resource_id", "" });
-		attributeModel.addRow(new Object[] { "class", "" });
-		attributeModel.addRow(new Object[] { "package", "" });
 		attributeModel.addRow(new Object[] { "index", "" });
-		attributeModel.addRow(new Object[] { "bounds", "" });
 		attributeModel.addRow(new Object[] { "层级", "" });
-		attributeModel.addRow(new Object[] { "text", "" });
-		attributeModel.addRow(new Object[] { "XPath", "" });
+		attributeModel.addRow(new Object[] { "xpath", "" });
+		attributeModel.addRow(new Object[] { "", "" });
+		attributeModel.addRow(new Object[] { "", "" });
+		attributeModel.addRow(new Object[] { "", "" });
+		attributeModel.addRow(new Object[] { "", "" });
+		attributeModel.addRow(new Object[] { "", "" });
 
 		attributeTable.setModel(attributeModel);
 
-		attributeTable.setColumnModel(getColumn(attributeTable, new int[] { 90, 150 }));
+		attributeTable.setColumnModel(getColumn(attributeTable, new int[] { 60, 180 }));
 		attributeTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		attributeJScroll.setViewportView(attributeTable);
 
@@ -246,7 +239,11 @@ public class UIViewPanel extends CustomPanel {
 	 */
 	private void recursiveElement(Element element, int reindex) {
 		try {
+			if(AppDriver.AppType.equalsIgnoreCase("Android")){
 			setListElement(element, reindex);
+			}else if(AppDriver.AppType.equalsIgnoreCase("IOS")){
+				setListIOSElement(element, reindex);
+			}
 
 		} catch (ParameterException e1) {
 			e1.printStackTrace();
@@ -292,7 +289,7 @@ public class UIViewPanel extends CustomPanel {
 	public void loadUI(boolean loadApp) {
 
 		// 无法加载到SDKhome 直接退出
-		if (!checkSDKHome()) {
+		if (AppDriver.AppType.equalsIgnoreCase("Android") && !checkSDKHome()) {
 			return;
 		}
 
@@ -492,7 +489,7 @@ public class UIViewPanel extends CustomPanel {
 	 * @throws ParameterException
 	 */
 	private void setListElement(Element e, int reindex) throws ParameterException {
-		ElementSet es = new ElementSet();
+		AndroidElementSet es = new AndroidElementSet();
 		es.element = e;
 		es.resource_id = e.attributeValue("resource-id");
 		es._class = e.attributeValue("class");
@@ -523,6 +520,40 @@ public class UIViewPanel extends CustomPanel {
 		es.z_order = reindex;
 		elementSet.add(es);
 	}
+	
+	
+	private void setListIOSElement(Element e, int reindex) throws ParameterException {
+		IOSElementSet es = new IOSElementSet();
+		es.element = e;
+		es.name = e.attributeValue("name");
+		es.label = e.attributeValue("label");
+		es.dom = e.attributeValue("dom");
+		if(null == e.attributeValue("index")){
+			es.index = -1;
+		}else{
+			es.index = Integer.valueOf(e.attributeValue("index"));
+		}
+		es.text = e.attributeValue("text");
+		
+		Double x = e.attributeValue("x") == null?0:Double.valueOf(e.attributeValue("x"))*3;
+		Double y = e.attributeValue("y") == null?0:Double.valueOf(e.attributeValue("y"))*3;
+		Double width1 = e.attributeValue("width") == null?0:Double.valueOf(e.attributeValue("width"))*3;
+		Double height1 = e.attributeValue("height") == null?0:Double.valueOf(e.attributeValue("height"))*3;
+		
+		
+		es.x_start = new Double(new Double(x) / scaling.doubleValue()).intValue();
+		es.y_start = new Double(new Double(y) / scaling.doubleValue()).intValue();
+		
+		es.x_end = new Double(new Double(x + width1) / scaling.doubleValue()).intValue();
+		es.y_end = new Double(new Double(y + height1) / scaling.doubleValue()).intValue();
+
+		es.element_index = ++elementCount;
+		es.z_order = reindex;
+		elementSet.add(es);
+	}
+	
+	
+	
 
 	private void highlightElement(int x, int y) {
 		ElementSet tempES = null;
@@ -543,7 +574,7 @@ public class UIViewPanel extends CustomPanel {
 				return;
 			}
 			
-			Print.debugLog("find it " + tempES.resource_id, 1);
+//			Print.debugLog("find it " + tempES.resource_id, 1);
 			if (elementHighIndex != tempES.element_index) {
 
 				for (int i = 0; i < imagePanel.getComponentCount(); i++) {
@@ -556,14 +587,34 @@ public class UIViewPanel extends CustomPanel {
 				imagePanel.add(jl);
 				hightElement = tempES;
 				imagePanel.repaint();
-
-				attributeModel.setValueAt(tempES.resource_id, 0, 1);
-				attributeModel.setValueAt(tempES._class, 1, 1);
-				attributeModel.setValueAt(tempES._package, 2, 1);
-				attributeModel.setValueAt(tempES.index, 3, 1);
-				attributeModel.setValueAt(tempES.bounds, 4, 1);
-				attributeModel.setValueAt(tempES.z_order, 5, 1);
-				attributeModel.setValueAt(tempES.text, 6, 1);
+				
+				attributeModel.setValueAt(tempES.index, 0, 1);
+				attributeModel.setValueAt(tempES.z_order, 1, 1);
+				attributeModel.setValueAt(xpath, 2, 1);
+				if(AppDriver.AppType.equalsIgnoreCase("Android")){
+					attributeModel.setValueAt("resource_id", 3, 0);
+					attributeModel.setValueAt(((AndroidElementSet)tempES).resource_id, 3, 1);
+					attributeModel.setValueAt("class", 4, 0);
+					attributeModel.setValueAt(((AndroidElementSet)tempES)._class, 4, 1);
+					attributeModel.setValueAt("package", 5, 0);
+					attributeModel.setValueAt(((AndroidElementSet)tempES)._package, 5, 1);
+					attributeModel.setValueAt("bounds", 6, 0);
+					attributeModel.setValueAt(((AndroidElementSet)tempES).bounds, 6, 1);
+					attributeModel.setValueAt("text", 7, 0);
+					attributeModel.setValueAt(((AndroidElementSet)tempES).text, 7, 1);
+					
+				}else if(AppDriver.AppType.equalsIgnoreCase("IOS")){
+					attributeModel.setValueAt("dom", 3, 0);
+					attributeModel.setValueAt(((IOSElementSet)tempES).dom, 3, 1);
+					attributeModel.setValueAt("label", 4, 0);
+					attributeModel.setValueAt(((IOSElementSet)tempES).label, 4, 1);
+					attributeModel.setValueAt("name", 5, 0);
+					attributeModel.setValueAt(((IOSElementSet)tempES).name, 5, 1);
+					attributeModel.setValueAt("valid", 6, 0);
+					attributeModel.setValueAt(((IOSElementSet)tempES).valid, 6, 1);
+					attributeModel.setValueAt("value", 7, 0);
+					attributeModel.setValueAt(((IOSElementSet)tempES).value, 7, 1);
+				}
 				
 				LinkedList<String> rule = new LinkedList<String>();
 				rule.add("resource-id");
@@ -578,15 +629,19 @@ public class UIViewPanel extends CustomPanel {
 				for(int i = 1 ; i < list.length ; i ++){
 					xpath = xpath + "\\:" + list[i];		
 				}
-				boolean searchIt = XMLXPath.search("//" + tempES.element.getName() + "[@resource-id='" + tempES.resource_id + "']", tempES.element);
-				if(searchIt){
-					String[] id = RegExp.splitWord(tempES.resource_id, ":id/");
-					if(id.length>1){
-						xpath = id[1];
-					}
-				}	
+				if(AppDriver.AppType.equalsIgnoreCase("Android")){
+					boolean searchIt = XMLXPath.search(
+							"//" + tempES.element.getName() + "[@resource-id='" + ((AndroidElementSet)tempES).resource_id + "']",
+							tempES.element);
+					if (searchIt) {
+						String[] id = RegExp.splitWord(((AndroidElementSet)tempES).resource_id, ":id/");
+						if (id.length > 1) {
+							xpath = id[1];
+						}
+					}	
+				}
 				hightElement.xpath = xpath;
-				attributeModel.setValueAt(xpath, 7, 1);
+				
 				attributeTable.setModel(attributeModel);
 
 				elementHighIndex = tempES.element_index;
@@ -645,7 +700,7 @@ public class UIViewPanel extends CustomPanel {
 //					elementId = id[1];
 					String step = "M录入:" + hightElement.xpath + ":";
 
-					if (hightElement._class.equalsIgnoreCase("android.widget.Button")) {
+					if (AppDriver.AppType.equalsIgnoreCase("Android") && ((AndroidElementSet)hightElement)._class.equalsIgnoreCase("android.widget.Button")) {
 						step = step + "[Click]";
 					}
 					DebugEditFrame.setStepTextArea(step);
@@ -720,23 +775,35 @@ public class UIViewPanel extends CustomPanel {
  * @author limengnan
  * 
  */
-class ElementSet {
+class AndroidElementSet extends ElementSet {
 
+	public String resource_id = "";
+	public int index = -1;
+	public String _class = "";
+	public String _package = "";
+	public String bounds = "";
+	public String text = "";
+
+}
+class ElementSet {
 	public int x_start = 0;
 	public int y_start = 0;
 	public int x_end = 0;
 	public int y_end = 0;
 	public int z_order = -1;
-	public String resource_id = "";
 	public int index = -1;
-	public String _class = "";
-	public String _package = "";
-	public String xpath = "";
 	public int element_index = -1;
+	public String xpath = "";
 	public Element element = null;
-	public String bounds = "";
-	public String text = "";
+}
+class IOSElementSet extends ElementSet {
 
+	public String name = "";
+	public String label = "";
+	public String value = "";
+	public String dom = "";
+	public String valid = "";
+	public String text = "";
 }
 
 
