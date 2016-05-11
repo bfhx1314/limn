@@ -77,7 +77,7 @@ public class Test {
 	// 不是null 时, 标志执行场景还原
 	private String SR = null;
 	
-	public Test(HashMap<String, String> map,KeyWordDriver kwd) {
+	public Test(StartConfigBean startConfig,KeyWordDriver kwd) {
 
 		keyWordDriver = kwd;
 		if (Parameter.RUNMODE != null && Parameter.RUNMODE.equals("远程")) {
@@ -85,11 +85,11 @@ public class Test {
 		}
 
 		
-		if(!map.get("RunTestModel").equalsIgnoreCase("浏览器")){
+		if(!startConfig.getRunTestModel().equalsIgnoreCase("浏览器")){
 			
 			try {
 				isAPPScreenshot = true;
-				AppDriver.init(map.get("AppFilePath"), IP);
+				AppDriver.init(startConfig.getAppFilePath(), IP);
 			} catch (AppiumException e) {
 				Print.log(e.getMessage(), 2);
 				Print.log("用例停止执行", 2);
@@ -138,7 +138,7 @@ public class Test {
 		
 
 		// 是否提交服务器
-		if(map.containsKey("UploadResults") && Boolean.valueOf(map.get("UploadResults"))){
+		if(startConfig.getUploadResults()){
 			recordResult.addRecordData(new UploadServerData());
 		}
 		
@@ -164,10 +164,10 @@ public class Test {
 		// 测试结果集
 		recordResult.init();
 
-		if (map.containsKey("Specify") && map.get("Specify").equals("指定")) {
-			runTimeSheetNum = Integer.parseInt(map.get("SpecifySheet")) - 1;
-			runTimeRowNum = Integer.parseInt(map.get("SpecifyRow")) - 1;
-			runTimeStepNum = Integer.parseInt(map.get("SpecifyStep")) - 1;
+		if (startConfig.getSpecify().equals("指定")) {
+			runTimeSheetNum = Integer.parseInt(startConfig.getSpecifySheet()) - 1;
+			runTimeRowNum = Integer.parseInt(startConfig.getSpecifyRow()) - 1;
+			runTimeStepNum = Integer.parseInt(startConfig.getSpecifyStep()) - 1;
 			Print.log("指定Sheet:" + (runTimeSheetNum + 1), 0);
 			Print.log("指定Row:" + (runTimeRowNum + 1), 0);
 			Print.log("指定Step:" + (runTimeStepNum + 1), 0);
@@ -186,9 +186,9 @@ public class Test {
 //			RunLog.init(tc.getSheetLastRowNumber());
 //			executeTestCase();
 		} else { // 还没有处理是否执行前置用例
-			tc.activateSheet(Integer.parseInt(map.get("SheetsNum")) - 1);
-			runTimeSheetNum = Integer.parseInt(map.get("SheetsNum")) - 1;
-			if (map.get("FrontSteps").equals("需要")) {
+			tc.activateSheet(Integer.parseInt(startConfig.getSheetsNum()) - 1);
+			runTimeSheetNum = Integer.parseInt(startConfig.getSheetsNum()) - 1;
+			if (startConfig.getFrontSteps().equals("需要")) {
 				isRelate = true;
 				relate = tc.getTestCaseRelateNoByNo();
 			}

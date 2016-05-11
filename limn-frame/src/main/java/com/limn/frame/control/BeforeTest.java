@@ -27,8 +27,8 @@ import com.limn.tool.regexp.RegExp;
 public class BeforeTest implements Runnable {
 	
 	//测试属性
-	private HashMap<String, String> testParameter = null;
-
+//	private HashMap<String, String> testParameter = null;
+	private StartConfigBean startConfig = null;
 //	private boolean update = true;
 	
 	private KeyWordDriver keyWordDriver = null;
@@ -47,7 +47,8 @@ public class BeforeTest implements Runnable {
 	//本地化的RunLog
 	public BeforeTest(HashMap<String, String> map,KeyWordDriver kwd, boolean isLoop) {
 		this.isLoop = isLoop;
-		testParameter = map;
+//		testParameter = map;
+		startConfig = getStartConfigByMap(map);
 		keyWordDriver = kwd;
 //		update = false;
 		beforeTest();
@@ -56,12 +57,63 @@ public class BeforeTest implements Runnable {
 	//连接服务器 RunLog
 	public BeforeTest(HashMap<String, String> map,Socket socket,KeyWordDriver kwd, boolean isLoop) {
 		this.isLoop = isLoop;
-		testParameter = map;
+		startConfig = getStartConfigByMap(map);
 		keyWordDriver = kwd;
 		this.socket = socket;
 		beforeTest();
 	}
 	
+	
+	/**
+	 * 转换
+	 * @param map
+	 * @return
+	 */
+	private StartConfigBean getStartConfigByMap(HashMap<String, String> map){
+		StartConfigBean scb = new StartConfigBean();
+		scb.setAppFilePath(map.get("AppFilePath"));
+		scb.setBrowserType(map.get("BrowserType"));
+		scb.setComputer(map.get("Computer"));
+		scb.setDeBug(Boolean.valueOf(map.get("Debug")));
+		scb.setExcelPath(map.get("ExcelPath"));
+		scb.setExecuteMode(map.get("ExecuteMode"));
+		scb.setFrontSteps(map.get("FrontSteps"));
+		scb.setInitDB(map.get("InitDB"));
+		scb.setIP(map.get("IP"));
+		scb.setNotServer(Boolean.valueOf(map.get("NotServer")));
+		scb.setRunTestModel(map.get("RunTestModel"));
+		scb.setSheetsNum(map.get("SheetsNum"));
+		scb.setSpecify(map.get("Specify"));
+		scb.setSpecifyRow(map.get("SpecifyRow"));
+		scb.setSpecifySheet(map.get("SpecifySheet"));
+		scb.setSpecifyStep(map.get("SpecifyStep"));
+		scb.setSqlData(map.get("SqlData"));
+		scb.setStartPlatform(map.get("StartPlatform"));
+		scb.setUploadResults(Boolean.valueOf(map.get("UploadResults")));
+		scb.setURL(map.get("URL"));
+		
+		return scb;
+	}
+	
+	
+	
+	//本地化的RunLog
+	public BeforeTest(StartConfigBean scb,KeyWordDriver kwd, boolean isLoop) {
+		this.isLoop = isLoop;
+		startConfig = scb;
+		keyWordDriver = kwd;
+//		update = false;
+		beforeTest();
+	}
+	
+	//连接服务器 RunLog
+	public BeforeTest(StartConfigBean scb,Socket socket,KeyWordDriver kwd, boolean isLoop) {
+		this.isLoop = isLoop;
+		startConfig = scb;
+		keyWordDriver = kwd;
+		this.socket = socket;
+		beforeTest();
+	}
 	
 	private void beforeTest(){
 		Print.log("***************开始分割线***************", 4);
@@ -111,9 +163,9 @@ public class BeforeTest implements Runnable {
 	
 	
 	private void initData() throws ParameterException{
-		if(testParameter.get("InitDB").equals("需要")){
+		if(startConfig.getInitDB().equals("需要")){
 //			dropAllTable();
-			String sqlPath = testParameter.get("SqlData");
+			String sqlPath = startConfig.getSqlData();
 			if(sqlPath != ""){
 				//TODO sql文件的执行
 //				ExecuteSQL.execute(sqlPath);
@@ -183,7 +235,7 @@ public class BeforeTest implements Runnable {
 //		Parameter.YIGOPATH = testParameter.get("Yigo");
 		
 
-		Parameter.TESTCASEPATH = testParameter.get("ExcelPath");
+		Parameter.TESTCASEPATH = startConfig.getExcelPath();
 		if(!Common.isAbsolutePath(Parameter.TESTCASEPATH)){
 			Parameter.TESTCASEPATH  = Parameter.DFAULT_TEST_PATH + "/testcase/" + Parameter.TESTCASEPATH;
 		}
@@ -207,37 +259,37 @@ public class BeforeTest implements Runnable {
 		
 		//TODO
 
-		Parameter.URL = testParameter.get("URL");
+		Parameter.URL = startConfig.getURL();
 //		Parameter.PLATVERSION = testParameter.get("Version");
 		
-		if(testParameter.get("BrowserType").equalsIgnoreCase("Chrome")){
+		if(startConfig.getBrowserType().equalsIgnoreCase("Chrome")){
 			Parameter.BROWSERTYPE = 2;
-		}else if(testParameter.get("BrowserType").equalsIgnoreCase("IE")){
+		}else if(startConfig.getBrowserType().equalsIgnoreCase("IE")){
 			Parameter.BROWSERTYPE = 3;
 		}else{
 			Parameter.BROWSERTYPE = 1;
 		}
 		
-		Parameter.EXECUTEMODE = testParameter.get("ExecuteMode");
-		Parameter.RUNMODE = testParameter.get("Computer");
+		Parameter.EXECUTEMODE = startConfig.getExecuteMode();
+		Parameter.RUNMODE = startConfig.getComputer();
 		
-		Parameter.REMOTEIP = testParameter.get("IP");
+		Parameter.REMOTEIP = startConfig.getIP();
 //		Parameter.MIDDLEWARE = testParameter.get("Middleware");
 
-
-		if(testParameter.containsKey("NotServer")){
-			Parameter.NOTSERVER = Boolean.parseBoolean(testParameter.get("NotServer"));
-		}else{
-			Parameter.NOTSERVER = false;
-		}
+		
+//		if(testParameter.containsKey("NotServer")){
+		Parameter.NOTSERVER = startConfig.isNotServer();
+//		}else{
+//			Parameter.NOTSERVER = false;
+//		}
 		
 		
 		
-		if(testParameter.containsKey("Debug")){
-			Parameter.DEBUGMODE = Boolean.parseBoolean(testParameter.get("Debug"));
-		}else{
-			Parameter.DEBUGMODE = false;
-		}
+//		if(testParameter.containsKey("Debug")){
+			Parameter.DEBUGMODE = startConfig.isDebug();
+//		}else{
+//			Parameter.DEBUGMODE = false;
+//		}
 //		if (Parameter.PLATVERSION.equals("1.4")){
 //			Parameter.UPDATEPATH = Conf.getConfByElement("update_path_1_4");
 //		}else if(Parameter.PLATVERSION.equals("1.6")){
@@ -254,7 +306,7 @@ public class BeforeTest implements Runnable {
 	
 	private void createResultFolder(){
 		String resultPath = null;
-		if(testParameter.get("UploadResults").equals("true")){
+		if(startConfig.getUploadResults()){
 			//TODO 上传服务器相关的
 //			resultPath = Variable.resolve("[UploadServer_Result_Path]");
 		}else{
@@ -304,15 +356,16 @@ public class BeforeTest implements Runnable {
 			
 			for (int i = 0; i < xmlReader.getTemplateCount(); i++) {
 				HashMap<String,String> templateMap = xmlReader.getNodeValueByTemplateIndex(i);
-				testParameter = templateMap;
+//				testParameter = templateMap;
+				startConfig = getStartConfigByMap(templateMap);
 				beforeTest();
-				new Test(testParameter,keyWordDriver);
+				new Test(startConfig,keyWordDriver);
 			}
 		}else{
-			new Test(testParameter,keyWordDriver);
+			new Test(startConfig,keyWordDriver);
 		}
 		if(isLoop){
-			new Thread(new BeforeTest(testParameter,keyWordDriver,isLoop)).start();
+			new Thread(new BeforeTest(startConfig,keyWordDriver,isLoop)).start();
 		}
 
 
