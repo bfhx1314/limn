@@ -37,6 +37,8 @@ public class DateFormat {
 		return String.valueOf(System.currentTimeMillis());
 	}
 	
+	
+	
 	/**
 	 * 获取今日以后、以前的日期
 	 * @param num 今天开始计算的天数,负数为之前

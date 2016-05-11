@@ -15,7 +15,8 @@ public class Expression {
 
 	public static void setExpressionName(String key, String value) {
 		if(expression.containsKey(key)){
-			expression.replace(key, value);
+			expression.remove(key);
+			expression.put(key, value);
 		}else{
 			expression.put(key, value);
 		}
