@@ -10,8 +10,8 @@ public class StartConfigBean {
 	private String ExcelPath = null;
 	private String ExecuteMode = null;
 	private String SheetsNum = null;
-	private String FrontSteps = null;
-	private String InitDB = null;
+	private boolean FrontSteps = false;
+	private boolean InitDB = false;
 	private String SqlData = null;
 	private String Computer = null;
 	private String IP = null;
@@ -108,8 +108,8 @@ public class StartConfigBean {
 	 * 设置测试的URL地址
 	 * @param uRL
 	 */
-	public void setURL(String uRL) {
-		URL = uRL;
+	public void setURL(String URL) {
+		this.URL = URL;
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class StartConfigBean {
 	 * 是否执行前置步骤
 	 * @return "需要", "不需要"
 	 */
-	public String getFrontSteps() {
+	public boolean getFrontSteps() {
 		return FrontSteps;
 	}
 	
@@ -172,15 +172,15 @@ public class StartConfigBean {
 	 * 设置是否需要执行前置步骤
 	 * @param frontSteps "需要", "不需要"
 	 */
-	public void setFrontSteps(String frontSteps) {
+	public void setFrontSteps(boolean frontSteps) {
 		FrontSteps = frontSteps;
 	}
 
-	public String getInitDB() {
+	public boolean getInitDB() {
 		return InitDB;
 	}
 
-	public void setInitDB(String initDB) {
+	public void setInitDB(boolean initDB) {
 		InitDB = initDB;
 	}
 

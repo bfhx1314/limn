@@ -259,8 +259,15 @@ public class UIViewPanel extends CustomPanel {
 		}
 	}
 
-
+	/**
+	 * 检查Android的SDK目录
+	 * @return
+	 */
 	private boolean checkSDKHome() {
+		//如果是IOS测试 无需检查
+		if(AppDriver.AppType.equalsIgnoreCase("IOS")){
+			return true;
+		}
 		boolean isLoad = false;
 		if (System.getProperty("com.android.uiautomator.bindir") == null) {
 			if (Parameter.OS.equalsIgnoreCase("Windows")) {
@@ -756,7 +763,7 @@ public class UIViewPanel extends CustomPanel {
 				getZoomForImage(image.getWidth(),image.getHeight());
 				int width = new Double(image.getWidth() / scaling.doubleValue()).intValue();
 				int height = new Double(image.getHeight() / scaling.doubleValue()).intValue();
-				image1 = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+				image1 = image.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING);
 			} catch (IOException e) {
 
 				e.printStackTrace();

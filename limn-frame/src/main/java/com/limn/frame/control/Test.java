@@ -188,7 +188,7 @@ public class Test {
 		} else { // 还没有处理是否执行前置用例
 			tc.activateSheet(Integer.parseInt(startConfig.getSheetsNum()) - 1);
 			runTimeSheetNum = Integer.parseInt(startConfig.getSheetsNum()) - 1;
-			if (startConfig.getFrontSteps().equals("需要")) {
+			if (startConfig.getFrontSteps()) {
 				isRelate = true;
 				relate = tc.getTestCaseRelateNoByNo();
 			}

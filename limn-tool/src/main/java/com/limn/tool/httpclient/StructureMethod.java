@@ -139,7 +139,7 @@ public class StructureMethod {
 		for (String key : nameValue.keySet()) {
 			if (null != nameValue.get(key)) {
 				String value = nameValue.get(key);
-				if (RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) {
+				if (RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2}")) {
 					value = String.valueOf(Common.getParseTimeStamp(value));
 				}
 				// try {
@@ -168,7 +168,7 @@ public class StructureMethod {
 		for (String key : nameValue.keySet()) {
 			if (null != nameValue.get(key)) {
 				String value = nameValue.get(key);
-				if (RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) {
+				if (RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2}")) {
 					value = String.valueOf(Common.getParseTimeStamp(value));
 				}
 				try {
@@ -196,13 +196,12 @@ public class StructureMethod {
 		int i = 0;
 		for (String key : nameValue.keySet()) {
 			if (null != nameValue.get(key)) {
-				@SuppressWarnings("deprecation")
-				String value = "error";
-				try {
-					value = URLEncoder.encode(nameValue.get(key), "utf-8");
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
+				String value = nameValue.get(key);
+//				try {
+//					value = URLEncoder.encode(nameValue.get(key), "utf-8");
+//				} catch (UnsupportedEncodingException e) {
+//					e.printStackTrace();
+//				}
 				// if(RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2}
 				// \\d{2}:\\d{2}:\\d{2}")){
 				// value = String.valueOf(Common.getParseTimeStamp(value));

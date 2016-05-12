@@ -703,10 +703,10 @@ public class ConsoleFrame extends JFrame {
 	
 	/**
 	 * 配置的属性文件
-	 * @param config
+	 * @param StartConfigBean
 	 * @param isLoop  是否循环执行
 	 */
-	public void startByConfigXML(StartConfigBean scb, boolean isLoop){
+	public void startByStartConfigBean(StartConfigBean scb, boolean isLoop){
 		new Thread(new BeforeTest(scb, keyWordDriver, isLoop)).start();
 	}
 	
