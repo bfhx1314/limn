@@ -53,6 +53,7 @@ public class Assert {
 			Print.debugLog(annotate + ":PASS", 1);
 			executePass++;
 			executePassAll++;
+			return;
 		}else if(null != actual && null == expected){
 			Print.log(annotate + "FAIL", 2);
 			Print.log("expected:[null] but found [" + actual + "]", 2);

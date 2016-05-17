@@ -5,9 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.codec.Encoder;
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
@@ -19,6 +22,9 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
 
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
@@ -46,7 +52,12 @@ public class StructureMethod {
 		method.setRequestBody(param);
 		return method;
 	}
-
+	
+	
+	public static HttpGet getGetMethod(HashMap<String, String> param, String url ) {
+		return getGetMethod(param, url,false);
+	}
+	
 	/**
 	 * 获取GetMethod
 	 * 
@@ -56,16 +67,42 @@ public class StructureMethod {
 	 *            接口地址
 	 * @return PostMethod
 	 */
-	public static GetMethod getGetMethod(NameValuePair[] param, String url) {
-
-		GetMethod getMethod = new UTF8GetMethod(url);
-		getMethod.setQueryString(param);
-		// getMethod.addRequestHeader("Content-type" , "text/html;
-		// charset=utf-8");
-		// try {
-		// Print.debugLog("URL:" + getMethod.getURI(),4);
-		// } catch (URIException e) {
-		// }
+	public static HttpGet getGetMethod(HashMap<String, String> param, String url , boolean changeTime) {
+		List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>(); 
+		for (String key : param.keySet()) {
+			try {
+				String value = param.get(key);
+				if(changeTime){
+					if (RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2}")) {
+						value = String.valueOf(Common.getParseTimeStamp(value));
+					}
+				}
+				params.add(new BasicNameValuePair(key, URLEncoder.encode(param.get(key),"utf-8")));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+//			if (key != null) {
+//				if (i > 0) {
+//					buf.append("&");
+//				}
+//				try {
+//					buf.append(URLEncoder.encode(key, "utf-8"));
+//
+////					buf.append(key);
+//					buf.append("=");
+//					if (param.get(key) != null) {
+//						buf.append(URLEncoder.encode(param.get(key), "utf-8"));
+//						// buf.append(param.get(key));
+//					}
+//				} catch (UnsupportedEncodingException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//			i++;
+		}
+		String uRL = URLEncodedUtils.format(params, "utf-8");  
+		HttpGet getMethod = new HttpGet(url + "?" + uRL);
 		return getMethod;
 	}
 
@@ -197,14 +234,11 @@ public class StructureMethod {
 		for (String key : nameValue.keySet()) {
 			if (null != nameValue.get(key)) {
 				String value = nameValue.get(key);
-//				try {
-//					value = URLEncoder.encode(nameValue.get(key), "utf-8");
-//				} catch (UnsupportedEncodingException e) {
-//					e.printStackTrace();
-//				}
-				// if(RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2}
-				// \\d{2}:\\d{2}:\\d{2}")){
-				// value = String.valueOf(Common.getParseTimeStamp(value));
+				// try {
+				// value = URLEncoder.encode(value, "utf-8");
+				// } catch (UnsupportedEncodingException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
 				// }
 				param[i] = new NameValuePair(key, value);
 				i++;
