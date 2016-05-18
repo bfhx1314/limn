@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +18,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -55,7 +57,7 @@ public class StructureMethod {
 	
 	
 	public static HttpGet getGetMethod(HashMap<String, String> param, String url ) {
-		return getGetMethod(param, url,false);
+		return getGetMethod(param,url,false);
 	}
 	
 	/**
@@ -68,41 +70,51 @@ public class StructureMethod {
 	 * @return PostMethod
 	 */
 	public static HttpGet getGetMethod(HashMap<String, String> param, String url , boolean changeTime) {
-		List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>(); 
-		for (String key : param.keySet()) {
+		
+		StringBuffer buf = new StringBuffer();
+		int i = 0;
+		
+		for(String key:param.keySet()){
+			if (key != null) {
+			if (i > 0) {
+				buf.append("&");
+			}
 			try {
-				String value = param.get(key);
-				if(changeTime){
-					if (RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2}")) {
-						value = String.valueOf(Common.getParseTimeStamp(value));
-					}
+//				CharsetEncoder encoder = CharsetEncoder.
+				buf.append(URLEncoder.encode(key, "utf-8"));
+
+//				buf.append(key);
+				buf.append("=");
+				if (param.get(key) != null) {
+//					buf.append(URLEncoder.encode(param.get(key), "utf-8"));
+					 buf.append(param.get(key));
 				}
-				params.add(new BasicNameValuePair(key, URLEncoder.encode(param.get(key),"utf-8")));
 			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-//			if (key != null) {
-//				if (i > 0) {
-//					buf.append("&");
-//				}
-//				try {
-//					buf.append(URLEncoder.encode(key, "utf-8"));
-//
-////					buf.append(key);
-//					buf.append("=");
-//					if (param.get(key) != null) {
-//						buf.append(URLEncoder.encode(param.get(key), "utf-8"));
-//						// buf.append(param.get(key));
-//					}
-//				} catch (UnsupportedEncodingException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//			i++;
 		}
-		String uRL = URLEncodedUtils.format(params, "utf-8");  
-		HttpGet getMethod = new HttpGet(url + "?" + uRL);
+		i++;
+		}
+		
+		
+		
+//		List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>(); 
+//		for (String key : param.keySet()) {
+//			try {
+//				String value = param.get(key);
+//				if(changeTime){
+//					if (RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2}")) {
+//						value = String.valueOf(Common.getParseTimeStamp(value));
+//					}
+//				}
+//				params.add(new BasicNameValuePair(key, URLEncoder.encode(param.get(key),"utf-8")));
+//			} catch (UnsupportedEncodingException e) {
+//				e.printStackTrace();
+//			}
+//		
+//		String uRL = URLEncodedUtils.format(params, "utf-8");  
+		HttpGet getMethod = new HttpGet(url + "?" + buf);
 		return getMethod;
 	}
 

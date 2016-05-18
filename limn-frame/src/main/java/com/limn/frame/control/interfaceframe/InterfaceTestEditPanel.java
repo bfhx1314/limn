@@ -36,7 +36,6 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
 import com.limn.tool.external.JSONViewer;
-import com.limn.tool.httpclient.HttpClientCommon;
 
 
 public class InterfaceTestEditPanel extends JPanel {
@@ -268,10 +267,10 @@ public class InterfaceTestEditPanel extends JPanel {
 			}
 			
 			
-			String result = HttpClientCommon.getResult(ipValue, Integer.valueOf(portValue), urlValue, data);
-			System.out.println(result);
+//			String result = HttpClientCommon.getResult(ipValue, Integer.valueOf(portValue), urlValue, data);
+//			System.out.println(result);
 			
-			responseJsonJScroll.setViewportView(new JSONViewer(result));
+//			responseJsonJScroll.setViewportView(new JSONViewer(result));
 		}
 	}
 	
