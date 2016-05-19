@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.limn.tool</groupId>
 	<artifactId>limn-tool</artifactId>
-	<version>1.0</version>
+	<version>1.0-SNAPSHOT</version>
 	<parent>
 		<groupId>com.limn.main</groupId>
 		<artifactId>limn-main</artifactId>
@@ -62,4 +62,5 @@
 		</dependency>
 
 	</dependencies>
+	
 </project>
