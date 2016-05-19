@@ -87,6 +87,12 @@ public class StructureMethod {
 				buf.append("=");
 				if (param.get(key) != null) {
 //					buf.append(URLEncoder.encode(param.get(key), "utf-8"));
+					String value = param.get(key);
+					if(changeTime){
+						if (RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2}")) {
+							value = String.valueOf(Common.getParseTimeStamp(value));
+						}
+					}
 					 buf.append(param.get(key));
 				}
 			} catch (UnsupportedEncodingException e) {

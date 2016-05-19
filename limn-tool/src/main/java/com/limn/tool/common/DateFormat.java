@@ -37,6 +37,10 @@ public class DateFormat {
 		return String.valueOf(System.currentTimeMillis());
 	}
 	
+	public static long getCurrentTimeMillisByLong(){
+		return System.currentTimeMillis();
+	}
+	
 	
 	
 	/**
