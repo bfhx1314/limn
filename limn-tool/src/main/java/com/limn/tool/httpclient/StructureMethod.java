@@ -60,6 +60,15 @@ public class StructureMethod {
 		return getGetMethod(param,url,false);
 	}
 	
+	
+	public static void main(String[] args){
+		HashMap<String, String> param = new HashMap<String, String>();
+		param.put("data", "2015-02-02 11:11:11");
+		StructureMethod.getGetMethod(param, "aa", true);
+	}
+	
+	
+	
 	/**
 	 * 获取GetMethod
 	 * 
@@ -89,7 +98,7 @@ public class StructureMethod {
 //					buf.append(URLEncoder.encode(param.get(key), "utf-8"));
 					String value = param.get(key);
 					if(changeTime){
-						if (RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2}")) {
+						if (RegExp.findCharacters(value, "\\d{4}-\\d{1,2}-\\d{1,2}")) {
 							value = String.valueOf(Common.getParseTimeStamp(value));
 						}
 					}

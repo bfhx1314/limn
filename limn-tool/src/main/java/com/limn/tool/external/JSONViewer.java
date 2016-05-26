@@ -15,6 +15,13 @@ import net.sf.json.JSONObject;
 public class JSONViewer extends JTree {
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
+
 	public JSONViewer(JSONObject json) {	
 		
 		super(decodeJSONObject(json));

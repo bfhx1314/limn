@@ -4,12 +4,9 @@ package com.limn.tool.external;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.commons.io.IOUtils;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -61,20 +58,6 @@ public class XMLReader{
 		}
 
 	}
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	/**
