@@ -54,81 +54,87 @@ public class StructureMethod {
 		method.setRequestBody(param);
 		return method;
 	}
-	
-	
-	public static HttpGet getGetMethod(HashMap<String, String> param, String url ) {
-		return getGetMethod(param,url,false);
+
+	public static HttpGet getGetMethod(HashMap<String, String> param, String url) {
+		return getGetMethod(param, url, false);
 	}
-	
-	
-	public static void main(String[] args){
+
+	public static void main(String[] args) {
 		HashMap<String, String> param = new HashMap<String, String>();
-		param.put("data", "2015-02-02 11:11:11");
-		StructureMethod.getGetMethod(param, "aa", true);
+		param.put("data", "2015-02-02 11:11:11{");
+		try {
+			param.put("data1", URLEncoder.encode("2015-02-02 11:11:11{", "utf-8"));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		param.put("data2", "xxxxxx");
+		
+		StructureMethod.getGetMethod(param, "aa", false);
 	}
+
 	
 	
 	
 	/**
 	 * 获取GetMethod
-	 * 
-	 * @param param
-	 *            所有参数
-	 * @param url
-	 *            接口地址
+	 * @param param  所有参数
+	 * @param url 接口地址
 	 * @return PostMethod
 	 */
-	public static HttpGet getGetMethod(HashMap<String, String> param, String url , boolean changeTime) {
-		
+	public static HttpGet getGetMethod(HashMap<String, String> param, String url, boolean changeTime) {
+
 		StringBuffer buf = new StringBuffer();
 		int i = 0;
-		
-		for(String key:param.keySet()){
-			if (key != null) {
-			if (i > 0) {
-				buf.append("&");
-			}
-			try {
-//				CharsetEncoder encoder = CharsetEncoder.
-				buf.append(URLEncoder.encode(key, "utf-8"));
 
-//				buf.append(key);
-				buf.append("=");
-				if (param.get(key) != null) {
-//					buf.append(URLEncoder.encode(param.get(key), "utf-8"));
-					String value = param.get(key);
-					if(changeTime){
-						if (RegExp.findCharacters(value, "\\d{4}-\\d{1,2}-\\d{1,2}")) {
-							value = String.valueOf(Common.getParseTimeStamp(value));
-						}
-					}
-					 buf.append(param.get(key));
+		for (String key : param.keySet()) {
+			if (key != null) {
+				if (i > 0) {
+					buf.append("&");
 				}
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				try {
+					buf.append(URLEncoder.encode(key, "utf-8"));
+					buf.append("=");
+					if (param.get(key) != null) {
+						String value = param.get(key);
+						if (changeTime) {
+							if (RegExp.findCharacters(value, "\\d{4}-\\d{1,2}-\\d{1,2}")) {
+								value = String.valueOf(Common.getParseTimeStamp(value));
+							}
+						}
+						if (URLDecoder.decode(value, "UTF-8").equalsIgnoreCase(value)) {
+							if (RegExp.findCharacters(value, "[^A-Za-z0-9]{1,}")) {
+								value = URLEncoder.encode(value, "utf-8");
+							}
+						}
+						buf.append(value);
+					}
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
 			}
+			i++;
 		}
-		i++;
-		}
 		
-		
-		
-//		List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>(); 
-//		for (String key : param.keySet()) {
-//			try {
-//				String value = param.get(key);
-//				if(changeTime){
-//					if (RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2}")) {
-//						value = String.valueOf(Common.getParseTimeStamp(value));
-//					}
-//				}
-//				params.add(new BasicNameValuePair(key, URLEncoder.encode(param.get(key),"utf-8")));
-//			} catch (UnsupportedEncodingException e) {
-//				e.printStackTrace();
-//			}
-//		
-//		String uRL = URLEncodedUtils.format(params, "utf-8");  
+//		System.out.println(buf);
+
+		// List<BasicNameValuePair> params = new
+		// ArrayList<BasicNameValuePair>();
+		// for (String key : param.keySet()) {
+		// try {
+		// String value = param.get(key);
+		// if(changeTime){
+		// if (RegExp.findCharacters(value, "\\d{4}-\\d{2}-\\d{2}")) {
+		// value = String.valueOf(Common.getParseTimeStamp(value));
+		// }
+		// }
+		// params.add(new BasicNameValuePair(key,
+		// URLEncoder.encode(param.get(key),"utf-8")));
+		// } catch (UnsupportedEncodingException e) {
+		// e.printStackTrace();
+		// }
+		//
+		// String uRL = URLEncodedUtils.format(params, "utf-8");
 		HttpGet getMethod = new HttpGet(url + "?" + buf);
 		return getMethod;
 	}
