@@ -260,7 +260,7 @@ public class Common {
 			}
 			number = diffStr + number;
 		}else{
-			number = number.substring(diff);
+			number = number.substring(Math.abs(diff));
 		}
 		return number;
 	}
