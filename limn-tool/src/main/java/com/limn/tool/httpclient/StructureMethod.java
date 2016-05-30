@@ -61,15 +61,13 @@ public class StructureMethod {
 
 	public static void main(String[] args) {
 		HashMap<String, String> param = new HashMap<String, String>();
-		param.put("data", "2015-02-02 11:11:11{");
+		param.put("data", "经纪管家账号1发的群聊红包-输入30个汉字  测试输入30个汉字%测试输入30个汉字&也输入空格和特殊字符");
 		try {
 			param.put("data1", URLEncoder.encode("2015-02-02 11:11:11{", "utf-8"));
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		param.put("data2", "xxxxxx");
-		
+		param.put("dd", "xxxxxllll11122");
 		StructureMethod.getGetMethod(param, "aa", false);
 	}
 
@@ -102,7 +100,13 @@ public class StructureMethod {
 								value = String.valueOf(Common.getParseTimeStamp(value));
 							}
 						}
-						if (URLDecoder.decode(value, "UTF-8").equalsIgnoreCase(value)) {
+						String decode = value;
+						try{
+							decode = URLDecoder.decode(value, "UTF-8");
+						}catch(IllegalArgumentException e){
+							decode = value;
+						} 						
+						if (decode.equalsIgnoreCase(value)) {
 							if (RegExp.findCharacters(value, "[^A-Za-z0-9]{1,}")) {
 								value = URLEncoder.encode(value, "utf-8");
 							}
@@ -135,6 +139,7 @@ public class StructureMethod {
 		// }
 		//
 		// String uRL = URLEncodedUtils.format(params, "utf-8");
+		System.out.println(buf);
 		HttpGet getMethod = new HttpGet(url + "?" + buf);
 		return getMethod;
 	}
