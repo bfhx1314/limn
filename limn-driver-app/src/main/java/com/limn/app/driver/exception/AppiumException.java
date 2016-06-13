@@ -13,13 +13,11 @@ public class AppiumException extends Exception {
 	
 	public AppiumException(int code, String message){
 		super(message);
-		Parameter.ERRORLOG = message;
 //		Print.log(message, 2);
 	}
 	
 	public AppiumException(String message){
 		super(message);
-		Parameter.ERRORLOG = message;
 //		Print.log(message, 2);
 	}
 }

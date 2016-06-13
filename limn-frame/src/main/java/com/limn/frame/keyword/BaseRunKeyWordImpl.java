@@ -6,9 +6,11 @@ import java.util.HashMap;
 import org.openqa.selenium.WebElement;
 
 import com.limn.driver.Driver;
+import com.limn.driver.common.DriverParameter;
 import com.limn.driver.common.OperateWindows;
 import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.control.Test;
+import com.limn.tool.bean.RunParameter;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.ConvertCharacter;
 import com.limn.tool.common.FileUtil;
@@ -26,11 +28,11 @@ public class BaseRunKeyWordImpl {
 	 * @param step 数组参数 0 可选参数 1浏览器类型 可选参数  2URL
 	 * @throws SeleniumFindException
 	 */
-	public static void startBrowser(String[] step) throws SeleniumFindException{
+	public void startBrowser(String[] step) throws SeleniumFindException{
 		int stepLen = step.length;
 		
-		if(null == Parameter.RUNMODE || Parameter.RUNMODE.equals("本机")){
-			Parameter.REMOTEIP = null;
+		if(null == RunParameter.getStartPaht().getComputer() || RunParameter.getStartPaht().getComputer().equals("本机")){
+			RunParameter.getStartPaht().setIP(null);
 		}
 		
 		for(int i=1;i<stepLen;i++){
@@ -38,27 +40,26 @@ public class BaseRunKeyWordImpl {
 				if (stepLen <= i + 1) {
 					throw new SeleniumFindException("URL地址为空。");
 				}
-				Parameter.URL = step[i] + ":" + step[i + 1];
+				RunParameter.getStartPaht().setURL(step[i] + ":" + step[i + 1]);
 				i++;
 			}else if(RegExp.findCharacters(step[i], "(?i)firefox|ie|chrome")){
-				if(step[i].equalsIgnoreCase("firefox")){
-					Parameter.BROWSERTYPE = 1;
-				}else if(step[i].equalsIgnoreCase("ie")){
-					Parameter.BROWSERTYPE = 3;
-				}else if(step[i].equalsIgnoreCase("chrome")){
-					Parameter.BROWSERTYPE = 2;
+				
+				
+				if(step[i].equalsIgnoreCase("firefox") || step[i].equalsIgnoreCase("ie") ||
+				step[i].equalsIgnoreCase("chrome")){
+					RunParameter.getStartPaht().setBrowserType(step[i]);
 				}else{
 					throw new SeleniumFindException("不支持此浏览器类型:" + step[i] + " 支持的类型有:firefox,chrome,ie");
 				}
 			}else if(RegExp.findCharacters(step[i], "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])(\\.(00?\\d|1\\d{2}|2[0-4]\\d|25[0-5][1-9\\d]|\\d)){3}")){
-				Parameter.REMOTEIP = step[i];
+				RunParameter.getStartPaht().setIP(step[i]);
 			}
 		}
 		
 //		if(step.length > 2){
 //			Parameter.URL = step[2];
 //		}
-		startBroswer(Parameter.BROWSERTYPE, Parameter.URL, Parameter.REMOTEIP);
+		startBroswer(RunParameter.getStartPaht().getBrowserType(), RunParameter.getStartPaht().getURL(), RunParameter.getStartPaht().getIP());
 	}
 	
 	
@@ -70,17 +71,17 @@ public class BaseRunKeyWordImpl {
 	 * @throws SeleniumFindException 
 	 * @throws HaowuException 
 	 */
-	public static void startBroswer(int type, String url, String ip) throws SeleniumFindException {
-		Driver.setDriver(type, url, ip);
-		Driver.startBrowser();
+	public void startBroswer(String type, String url, String ip) throws SeleniumFindException {
+		DriverParameter.getDriverPaht().setDriver(type, url, ip);
+		DriverParameter.getDriverPaht().startBrowser();
 	}
 	
 	
 	/**
 	 * 关闭浏览器
 	 */
-	public static void stopBroswer(){
-		Driver.closeBrowser();
+	public  void stopBroswer(){
+		DriverParameter.getDriverPaht().closeBrowser();
 	}
 	
 	/**
@@ -88,19 +89,19 @@ public class BaseRunKeyWordImpl {
 	 * @param step
 	 * @throws SeleniumFindException
 	 */
-	public static void toURL(String[] step) throws SeleniumFindException{
+	public  void toURL(String[] step) throws SeleniumFindException{
 		String url = step[1];
 		if(step.length >= 2){
 			url = step[1] + ":" + step[2];
 		}
 		Print.log("URL:" + url,0);
-		Parameter.URL = url;
-		Driver.changeURL(url);
+		RunParameter.getStartPaht().setURL(url);
+		DriverParameter.getDriverPaht().changeURL(url);
 	}
 	
-	public static void keyBoardEvent(String[] step){
+	public  void keyBoardEvent(String[] step){
 		Common.wait(2000);
-		Driver.keyBoardEvent(step[1]);
+		DriverParameter.getDriverPaht().keyBoardEvent(step[1]);
 	}
 	
 	/**
@@ -109,15 +110,15 @@ public class BaseRunKeyWordImpl {
 	 * @throws SeleniumFindException
 	 * @throws ParameterException 
 	 */
-	public static void inputValue(String[] step)throws SeleniumFindException {
+	public  void inputValue(String[] step)throws SeleniumFindException {
 		try{
 			HashMap<String,String> traXPath = null; 
-			if(step.length >= 4 && RegExp.findCharacters(step[3], "^HASHMAP")){
+			if(step.length >= 4 && RegExp.findCharacters(step[step.length-1], "^HASHMAP")){
 				// DEBUG模式
-				traXPath = TransformationMap.transformationByString(step[3]);
+				traXPath = TransformationMap.transformationByString(step[step.length-1]);
 			}else{
 				// START模式
-				traXPath = Test.TRA_NAME;
+//				traXPath = Test.TRA_NAME;
 //				String context = Test.getAssociatedProperites();
 //				if(null == context){
 //					traXPath = null;
@@ -137,7 +138,7 @@ public class BaseRunKeyWordImpl {
 				xpath = step[1];
 			}
 	
-			Driver.setValue(xpath,step[2]);
+			DriverParameter.getDriverPaht().setValue(xpath,step[2]);
 			
 		}catch(Exception e){
 			throw new SeleniumFindException("错误:" + e.getMessage());
@@ -150,7 +151,7 @@ public class BaseRunKeyWordImpl {
 	 * @param step 用例
 	 * @throws ParameterException 
 	 */
-	public static void executeExpression(String[] step) throws ParameterException {
+	public  void executeExpression(String[] step) throws ParameterException {
 		String variable = null;
 		String variableValue = null;
 		String[] arrT = null;
@@ -179,11 +180,11 @@ public class BaseRunKeyWordImpl {
 		}
 	}
 	
-	public static void addAttachment(String[] step) throws SeleniumFindException, ParameterException {
+	public  void addAttachment(String[] step) throws SeleniumFindException, ParameterException {
 		if (step.length>1){
 			String filePath = ConvertCharacter.getHtmlChr(step[2]);  // 转回原来的字符串
 			if (!RegExp.findCharacters(filePath, "^[a-zA-Z]:")){
-				filePath = Parameter.TESTCASE_FOLDERPATH +"\\"+ filePath;
+				filePath = RunParameter.getResultPaht().getTestCaseFolderPath() + "\\" + filePath;
 				String parentPath = FileUtil.getParent(filePath);
 				if (!FileUtil.exists(parentPath)){
 					FileUtil.createFloder(parentPath);
@@ -257,17 +258,18 @@ public class BaseRunKeyWordImpl {
 	 * @throws SeleniumFindException 
 	 * @throws ParameterException 
 	 */
-	public static void getWebElementValueToVar(String[] step) throws SeleniumFindException, ParameterException {
+	public  void getWebElementValueToVar(String[] step) throws SeleniumFindException, ParameterException {
 		HashMap<String,String> traXPath = null; 
-		if(step.length >= 4 && RegExp.findCharacters(step[3], "^HASHMAP")){
-			traXPath = TransformationMap.transformationByString(step[3]);
+		if(step.length >= 4 && RegExp.findCharacters(step[step.length-1], "^HASHMAP")){
+			traXPath = TransformationMap.transformationByString(step[step.length-1]);
 		}else{
-			String context = Test.getAssociatedProperites();
-			if(null == context){
-				traXPath = null;
-			}else{
-				traXPath = TransformationMap.transformationByString(context);
-			}
+//			traXPath = Test.TRA_NAME;
+//			String context = Test.getAssociatedProperites();
+//			if(null == context){
+//				traXPath = null;
+//			}else{
+//				traXPath = TransformationMap.transformationByString(context);
+//			}
 		}
 		String xpath = null;
 		if(null != traXPath){
@@ -279,7 +281,7 @@ public class BaseRunKeyWordImpl {
 		}else{
 			xpath = step[1];
 		}
-		WebElement verWeb = Driver.getWebElementBylocator(xpath);
+		WebElement verWeb = DriverParameter.getDriverPaht().getWebElementBylocator(xpath);
 		String webElementValue = "";
 		if(verWeb.getTagName().equalsIgnoreCase("input") && verWeb.getTagName().equalsIgnoreCase("textarea")){
 			webElementValue = verWeb.getAttribute("value");
@@ -306,7 +308,7 @@ public class BaseRunKeyWordImpl {
 	 * @throws ParameterException 
 	 * @throws SeleniumFindException 
 	 */
-	public static void changeBroTab(String[] step) throws ParameterException, SeleniumFindException {
+	public  void changeBroTab(String[] step) throws ParameterException, SeleniumFindException {
 		int index = -1;
 		try{
 			index = Integer.parseInt(step[1]);
@@ -328,7 +330,7 @@ public class BaseRunKeyWordImpl {
 	 * @throws ParameterException 
 	 * @throws SeleniumFindException 
 	 */
-	public static void closeBroTab(String[] step) throws ParameterException, SeleniumFindException {
+	public  void closeBroTab(String[] step) throws ParameterException, SeleniumFindException {
 		int index = -1;
 		try{
 			index = Integer.parseInt(step[1]);
@@ -344,7 +346,7 @@ public class BaseRunKeyWordImpl {
 		}
 	}
 	
-	public static void main(String[] args){
+	public static  void main(String[] args){
 		
 //		try {
 //			String[] testP = {"setVar","{setVar}=getAutoIncrement(5)"};

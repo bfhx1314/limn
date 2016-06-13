@@ -11,6 +11,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.limn.tool.bean.RunParameter;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
@@ -21,7 +22,7 @@ public class GenerateCaseResultXMLSegment {
 		SAXReader saxReader = new SAXReader();
 		Document document = null;
 		try { 
-			document = saxReader.read(new File(Parameter.RESULT_FOLDER_REPORT + "/ReportSource.xml"));
+			document = saxReader.read(new File(RunParameter.getResultPaht().getResultFolderReport() + "/ReportSource.xml"));
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
@@ -165,8 +166,8 @@ public class GenerateCaseResultXMLSegment {
 				new_Log.addText(lHashMap.get("EventContent"));
 			}
 		}
-		FileUtil.setEmpty(Parameter.RESULT_FOLDER_REPORT+"/ReportSource.xml");
-		XmlEngine.saveDocument(document,Parameter.RESULT_FOLDER_REPORT + "/ReportSource.xml");
+		FileUtil.setEmpty(RunParameter.getResultPaht().getResultFolderReport() +"/ReportSource.xml");
+		XmlEngine.saveDocument(document, RunParameter.getResultPaht().getResultFolderReport() + "/ReportSource.xml");
 	}
 
     

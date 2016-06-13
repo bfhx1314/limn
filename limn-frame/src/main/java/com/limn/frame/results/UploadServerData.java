@@ -15,7 +15,9 @@ import org.apache.tools.ant.taskdefs.optional.net.SetProxy;
 
 import com.limn.tool.exception.ParameterException;
 import com.limn.frame.control.Test;
+import com.limn.frame.testcase.TestCase;
 import com.limn.tool.parameter.Parameter;
+import com.limn.tool.bean.RunParameter;
 import com.limn.tool.common.DateFormat;
 
 public class UploadServerData implements DataResults {
@@ -33,8 +35,13 @@ public class UploadServerData implements DataResults {
 	
 	private int stepID = 0;
 	private int stepNumID = 0;
+	
+	private TestCase tc = null;
+	
+	
 	@Override
-	public void init() {
+	public void init(TestCase tc){
+		this.tc = tc;
 
 		initDataBase();
 		if(isConnect){
@@ -52,7 +59,7 @@ public class UploadServerData implements DataResults {
 //				testCaseName = name[0][0];
 //			}
 
-			testCaseName = Parameter.TESTNAME;
+			testCaseName = RunParameter.getResultPaht().getTestName();
 
 			InetAddress addr = null;
 			String IP = "";
@@ -64,11 +71,11 @@ public class UploadServerData implements DataResults {
 //			sumCaseCount = Test.getCurrentRowCount();
 			sumCaseCount = 0;
 			String sql = "insert into TestCase(id,version,CaseName,SQLType,ChatType,ResultsPath,CreateTime,CreatePC,TotalNum,ExecutedNum,SuccessfulNum) "
-					+ "values('" + ID +"','" + Parameter.VERSION + "','"
+					+ "values('" + ID +"','" + "暂时不用此字段Version" + "','"
 					+ testCaseName + "','"
 					+ Parameter.DBTYPE + "','"
-					+ Parameter.PLATVERSION + "','"
-					+ Parameter.RESULT_FOLDER + "','"
+					+ "暂时不用此字段" + "','"
+					+ RunParameter.getResultPaht().getResultFolder() + "','"
 					+ DateFormat.getDate() + "','"
 					+ IP + "','"
 					+ sumCaseCount + "','"
@@ -83,7 +90,7 @@ public class UploadServerData implements DataResults {
 	public void addSheet(int index) {
 
 		if(isConnect){
-			sumCaseCount = sumCaseCount + Test.tc.getSheetLastRowNumber();
+			sumCaseCount = sumCaseCount + tc.getSheetLastRowNumber();
 			executeSingleSQL("update  TestCase set TotalNum = '" + sumCaseCount + "' where id = '" + ID + "'");
 		}
 	}
@@ -101,7 +108,7 @@ public class UploadServerData implements DataResults {
 	public void addCase(String caseNo) {
 		executedCase++;
 		if(isConnect){
-			int currentRow = Test.tc.getCurrentRow() + 1;
+			int currentRow = tc.getCurrentRow() + 1;
 			int sum = sumCaseCount -  (currentRow - executedCase) - 1;
 			executeSingleSQL("update TestCase Set TotalNum ='" + sum + "' where ID = '" + ID + "'");
 			executeSingleSQL("update TestCase Set ExecutedNum ='" + executedCase + "' where ID = '" + ID + "'");
@@ -120,7 +127,7 @@ public class UploadServerData implements DataResults {
 					+ "'" + stepID 	+ "'," + "'" 
 					+	ID + "','" + caseNo + "','" 
 					+  moduleName + "','" + DateFormat.getDate() + "','"
-					+ Test.getSheetIndex() + "-" + Test.getCurrentRow() + "')";
+					+ tc.getExcelSheetIndex() + "-" + tc.getCurrentRow() + "')";
 			executeSingleSQL(sql);
 		}
 		stepNumID = 1;
@@ -319,7 +326,21 @@ public class UploadServerData implements DataResults {
 		// TODO Auto-generated method stub
 		
 	}
-	
+
+	@Override
+	public int getCaseCount() {
+		return sumCaseCount;
+	}
+
+	@Override
+	public int getExecuteCaseCount() {
+		return executedCase;
+	}
+
+	@Override
+	public int getSucessCaseCount() {
+		return successedCase;
+	}
 	
 
 }

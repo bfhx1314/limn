@@ -35,6 +35,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import com.limn.driver.Driver;
+import com.limn.driver.common.DriverParameter;
 import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.debug.DebugEditFrame;
 import com.limn.renderer.WebElementCellRenderer;
@@ -144,7 +145,7 @@ public class LoadBroswerPanel extends CustomPanel {
 			public void actionPerformed(ActionEvent e) {
 				//TODO 验证界面
 				
-				WebElement web = Driver.getWebElementBylocator(recommendLocator.getText());
+				WebElement web = DriverParameter.getDriverPaht().getWebElementBylocator(recommendLocator.getText());
 				verification.setVerWebElement(web);
 				verification.setVisible(true);
 				
@@ -265,7 +266,7 @@ public class LoadBroswerPanel extends CustomPanel {
 						WebElement web = null;
 //		
 						try {
-							web = Driver.getWebElement(By.xpath("/html"));
+							web = DriverParameter.getDriverPaht().getWebElement(By.xpath("/html"));
 						} catch (SeleniumFindException e1) {
 							
 						}
@@ -333,7 +334,7 @@ public class LoadBroswerPanel extends CustomPanel {
 				if (e.getValueIsAdjusting()) {
 					try {
 						if (null != currentHighWebElement) {
-							Driver.cancelHighLightWebElement(currentHighWebElement);
+							DriverParameter.getDriverPaht().cancelHighLightWebElement(currentHighWebElement);
 						}
 
 						if (webElements.getSelectedIndex() == -1) {
@@ -343,7 +344,7 @@ public class LoadBroswerPanel extends CustomPanel {
 						currentHighWebElement = findWebElements.get(((DictoryKeyValue) webElements.getSelectedValue()).key());
 
 						setWebElmentByLocator(currentHighWebElement);
-						Driver.highLightWebElement(currentHighWebElement);
+						DriverParameter.getDriverPaht().highLightWebElement(currentHighWebElement);
 						DebugEditFrame.setAddExpectButton(false);
 					} catch (SeleniumFindException e1) {
 //						e1.printStackTrace();
@@ -383,8 +384,8 @@ public class LoadBroswerPanel extends CustomPanel {
 	
 	public void loadWebElement() throws SeleniumFindException {
 
-		Print.log("URL:" + Driver.getCurrentURL(), 0);
-		title.setText(Driver.driver.getCurrentUrl());
+		Print.log("URL:" + DriverParameter.getDriverPaht().getCurrentURL(), 0);
+		title.setText(DriverParameter.getDriverPaht().driver.getCurrentUrl());
 		traversal();
 	}
 
@@ -422,8 +423,8 @@ public class LoadBroswerPanel extends CustomPanel {
 		WebElement web = null;
 //		List<WebElement> iframes = Driver.getWebElement(locator);
 		try {
-			web = Driver.getWebElement(By.xpath("/html"));
-			title.setText(Driver.getCurrentURL());
+			web = DriverParameter.getDriverPaht().getWebElement(By.xpath("/html"));
+			title.setText(DriverParameter.getDriverPaht().getCurrentURL());
 			
 
 			// 清空所有元素
@@ -453,7 +454,7 @@ public class LoadBroswerPanel extends CustomPanel {
 		}
 		
 		try {
-			String locator = Driver.getXpathByWebElement(web);
+			String locator = DriverParameter.getDriverPaht().getXpathByWebElement(web);
 			if (null != locator && !locator.isEmpty()) {
 				new Thread(new FindWebElement(locator)).start();
 			} else {
@@ -565,8 +566,8 @@ public class LoadBroswerPanel extends CustomPanel {
 				String inputHidden = "hidden";
 				try {
 					inputHidden = webs.getAttribute("type");
-					hidden = Driver.runScript("return arguments[0].hidden", webs).toString();
-					display = Driver.runScript("return document.defaultView.getComputedStyle(arguments[0],null).display", webs).toString();
+					hidden = DriverParameter.getDriverPaht().runScript("return arguments[0].hidden", webs).toString();
+					display = DriverParameter.getDriverPaht().runScript("return document.defaultView.getComputedStyle(arguments[0],null).display", webs).toString();
 				} catch (SeleniumFindException e) {
 
 				}
@@ -619,7 +620,7 @@ public class LoadBroswerPanel extends CustomPanel {
 		public void run() {
 			loading();
 			
-			if(null != Driver.getWebElementBylocator(locator) || null != Driver.getWebElementBylocator("/"+locator)){
+			if(null != DriverParameter.getDriverPaht().getWebElementBylocator(locator) || null != DriverParameter.getDriverPaht().getWebElementBylocator("/"+locator)){
 				setXPathName.setEnabled(true);
 				verificationButton.setEnabled(true);
 				recommendLocator.setText(locator);

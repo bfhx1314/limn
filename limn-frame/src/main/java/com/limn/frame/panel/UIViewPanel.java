@@ -270,7 +270,7 @@ public class UIViewPanel extends CustomPanel {
 		}
 		boolean isLoad = false;
 		if (System.getProperty("com.android.uiautomator.bindir") == null) {
-			if (Parameter.OS.equalsIgnoreCase("Windows")) {
+			if (Parameter.getOS().equalsIgnoreCase("Windows")) {
 				String sdk = System.getenv("ANDROID_HOME");
 				if (sdk != null && !sdk.isEmpty()) {
 					Print.log("获取SDK目录:" + sdk, 1);

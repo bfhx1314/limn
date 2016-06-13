@@ -4,13 +4,9 @@ package com.limn.frame.keyword;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-
-
-
-
 import com.limn.driver.common.OperateWindows;
 import com.limn.driver.exception.SeleniumFindException;
-import com.limn.frame.checkitems.CheckItems;
+import com.limn.tool.bean.RunParameter;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
 import com.limn.tool.exception.ParameterException;
@@ -29,6 +25,8 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 	private HashSet<String> allKeyWord = new HashSet<String>();
 	private boolean flag = false;
 	
+	private BaseRunKeyWordImpl brwi = new BaseRunKeyWordImpl();
+	
 	@Override
 	public int start(String[] step) {
 
@@ -39,16 +37,16 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 
 			//启动浏览器
 			case BaseKeyWordType.START_BROWSER:
-				BaseRunKeyWordImpl.startBrowser(step);
+				brwi.startBrowser(step);
 				break;
 			//关闭浏览器
 			case BaseKeyWordType.CLOSE_BROSWER:
-				BaseRunKeyWordImpl.stopBroswer();
+				brwi.stopBroswer();
 				break;
 			//录入
 			case BaseKeyWordType.INPUT:
 				cheakKeyWordCount(step.length, 2);
-				BaseRunKeyWordImpl.inputValue(step);
+				brwi.inputValue(step);
 				break;
 			//提示框
 			case BaseKeyWordType.DIALOG:
@@ -62,11 +60,11 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 			//页面跳转	
 			case BaseKeyWordType.CHANGE_URL:
 				cheakKeyWordCount(step.length, 1);
-				BaseRunKeyWordImpl.toURL(step);
+				brwi.toURL(step);
 				break;
 			case BaseKeyWordType.KEYBOARD_EVENT:
 				cheakKeyWordCount(step.length, 1);
-				BaseRunKeyWordImpl.keyBoardEvent(step);
+				brwi.keyBoardEvent(step);
 				
 				break;
 			case BaseKeyWordType.WAIT:
@@ -76,32 +74,32 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 				break;
 			case BaseKeyWordType.EXPRESSION:
 				cheakKeyWordCount(step.length, 1);
-				BaseRunKeyWordImpl.executeExpression(step);
+				brwi.executeExpression(step);
 				break;
 			case BaseKeyWordType.ADDATTACHMENT:
 				cheakKeyWordCount(step.length, 2);
-				BaseRunKeyWordImpl.addAttachment(step);
+				brwi.addAttachment(step);
 				break;
 			case BaseKeyWordType.GETWEBELEMENTVALUETOVAR:
 				cheakKeyWordCount(step.length, 2);
-				BaseRunKeyWordImpl.getWebElementValueToVar(step);
+				brwi.getWebElementValueToVar(step);
 				break;
 			case BaseKeyWordType.CHANGEBROTAB:
 				cheakKeyWordCount(step.length, 2);
-				BaseRunKeyWordImpl.changeBroTab(step);
+				brwi.changeBroTab(step);
 				break;
 			case BaseKeyWordType.CLOSEBROTAB:
 				cheakKeyWordCount(step.length, 2);
-				BaseRunKeyWordImpl.closeBroTab(step);
+				brwi.closeBroTab(step);
 				break;
-			case BaseKeyWordType.VERIFICATION:
-				CheckItems checkItems = new CheckItems();
-				checkItems.branch(step);
-				if (!checkItems.isBoolActul()){
-					status = -5;
-					Parameter.ERRORLOG = "预期结果与实际结果不一致。请看CHECKPOINT信息。";
-				}
-				break;
+//			case BaseKeyWordType.VERIFICATION:
+//				CheckItems checkItems = new CheckItems();
+//				checkItems.branch(step);
+//				if (!checkItems.isBoolActul()){
+//					status = -5;
+//					Parameter.ERRORLOG = "预期结果与实际结果不一致。请看CHECKPOINT信息。";
+//				}
+//				break;
 			//自定义关键字
 			default:
 
@@ -120,15 +118,15 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 			}
 		} catch (SeleniumFindException e) {
 			status = -2;
-			Parameter.PRODUCTMESSAGE = e.getMessage();
+			RunParameter.getResultPaht().setErrorMessage(e.getMessage());
 			Print.log(e.getMessage(), 2);
 		} catch (ParameterException e) {
 			status = -2;
-			Parameter.PRODUCTMESSAGE = e.getMessage();
+			RunParameter.getResultPaht().setErrorMessage(e.getMessage());
 			Print.log(e.getMessage(), 2);
 		} catch (Exception e){
 			status = -2;
-			Parameter.ERRORLOG = e.getMessage();
+			RunParameter.getResultPaht().setErrorMessage(e.getMessage());
 			Print.log(e.getMessage(), 2);
 			e.printStackTrace();
 		}

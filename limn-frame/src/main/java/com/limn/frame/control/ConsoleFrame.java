@@ -21,6 +21,7 @@ import javax.swing.JTextField;
 
 import org.dom4j.DocumentException;
 
+import com.limn.tool.bean.StartConfigBean;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.DateFormat;
 import com.limn.tool.exception.ParameterException;
@@ -169,11 +170,6 @@ public class ConsoleFrame extends JFrame {
 	// private CoreConfig cc = null;
 	// private KeyWordDriver keyWordDriver = null;
 	private static BaseKeyWordDriverImpl keyWordDriver = new BaseKeyWordDriverImpl();
-
-	
-	
-	
-	
 	
 	
 	public ConsoleFrame() throws Exception {
@@ -181,7 +177,6 @@ public class ConsoleFrame extends JFrame {
 		addKeyWordDriver("基础关键字", new BaseKeyWordDriverImpl(), BaseKeyWordType.class);
 		addKeyWordDriver("App基础关键字", new BaseAppKeyWordDriverImpl(), BaseAppKeyWordType.class);
 	}
-	
 	
 	/**
 	 * 显示运行配置界面
@@ -595,7 +590,6 @@ public class ConsoleFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Parameter.STARTTIME = DateFormat.getDateToString();
 				start(false);
 			}
 
@@ -693,20 +687,11 @@ public class ConsoleFrame extends JFrame {
 	}
 	
 	/**
-	 * 配置xml的地址
-	 * @param xmlPath
-	 */
-	public void startByConfigXML(String xmlPath){
-		XMLReader xml = new XMLReader(xmlPath, true);
-		//TODO  
-	}
-	
-	/**
 	 * 配置的属性文件
 	 * @param StartConfigBean
 	 * @param isLoop  是否循环执行
 	 */
-	public void startByStartConfigBean(StartConfigBean scb, boolean isLoop){
+	private void startByStartConfigBean(StartConfigBean scb, boolean isLoop){
 		new Thread(new BeforeTest(scb, keyWordDriver, isLoop)).start();
 	}
 	
@@ -1250,7 +1235,6 @@ public class ConsoleFrame extends JFrame {
 	// }
 
 	public static void main(String args[]) throws Exception {
-		Parameter.init();
 		new ConsoleFrame().showUIFrame();
 	}
 }

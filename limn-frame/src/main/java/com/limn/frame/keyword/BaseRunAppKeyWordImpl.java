@@ -27,11 +27,11 @@ public class BaseRunAppKeyWordImpl {
 			HashMap<String,String> traXPath = null; 
 			if(step.length >= 4 && RegExp.findCharacters(step[step.length-1], "^HASHMAP")){
 				// DEBUG模式
-				traXPath = TransformationMap.transformationByString(step[3]);
+				traXPath = TransformationMap.transformationByString(step[step.length-1]);
 				Print.debugLog("加载别名数据完成", 1);
 			}else{
 				// START模式
-				traXPath = Test.TRA_NAME;
+//				traXPath = Test.TRA_NAME;
 				
 				
 //				String context = Test.getAssociatedProperites();
@@ -105,7 +105,7 @@ public class BaseRunAppKeyWordImpl {
 	 */
 	public static void start(String[] steps) throws AppiumException{
 		String path = "";
-		if(Parameter.OS.equalsIgnoreCase("Windows")){
+		if(Parameter.getOS().equalsIgnoreCase("Windows")){
 			path = steps[1] + ":";
 			//windows系统存在:字符需要合并
 			for(int i = 2 ;  i < steps.length ; i++){

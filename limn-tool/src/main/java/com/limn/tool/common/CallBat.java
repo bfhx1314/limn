@@ -68,7 +68,7 @@ public class CallBat {
 	 */
 	public static void closeProcess(String processName){
 		
-		if(Parameter.OS != null && Parameter.OS.equalsIgnoreCase("Windows")){
+		if(Parameter.getOS() != null && Parameter.getOS().equalsIgnoreCase("Windows")){
 			
 			Runtime rt = Runtime.getRuntime();
 	//		String[] command1=new String[]{"cmd","cd","C://Program Files//Thunder"};

@@ -10,6 +10,9 @@ public class TransformationMap {
 	
 	
 	public static String transformationByMap(LinkedHashMap<String,String> data){
+		if(data == null){
+			return "";
+		}
 		String traString = "HASHMAP\n";
 		for(String key : data.keySet()){
 			if(traString.equals("HASHMAP\n")){

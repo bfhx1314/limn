@@ -5,6 +5,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 import com.limn.driver.Driver;
+import com.limn.driver.common.DriverParameter;
 import com.limn.tool.common.Print;
 
 
@@ -21,7 +22,7 @@ public class WebElementByXPath {
 	public static boolean doesExist(By selector){ 
 	     try
 	     { 
-	    	 Driver.driver.findElement(selector); 
+	    	 DriverParameter.getDriverPaht().driver.findElement(selector); 
 	         return true; 
 	     } 
 	     catch (NoSuchElementException e) 
@@ -50,7 +51,7 @@ public class WebElementByXPath {
 	public static boolean isContentAppeared(String content, String xpath) {  
 		boolean status = false;
 		try {
-			Driver.driver.findElement(By.xpath(xpath)); // "//*[contains(.,'" + content + "')]"
+			DriverParameter.getDriverPaht().driver.findElement(By.xpath(xpath)); // "//*[contains(.,'" + content + "')]"
 			status = true;
 		} catch (NoSuchElementException e) {
 			status = false;

@@ -59,7 +59,7 @@ public class OperateWindows {
 		boolean flag = false;
 		//异常捕获
 		try {
-		    Alert alert = Driver.driver.switchTo().alert();
+		    Alert alert = DriverParameter.getDriverPaht().driver.switchTo().alert();
 		    //判断是否存在alert弹框
 		    if (null == alert){
 		        throw new NoAlertPresentException();
@@ -98,13 +98,13 @@ public class OperateWindows {
 	public void getNewBrowsers(){
 		//当前窗口句柄
 		try {
-			currentHandle = Driver.driver.getWindowHandle();
+			currentHandle = DriverParameter.getDriverPaht().driver.getWindowHandle();
 		}catch(Exception e){
 			Print.log("当前driver没有对象",3);
 		}
 		
 		//得到所有窗口的句柄
-		handles = Driver.driver.getWindowHandles();
+		handles = DriverParameter.getDriverPaht().driver.getWindowHandles();
 	}
 	
 	/**
@@ -121,7 +121,7 @@ public class OperateWindows {
 			for(int i=0;i<handlesSize;i++){
 			    try{
 					//定位窗口
-			    	Driver.driver.switchTo().window(handles.iterator().next());
+			    	DriverParameter.getDriverPaht().driver.switchTo().window(handles.iterator().next());
 			    	return;
 			    }catch(Exception e){
 			    	throw new SeleniumFindException("切换浏览器失败");
@@ -147,7 +147,7 @@ public class OperateWindows {
 	    		for(Iterator<?> ite = handles.iterator();ite.hasNext();){
 	    			String iter = (String) ite.next();
 	    			if (i == index){
-	    				Driver.driver.switchTo().window(iter);
+	    				DriverParameter.getDriverPaht().driver.switchTo().window(iter);
 	    				return;
 	    			}else{
 	    				i++;
@@ -164,7 +164,7 @@ public class OperateWindows {
 	 */
 	public void switchToDefaultBrowser() throws SeleniumFindException{
 		try{
-			Driver.driver.switchTo().window(currentHandle);
+			DriverParameter.getDriverPaht().driver.switchTo().window(currentHandle);
 	    }catch(Exception e){
 	    	throw new SeleniumFindException("切回第一个浏览器失败");
 	    }
@@ -184,14 +184,14 @@ public class OperateWindows {
 			for(int i=0;i<handlesSize;i++){
 			    try{
 					//定位窗口
-			    	Driver.driver.switchTo().window(handles.iterator().next());
-			    	Driver.driver.close();
+			    	DriverParameter.getDriverPaht().driver.switchTo().window(handles.iterator().next());
+			    	DriverParameter.getDriverPaht().driver.close();
 			    }catch(Exception e){
 			        System.out.println(e.getMessage());
 			        Print.log(e.getMessage(), 2);
 			    }
 			}
-			Driver.driver.switchTo().window(currentHandle);
+			DriverParameter.getDriverPaht().driver.switchTo().window(currentHandle);
 		}
 //		System.out.println("Did not find window");
 //		Print.log("Did not find window", 2);
@@ -214,8 +214,8 @@ public class OperateWindows {
 	    		for(Iterator<?> ite = handles.iterator();ite.hasNext();){
 	    			String iter = (String) ite.next();
 	    			if (i == index){
-	    				Driver.driver.switchTo().window(iter);
-	    				Driver.driver.close();
+	    				DriverParameter.getDriverPaht().driver.switchTo().window(iter);
+	    				DriverParameter.getDriverPaht().driver.close();
 	    			}else{
 	    				i++;
 	    			}

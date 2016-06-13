@@ -1,35 +1,37 @@
-package com.limn.frame.control;
+package com.limn.tool.bean;
 
 public class StartConfigBean {
 	
 	
-	private String BrowserType = null;
-	private String AppFilePath = null;
-	private String RunTestModel = null;
+	private String browserType = null;
+	private String appFilePath = null;
+	private String runTestModel = null;
 	private String URL = null;
-	private String ExcelPath = null;
-	private String ExecuteMode = null;
-	private String SheetsNum = null;
-	private boolean FrontSteps = false;
-	private boolean InitDB = false;
-	private String SqlData = null;
-	private String Computer = null;
+	private String excelPath = null;
+	private String executeMode = null;
+	private String sheetsNum = null;
+	private boolean frontSteps = false;
+	private boolean initDB = false;
+	private String SQLData = null;
+	private String computer = null;
 	private String IP = null;
-	private String Specify = null;
-	private String SpecifySheet = null;
-	private String SpecifyRow = null;
-	private String SpecifyStep = null;
-	private boolean UploadResults = false;
-	private String StartPlatform = null;
-	private boolean NotServer = false;
-	private boolean Debug = false;
+	private String specify = null;
+	private String specifySheet = null;
+	private String specifyRow = null;
+	private String specifyStep = null;
+	private boolean uploadResults = false;
+	private String startPlatform = null;
+	private boolean notServer = false;
+	private boolean debug = false;
+	
+	
 	
 	/**
 	 * 是否存在服务端环境
 	 * @return
 	 */
 	public boolean isNotServer() {
-		return NotServer;
+		return notServer;
 	}
 	
 	/**
@@ -37,15 +39,15 @@ public class StartConfigBean {
 	 * @param notServer
 	 */
 	public void setNotServer(boolean notServer) {
-		NotServer = notServer;
+		this.notServer = notServer;
 	}
 	
 	public boolean isDebug() {
-		return Debug;
+		return debug;
 	}
 	
 	public void setDeBug(boolean debug) {
-		Debug = debug;
+		this.debug = debug;
 	}
 
 	
@@ -55,14 +57,14 @@ public class StartConfigBean {
 	 * @return "Firefox", "Chrome", "IE"
 	 */
 	public String getBrowserType() {
-		return BrowserType;
+		return browserType;
 	}
 	/**
 	 * 设置浏览器类型
 	 * @param browserType "Firefox", "Chrome", "IE"
 	 */
 	public void setBrowserType(String browserType) {
-		BrowserType = browserType;
+		this.browserType = browserType;
 	}
 	
 	/**
@@ -70,7 +72,7 @@ public class StartConfigBean {
 	 * @return
 	 */
 	public String getAppFilePath() {
-		return AppFilePath;
+		return appFilePath;
 	}
 
 	/**
@@ -78,7 +80,7 @@ public class StartConfigBean {
 	 * @param appFilePath
 	 */
 	public void setAppFilePath(String appFilePath) {
-		AppFilePath = appFilePath;
+		this.appFilePath = appFilePath;
 	}
 
 	/**
@@ -86,14 +88,14 @@ public class StartConfigBean {
 	 * @return
 	 */
 	public String getRunTestModel() {
-		return RunTestModel;
+		return runTestModel;
 	}
 	/**
 	 * 设置测试类型
 	 * @param runTestModel "浏览器","Android","IOS"
 	 */
 	public void setRunTestModel(String runTestModel) {
-		RunTestModel = runTestModel;
+		this.runTestModel = runTestModel;
 	}
 
 	/**
@@ -117,7 +119,7 @@ public class StartConfigBean {
 	 * @return
 	 */
 	public String getExcelPath() {
-		return ExcelPath;
+		return excelPath;
 	}
 
 	/**
@@ -125,7 +127,7 @@ public class StartConfigBean {
 	 * @param excelPath
 	 */
 	public void setExcelPath(String excelPath) {
-		ExcelPath = excelPath;
+		this.excelPath = excelPath;
 	}
 	
 	/**
@@ -133,7 +135,7 @@ public class StartConfigBean {
 	 * @return "固定模式执行", "指定页面执行"
 	 */
 	public String getExecuteMode() {
-		return ExecuteMode;
+		return executeMode;
 	}
 
 	/**
@@ -141,7 +143,7 @@ public class StartConfigBean {
 	 * @param executeMode "固定模式执行", "指定页面执行"
 	 */
 	public void setExecuteMode(String executeMode) {
-		ExecuteMode = executeMode;
+		this.executeMode = executeMode;
 	}
 
 	/**
@@ -149,7 +151,7 @@ public class StartConfigBean {
 	 * @return
 	 */
 	public String getSheetsNum() {
-		return SheetsNum;
+		return sheetsNum;
 	}
 
 	/**
@@ -157,7 +159,7 @@ public class StartConfigBean {
 	 * @param sheetsNum 0,1,2...
 	 */
 	public void setSheetsNum(String sheetsNum) {
-		SheetsNum = sheetsNum;
+		this.sheetsNum = sheetsNum;
 	}
 	
 	/**
@@ -165,7 +167,7 @@ public class StartConfigBean {
 	 * @return "需要", "不需要"
 	 */
 	public boolean getFrontSteps() {
-		return FrontSteps;
+		return frontSteps;
 	}
 	
 	/**
@@ -173,23 +175,23 @@ public class StartConfigBean {
 	 * @param frontSteps "需要", "不需要"
 	 */
 	public void setFrontSteps(boolean frontSteps) {
-		FrontSteps = frontSteps;
+		this.frontSteps = frontSteps;
 	}
 
 	public boolean getInitDB() {
-		return InitDB;
+		return initDB;
 	}
 
 	public void setInitDB(boolean initDB) {
-		InitDB = initDB;
+		this.initDB = initDB;
 	}
 
 	public String getSqlData() {
-		return SqlData;
+		return SQLData;
 	}
 
 	public void setSqlData(String sqlData) {
-		SqlData = sqlData;
+		this.SQLData = sqlData;
 	}
 	
 	/**
@@ -197,7 +199,7 @@ public class StartConfigBean {
 	 * @return "本机", "远程"
 	 */
 	public String getComputer() {
-		return Computer;
+		return computer;
 	}
 	
 	/**
@@ -205,7 +207,7 @@ public class StartConfigBean {
 	 * @param computer "本机", "远程"
 	 */
 	public void setComputer(String computer) {
-		Computer = computer;
+		this.computer = computer;
 	}
 	
 	/**
@@ -229,7 +231,7 @@ public class StartConfigBean {
 	 * @return "不指定", "指定"
 	 */
 	public String getSpecify() {
-		return Specify;
+		return specify;
 	}
 	
 	/**
@@ -237,7 +239,7 @@ public class StartConfigBean {
 	 * @param specify "不指定", "指定"
 	 */
 	public void setSpecify(String specify) {
-		Specify = specify;
+		this.specify = specify;
 	}
 	
 	
@@ -246,7 +248,7 @@ public class StartConfigBean {
 	 * @return
 	 */
 	public String getSpecifySheet() {
-		return SpecifySheet;
+		return specifySheet;
 	}
 	
 	/**
@@ -254,7 +256,7 @@ public class StartConfigBean {
 	 * @param specifySheet
 	 */
 	public void setSpecifySheet(String specifySheet) {
-		SpecifySheet = specifySheet;
+		this.specifySheet = specifySheet;
 	}
 
 	/**
@@ -262,7 +264,7 @@ public class StartConfigBean {
 	 * @return
 	 */
 	public String getSpecifyRow() {
-		return SpecifyRow;
+		return specifyRow;
 	}
 
 	/**
@@ -270,7 +272,7 @@ public class StartConfigBean {
 	 * @param specifyRow
 	 */
 	public void setSpecifyRow(String specifyRow) {
-		SpecifyRow = specifyRow;
+		this.specifyRow = specifyRow;
 	}
 
 	/**
@@ -278,7 +280,7 @@ public class StartConfigBean {
 	 * @return
 	 */
 	public String getSpecifyStep() {
-		return SpecifyStep;
+		return specifyStep;
 	}
 
 	/**
@@ -286,24 +288,23 @@ public class StartConfigBean {
 	 * @param specifyStep
 	 */
 	public void setSpecifyStep(String specifyStep) {
-		SpecifyStep = specifyStep;
+		this.specifyStep = specifyStep;
 	}
 
 	
 	public boolean getUploadResults() {
-		return UploadResults;
+		return uploadResults;
 	}
 
 	public void setUploadResults(boolean uploadResults) {
-		UploadResults = uploadResults;
+		this.uploadResults = uploadResults;
 	}
 
 	public String getStartPlatform() {
-		return StartPlatform;
+		return startPlatform;
 	}
 
 	public void setStartPlatform(String startPlatform) {
-		StartPlatform = startPlatform;
+		this.startPlatform = startPlatform;
 	}
-
 }

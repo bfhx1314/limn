@@ -10,6 +10,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.limn.tool.bean.RunParameter;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.parameter.Parameter;
 
@@ -19,7 +20,7 @@ public class XmlEngine {
 	private static Document document = null;
 	public XmlEngine(){
 		try { 
-			document = saxReader.read(new File(Parameter.RESULT_FOLDER_REPORT + "/ReportSource.xml"));
+			document = saxReader.read(new File(RunParameter.getResultPaht().getResultFolderReport() + "/ReportSource.xml"));
 		} catch (DocumentException e) {
 			// TODO
 			e.printStackTrace();
@@ -42,8 +43,8 @@ public class XmlEngine {
 		ExecutedOn_TextNode.setText(dicPlanInfo.getValue("ExecutedOn").toString());
 		TestStartTime_TextNode.setText(dicPlanInfo.getValue("StartTime").toString());
 
-		FileUtil.setEmpty(Parameter.RESULT_FOLDER_REPORT+"/ReportSource.xml");
-		saveDocument(document,Parameter.RESULT_FOLDER_REPORT + "/ReportSource.xml");
+		FileUtil.setEmpty(RunParameter.getResultPaht().getResultFolderReport() + "/ReportSource.xml");
+		saveDocument(document,RunParameter.getResultPaht().getResultFolderReport() + "/ReportSource.xml");
 	}
 	
 	
@@ -61,8 +62,8 @@ public class XmlEngine {
 		OverallStatus_TextNode.setText(dicPlanInfo.getValue("OverallStatus").toString());
 		OverallResult_TextNode.setText(dicPlanInfo.getValue("OverallResult").toString());
 		RateOfExecutation_TextNode.setText(dicPlanInfo.getValue("RateOfExecutation").toString());
-		FileUtil.setEmpty(Parameter.RESULT_FOLDER_REPORT+"/ReportSource.xml");
-		saveDocument(document,Parameter.RESULT_FOLDER_REPORT + "/ReportSource.xml");
+		FileUtil.setEmpty(RunParameter.getResultPaht().getResultFolderReport() + "/ReportSource.xml");
+		saveDocument(document,RunParameter.getResultPaht().getResultFolderReport() + "/ReportSource.xml");
 	}
 	
 	

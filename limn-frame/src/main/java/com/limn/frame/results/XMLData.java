@@ -19,6 +19,8 @@ import com.limn.frame.report.GenerateCaseResultXMLSegment;
 import com.limn.frame.report.LogEngine;
 import com.limn.frame.report.NewDictionary;
 import com.limn.frame.report.XmlEngine;
+import com.limn.frame.testcase.TestCase;
+import com.limn.tool.bean.RunParameter;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.DateFormat;
 import com.limn.tool.common.Print;
@@ -42,6 +44,7 @@ public class XMLData implements DataResults{
 	private Element stepElement = null;
 	//存放路径
 	private String savePath = null;
+	
 	/**
 	 * 用例执行总数
 	 */
@@ -82,12 +85,16 @@ public class XMLData implements DataResults{
 	 * 第一个错误的用例
 	 */
 	private String failCase = "";
+	
+	
+	private TestCase tc = null;
 	/**
 	 * 初始化xml
 	 */
 	@Override
-	public void init(){
-		savePath = Parameter.RESULT_FOLDER_WEB + "/results.xml";
+	public void init(TestCase tc){
+		this.tc = tc;
+		savePath = RunParameter.getResultPaht().getResultFolderWeb() + "/results.xml";
 		document = DocumentHelper.createDocument();
 		save();
 		dicPlanInfoHead = new NewDictionary();
@@ -104,7 +111,7 @@ public class XMLData implements DataResults{
 		sheetElement = document.addElement("sheets");
 		sheetElement.addAttribute("Index",String.valueOf(index));
 		save();
-		sumCaseCount = sumCaseCount + Test.tc.getSheetLastRowNumber();
+		sumCaseCount = sumCaseCount + tc.getSheetLastRowNumber();
 	}
 	
 	/**
@@ -125,7 +132,7 @@ public class XMLData implements DataResults{
 	public void addCase(String caseNo){
 		logEngine = new LogEngine();
 		dicCaseInfo = new NewDictionary();
-		dicCaseInfo.addItem("Case Name", Parameter.TESTCASEMOUDLE);
+		dicCaseInfo.addItem("Case Name", RunParameter.getResultPaht().getTestCaseMoudle());
 		if (null == caseNo || caseNo.equals("")){
 			caseNo = String.valueOf(System.currentTimeMillis());
 		}
@@ -159,12 +166,12 @@ public class XMLData implements DataResults{
 	 * 初始化每条用例的信息环境变量
 	 */
 	private void initStepInfo(){
-		Parameter.ERRORLOG = "";
-		Parameter.PRODUCTMESSAGE = "";
-		Parameter.ERRORCAPTURE = "";
-		Parameter.CASESTATUS = 0;
-		Parameter.VERSNAPSHOT = "";
-		Parameter.CHECKPOINTNAME = "";
+		RunParameter.getResultPaht().setErrorLog("");
+		RunParameter.getResultPaht().setErrorMessage("");
+		RunParameter.getResultPaht().setErrorCapture("");
+		RunParameter.getResultPaht().setCaseStatus(0);
+		RunParameter.getResultPaht().setVerSnapshot("");
+		RunParameter.getResultPaht().setCheckPointName("");
 	}
 
 	@Override
@@ -195,7 +202,7 @@ public class XMLData implements DataResults{
 		dicCheckPoint = new NewDictionary();
 		dicCheckPoint.addItem("SN", dicCaseResult.getSize()+1);
 		//TODO 检查点名
-		dicCheckPoint.addItem("CheckPoint Name", Parameter.CHECKPOINTNAME);
+		dicCheckPoint.addItem("CheckPoint Name", RunParameter.getResultPaht().getCheckPointName());
 		dicCheckPoint.addItem("Executed Time", DateFormat.getDateToString());
 //		String strExpected = addHtmlBr(results);
 		String strExpected = StringUtils.join(results,"\r\n");
@@ -213,7 +220,7 @@ public class XMLData implements DataResults{
 		}
 		dicCheckPoint.addItem("Status", isPassS);
 		// TODO 验证截图路径
-		dicCheckPoint.addItem("Snapshot", Parameter.VERSNAPSHOT);
+		dicCheckPoint.addItem("Snapshot", RunParameter.getResultPaht().getVerSnapshot());
 		dicCaseResult.addItem("检查点", dicCheckPoint);
 		dicCaseInfo.addItem("CaseResult", dicCaseResult);
 	}
@@ -256,16 +263,17 @@ public class XMLData implements DataResults{
 	@Override
 	public void addTestCaseCount(String count) {
 		XmlEngine xmlEngine = new XmlEngine();
-		Parameter.ENDTIME = DateFormat.getDateToString();
-		dicPlanInfoHead.addItem("EndTime", Parameter.ENDTIME);
+		RunParameter.getResultPaht().setEndTime(DateFormat.getDateToString());
+		dicPlanInfoHead.addItem("EndTime", RunParameter.getResultPaht().getEndTime());
 //		dicPlanInfoHead.addItem("OverallStatus", Parameter.OVERALLSTATUS);
 		// 测试环境
-		String url = Parameter.URL.replace("http://", "");
-		url = url.split("/")[0];
-		Parameter.TESTENVIRONMENT = Common.getIP(url);
-		dicPlanInfoHead.addItem("TestEnvironment", Parameter.TESTENVIRONMENT);
 		
-		sumCaseCount = Test.tc.getAllCase();
+		String url = RunParameter.getStartPaht().getURL().replace("http://", "");
+		url = url.split("/")[0];
+		RunParameter.getResultPaht().setTestEnvironment(Common.getIP(url));
+		dicPlanInfoHead.addItem("TestEnvironment", RunParameter.getResultPaht().getTestEnvironment());
+		
+		sumCaseCount = tc.getAllCase();
 		String rateOfExecutation = "执行率："+executedCase+"/"+sumCaseCount
 										+"，"+Common.getNumPercent(executedCase, sumCaseCount)
 									+"、通过率："+successedCase+"/"+sumCaseCount
@@ -285,12 +293,12 @@ public class XMLData implements DataResults{
 	}
 	
 	private void addXmlHead(){
-		dicPlanInfoHead.addItem("ProductName", Parameter.PRODUCTNAME);
-		dicPlanInfoHead.addItem("ProductVersion", Parameter.PLATVERSION);
-		dicPlanInfoHead.addItem("RunMode", Parameter.RUNMODE);
-		dicPlanInfoHead.addItem("TestName", Parameter.TESTNAME);
-		dicPlanInfoHead.addItem("ExecutedOn", Parameter.OS);
-		dicPlanInfoHead.addItem("StartTime", Parameter.STARTTIME);
+		dicPlanInfoHead.addItem("ProductName", RunParameter.getResultPaht().getProductName());
+		dicPlanInfoHead.addItem("ProductVersion", "暂时不用此字段");
+		dicPlanInfoHead.addItem("RunMode", RunParameter.getStartPaht().getComputer());
+		dicPlanInfoHead.addItem("TestName", RunParameter.getResultPaht().getTestName());
+		dicPlanInfoHead.addItem("ExecutedOn", Parameter.getOS());
+		dicPlanInfoHead.addItem("StartTime", RunParameter.getResultPaht().getStartTime());
 		XmlEngine xmlEngine = new XmlEngine();
 		xmlEngine.update(dicPlanInfoHead);
 	}
@@ -298,15 +306,15 @@ public class XMLData implements DataResults{
 	@Override
 	public void addCaseReport() {
 		// TODO 报错信息、需要增加区分错误等级
-		dicCaseInfo.addItem("Error Log", Parameter.ERRORLOG);
+		dicCaseInfo.addItem("Error Log", RunParameter.getResultPaht().getErrorLog());
 		// TODO 产品提示信息
-		dicCaseInfo.addItem("Product message", Parameter.PRODUCTMESSAGE);
+		dicCaseInfo.addItem("Product message", RunParameter.getResultPaht().getErrorMessage());
 		// TODO 单条用例执行结果，是否成功，非验证
 		String result = "";
-		if (Parameter.CASESTATUS == ExecuteStatus.SUCCESS){
+		if (RunParameter.getResultPaht().getCaseStatus() == ExecuteStatus.SUCCESS){
 			successedCase++;
 			result = "Pass";
-		}else if(Parameter.CASESTATUS == ExecuteStatus.FAILURE){
+		}else if(RunParameter.getResultPaht().getCaseStatus() == ExecuteStatus.FAILURE){
 			result = "Error";
 			if (boolAllResult){
 				failCase = failCase + " " + dicCaseInfo.getValue("No").toString();
@@ -324,7 +332,7 @@ public class XMLData implements DataResults{
 			}
 		}
 		dicCaseInfo.addItem("Case Status", result);
-		dicCaseInfo.addItem("ErrorCapture", Parameter.ERRORCAPTURE);
+		dicCaseInfo.addItem("ErrorCapture", RunParameter.getResultPaht().getErrorCapture());
 		GenerateCaseResultXMLSegment.setXML(dicCaseInfo,logEngine);
 		// 详细日志
 		logEngine.generateLogSegment();
@@ -357,14 +365,14 @@ public class XMLData implements DataResults{
 	public void addCaseLog(String step, int result) {
 		String logInfo = "";
 		if (result == ExecuteStatus.SUCCESS){
-			logInfo = Parameter.LOGINFO;
-			Parameter.LOGINFO = "";
+//			logInfo = Parameter.LOGINFO;
+//			Parameter.LOGINFO = "";
 			if (!RegExp.findCharacters(step, "^验证")){
 				result = 0;
 			}
 		}else{
-			logInfo = Parameter.ERRORLOG;
-			Parameter.ERRORLOG = "";
+			logInfo = RunParameter.getResultPaht().getErrorLog();
+			RunParameter.getResultPaht().setErrorLog("");
 		}
 		String getExpessionValue = getExpValue(step);
 		if (!logInfo.equals("")){
@@ -372,8 +380,8 @@ public class XMLData implements DataResults{
 		}else{
 			logInfo = getExpessionValue;
 		}
-		logEngine.logEvent(String.valueOf(result),step,logInfo,Parameter.LOGSNAPSHOT);
-		Parameter.ERRORLOG = "";
+		logEngine.logEvent(String.valueOf(result),step,logInfo,RunParameter.getResultPaht().getLogSnapshot());
+		RunParameter.getResultPaht().setErrorLog("");
 	}
 	
 	private static String getExpValue(String content){
@@ -390,6 +398,24 @@ public class XMLData implements DataResults{
 	
 	public static void main(String[] args){
 		getExpValue("表达式:{bIncrementNum}={cityName}");
+	}
+
+
+	@Override
+	public int getCaseCount() {
+		return sumCaseCount;
+	}
+
+
+	@Override
+	public int getExecuteCaseCount() {
+		return executedCase;
+	}
+
+
+	@Override
+	public int getSucessCaseCount() {
+		return successedCase;
 	}
 	
 }

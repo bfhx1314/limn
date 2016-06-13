@@ -1,5 +1,6 @@
 package com.limn.frame.results;
 
+import com.limn.frame.testcase.TestCase;
 import com.limn.tool.exception.ParameterException;
 
 public interface DataResults {
@@ -8,7 +9,7 @@ public interface DataResults {
 	/**
 	 * 初始化xml
 	 */
-	public void init();
+	public void init(final TestCase tc);
 	
 	/**
 	 * 添加Sheet页
@@ -81,5 +82,11 @@ public interface DataResults {
 	 */
 	public void addCaseLog(String step, int result);
 
-
+	public int getCaseCount();
+	
+	public int getExecuteCaseCount();
+	
+	public int getSucessCaseCount();
+	
+	
 }

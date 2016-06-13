@@ -13,13 +13,11 @@ public class SeleniumFindException extends Exception {
 	
 	public SeleniumFindException(int code, String message){
 		super(message);
-		Parameter.ERRORLOG = message;
 //		Print.log(message, 2);
 	}
 	
 	public SeleniumFindException(String message){
 		super(message);
-		Parameter.ERRORLOG = message;
 //		Print.log(message, 2);
 	}
 }

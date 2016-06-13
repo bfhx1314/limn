@@ -22,7 +22,7 @@ public class OperateDialog {
 	 */
 	public static String importFile(String filePath){
 		// 浏览器不同，弹出的对话框标题也不同。需要区分
-		String browserName = Driver.getBrowserName();
+		String browserName = DriverParameter.getDriverPaht().getBrowserName();
 		String cmdBufferedReader = "";
 		if (browserName.equalsIgnoreCase("firefox")){
 			cmdBufferedReader = CallBat.returnExec(System.getProperty("user.dir")+"/bin/DownLoad_Upload_Dialog.exe " + "文件上载 " + "\""+filePath+"\"" + " 打开");
@@ -47,15 +47,15 @@ public class OperateDialog {
 			return;
 		}
 		String cmdBufferedReader = "";
-		String browserName = Driver.getBrowserName();
+		String browserName = DriverParameter.getDriverPaht().getBrowserName();
 		if (browserName.equalsIgnoreCase("iexplore")){
 			// 获取IE版本
-			int ieVersion = (Integer) Driver.runScript("return getIeVersion()");
+			int ieVersion = (Integer) DriverParameter.getDriverPaht().runScript("return getIeVersion()");
 			if (ieVersion == 9 || ieVersion == 10 || ieVersion == 11){
 				// 屏幕坐标点击
 				// X坐标：(document.body.clientWidth - 960)/2+960-126  Y坐标：27
-				float bodyWidth = (Float) Driver.runScript("return document.body.clientWidth;"); //网页可见区域宽
-				float bodyHeight = (Float) Driver.runScript("return window.screen.availHeight;"); //屏幕可用工作区高度
+				float bodyWidth = (Float) DriverParameter.getDriverPaht().runScript("return document.body.clientWidth;"); //网页可见区域宽
+				float bodyHeight = (Float) DriverParameter.getDriverPaht().runScript("return window.screen.availHeight;"); //屏幕可用工作区高度
 				float clickX = (Float) (bodyWidth-960)/2 + 960 -126; // 960 下载条宽度，126 下载条右边界与点击按钮的x坐标差
 				float clickY = (Float) bodyHeight - 50/2; 			// 50 下载条高度。
 				cmdBufferedReader = clickByXY("Yigo",clickX,clickY);

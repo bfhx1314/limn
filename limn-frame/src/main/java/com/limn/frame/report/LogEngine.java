@@ -13,6 +13,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.limn.tool.bean.RunParameter;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.parameter.Parameter;
 
@@ -28,8 +29,8 @@ public class LogEngine {
 	public LogEngine(){
 		iEventIndex = 0;
 		DIC_TestLogContainer = new NewDictionary();
-		strLogFilePath = Parameter.RESULT_FOLDER_REPORT + "/TestLog.xml";
-		strActionName = Parameter.TESTNAME + " " + Parameter.TESTCASENO; // Testcase Name
+		strLogFilePath = RunParameter.getResultPaht().getResultFolderReport() + "/TestLog.xml";
+		strActionName = RunParameter.getResultPaht().getTestName() + " " + RunParameter.getResultPaht().getTestCaseNo(); // Testcase Name
 		
 	}
 	
@@ -98,8 +99,8 @@ public class LogEngine {
 			new_Log.addAttribute("LogSnapshot",lHashMap.get("LogSnapshot"));
 			new_Log.addText(lHashMap.get("EventContent"));
 			
-			FileUtil.setEmpty(Parameter.RESULT_FOLDER_REPORT+"/TestLog.xml");
-			XmlEngine.saveDocument(document,Parameter.RESULT_FOLDER_REPORT+"/TestLog.xml");
+			FileUtil.setEmpty(RunParameter.getResultPaht().getResultFolderReport() + "/TestLog.xml");
+			XmlEngine.saveDocument(document,RunParameter.getResultPaht().getResultFolderReport() + "/TestLog.xml");
 			
 		}
 		

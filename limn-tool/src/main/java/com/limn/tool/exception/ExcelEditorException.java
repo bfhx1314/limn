@@ -13,7 +13,6 @@ public class ExcelEditorException extends Exception{
 
 	public ExcelEditorException(String message) {
 		super(message);
-		Parameter.ERRORLOG = message;
 	}
 	
 

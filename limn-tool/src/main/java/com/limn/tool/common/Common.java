@@ -319,27 +319,13 @@ public class Common {
 	 */
 	public static boolean isAbsolutePath(String path){
 		boolean isAP = true;
-		if(Parameter.OS == null){
-			getOSName();
-		}
-		if(Parameter.OS == "Windows" && !RegExp.findCharacters(path, "^[A-Za-z]:") ){
+		if(Parameter.getOS() == "Windows" && !RegExp.findCharacters(path, "^[A-Za-z]:") ){
 			isAP = false;
 		}
 		return 	isAP;
 	}
 	
 	
-	
-	public static String getOSName(){
-		if(RegExp.findCharacters(System.getProperty("os.name"),"Mac")){
-			Parameter.OS = "Mac";
-		}else if(RegExp.findCharacters(System.getProperty("os.name"),"Linux")){
-			Parameter.OS = "Linux";
-		}else{
-			Parameter.OS = "Windows";
-		}
-		return Parameter.OS;
-	}
 	
 	
 	public static void main(String[] args){

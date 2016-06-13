@@ -1,57 +1,50 @@
 package com.limn.tool.parameter;
 
 import com.limn.tool.common.GetSystemInfo;
+import com.limn.tool.regexp.RegExp;
 
 public class Parameter {
-	//补丁更新地址
-	public static String UPDATEPATH = "";
-	
-	//服务器IP
-	public static String SERVERIP = "";
-	
-	//运行环境
-	public static String YIGOPATH = null;
 	
 	//测试用例路径
-	public static String TESTCASEPATH = null;
+//	public static String TESTCASEPATH = null;
 	
-	public static String TESTCASE_FOLDERPATH = null;
+//	public static String TESTCASE_FOLDERPATH = null;
 	
 	//测试地址
-	public static String URL = "";
+//	public static String URL = "";
 	
 	//平台版本
-	public static String PLATVERSION = "";
+//	public static String PLATVERSION = "";
 	
 	//浏览器类型
-	public static int BROWSERTYPE = 1;
+//	public static int BROWSERTYPE = 1;
 	
 	//执行模式
-	public static String EXECUTEMODE = null;
+//	public static String EXECUTEMODE = null;
 	
 	//运行模式 远程 还是 本地
-	public static String RUNMODE = null;
-	public static String REMOTEIP = null;
+//	public static String RUNMODE = null;
+//	public static String REMOTEIP = null;
 	
 	//测试版本
-	public static String VERSION = "";
+//	public static String VERSION = "";
 	
 	//测试模块名称
-	public static String TESTNAME = null;
+//	public static String TESTNAME = null;
 	
 	//测试结果目录
-	public static String RESULT_FOLDER = null;
-	public static String RESULT_FOLDER_BITMAP = null;
-	public static String RESULT_FOLDER_DATABAK = null;
-	public static String RESULT_FOLDER_LOG = null;
-	public static String RESULT_FOLDER_SQL = null;
-	public static String RESULT_FOLDER_RESULTTXT = null;
-	public static String RESULT_FOLDER_WEB = null;
-	public static String RESULT_FOLDER_REPORT = null;
+//	public static String RESULT_FOLDER = null;
+//	public static String RESULT_FOLDER_BITMAP = null;
+//	public static String RESULT_FOLDER_DATABAK = null;
+//	public static String RESULT_FOLDER_LOG = null;
+//	public static String RESULT_FOLDER_SQL = null;
+//	public static String RESULT_FOLDER_RESULTTXT = null;
+//	public static String RESULT_FOLDER_WEB = null;
+//	public static String RESULT_FOLDER_REPORT = null;
 	/**
 	 * 错误信息文件
 	 */
-	public static String ERRORFILE = null;
+//	public static String ERRORFILE = null;
 	//数据库相关信息
 	/**
 	 * core文件数据库连接方式（jdbc、dhcp）
@@ -77,9 +70,9 @@ public class Parameter {
 	 * core文件数据库密码
 	 */
 	public static String DBPASS = null;
-	
+//	
 	//中间件路径
-	public static String MIDDLEWARE = null;
+//	public static String MIDDLEWARE = null;
 
 	public static String DEFAULT_TESTCASE_PATH = System.getProperty("user.dir") + "/testcase";
 	
@@ -110,14 +103,14 @@ public class Parameter {
 	/**
 	 * 调试模式
 	 */
-	public static boolean DEBUGMODE = false;
+//	public static boolean DEBUGMODE = false;
 	
 	/**
 	 * OS = "Windows"
 	 * OS = "Linux"
 	 * OS = "Mac"
 	 */
-	public static String OS = null;
+//	public static String OS = null;
 	
 	/**
 	 * RemoteDriver 的控制端口
@@ -129,32 +122,32 @@ public class Parameter {
 	public static int SERVERPORT = 25041;
 	
 	
-	public static boolean isRemoteRun = false;
+//	public static boolean isRemoteRun = false;
 	
 	/**
 	 * 是否存在服务端环境
 	 */
-	public static boolean NOTSERVER = false;
+//	public static boolean NOTSERVER = false;
 	
 	/**
 	 * 如果是查询界面,数据另记录  用于核对
 	 */
-	public static boolean ReportWhereBoolean = false;
+//	public static boolean ReportWhereBoolean = false;
 	
 	/**
 	 * 单据的类型
 	 */
-	public static String BILLTYPE = "";
+//	public static String BILLTYPE = "";
 	
 	/**
 	 * 用例文件名
 	 */
-	public static String EXCELNAME = "";
+//	public static String EXCELNAME = "";
 	
 	/**
 	 * 是否为报表
 	 */
-	public static boolean ISVERIBILL = false;
+//	public static boolean ISVERIBILL = false;
 	
 	/**
 	 * 系统位数
@@ -172,93 +165,82 @@ public class Parameter {
 	/**
 	 * 产品名称
 	 */
-	public static String PRODUCTNAME = "";
+//	public static String PRODUCTNAME = "";
 	
 	/**
 	 * 执行开始时间
 	 */
-	public static String STARTTIME = "";
+//	public static String STARTTIME = "";
 	
 	/**
 	 * 执行结束时间
 	 */
-	public static String ENDTIME = "";
+//	public static String ENDTIME = "";
 	
 	/**
 	 * 测试环境
 	 */
-	public static String TESTENVIRONMENT = "";
+//	public static String TESTENVIRONMENT = "";
 	
 	/**
 	 * 全部用例执行结果
 	 */
-	public static boolean OVERALLSTATUS = true;
+//	public static boolean OVERALLSTATUS = true;
 	/**
 	 * 用例编号
 	 */
-	public static String TESTCASENO = "";
-	
+//	public static String TESTCASENO = "";
 	/**
 	 * 用例模块名
 	 */
-	public static String TESTCASEMOUDLE = "";
-	
+//	public static String TESTCASEMOUDLE = "";
 	/**
 	 * 错误信息
 	 */
-	public static String ERRORLOG = "";
+//	public static String ERRORLOG = "";
 	/**
 	 * 产品提示信息
 	 */
-	public static String PRODUCTMESSAGE = "";
+//	public static String PRODUCTMESSAGE = "";
 	/**
 	 * 错误截图路径
 	 */
-	public static String ERRORCAPTURE = "";
-	
+//	public static String ERRORCAPTURE = "";
 	/**
 	 * 执行结果
 	 */
-	public static int CASESTATUS = 0;
-	
+//	public static int CASESTATUS = 0;
 	/**
 	 * 每一步截图的路径
 	 */
-	public static String CASESNAPSHOT = "";
-	
+//	public static String CASESNAPSHOT = "";
 	/**
 	 * 验证时的截图路径
 	 */
-	public static String VERSNAPSHOT = "";
-	
+//	public static String VERSNAPSHOT = "";
 	/**
 	 * 日志详细信息
 	 */
-	public static String LOGINFO = "";
-	
+//	public static String LOGINFO = "";
 	/**
 	 * 检查点名
 	 */
-	public static String CHECKPOINTNAME = "";
-	
+//	public static String CHECKPOINTNAME = "";
 	/**
 	 * 每一步的截图路径
 	 */
-	public static String LOGSNAPSHOT = "";
+//	public static String LOGSNAPSHOT = "";
 	
-	
-	/**
-	 * 初始化环境变量
-	 */
-	public static void init(){
-		
-		if(System.getProperties().getProperty("os.name").contains("Windows")){
-			Parameter.OS = "Windows";
+	public static String getOS(){
+		String os = null;
+		if(RegExp.findCharacters(System.getProperty("os.name"),"Mac")){
+			os = "Mac";
+		}else if(RegExp.findCharacters(System.getProperty("os.name"),"Linux")){
+			os = "Linux";
 		}else{
-			Parameter.OS = "Linux";
+			os = "Windows";
 		}
-		
-		
+		return os;
 	}
 	
 	

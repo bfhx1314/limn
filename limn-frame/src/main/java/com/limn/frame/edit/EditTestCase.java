@@ -33,8 +33,8 @@ public class EditTestCase{
 	 * @param filePath
 	 */
 	public void openTestCase(String filePath){
-		Parameter.TESTCASEPATH = filePath;
-		Parameter.TESTCASE_FOLDERPATH = FileUtil.getParent(Parameter.TESTCASEPATH);
+		//Parameter.TESTCASEPATH = filePath;
+		//Parameter.TESTCASE_FOLDERPATH = FileUtil.getParent(Parameter.TESTCASEPATH);
 		
 		testCase = new TestCaseExcel(filePath);
 		testCase.activateSheet(0);

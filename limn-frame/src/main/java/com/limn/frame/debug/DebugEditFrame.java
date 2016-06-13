@@ -754,7 +754,6 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	}
 	
 	public static void main(String[] args){
-		Parameter.init();
 		Print.setLevel(Print.INFO);
 		new RunLog(new DebugEditFrame());
 	}

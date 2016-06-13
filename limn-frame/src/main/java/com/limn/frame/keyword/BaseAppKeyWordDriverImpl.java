@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 import com.limn.app.driver.exception.AppiumException;
+import com.limn.tool.bean.RunParameter;
 import com.limn.tool.common.Print;
 import com.limn.tool.parameter.Parameter;
 
@@ -47,12 +48,12 @@ public class BaseAppKeyWordDriverImpl implements KeyWordDriver {
 			}
 		} catch (AppiumException e){
 			status = -2;
-			Parameter.ERRORLOG = e.getMessage();
+			RunParameter.getResultPaht().setErrorLog(e.getMessage());
 			Print.log(e.getMessage(), 2);
 			e.printStackTrace();
 		} catch (Exception e){
 			status = -2;
-			Parameter.ERRORLOG = e.getMessage();
+			RunParameter.getResultPaht().setErrorLog(e.getMessage());
 			Print.log(e.getMessage(), 2);
 			e.printStackTrace();
 		}
