@@ -3,8 +3,8 @@ package com.limn.tool.bean;
 public class ResultConfigBean {
 	
 	private String testCaseFolderPath = null;
-	private String productName = null;
-	private String testName = null;
+	private String productName = "";
+	private String testName = "";
 	private String resultFolder = null;
 	private String resultFolderBitMap = null;
 	private String resultFolderDataBak = null;
@@ -13,18 +13,19 @@ public class ResultConfigBean {
 	private String resultFolderResultTxt = null;
 	private String resultFolderWeb = null;
 	private String resultFolderReport = null;
-	private String startTime = null;
-	private String endTime = null;
-	private String testEnvironment = null;
-	private String testCaseNo = null;
-	private String testCaseMoudle = null;
-	private String errorMessage  = null;
-	private String errorLog  = null;
-	private String errorCapture = null;
-	private String verSnapshot = null;
-	private String logSnapshot = null;
+	private String startTime = "";
+	private String endTime = "";
+	private String testEnvironment = "";
+	private String testCaseNo = "";
+	private String testCaseMoudle = "";
+	private String errorMessage  = "";
+	private String errorLog  = "";
+	private String errorCapture = "";
+	private String verSnapshot = "";
+	private String logSnapshot = "";
 	private int caseStatus = 0;
-	private String checkPointName = null;
+	private String checkPointName = "";
+	
 
 	public String getTestCaseFolderPath() {
 		return testCaseFolderPath;
@@ -218,5 +219,6 @@ public class ResultConfigBean {
 	public void setLogSnapshot(String logSnapshot) {
 		this.logSnapshot = logSnapshot;
 	}
+
 
 }

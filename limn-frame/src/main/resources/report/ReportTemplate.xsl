@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="gb2312"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 
 <xsl:stylesheet
@@ -20,31 +20,31 @@ EN" indent="yes"/>
 					<td class="Info_Value"><xsl:value-of select="current()"/></td>
 				</tr>		
 			</xsl:for-each>	-->
-			<tr><td class="Info_Item">��Ʒ����</td><td class="Info_Value"><xsl:value-of select="ProductName"/></td></tr>
-			<!--  <tr><td class="Info_Item">��Ʒ�汾</td><td class="Info_Value"><xsl:value-of select="ProductVersion"/></td></tr>	-->
-			<tr><td class="Info_Item">���Ի���</td><td class="Info_Value"><xsl:value-of select="TestEnvironment"/></td></tr>
+			<tr><td class="Info_Item">产品名称</td><td class="Info_Value"><xsl:value-of select="ProductName"/></td></tr>
+			<!--  <tr><td class="Info_Item">产品版本</td><td class="Info_Value"><xsl:value-of select="ProductVersion"/></td></tr>	-->
+			<tr><td class="Info_Item">测试环境</td><td class="Info_Value"><xsl:value-of select="TestEnvironment"/></td></tr>
 			<!-- <tr><td class="Info_Item">Company Code</td><td class="Info_Value"><xsl:value-of select="CompanyCode"/></td></tr> 	-->
-			<tr><td class="Info_Item">����ģʽ</td><td class="Info_Value"><xsl:value-of select="RunMode"/></td></tr>
+			<tr><td class="Info_Item">运行模式</td><td class="Info_Value"><xsl:value-of select="RunMode"/></td></tr>
 			<!-- <xsl:if test="RunMode != 'Local Host'">
 				<tr><td class="Info_Item">ALM TestSet</td><td class="Info_Value"><xsl:value-of select="ALMTestSet"/></td></tr>
 				<tr><td class="Info_Item">ALM Instance</td><td class="Info_Value"><xsl:value-of select="ALMInstance"/></td></tr>
 			</xsl:if>		-->			
-			<tr><td class="Info_Item">����������</td><td class="Info_Value"><xsl:value-of select="TestName"/></td></tr>
-			<tr><td class="Info_Item">���л���</td><td class="Info_Value"><xsl:value-of select="ExecutedOn"/></td></tr>
-			<!-- <tr><td class="Info_Item">����������</td><td class="Info_Value"><xsl:value-of select="TotalScripts"/></td></tr> -->
-			<!-- <tr><td class="Info_Item">ʱ��</td><td class="Info_Value"><xsl:value-of select="TimeZone"/></td></tr> -->
-			<tr><td class="Info_Item">ִ�п�ʼʱ��</td><td class="Info_Value"><xsl:value-of select="TestStartTime"/></td></tr>	
-			<tr><td class="Info_Item">ִ�н���ʱ��</td><td class="Info_Value"><xsl:value-of select="TestEndTime"/></td></tr>
+			<tr><td class="Info_Item">测试用例名</td><td class="Info_Value"><xsl:value-of select="TestName"/></td></tr>
+			<tr><td class="Info_Item">运行环境</td><td class="Info_Value"><xsl:value-of select="ExecutedOn"/></td></tr>
+			<!-- <tr><td class="Info_Item">代码总行数</td><td class="Info_Value"><xsl:value-of select="TotalScripts"/></td></tr> -->
+			<!-- <tr><td class="Info_Item">时区</td><td class="Info_Value"><xsl:value-of select="TimeZone"/></td></tr> -->
+			<tr><td class="Info_Item">执行开始时间</td><td class="Info_Value"><xsl:value-of select="TestStartTime"/></td></tr>	
+			<tr><td class="Info_Item">执行结束时间</td><td class="Info_Value"><xsl:value-of select="TestEndTime"/></td></tr>
 			<xsl:choose>
 				<xsl:when test="OverallResult = 'true'">
-				<tr><td class="Info_Item">����ִ�н��</td><td class="Info_Value" style='color: green;'><xsl:value-of select="OverallStatus"/></td></tr>
+				<tr><td class="Info_Item">用例执行结果</td><td class="Info_Value" style='color: green;'><xsl:value-of select="OverallStatus"/></td></tr>
 				</xsl:when>
 				<xsl:when test="OverallResult = 'false'">
-				<tr><td class="Info_Item">����ִ�н��</td><td class="Info_Value" style='color: red;'><xsl:value-of select="OverallStatus"/></td></tr>
+				<tr><td class="Info_Item">用例执行结果</td><td class="Info_Value" style='color: red;'><xsl:value-of select="OverallStatus"/></td></tr>
 				</xsl:when>	
 			</xsl:choose>
-			<tr><td class="Info_Item">����ִ�аٷֱ�</td><td class="Info_Value"><xsl:value-of select="RateOfExecutation"/></td></tr>
-			<tr><td class="Info_Item">��־</td><td class="Info_Value"><a href="TestLog.xml" target = '_blank'>�������鿴��ϸ��־</a></td></tr>	
+			<tr><td class="Info_Item">用例执行百分比</td><td class="Info_Value"><xsl:value-of select="RateOfExecutation"/></td></tr>
+			<tr><td class="Info_Item">日志</td><td class="Info_Value"><a href="TestLog.xml" target = '_blank'>点击这里查看详细日志</a></td></tr>	
 		</table>	
 	</xsl:template>
 
@@ -105,7 +105,7 @@ EN" indent="yes"/>
 		<html>		
 			<head >  
 			<meta http-equiv="Content-Type" content="text/html; charset=GB2312"/>		
-			<title>�Զ������Ա���Compass Automation Summary Report</title>  
+			<title>自动化测试报告Compass Automation Summary Report</title>  
 			<link REL='Stylesheet'  type='text/css' HREF="css/Report.css" media="all" />
 			<link rel="stylesheet" href="css/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />			
 			<script language="Javascript" type="text/javascript" src="js/Report.js"> </script>			
@@ -140,7 +140,7 @@ EN" indent="yes"/>
 			
 			
 				<CENTER>
-					<H1 class="ReportTitle">�Զ������Ա���</H1>
+					<H1 class="ReportTitle">自动化测试报告</H1>
 				</CENTER>
 				<div id="logo">
 					<h1 align='right'>					
@@ -173,13 +173,13 @@ EN" indent="yes"/>
 					<tr><td width ='15%' class ="Case_Item">
 					<div class='foldingbutton' id="suite{Number}_foldlink" onclick="toggle_child_visibility('suite{Number}');" style='display: none;'>-</div>
 					<div class='foldingbutton' id="suite{Number}_unfoldlink" onclick="toggle_child_visibility('suite{Number}');" style='display: block;'>+</div>
-					<span class='filename'>�������:  <xsl:value-of select="Number"/></span></td>
+					<span class='filename'>用例编号:  <xsl:value-of select="Number"/></span></td>
 					<td class = 'Case_value' width ='15%'><xsl:value-of select="CaseName"/></td> 
 				<!-- <td class ='Case_Item' width ='7%'>Asset:</td>
 					<td class = 'Case_value' width ='16%'><xsl:value-of select="Asset"/></td> -->
-					<td class ='Case_Item' width ='3%'>����:</td>
+					<td class ='Case_Item' width ='3%'>检查点:</td>
 					<td class ='Case_value' width ='7%'><xsl:value-of select="count(CheckPoints/CheckPoint)"/></td>
-					<td class ='Case_Item' width ='10%'>ִ��״̬:</td>
+					<td class ='Case_Item' width ='10%'>执行状态:</td>
 					<xsl:choose>
 						<xsl:when test="CaseStatus = 'Pass'">
 						<td width = '11%' class='passedcentertext'><a >&#x2714;</a></td>

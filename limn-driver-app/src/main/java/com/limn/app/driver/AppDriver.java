@@ -80,7 +80,7 @@ public class AppDriver {
 			initAPKInfo();
 		}else{
 			AppType = "";
-			throw new AppiumException(appFile.getAbsolutePath() + " 无法获取文件类型");
+			throw new AppiumException(appFile.getAbsolutePath() + " APP文件类型错误:" + FileUtil.getFileType(filePath));
 		}
 		
 		if (!appFile.exists()) {

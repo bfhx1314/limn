@@ -69,7 +69,7 @@ public interface DataResults {
 	 */
 	public void addCustom(String node, String value);
 	
-	public void addTestCaseCount(String count);
+	public void addTestCaseCount();
 	
 	
 	public void addCaseReport();

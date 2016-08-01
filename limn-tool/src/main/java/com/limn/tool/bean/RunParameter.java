@@ -16,8 +16,8 @@ public class RunParameter {
 		return startConfigBean.get();
 	}
 	
-	public static void setResultPaht(){
-		resultConfigBean.set(new ResultConfigBean());
+	public static void setResultPaht(ResultConfigBean rcb){
+		resultConfigBean.set(rcb);
 	}
 	
 	public static ResultConfigBean getResultPaht(){

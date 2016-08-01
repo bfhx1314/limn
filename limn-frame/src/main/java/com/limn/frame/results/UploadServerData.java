@@ -307,7 +307,7 @@ public class UploadServerData implements DataResults {
 	}
 
 	@Override
-	public void addTestCaseCount(String count) {
+	public void addTestCaseCount() {
 		if(isConnect){
 			int sum = executedCase;
 			executeSingleSQL("update TestCase Set TotalNum ='" + sum + "' where ID = '" + ID + "'");

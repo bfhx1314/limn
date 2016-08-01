@@ -120,6 +120,17 @@ public class FileUtil {
 		return prefix;
 	}
 	
+	/**
+	 * 获取文件后缀名
+	 * @param filePath
+	 * @return
+	 */
+	public static String getFileType(File file){
+		String fileName = file.getName();
+		String prefix = fileName.substring(fileName.lastIndexOf(".")+1);
+		return prefix;
+	}
+	
 	
 	@SuppressWarnings("resource")
 	public static long getSize(String filePath) throws IOException {

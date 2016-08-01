@@ -261,17 +261,22 @@ public class XMLData implements DataResults{
 
 
 	@Override
-	public void addTestCaseCount(String count) {
+	public void addTestCaseCount() {
 		XmlEngine xmlEngine = new XmlEngine();
 		RunParameter.getResultPaht().setEndTime(DateFormat.getDateToString());
 		dicPlanInfoHead.addItem("EndTime", RunParameter.getResultPaht().getEndTime());
 //		dicPlanInfoHead.addItem("OverallStatus", Parameter.OVERALLSTATUS);
 		// 测试环境
+		String url = RunParameter.getStartPaht().getURL();
+		if(url == null || url.isEmpty()){
+			dicPlanInfoHead.addItem("TestEnvironment", "App");
+		}else{
+			url = RunParameter.getStartPaht().getURL().replace("http://", "");
+			url = url.split("/")[0];
+			RunParameter.getResultPaht().setTestEnvironment(Common.getIP(url));
+			dicPlanInfoHead.addItem("TestEnvironment", RunParameter.getResultPaht().getTestEnvironment());
+		}
 		
-		String url = RunParameter.getStartPaht().getURL().replace("http://", "");
-		url = url.split("/")[0];
-		RunParameter.getResultPaht().setTestEnvironment(Common.getIP(url));
-		dicPlanInfoHead.addItem("TestEnvironment", RunParameter.getResultPaht().getTestEnvironment());
 		
 		sumCaseCount = tc.getAllCase();
 		String rateOfExecutation = "执行率："+executedCase+"/"+sumCaseCount

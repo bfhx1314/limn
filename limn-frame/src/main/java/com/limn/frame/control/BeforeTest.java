@@ -3,22 +3,20 @@ package com.limn.frame.control;
 import java.io.File;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import com.limn.tool.exception.ParameterException;
 import com.limn.tool.external.XMLReader;
-import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.keyword.KeyWordDriver;
+import com.limn.frame.results.RecordResult;
 import com.limn.tool.log.LogInformation;
 import com.limn.tool.log.RunLog;
 import com.limn.tool.parameter.Parameter;
-import com.limn.tool.bean.RunParameter;
+import com.limn.tool.bean.ResultConfigBean;
 import com.limn.tool.bean.StartConfigBean;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.DateFormat;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
-import com.limn.tool.regexp.RegExp;
 
 /**
  * 
@@ -42,28 +40,47 @@ public class BeforeTest implements Runnable {
 
 	private XMLReader xmlReader = null;
 
-	// private String lastVersion = null;
-
 	private boolean isLoop = false;
 
+	private Test test = null;
+
+	private boolean isStartLog = true;
+	
+	private ResultConfigBean rcb = new ResultConfigBean();
+	
 	// 本地化的RunLog
-	public BeforeTest(HashMap<String, String> map, KeyWordDriver kwd, boolean isLoop) {
-		this.isLoop = isLoop;
-		// testParameter = map;
-		startConfig = getStartConfigByMap(map);
-		keyWordDriver = kwd;
-		// update = false;
-		beforeTest();
+	public BeforeTest(HashMap<String, String> map, KeyWordDriver kwd, boolean isLoop, boolean isStartLog) {
+		setParameter(getStartConfigByMap(map),null,kwd,isLoop,isStartLog);
+//		beforeTest();
 	}
 
 	// 连接服务器 RunLog
-	public BeforeTest(HashMap<String, String> map, Socket socket, KeyWordDriver kwd, boolean isLoop) {
+	public BeforeTest(HashMap<String, String> map, Socket socket, KeyWordDriver kwd, boolean isLoop, boolean isStartLog) {
+		setParameter(getStartConfigByMap(map),socket,kwd,isLoop,isStartLog);
+//		beforeTest();
+	}
+
+	// 本地化的RunLog
+	public BeforeTest(StartConfigBean scb, KeyWordDriver kwd, boolean isLoop, boolean isStartLog) {
+		setParameter(scb,null,kwd,isLoop,isStartLog);
+//		beforeTest();
+	}
+
+	// 连接服务器 RunLog
+	public BeforeTest(StartConfigBean scb, Socket socket, KeyWordDriver kwd, boolean isLoop, boolean isStartLog) {
+		setParameter(scb,socket,kwd,isLoop,isStartLog);
+//		beforeTest();
+	}
+	
+	private void setParameter(StartConfigBean scb, Socket socket, KeyWordDriver kwd, boolean isLoop, boolean isStartLog){
 		this.isLoop = isLoop;
-		startConfig = getStartConfigByMap(map);
+		startConfig = scb;
 		keyWordDriver = kwd;
 		this.socket = socket;
-		beforeTest();
+		this.isStartLog = isStartLog;
 	}
+	
+	
 
 	/**
 	 * 转换
@@ -97,29 +114,10 @@ public class BeforeTest implements Runnable {
 		return scb;
 	}
 
-	// 本地化的RunLog
-	public BeforeTest(StartConfigBean scb, KeyWordDriver kwd, boolean isLoop) {
-		this.isLoop = isLoop;
-		startConfig = scb;
-		keyWordDriver = kwd;
-		// update = false;
-		beforeTest();
-	}
-
-	// 连接服务器 RunLog
-	public BeforeTest(StartConfigBean scb, Socket socket, KeyWordDriver kwd, boolean isLoop) {
-		this.isLoop = isLoop;
-		startConfig = scb;
-		keyWordDriver = kwd;
-		this.socket = socket;
-		beforeTest();
-	}
-
 	public String checkStartConfig() {
 		if (startConfig.getRunTestModel().equalsIgnoreCase("Web")) {
 
-		} else if (startConfig.getRunTestModel().equalsIgnoreCase("Android")
-				|| startConfig.getRunTestModel().equalsIgnoreCase("IOS")) {
+		} else if (startConfig.getRunTestModel().equalsIgnoreCase("Android") || startConfig.getRunTestModel().equalsIgnoreCase("IOS")) {
 			if (!FileUtil.exists(startConfig.getAppFilePath())) {
 				return "未找到APP存放路径:" + startConfig.getAppFilePath();
 			}
@@ -134,15 +132,15 @@ public class BeforeTest implements Runnable {
 	}
 
 	private void beforeTest() {
-		RunParameter.setStartPaht(startConfig);
-		RunParameter.setResultPaht();
+//		RunParameter.setStartPaht(startConfig);
+		//RunParameter.setResultPaht();
 		Print.log("***************开始分割线***************", 4);
 		Print.log("用例执行开始", 4);
 		initParameter();
 		if (startConfig.isDebug()) {
 			// TODO 这里设置关键字驱动 和 Panel
 			// new RunLog(new DebugEditFrame());
-		} else if (!RunLog.isStart()) {
+		} else if (!RunLog.isStart() && isStartLog) {
 			if (socket != null) {
 				new RunLog(socket);
 			} else {
@@ -194,6 +192,7 @@ public class BeforeTest implements Runnable {
 
 	/**
 	 * 初始化数据
+	 * 
 	 * @throws ParameterException
 	 */
 	public void initData() throws ParameterException {
@@ -207,13 +206,10 @@ public class BeforeTest implements Runnable {
 		}
 	}
 
-	
-
 	/**
 	 * 设置全局的变量参数
 	 */
 	private void initParameter() {
-
 
 		if (!Common.isAbsolutePath(startConfig.getExcelPath())) {
 			startConfig.setExcelPath(Parameter.DFAULT_TEST_PATH + "/testcase/" + startConfig.getExcelPath());
@@ -224,45 +220,45 @@ public class BeforeTest implements Runnable {
 		} else {
 
 		}
-		
-		RunParameter.getResultPaht().setTestCaseFolderPath(FileUtil.getParent(startConfig.getExcelPath()));
-		String productName = FileUtil.getParent(RunParameter.getResultPaht().getTestCaseFolderPath());
+
+		rcb.setTestCaseFolderPath(FileUtil.getParent(startConfig.getExcelPath()));
+		String productName = FileUtil.getParent(rcb.getTestCaseFolderPath());
 		productName = FileUtil.getName(productName);
 		if (productName.equals("testcase")) {
 			productName = "";
 		}
-		
-		RunParameter.getResultPaht().setTestName(FileUtil.getName(startConfig.getExcelPath()));
-		RunParameter.getResultPaht().setTestName(RunParameter.getResultPaht().getTestName().substring(0, RunParameter.getResultPaht().getTestName().lastIndexOf(".")));
+
+		rcb.setTestName(FileUtil.getName(startConfig.getExcelPath()));
+		rcb.setTestName(rcb.getTestName().substring(0, rcb.getTestName().lastIndexOf(".")));
 
 		// TODO
 
 		// Parameter.PLATVERSION = testParameter.get("Version");
 
-//		if (startConfig.getRunTestModel().equalsIgnoreCase("Web")) {
-//			if (startConfig.getBrowserType().equalsIgnoreCase("Chrome")) {
-//				Parameter.BROWSERTYPE = 2;
-//			} else if (startConfig.getBrowserType().equalsIgnoreCase("IE")) {
-//				Parameter.BROWSERTYPE = 3;
-//			} else {
-//				Parameter.BROWSERTYPE = 1;
-//			}
-//		}
+		// if (startConfig.getRunTestModel().equalsIgnoreCase("Web")) {
+		// if (startConfig.getBrowserType().equalsIgnoreCase("Chrome")) {
+		// Parameter.BROWSERTYPE = 2;
+		// } else if (startConfig.getBrowserType().equalsIgnoreCase("IE")) {
+		// Parameter.BROWSERTYPE = 3;
+		// } else {
+		// Parameter.BROWSERTYPE = 1;
+		// }
+		// }
 
-//		Parameter.EXECUTEMODE = startConfig.getExecuteMode();
-//		Parameter.RUNMODE = startConfig.getComputer();
+		// Parameter.EXECUTEMODE = startConfig.getExecuteMode();
+		// Parameter.RUNMODE = startConfig.getComputer();
 
-//		Parameter.REMOTEIP = startConfig.getIP();
+		// Parameter.REMOTEIP = startConfig.getIP();
 		// Parameter.MIDDLEWARE = testParameter.get("Middleware");
 
 		// if(testParameter.containsKey("NotServer")){
-//		Parameter.NOTSERVER = startConfig.isNotServer();
+		// Parameter.NOTSERVER = startConfig.isNotServer();
 		// }else{
 		// Parameter.NOTSERVER = false;
 		// }
 
 		// if(testParameter.containsKey("Debug")){
-//		Parameter.DEBUGMODE = startConfig.isDebug();
+		// Parameter.DEBUGMODE = startConfig.isDebug();
 		// }else{
 		// Parameter.DEBUGMODE = false;
 		// }
@@ -285,59 +281,77 @@ public class BeforeTest implements Runnable {
 			// TODO 上传服务器相关的
 			// resultPath = Variable.resolve("[UploadServer_Result_Path]");
 		} else {
-			resultPath = System.getProperty("user.dir") + "/ResultsFolder";
+			resultPath = Parameter.DFAULT_RESULTSFOLDER_PATH;
 		}
-		RunParameter.getResultPaht().setStartTime(DateFormat.getDateToString());
-		
-		
+		rcb.setStartTime(DateFormat.getDateToString());
+
 		// 生成结果目录
 		// File resultFolder = new File(resultPath + "/" + Parameter.VERSION
 		// + "/" + Parameter.TESTNAME + "/" +
 		// DateFormat.getDate("yyyyMMdd_HHmmss"));
-		if (!RunParameter.getResultPaht().getProductName().equals("")) {
-			resultPath = resultPath + "/" + RunParameter.getResultPaht().getProductName();
+		if (rcb.getProductName() == null || rcb.getProductName().isEmpty()) {
+
+		} else {
+			resultPath = resultPath + "/" + rcb.getProductName();
 		}
-		File resultFolder = new File(
-				resultPath + "/" + RunParameter.getResultPaht().getTestName() + "/" + DateFormat.getDate("yyyyMMdd_HHmmss"));
+		File resultFolder = new File(resultPath + "/" + rcb.getTestName() + "/" + DateFormat.getDate("yyyyMMdd_HHmmss"));
 		Print.log("测试结果成目录:" + resultFolder.getAbsolutePath(), 4);
 		resultFolder.mkdirs();
-		
-		RunParameter.getResultPaht().setResultFolder(resultFolder.getAbsolutePath());
-		RunParameter.getResultPaht().setResultFolderBitMap(RunParameter.getResultPaht().getResultFolder() + "/BitMap");
-		RunParameter.getResultPaht().setResultFolderDataBak(RunParameter.getResultPaht().getResultFolder() + "/DataBak");
-		RunParameter.getResultPaht().setResultFolderLog(RunParameter.getResultPaht().getResultFolder() + "/log");
-		RunParameter.getResultPaht().setResultFolderResultTxt(RunParameter.getResultPaht().getResultFolder() + "/ResultTxt");
-		RunParameter.getResultPaht().setResultFolderSQL(RunParameter.getResultPaht().getResultFolder() + "/SQL");
-		RunParameter.getResultPaht().setResultFolderWeb(RunParameter.getResultPaht().getResultFolder() + "/WEB");
-		RunParameter.getResultPaht().setResultFolderReport(RunParameter.getResultPaht().getResultFolder() + "/Report");
-		
-//		Parameter.RESULT_FOLDER = resultFolder.getAbsolutePath();
-//		Parameter.RESULT_FOLDER_BITMAP = Parameter.RESULT_FOLDER + "/BitMap";
-//		Parameter.RESULT_FOLDER_DATABAK = Parameter.RESULT_FOLDER + "/DataBak";
-//		Parameter.RESULT_FOLDER_LOG = Parameter.RESULT_FOLDER + "/log";
-//		Parameter.RESULT_FOLDER_RESULTTXT = Parameter.RESULT_FOLDER + "/ResultTxt";
-//		Parameter.RESULT_FOLDER_SQL = Parameter.RESULT_FOLDER + "/SQL";
-//		Parameter.RESULT_FOLDER_WEB = Parameter.RESULT_FOLDER + "/WEB";
-//		Parameter.ERRORFILE = startConfig.getResultFolder() + "/ResultTxt";
 
-		new File(RunParameter.getResultPaht().getResultFolderBitMap()).mkdir();
-		new File(RunParameter.getResultPaht().getResultFolderDataBak()).mkdir();
-		new File(RunParameter.getResultPaht().getResultFolderLog()).mkdir();
-		new File(RunParameter.getResultPaht().getResultFolderResultTxt()).mkdir();
-		new File(RunParameter.getResultPaht().getResultFolderSQL()).mkdir();
-		new File(RunParameter.getResultPaht().getResultFolderWeb()).mkdir();
-		new File(RunParameter.getResultPaht().getResultFolderReport()).mkdir();
-//		new File(Parameter.ERRORFILE).mkdir();
+		rcb.setResultFolder(resultFolder.getAbsolutePath());
+		rcb.setResultFolderBitMap(rcb.getResultFolder() + "/BitMap");
+		rcb.setResultFolderDataBak(rcb.getResultFolder() + "/DataBak");
+		rcb.setResultFolderLog(rcb.getResultFolder() + "/log");
+		rcb.setResultFolderResultTxt(rcb.getResultFolder() + "/ResultTxt");
+		rcb.setResultFolderSQL(rcb.getResultFolder() + "/SQL");
+		rcb.setResultFolderWeb(rcb.getResultFolder() + "/WEB");
+		rcb.setResultFolderReport(rcb.getResultFolder() + "/Report");
 
-		LogInformation.init(RunParameter.getResultPaht().getResultFolderLog() + "/runlog.log");
+		// Parameter.RESULT_FOLDER = resultFolder.getAbsolutePath();
+		// Parameter.RESULT_FOLDER_BITMAP = Parameter.RESULT_FOLDER + "/BitMap";
+		// Parameter.RESULT_FOLDER_DATABAK = Parameter.RESULT_FOLDER +
+		// "/DataBak";
+		// Parameter.RESULT_FOLDER_LOG = Parameter.RESULT_FOLDER + "/log";
+		// Parameter.RESULT_FOLDER_RESULTTXT = Parameter.RESULT_FOLDER +
+		// "/ResultTxt";
+		// Parameter.RESULT_FOLDER_SQL = Parameter.RESULT_FOLDER + "/SQL";
+		// Parameter.RESULT_FOLDER_WEB = Parameter.RESULT_FOLDER + "/WEB";
+		// Parameter.ERRORFILE = startConfig.getResultFolder() + "/ResultTxt";
 
+		new File(rcb.getResultFolderBitMap()).mkdir();
+		new File(rcb.getResultFolderDataBak()).mkdir();
+		new File(rcb.getResultFolderLog()).mkdir();
+		new File(rcb.getResultFolderResultTxt()).mkdir();
+		new File(rcb.getResultFolderSQL()).mkdir();
+		new File(rcb.getResultFolderWeb()).mkdir();
+		new File(rcb.getResultFolderReport()).mkdir();
+		// new File(Parameter.ERRORFILE).mkdir();
+
+		LogInformation.init(rcb.getResultFolderLog() + "/runlog.log");
+
+	}
+
+	/**
+	 * 返回测试结果集
+	 * 
+	 * @return
+	 */
+	public RecordResult getRecordResult() {
+		return test.getRecordResult();
+	}
+
+	public Test getTest() {
+		return test;
 	}
 
 	// 运行测试
 	@Override
 	public void run() {
+		
+		beforeTest();
+		
 		if (flag) {
-
+			// 远程调用
 			if (keyWordDriver == null) {
 				Print.log("关键字驱动没有加载无法运行,请先执行setKeyWordDriver方法", 2);
 				return;
@@ -348,21 +362,19 @@ public class BeforeTest implements Runnable {
 				// testParameter = templateMap;
 				startConfig = getStartConfigByMap(templateMap);
 				beforeTest();
-				try {
-					new Test(startConfig, keyWordDriver);
-				} catch (SeleniumFindException e) {
-					e.printStackTrace();
-				}
+				test = new Test(startConfig, keyWordDriver, rcb);
 			}
 		} else {
-			try {
-				new Test(startConfig, keyWordDriver);
-			} catch (SeleniumFindException e) {
-				e.printStackTrace();
-			}
+			test = new Test(startConfig, keyWordDriver, rcb);
 		}
+		// 执行用例
+		test.executeTestCase();
+
 		if (isLoop) {
-			new Thread(new BeforeTest(startConfig, keyWordDriver, isLoop)).start();
+			Print.log("暂停使用循环执行功能", 2);
+			return;
+			// new Thread(new BeforeTest(startConfig, keyWordDriver,
+			// isLoop)).start();
 		}
 
 	}

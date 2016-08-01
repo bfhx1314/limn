@@ -89,6 +89,9 @@ public class Parameter {
 	 */
 	public static String DFAULT_TEST_PATH = System.getProperty("user.dir");
 
+	
+	public static String DFAULT_RESULTSFOLDER_PATH = System.getProperty("user.dir") + "/ResultsFolder";
+	
 	/**
 	 * tmp路径
 	 */

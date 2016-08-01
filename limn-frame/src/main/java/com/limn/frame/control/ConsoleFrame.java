@@ -656,7 +656,7 @@ public class ConsoleFrame extends JFrame {
 					e1.printStackTrace();
 				}
 
-				new Thread(new BeforeTest(xml.getNodeValueByTemplateIndex(0), keyWordDriver, isLoop)).start();
+				new Thread(new BeforeTest(xml.getNodeValueByTemplateIndex(0), keyWordDriver, isLoop, true)).start();
 
 			} catch (ParameterException e1) {
 
@@ -684,15 +684,6 @@ public class ConsoleFrame extends JFrame {
 
 			}
 		}
-	}
-	
-	/**
-	 * 配置的属性文件
-	 * @param StartConfigBean
-	 * @param isLoop  是否循环执行
-	 */
-	private void startByStartConfigBean(StartConfigBean scb, boolean isLoop){
-		new Thread(new BeforeTest(scb, keyWordDriver, isLoop)).start();
 	}
 	
 

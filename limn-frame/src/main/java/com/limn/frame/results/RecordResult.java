@@ -99,9 +99,9 @@ public class RecordResult implements DataResults {
 	}
 
 	@Override
-	public void addTestCaseCount(String count) {
+	public void addTestCaseCount() {
 		for(DataResults dr : dataResults){
-			dr.addTestCaseCount(count);
+			dr.addTestCaseCount();
 		}
 		
 	}

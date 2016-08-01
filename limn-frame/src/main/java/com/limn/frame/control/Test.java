@@ -22,7 +22,7 @@ import com.limn.frame.results.RecordResult;
 import com.limn.frame.results.UploadServerData;
 import com.limn.frame.testcase.TestCase;
 import com.limn.frame.testcase.TestCaseExcel;
-import com.limn.tool.log.RunLog;
+import com.limn.tool.bean.ResultConfigBean;
 import com.limn.tool.bean.RunParameter;
 import com.limn.tool.bean.StartConfigBean;
 import com.limn.tool.common.Common;
@@ -32,6 +32,7 @@ import com.limn.tool.common.Print;
 import com.limn.tool.common.Screenshot;
 import com.limn.tool.common.TransformationMap;
 import com.limn.tool.exception.ParameterException;
+import com.limn.tool.log.RunLog;
 import com.limn.tool.regexp.RegExp;
 import com.thoughtworks.selenium.SeleniumException;
 
@@ -44,7 +45,7 @@ import com.thoughtworks.selenium.SeleniumException;
 public class Test {
 
 	// 测试用例集
-	public TestCase tc = null;
+	private TestCase tc = null;
 
 	// 前置用例集
 	private HashMap<String, String> relate = null;
@@ -58,17 +59,20 @@ public class Test {
 	// 定义远程电脑IP
 	private String IP = null;
 
-	public LinkedHashMap<String, String> TRA_NAME = null;
+	private LinkedHashMap<String, String> TRA_NAME = null;
 
 	/**
 	 * 运行时记录用例步骤
 	 */
-	public  int runTimeStepNum = 0;
-	public  int runTimeSheetNum = 0;
-	public  int runTimeRowNum = 0;
+	public int runTimeStepNum = 0;
+	public int runTimeSheetNum = 0;
+	public int runTimeRowNum = 0;
+	
+	
+	private ResultConfigBean rcb = null;
 
 	// 截图
-	private Screenshot screenshot = new Screenshot();
+//	private Screenshot screenshot = new Screenshot();
 
 //	private boolean isRestart = false;
 
@@ -79,11 +83,15 @@ public class Test {
 	private boolean isAPPScreenshot = false;
 	
 	private StartConfigBean startConfig = null;
+	
 
 	// 不是null 时, 标志执行场景还原
 	private String SR = null;
 
-	public Test(StartConfigBean startConfig, KeyWordDriver kwd) throws SeleniumFindException {
+	public Test(StartConfigBean startConfig, KeyWordDriver kwd, ResultConfigBean rcb)  {
+		this.rcb = rcb;
+		RunParameter.setResultPaht(rcb);
+		RunParameter.setStartPaht(startConfig);
 		this.startConfig = startConfig;
 		keyWordDriver = kwd;
 		if (startConfig.getComputer() != null && startConfig.getComputer().equals("远程")) {
@@ -162,6 +170,7 @@ public class Test {
 
 		// 测试结果集
 		recordResult.init(tc);
+		
 
 		if (startConfig.getSpecify().equals("指定")) {
 			runTimeSheetNum = Integer.parseInt(startConfig.getSpecifySheet()) - 1;
@@ -171,14 +180,10 @@ public class Test {
 			Print.log("指定Row:" + (runTimeRowNum + 1), 0);
 			Print.log("指定Step:" + (runTimeStepNum + 1), 0);
 			tc.activateSheet(runTimeSheetNum);
-			RunLog.init(tc.getSheetLastRowNumber());
-			executeTestCase();
 		} else if (startConfig.getExecuteMode() != null && startConfig.getExecuteMode().equals("固定模式执行")) {
 			// 这里取消掉 旧的模式, 固定模式 就是读sheet0的用例.
 			runTimeSheetNum = 0;
 			tc.activateSheet(runTimeSheetNum);
-			RunLog.init(tc.getSheetLastRowNumber());
-			executeTestCase();
 			// runTimeSheetNum = 0;
 			// tc.activateSheet(runTimeSheetNum);
 			//
@@ -191,14 +196,13 @@ public class Test {
 				isRelate = true;
 				relate = tc.getTestCaseRelateNoByNo();
 			}
-			RunLog.init(tc.getSheetLastRowNumber());
-			executeTestCase();
 		}
-
-		tc.saveFile();
-		Print.log("用例执行完毕", 4);
-		Print.log("***************结束分割线***************\n", 4);
-		close();
+		
+		RunLog.init(tc.getSheetLastRowNumber());
+		//执行用例
+//		executeTestCase();
+		
+//		close();
 	}
 
 	private void close() {
@@ -212,7 +216,7 @@ public class Test {
 		runTimeSheetNum = 0;
 		runTimeRowNum = 0;
 		// 截图
-		screenshot = new Screenshot();
+//		screenshot = new Screenshot();
 //		isRestart = false;
 		recordResult = new RecordResult();
 		keyWordDriver = null;
@@ -225,7 +229,7 @@ public class Test {
 	 * 
 	 * @throws SeleniumFindException
 	 */
-	private void executeTestCase() throws SeleniumFindException {
+	public void executeTestCase(){
 		int count;
 		int result = 1;
 
@@ -269,9 +273,27 @@ public class Test {
 		}
 		runTimeRowNum = 0;
 		// 修正用例总数
-		recordResult.addTestCaseCount("");
+		recordResult.addTestCaseCount();
+		
+		tc.saveFile();
+		Print.log("用例执行完毕", 4);
+		Print.log("***************结束分割线***************\n", 4);
+//		close();
 	}
-
+	
+	/**
+	 * 返回测试结果集
+	 * @return
+	 */
+	protected RecordResult getRecordResult(){
+		return recordResult;
+	}
+	
+	public ResultConfigBean getRCB(){
+		return rcb;
+	}
+	
+	
 	/**
 	 *
 	 * 运行测试用例 (用例行数执行 tc 所设定的行列)
@@ -281,7 +303,7 @@ public class Test {
 	 * @return
 	 * @throws SeleniumFindException
 	 */
-	private int runSteps(boolean isRelated) throws SeleniumFindException {
+	private int runSteps(boolean isRelated) {
 
 		int result = ExecuteStatus.SUCCESS;
 
@@ -504,7 +526,8 @@ public class Test {
 		if (isAPPScreenshot) {
 			path = AppDriver.screenshot(bitMapPath);
 		} else {
-			path = screenshot.snapShot(bitMapPath);
+			path = DriverParameter.getDriverPaht().screenshot(bitMapPath);
+//			path = screenshot.snapShot(bitMapPath);
 		}
 
 		return path;
@@ -699,7 +722,8 @@ public class Test {
 		if (!expectedStr.isEmpty()) {
 			steps = RegExp.splitWord(expectedStr, "\n");
 		} else {
-			RunLog.printLog("预期结果为空！", 2);
+			Print.log("预期结果为空！", 2);
+//			RunLog.printLog("预期结果为空！", 2);
 		}
 		return steps;
 	}
@@ -776,7 +800,8 @@ public class Test {
 	public int getSucessCaseCount() {
 		return recordResult.getSucessCaseCount();
 	}
-
+	
+	
 	/**
 	 * 校验类
 	 * 

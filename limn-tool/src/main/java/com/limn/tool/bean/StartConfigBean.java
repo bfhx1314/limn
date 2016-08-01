@@ -6,7 +6,7 @@ public class StartConfigBean {
 	private String browserType = null;
 	private String appFilePath = null;
 	private String runTestModel = null;
-	private String URL = null;
+	private String URL = "";
 	private String excelPath = null;
 	private String executeMode = null;
 	private String sheetsNum = null;
