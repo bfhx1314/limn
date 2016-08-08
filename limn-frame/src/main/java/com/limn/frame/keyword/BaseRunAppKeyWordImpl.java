@@ -8,7 +8,9 @@ import com.limn.app.driver.AppDriver;
 import com.limn.app.driver.exception.AppiumException;
 import com.limn.driver.Driver;
 import com.limn.driver.exception.SeleniumFindException;
+import com.limn.frame.control.RunAutoTestingParameter;
 import com.limn.frame.control.Test;
+import com.limn.tool.bean.RunParameter;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.TransformationMap;
 import com.limn.tool.parameter.Parameter;
@@ -31,10 +33,9 @@ public class BaseRunAppKeyWordImpl {
 				Print.debugLog("加载别名数据完成", 1);
 			}else{
 				// START模式
-//				traXPath = Test.TRA_NAME;
+				traXPath = RunAutoTestingParameter.getAlias();
 				
-				
-//				String context = Test.getAssociatedProperites();
+//				String context = RunAutoTestingParameter.getTestCase().getAssociatedProperites();
 //				if(null == context){
 //					traXPath = null;
 //				}else{

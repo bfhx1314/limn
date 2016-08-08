@@ -53,6 +53,7 @@ import com.limn.tool.exception.ParameterException;
 import com.limn.tool.external.XMLXPath;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
+import com.limn.tool.variable.Variable;
 
 public class UIViewPanel extends CustomPanel {
 
@@ -214,6 +215,7 @@ public class UIViewPanel extends CustomPanel {
 					if(new File(sdk).exists()){
 						System.setProperty("com.android.uiautomator.bindir",sdk);
 						Print.log("设置SDK_HOME成功." + sdk,1);
+						Variable.setExpressionName("com.android.uiautomator.bindir", sdk);
 					}else{
 						Print.log("设置SDK_HOME失败,目录不存在." + sdk,2);
 					}
@@ -270,7 +272,12 @@ public class UIViewPanel extends CustomPanel {
 		}
 		boolean isLoad = false;
 		if (System.getProperty("com.android.uiautomator.bindir") == null) {
-			if (Parameter.getOS().equalsIgnoreCase("Windows")) {
+			String sdkPath = Variable.getExpressionValue("com.android.uiautomator.bindir");
+			if(sdkPath != null && !sdkPath.isEmpty()){
+				Print.log("获取SDK目录:" + sdkPath, 1);
+				System.setProperty("com.android.uiautomator.bindir", sdkPath);
+				isLoad = true;
+			}else if (Parameter.getOS().equalsIgnoreCase("Windows")) {
 				String sdk = System.getenv("ANDROID_HOME");
 				if (sdk != null && !sdk.isEmpty()) {
 					Print.log("获取SDK目录:" + sdk, 1);
@@ -756,9 +763,9 @@ public class UIViewPanel extends CustomPanel {
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			Image image1 = null;
-			
+			BufferedImage image = null;
 			try {
-				BufferedImage image = ImageIO.read(imageFile);
+				image = ImageIO.read(imageFile);
 				//获取最优的比例
 				getZoomForImage(image.getWidth(),image.getHeight());
 				int width = new Double(image.getWidth() / scaling.doubleValue()).intValue();
@@ -768,6 +775,7 @@ public class UIViewPanel extends CustomPanel {
 
 				e.printStackTrace();
 			}
+			
 			g.drawImage(image1, 0, 0, null);
 
 		}

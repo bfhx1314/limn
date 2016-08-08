@@ -6,17 +6,13 @@
  * Guangdong Ocean University, Zhanjiang, GuangDong, China.
  * All rights reserved.
  */
-package com.sinaapp.msdxblog.apkUtil.utils;
+package com.limn.tool.app;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import com.sinaapp.msdxblog.apkUtil.Version;
-import com.sinaapp.msdxblog.apkUtil.entity.ApkInfo;
-import com.sinaapp.msdxblog.apkUtil.entity.ImpliedFeature;
 
 /**
  * apk工具类。封装了获取Apk信息的方法。

@@ -6,7 +6,7 @@
  * Guangdong Ocean University, Zhanjiang, GuangDong, China.
  * All rights reserved.
  */
-package com.sinaapp.msdxblog.apkUtil.entity;
+package com.limn.tool.app;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,6 +78,10 @@ public class ApkInfo {
 	 * 所需设备特性。
 	 */
 	private List<String> features;
+	/**
+	 * 启动界面
+	 */
+	private String launchableActivity;
 
 	public ApkInfo() {
 		this.usesPermissions = new ArrayList<String>();
@@ -281,7 +285,15 @@ public class ApkInfo {
 				+ ",\n applicationIcons=" + applicationIcons
 				+ ",\n applicationIcon=" + applicationIcon
 				+ ",\n impliedFeatures=" + impliedFeatures + ",\n features="
-				+ features + "]";
+				+ features + ",\n launchableActivity=" + launchableActivity + "\n]";
+	}
+
+	public String getLaunchableActivity() {
+		return launchableActivity;
+	}
+
+	public void setLaunchableActivity(String launchableActivity) {
+		this.launchableActivity = launchableActivity;
 	}
 
 }

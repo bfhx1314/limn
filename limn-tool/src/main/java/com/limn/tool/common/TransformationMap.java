@@ -33,7 +33,10 @@ public class TransformationMap {
 				ArrayList<String> keyValue = RegExp.matcherCharacters(key, "[^\t]{1,}");
 				if (keyValue.size() == 0){
 //					return new LinkedHashMap<String,String>();
+					Print.log("未能识别别名:" + key, 2);
 					continue;
+				}else if(keyValue.size() == 1){
+					Print.log("未能识别别名:" + key, 2);
 				}else{
 					map.put(keyValue.get(0), keyValue.get(1));
 				}

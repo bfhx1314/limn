@@ -6,7 +6,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.util.HashMap;
 
 import javax.swing.JButton;
@@ -19,8 +24,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 
+import com.limn.tool.app.ApkInfo;
+import com.limn.tool.app.ApkUtil;
 import com.limn.tool.bean.StartConfigBean;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.DateFormat;
@@ -35,8 +46,6 @@ import com.limn.frame.keyword.KeyWordDriver;
 import com.limn.frame.panel.KeyWordPanel;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
-import com.sinaapp.msdxblog.apkUtil.entity.ApkInfo;
-import com.sinaapp.msdxblog.apkUtil.utils.ApkUtil;
 
 /**
  * 控制台的页面布局
@@ -103,7 +112,7 @@ public class ConsoleFrame extends JFrame {
 	// String[] { "1.4", "1.6" });
 	// 定义用例路径
 	private JLabel testCaseLabel = new JLabel("* 用例路径:");
-	private FileComboBox testCaseContent = new FileComboBox(Parameter.DEFAULT_TESTCASE_PATH, true);
+	private FileComboBox testCaseContent = new FileComboBox(Parameter.DEFAULT_TESTCASE_PATH, "xls");
 	private JButton testCaseButton = new JButton("选择");
 	// 定义用例执行模式
 	private JLabel executeModeLabel1 = new JLabel("用例执行模式:");
@@ -170,22 +179,27 @@ public class ConsoleFrame extends JFrame {
 	// private CoreConfig cc = null;
 	// private KeyWordDriver keyWordDriver = null;
 	private static BaseKeyWordDriverImpl keyWordDriver = new BaseKeyWordDriverImpl();
-	
-	
-	public ConsoleFrame() throws Exception {
+
+	public ConsoleFrame() {
 		super("脚本运行参数配置界面");
 		addKeyWordDriver("基础关键字", new BaseKeyWordDriverImpl(), BaseKeyWordType.class);
 		addKeyWordDriver("App基础关键字", new BaseAppKeyWordDriverImpl(), BaseAppKeyWordType.class);
 	}
-	
+
 	/**
 	 * 显示运行配置界面
+	 * 
 	 * @throws Exception
 	 */
-	public void showUIFrame() throws Exception {
+	public void showUIFrame() {
 		panel.setLayout(null);
 		// 定义界面数据存放路径
-		templatePath = getTemplatePath();
+		try {
+			templatePath = getTemplatePath();
+		} catch (SeleniumFindException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 		// corePath = getCoreConfigPath();
 
 		// 初始化参数的值
@@ -298,8 +312,7 @@ public class ConsoleFrame extends JFrame {
 
 					try {
 						ApkInfo APKInfo = new ApkUtil().getApkInfo(fileChooser.getSelectedFile().toString());
-						appInfoLabel.setText(APKInfo.getApplicationLable() + ": {PackageName:" + APKInfo.getPackageName() + ",Version:" + APKInfo.getVersionName() + ",VersionCode:"
-								+ APKInfo.getVersionCode() + "}");
+						appInfoLabel.setText(APKInfo.getApplicationLable() + ": {PackageName:" + APKInfo.getPackageName() + ",Version:" + APKInfo.getVersionName() + ",VersionCode:" + APKInfo.getVersionCode() + "}");
 					} catch (Exception e1) {
 						// TODO
 						e1.printStackTrace();
@@ -629,8 +642,11 @@ public class ConsoleFrame extends JFrame {
 		// 判断运行模式是否由当前配置参数
 		if (runModeContent.getSelectedIndex() == 0) {
 			try {
+				
+				if(runTestModelContent.getSelectedItem().toString().equalsIgnoreCase("浏览器")){
 				// 当选择运行模式为:由当前界面配置参数运行时,对必填项做基本检查
-				checkEmpty(URLContent.getText(), URLLabel.getText());
+					checkEmpty(URLContent.getText(), URLLabel.getText());
+				}
 
 				if (upload.isSelected()) {
 					checkUpload();
@@ -685,7 +701,6 @@ public class ConsoleFrame extends JFrame {
 			}
 		}
 	}
-	
 
 	public void addKeyWordDriver(String key, KeyWordDriver keyWord, Class<?> keyWordType) {
 		keyWordDriver.addKeyWordDriver(key, keyWord, keyWordType);
@@ -1147,35 +1162,35 @@ public class ConsoleFrame extends JFrame {
 		File file = new File(Parameter.DEFAULT_CONF_PATH + "/Template.xml");
 		// 判断系统目录下是否存在模板文件
 		if (!file.exists()) {
-			throw new SeleniumFindException("缺少界面加载配置文件");
+//			throw new SeleniumFindException("缺少界面加载配置文件");
 			// 不存在就将jar包里的ParameterValues.xml复制到指定路径下
-			// File f = new File(Parameter.DEFAULT_TEMP_PATH);
-			// f.mkdirs();
-			// URL parameterPath =
-			// this.getClass().getResource("ParameterValues.xml");
-			// try {
-			// Document document = new
-			// SAXReader().read(parameterPath.toString());
-			// try {
-			// FileOutputStream out = new FileOutputStream(file);
-			// OutputFormat format = OutputFormat.createPrettyPrint();
-			// format.setEncoding("utf-8");
-			// XMLWriter output = new XMLWriter(out, format);
-			// try {
-			// output.write(document);
-			// output.close();
-			// out.close();
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-			// } catch (FileNotFoundException e) {
-			// e.printStackTrace();
-			// } catch (UnsupportedEncodingException e1) {
-			// e1.printStackTrace();
-			// }
-			// } catch (DocumentException e) {
-			// e.printStackTrace();
-			// }
+			File f = new File(Parameter.DEFAULT_TEMP_PATH);
+			f.mkdirs();
+//			URL parameterPath = this.getClass().getResource("ParameterValues.xml");
+			InputStream is = this.getClass().getClassLoader().getResourceAsStream("ParameterValues.xml");
+			
+			try {
+				Document document = new SAXReader().read(is);
+				try {
+					FileOutputStream out = new FileOutputStream(file);
+					OutputFormat format = OutputFormat.createPrettyPrint();
+					format.setEncoding("utf-8");
+					XMLWriter output = new XMLWriter(out, format);
+					try {
+						output.write(document);
+						output.close();
+						out.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (UnsupportedEncodingException e1) {
+					e1.printStackTrace();
+				}
+			} catch (DocumentException e) {
+				e.printStackTrace();
+			}
 		}
 
 		templatePath = file.toString();

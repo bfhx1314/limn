@@ -1,4 +1,4 @@
-package com.limn.tool.common;
+package com.limn.tool.app;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
@@ -17,6 +15,7 @@ import com.dd.plist.NSArray;
 import com.dd.plist.NSDictionary;
 import com.dd.plist.NSString;
 import com.dd.plist.PropertyListParser;
+import com.limn.tool.common.FileUtil;
 import com.limn.tool.regexp.RegExp;
 
 public class AppPackageInfo {
@@ -32,19 +31,7 @@ public class AppPackageInfo {
 	 * @return
 	 */
 	public IOSPackageInfo resolveByIOS(String filePath) {
-		IOSPackageInfo iif = null;
-		if (FileUtil.exists(filePath)) {
-			if (FileUtil.getFileType(filePath).equalsIgnoreCase("ipa")) {
-				try {
-					ipa = new File(filePath);
-					iif = getIpaInfoMap(ipa);
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return iif;
+		return resolveByIOS(new File(filePath));
 	}
 	
 	/**
@@ -65,6 +52,26 @@ public class AppPackageInfo {
 		}
 		return iif;
 	}
+	
+	
+	
+	
+	public ApkInfo resolveByAndroid(File filePath) {
+		
+		ApkInfo iif = null;
+		if (filePath.exists()) {
+			if (FileUtil.getFileType(filePath).equalsIgnoreCase("apk")) {
+				try {
+					iif = getApkInfoMap(filePath);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return iif;
+	}
+	
+	
 	
 
 
@@ -167,6 +174,16 @@ public class AppPackageInfo {
 		}
 		return null;
 	}
+	
+	
+	private ApkInfo getApkInfoMap(File apk) throws Exception {
+
+		ApkInfo aif = new ApkUtil().getApkInfo(apk.getAbsolutePath());
+		return aif;
+	}
+	
+	
+	
 
 	/**
 	 * 通过IPA文件获取Info信息 这个方法可以重构，原因是指获取了部分重要信息，如果想要获取全部，那么应该返回一个Map

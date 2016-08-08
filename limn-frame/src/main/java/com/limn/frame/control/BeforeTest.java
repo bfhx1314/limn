@@ -11,6 +11,7 @@ import com.limn.frame.results.RecordResult;
 import com.limn.tool.log.LogInformation;
 import com.limn.tool.log.RunLog;
 import com.limn.tool.parameter.Parameter;
+import com.limn.tool.regexp.RegExp;
 import com.limn.tool.bean.ResultConfigBean;
 import com.limn.tool.bean.StartConfigBean;
 import com.limn.tool.common.Common;
@@ -220,7 +221,7 @@ public class BeforeTest implements Runnable {
 		} else {
 
 		}
-
+		
 		rcb.setTestCaseFolderPath(FileUtil.getParent(startConfig.getExcelPath()));
 		String productName = FileUtil.getParent(rcb.getTestCaseFolderPath());
 		productName = FileUtil.getName(productName);
@@ -367,8 +368,6 @@ public class BeforeTest implements Runnable {
 		} else {
 			test = new Test(startConfig, keyWordDriver, rcb);
 		}
-		// 执行用例
-		test.executeTestCase();
 
 		if (isLoop) {
 			Print.log("暂停使用循环执行功能", 2);

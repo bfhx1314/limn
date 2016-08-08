@@ -10,14 +10,17 @@ import java.util.zip.ZipException;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 
 import com.limn.app.driver.exception.AppiumException;
+import com.limn.tool.app.ApkInfo;
+import com.limn.tool.app.ApkUtil;
+import com.limn.tool.app.AppPackageInfo;
 import com.limn.tool.common.Common;
+import com.limn.tool.common.DateFormat;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
 import com.limn.tool.regexp.RegExp;
@@ -40,9 +43,14 @@ public class AppDriver {
 
 	private static String appFilePath = null;
 
-	private static AndroidApk APKInfo = null;
-
+//	private static AndroidApk APKInfo = null;
+	
+	private static ApkInfo apkInfo = null;
+	
 	public static String AppType = "";
+	
+	private static long waitTime = 16*1000;
+	
 
 	public static void init(String filePath) throws AppiumException {
 		init(filePath, "127.0.0.1:4723");
@@ -65,11 +73,8 @@ public class AppDriver {
 		if (null == IP || IP.isEmpty()) {
 			IP = "127.0.0.1:4723";
 		}
-
 		
-		
-		
-		AppDriver.appFilePath = filePath;
+		appFilePath = filePath;
 		
 		File appFile = new File(filePath);
 
@@ -77,7 +82,6 @@ public class AppDriver {
 			AppType = "IOS";
 		}else if(FileUtil.getFileType(filePath).equalsIgnoreCase("apk")){
 			AppType = "Android";
-			initAPKInfo();
 		}else{
 			AppType = "";
 			throw new AppiumException(appFile.getAbsolutePath() + " APP文件类型错误:" + FileUtil.getFileType(filePath));
@@ -99,17 +103,26 @@ public class AppDriver {
 		}
 		
 		DesiredCapabilities dcb = new DesiredCapabilities();
+		AppPackageInfo apki = new AppPackageInfo();
 		if (AppType.equalsIgnoreCase("Android")) {
-
-			dcb.setCapability("deviceName", "Android Emulator"); // 后期增加配置
+			try {
+				apkInfo = apki.resolveByAndroid(appFile);
+			} catch (Exception e1) {
+				throw new  AppiumException("Appium APK包文件异常:" + appFile.getAbsolutePath() + "\n" + e1.getMessage());
+			}
+			dcb.setCapability("deviceName", apkInfo.getApplicationLable()); // 后期增加配置
 			dcb.setCapability("paltformVersion", "4.4"); // 后期增加配置
 			dcb.setCapability("app", appFile.getAbsolutePath());
-			dcb.setCapability("appPackage", APKInfo.getPackageName());
+			dcb.setCapability("appPackage", apkInfo.getPackageName());
 			dcb.setCapability("unicodeKeyboard", "true");
 			dcb.setCapability("resetKeyboard", "true");
 			// Didn't get a new command in 600 secs, shutting down...
 			dcb.setCapability("newCommandTimeout", 600);
-			driver = new AndroidDriver<AndroidElement>(sauceUrl,dcb);
+			try{
+				driver = new AndroidDriver<AndroidElement>(sauceUrl,dcb);
+			}catch(SessionNotCreatedException e){
+				throw new AppiumException("请重新启动 Driver HUB,A new session could not be created");
+			}
 			
 		} else if (AppType.equalsIgnoreCase("IOS")) {
 			dcb.setCapability("appium-version", "1.0");
@@ -153,36 +166,65 @@ public class AppDriver {
 
 		// 录入前先获取变量值
 		if (RegExp.findCharacters(value, "\\{.*\\}")) {
-			String var = RegExp.filterString(id, "{}");
-			id = Variable.getExpressionValue(var);
+			String var = RegExp.filterString(value, "{}");
+			value = Variable.getExpressionValue(var);
 		}
 
 		try {
-
 			getAndroidElement(id).sendKeys(value);
 		} catch (AppiumException e) {
-			throw new AppiumException(e.getMessage() + AppDriver.APKInfo.getPackageName() + ":id/" + id);
+			throw new AppiumException(e.getMessage() + apkInfo.getPackageName() + ":id/" + id);
 		}
 	}
 
 	private static AndroidElement getAndroidElement(String key) throws AppiumException {
+		
+		long startTime = DateFormat.getCurrentTimeMillisByLong();
+		long endTime = 0l;
 		// 判断元素是否存在多个
 		List<AndroidElement> listEle = null;
-		if (RegExp.findCharacters(key, "^/")) {
-			listEle = driver.findElementsByXPath(key);
-		} else {
-
-			if (!RegExp.findCharacters(key, "^" + AppDriver.APKInfo.getPackageName() + ":id/")) {
-				key = AppDriver.APKInfo.getPackageName() + ":id/" + key;
+		
+		int status = 0;
+		do{
+			
+			status = 0;
+			if (RegExp.findCharacters(key, "^/")) {
+				listEle = driver.findElementsByXPath(key);
+			} else {
+	
+				if (!RegExp.findCharacters(key, "^" + apkInfo.getPackageName() + ":id/")) {
+					key = apkInfo.getPackageName() + ":id/" + key;
+				}
+				listEle = driver.findElements(By.id(key));
 			}
-			listEle = driver.findElements(By.id(key));
-		}
-
-		if (null == listEle) {
+	
+			if (null == listEle) {
+//				throw new AppiumException("不存在:");
+				status = 1;
+			} else if (listEle.size() > 1) {
+//				throw new AppiumException("存在多个此元素:");
+				status = 2;
+			} else if (listEle.size() == 0){
+//				throw new AppiumException("界面中不存在此元素");;
+				status = 3;
+			} else{
+				Print.log("已定位到元素:" + key, 1);
+			}
+			endTime = DateFormat.getCurrentTimeMillisByLong();
+			
+		}while(endTime - startTime < waitTime && status != 0);
+		
+		switch (status){
+		case 1:
 			throw new AppiumException("不存在:");
-		} else if (listEle.size() > 1) {
+		case 2:
 			throw new AppiumException("存在多个此元素:");
+		case 3:
+			throw new AppiumException("界面中不存在此元素");
+		default:
+			break;
 		}
+		
 		return listEle.get(0);
 
 	}
@@ -209,7 +251,7 @@ public class AppDriver {
 		try {
 			getAndroidElement(id).click();
 		} catch (AppiumException e) {
-			throw new AppiumException(e.getMessage() + AppDriver.APKInfo.getPackageName() + ":id/" + id);
+			throw new AppiumException(e.getMessage() + apkInfo.getPackageName() + ":id/" + id);
 		}
 	}
 
@@ -248,7 +290,7 @@ public class AppDriver {
 			TouchAction action = new TouchAction(driver);
 			action.longPress(ae).waitAction(time).release().perform();
 		} catch (AppiumException e) {
-			throw new AppiumException(e.getMessage() + AppDriver.APKInfo.getPackageName() + ":id/" + id);
+			throw new AppiumException(e.getMessage() + apkInfo.getPackageName() + ":id/" + id);
 		}
 	}
 
@@ -275,25 +317,14 @@ public class AppDriver {
 	private static void check() throws AppiumException {
 		if (driver == null) {
 			throw new AppiumException("drver 不存在");
-		} else if (APKInfo == null && AppType.equalsIgnoreCase("Android")) {
+		} else if (apkInfo == null && AppType.equalsIgnoreCase("Android")) {
 			throw new AppiumException("app信息无法获取");
 		}
 	}
 
 	public static String getPackageName() throws AppiumException {
 		check();
-		return APKInfo.getPackageName();
-	}
-
-	private static void initAPKInfo() throws AppiumException {
-		try {
-			APKInfo = new AndroidApk(new File(AppDriver.appFilePath));
-		} catch (ZipException e) {
-			throw new AppiumException("文件占用异常");
-		} catch (IOException e) {
-			Print.log("apkFile:" + AppDriver.appFilePath, 2);
-			throw new AppiumException("文件异常");
-		}
+		return apkInfo.getPackageName();
 	}
 
 	/**

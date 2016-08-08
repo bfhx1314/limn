@@ -1,4 +1,4 @@
-package com.sinaapp.msdxblog.apkUtil.utils;
+package com.limn.tool.app;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import com.sinaapp.msdxblog.apkUtil.entity.ApkInfo;
 
 /**
  * 通过ApkInfo 里的applicationIcon从APK里解压出icon图片并存放到磁盘上

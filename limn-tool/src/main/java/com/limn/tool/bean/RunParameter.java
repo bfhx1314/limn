@@ -1,5 +1,7 @@
 package com.limn.tool.bean;
 
+import com.limn.tool.common.Print;
+
 public class RunParameter {
 
 	private static ThreadLocal<StartConfigBean> startConfigBean = new ThreadLocal<>();
@@ -21,6 +23,11 @@ public class RunParameter {
 	}
 	
 	public static ResultConfigBean getResultPaht(){
+		if(resultConfigBean.get() == null){
+			
+			Print.log("resultConfigBean为null,调试模式请忽视改警告", 3);
+			resultConfigBean.set(new ResultConfigBean()); 
+		}
 		return resultConfigBean.get();
 	}
 	

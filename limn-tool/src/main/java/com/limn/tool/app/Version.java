@@ -1,5 +1,5 @@
 /*
- * @(#)Feature.java		       Project:androidUtil
+ * @(#)Version.java		       Project:androidUtil
  * Date:2012-11-7
  *
  * Copyright (c) 2011 CFuture09, Institute of Software, 
@@ -18,51 +18,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sinaapp.msdxblog.apkUtil.entity;
+package com.limn.tool.app;
 
 /**
  * @author Geek_Soledad (66704238@51uc.com)
  */
-public class ImpliedFeature {
+public class Version {
 
 	/**
-	 * 要的设备特性名称。
+	 * 返回版本号。
+	 * 
+	 * @return
 	 */
-	private String feature;
+	public static String getVersion() {
+		return String.format("%d.%d.%d", getMajorVersion(), getMinorVersion(), getRevisionNumber());
+	}
 
 	/**
-	 * 表明所需特性的内容。
+	 * ` 返回主版本号。
+	 * 
+	 * @return
 	 */
-	private String implied;
-
-	public ImpliedFeature() {
-		super();
+	public static int getMajorVersion() {
+		return 1;
 	}
 
-	public ImpliedFeature(String feature, String implied) {
-		super();
-		this.feature = feature;
-		this.implied = implied;
+	/**
+	 * 返回次版本号。
+	 * 
+	 * @return
+	 */
+	public static int getMinorVersion() {
+		return 1;
 	}
 
-	public String getFeature() {
-		return feature;
-	}
-
-	public void setFeature(String feature) {
-		this.feature = feature;
-	}
-
-	public String getImplied() {
-		return implied;
-	}
-
-	public void setImplied(String implied) {
-		this.implied = implied;
-	}
-
-	@Override
-	public String toString() {
-		return "Feature [feature=" + feature + ", implied=" + implied + "]";
+	/**
+	 * 返回修正版本号。
+	 * 
+	 * @return
+	 */
+	public static int getRevisionNumber() {
+		return 0;
 	}
 }

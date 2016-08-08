@@ -9,6 +9,7 @@ import com.limn.driver.Driver;
 import com.limn.driver.common.DriverParameter;
 import com.limn.driver.common.OperateWindows;
 import com.limn.driver.exception.SeleniumFindException;
+import com.limn.frame.control.RunAutoTestingParameter;
 import com.limn.frame.control.Test;
 import com.limn.tool.bean.RunParameter;
 import com.limn.tool.common.Common;
@@ -119,7 +120,8 @@ public class BaseRunKeyWordImpl {
 			}else{
 				// START模式
 //				traXPath = Test.TRA_NAME;
-//				String context = Test.getAssociatedProperites();
+				traXPath = RunAutoTestingParameter.getAlias();
+//				String context = RunAutoTestingParameter.getTestCase().getAssociatedProperites();
 //				if(null == context){
 //					traXPath = null;
 //				}else{
@@ -151,14 +153,19 @@ public class BaseRunKeyWordImpl {
 	 * @param step 用例
 	 * @throws ParameterException 
 	 */
-	public  void executeExpression(String[] step) throws ParameterException {
+	public void executeExpression(String[] step) throws ParameterException {
 		String variable = null;
 		String variableValue = null;
 		String[] arrT = null;
 		if (RegExp.findCharacters(step[1], "=")){
 			arrT = RegExp.splitWord(step[1], "=");
 			if (RegExp.findCharacters(arrT[0], "^\\{.*\\}$")){
-				if (!arrT[1].equals("")){
+				if (arrT.length == 1){
+					ArrayList<String> arrL = RegExp.matcherCharacters(arrT[0], "(?<=\\{)(.+?)(?=\\})");
+					variable = arrL.get(0);
+					Variable.setExpressionName(variable, "");
+					Print.log("变量:" + variable + "  值: " , 3);
+				}else if(!arrT[1].equals("")){
 					variableValue = Common.getExpressionValue(arrT[1]);
 					if (null != variableValue){
 						ArrayList<String> arrL = RegExp.matcherCharacters(arrT[0], "(?<=\\{)(.+?)(?=\\})");

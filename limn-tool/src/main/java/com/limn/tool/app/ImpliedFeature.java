@@ -18,7 +18,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sinaapp.msdxblog.apkUtil.entity;
+package com.limn.tool.app;
 
 /**
  * @author Geek_Soledad (66704238@51uc.com)

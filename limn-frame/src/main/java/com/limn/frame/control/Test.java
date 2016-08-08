@@ -167,11 +167,11 @@ public class Test {
 		}
 
 		tc = new TestCaseExcel(startConfig.getExcelPath());
-
+		
 		// 测试结果集
 		recordResult.init(tc);
+		RunAutoTestingParameter.setTestCase(tc);
 		
-
 		if (startConfig.getSpecify().equals("指定")) {
 			runTimeSheetNum = Integer.parseInt(startConfig.getSpecifySheet()) - 1;
 			runTimeRowNum = Integer.parseInt(startConfig.getSpecifyRow()) - 1;
@@ -200,7 +200,7 @@ public class Test {
 		
 		RunLog.init(tc.getSheetLastRowNumber());
 		//执行用例
-//		executeTestCase();
+		executeTestCase();
 		
 //		close();
 	}
@@ -321,6 +321,9 @@ public class Test {
 			if (null != context) {
 				Print.debugLog("开始加载别名数据", 0);
 				TRA_NAME = TransformationMap.transformationByString(context);
+				
+				RunAutoTestingParameter.setAlias(TRA_NAME);
+				
 				Print.log("加载别名数据完成", 0);
 			}
 
@@ -381,7 +384,7 @@ public class Test {
 
 						// 异常截图
 						RunParameter.getResultPaht().setCaseStatus(result);
-						String bitMapPath = startConfig + "/" + resultPath + "/" + runTimeStepNum + "_" + steps[stepNum].split(":")[0] + "_error";
+						String bitMapPath = rcb.getResultFolderBitMap() + "/" + resultPath + "/" + runTimeStepNum + "_" + steps[stepNum].split(":")[0] + "_error";
 						bitMapPath = screenshot(bitMapPath);
 						RunParameter.getResultPaht().setVerSnapshot("snapshot/" + runTimeSheetNum + "_" + (resultPath + "/" + runTimeStepNum).replaceAll("/", "_") + "_error");
 						screenshot(RunParameter.getResultPaht().getResultFolderReport() + "/" + RunParameter.getResultPaht().getVerSnapshot());

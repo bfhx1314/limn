@@ -26,6 +26,8 @@ import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
@@ -380,6 +382,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		execute.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				setKeyWordHigh();
 				if(!isVerKeyWord){
 					int status = JOptionPane.showConfirmDialog(jframe, "关键字有误,是否继续执行", "警告" ,JOptionPane.YES_NO_OPTION);
 					if(status==1){
@@ -635,7 +638,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 				}
 			}
 		});
-//			
+
 		//基本设置
 //		jframe.setAlwaysOnTop(true);
 		jframe.setResizable(false);
