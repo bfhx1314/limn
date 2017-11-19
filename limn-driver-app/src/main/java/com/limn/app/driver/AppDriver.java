@@ -13,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 
@@ -122,6 +123,8 @@ public class AppDriver {
 				driver = new AndroidDriver<AndroidElement>(sauceUrl,dcb);
 			}catch(SessionNotCreatedException e){
 				throw new AppiumException("请重新启动 Driver HUB,A new session could not be created");
+			}catch (WebDriverException e){
+				throw new AppiumException("找不到Android机器 Could not find a connected Android device");
 			}
 			
 		} else if (AppType.equalsIgnoreCase("IOS")) {
@@ -216,6 +219,8 @@ public class AppDriver {
 		
 		switch (status){
 		case 1:
+
+
 			throw new AppiumException("不存在:");
 		case 2:
 			throw new AppiumException("存在多个此元素:");
