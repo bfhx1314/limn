@@ -778,7 +778,6 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	
 	/**
 	 * 获取运行框的内容
-	 * @param step
 	 * @return
 	 */
 	public static String getStepTextArea(){

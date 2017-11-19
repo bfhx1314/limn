@@ -128,7 +128,7 @@ public class BaseRunAppKeyWordImpl {
 			endX = MIDST_WIDTH;
 			endY = MAX_HEIGHT;
 		}
-		Print.log("startX : " + startX + " startY : " + startY + " endX : " + endX + " endY : " + endY ,0 );
+
 		AppDriver.swipe(startX,startY,endX,endY);
 
 	}

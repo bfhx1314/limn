@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.limn.tool.exception.SeleniumException;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -34,7 +35,6 @@ import com.limn.tool.common.TransformationMap;
 import com.limn.tool.exception.ParameterException;
 import com.limn.tool.log.RunLog;
 import com.limn.tool.regexp.RegExp;
-import com.thoughtworks.selenium.SeleniumException;
 
 /**
  * 程序驱动
@@ -1101,7 +1101,6 @@ public class Test {
 		/**
 		 * 验证，对比结果
 		 * 
-		 * @param xpath
 		 * @return
 		 * @throws ParameterException
 		 */
@@ -1257,7 +1256,6 @@ public class Test {
 		/**
 		 * 获取控件的值（调试)
 		 * 
-		 * @param xpath
 		 * @return
 		 */
 		public String getControlData(String[] step) {
@@ -1295,7 +1293,7 @@ public class Test {
 					// }
 					// }
 				} else {
-					throw new SeleniumException("xpath没有定位到：" + xpath);
+					throw new SeleniumException(2000,"xpath没有定位到：" + xpath);
 				}
 				// Driver.setValue(xpath,step[2]);
 

@@ -72,6 +72,8 @@ public class ApkUtil {
 
 		Process process = mBuilder.command(System.getProperty("user.dir") + "/" + mAaptPath, "d", "badging", apkPath)
 				.start();
+
+
 		InputStream is = null;
 		is = process.getInputStream();
 		BufferedReader br = new BufferedReader(

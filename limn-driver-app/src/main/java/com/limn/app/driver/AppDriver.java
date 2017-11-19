@@ -4,10 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipException;
 
+import io.appium.java_client.*;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
@@ -17,7 +18,6 @@ import org.openqa.selenium.remote.UnreachableBrowserException;
 
 import com.limn.app.driver.exception.AppiumException;
 import com.limn.tool.app.ApkInfo;
-import com.limn.tool.app.ApkUtil;
 import com.limn.tool.app.AppPackageInfo;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.DateFormat;
@@ -26,8 +26,6 @@ import com.limn.tool.common.Print;
 import com.limn.tool.regexp.RegExp;
 import com.limn.tool.variable.Variable;
 
-import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.ios.IOSDriver;
@@ -260,17 +258,22 @@ public class AppDriver {
 	/**
 	 * 滑动屏幕
 	 * 
-	 * @param startx
+	 * @param startX
 	 *            起始x
-	 * @param starty
-	 * @param endx
-	 * @param endy
+	 * @param startY
+	 * @param endX
+	 * @param endY
 	 * @throws AppiumException
 	 */
-	public static void swipe(int startx, int starty, int endx, int endy) throws AppiumException {
+	public static void swipe(int startX, int startY, int endX, int endY) throws AppiumException {
 
 		check();
-		driver.swipe(startx, starty, endx, endy, 1000);
+		Print.log("滑动坐标-> startX : " + startX + " startY : " + startY + " endX : " + endX + " endY : " + endY ,0 );
+		TouchAction action = new TouchAction(driver);
+		action.longPress(startX,startY,Duration.ofMillis(1000)).moveTo(endX,endY).release();
+		action.perform();
+
+//		driver.swipe(startx, starty, endx, endy, 1000);
 	}
 
 	/**
@@ -289,8 +292,11 @@ public class AppDriver {
 
 		try {
 			AndroidElement ae = getAndroidElement(id);
+
 			TouchAction action = new TouchAction(driver);
-			action.longPress(ae).waitAction(time).release().perform();
+			action.longPress(ae,Duration.ofMillis(time));
+
+//			action.longPress(ae).waitAction(time).release().perform();
 		} catch (AppiumException e) {
 			throw new AppiumException(e.getMessage() + apkInfo.getPackageName() + ":id/" + id);
 		}
