@@ -11,7 +11,7 @@
 		<groupId>com.limn.main</groupId>
 		<artifactId>limn-main</artifactId>
 		<version>1.0</version>
-		<relativePath>../limn-main</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	<dependencies>
 		<dependency>

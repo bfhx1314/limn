@@ -10,7 +10,7 @@
 		<groupId>com.limn.main</groupId>
 		<artifactId>limn-main</artifactId>
 		<version>1.0</version>
-		<relativePath>../limn-main</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	<dependencies>
 		<dependency>
@@ -126,6 +126,26 @@
 			<artifactId>common</artifactId>
 			<version>24.5.0</version>
 		</dependency>
-
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>  <!--执行器 mvn assembly:assembly -->
+					<execution>
+						<id>limn-automcation</id><!--名字任意 -->
+						<phase>package</phase><!-- 绑定到package生命周期阶段上 -->
+						<goals>
+							<goal>single</goal><!-- 只运行一次 -->
+						</goals>
+						<configuration>
+							<descriptors> <!--描述文件路径 -->
+								<descriptor>src/main/resources/release.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
