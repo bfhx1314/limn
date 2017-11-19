@@ -38,7 +38,7 @@ public class AppDriver {
 
 	public static AppiumDriver driver = null;
 
-	public static int HEIGTH = 0;
+	public static int HEIGHT = 0;
 	public static int WIDTH = 0;
 
 	private static String appFilePath = null;
@@ -111,11 +111,13 @@ public class AppDriver {
 				throw new  AppiumException("Appium APK包文件异常:" + appFile.getAbsolutePath() + "\n" + e1.getMessage());
 			}
 			dcb.setCapability("deviceName", apkInfo.getApplicationLable()); // 后期增加配置
-			dcb.setCapability("paltformVersion", "4.4"); // 后期增加配置
+			dcb.setCapability("paltformVersion", "6.0"); // 后期增加配置
 			dcb.setCapability("app", appFile.getAbsolutePath());
 			dcb.setCapability("appPackage", apkInfo.getPackageName());
 			dcb.setCapability("unicodeKeyboard", "true");
 			dcb.setCapability("resetKeyboard", "true");
+			dcb.setCapability("noReset", "true");
+			dcb.setCapability("appWaitActivity", "com.jifen.qukan.view.activity.MainActivity");
 			// Didn't get a new command in 600 secs, shutting down...
 			dcb.setCapability("newCommandTimeout", 600);
 			try{
@@ -135,7 +137,7 @@ public class AppDriver {
 			
 		}
 
-		AppDriver.HEIGTH = driver.manage().window().getSize().getHeight();
+		AppDriver.HEIGHT = driver.manage().window().getSize().getHeight();
 		AppDriver.WIDTH = driver.manage().window().getSize().getWidth();
 		Common.wait(7000);
 

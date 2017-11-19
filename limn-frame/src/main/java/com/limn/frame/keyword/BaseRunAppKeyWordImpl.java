@@ -17,16 +17,16 @@ import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
 
 public class BaseRunAppKeyWordImpl {
-	
+
 	/**
 	 * 录入
-	 * @param steps
+	 * @param step
 	 * @throws AppiumException
 	 */
 	public static void input(String[] step) throws AppiumException{
-		
+
 		try{
-			HashMap<String,String> traXPath = null; 
+			HashMap<String,String> traXPath = null;
 			if(step.length >= 4 && RegExp.findCharacters(step[step.length-1], "^HASHMAP")){
 				// DEBUG模式
 				traXPath = TransformationMap.transformationByString(step[step.length-1]);
@@ -34,7 +34,7 @@ public class BaseRunAppKeyWordImpl {
 			}else{
 				// START模式
 				traXPath = RunAutoTestingParameter.getAlias();
-				
+
 //				String context = RunAutoTestingParameter.getTestCase().getAssociatedProperites();
 //				if(null == context){
 //					traXPath = null;
@@ -55,7 +55,7 @@ public class BaseRunAppKeyWordImpl {
 			}else{
 				xpath = step[1];
 			}
-	
+
 			if(step[2].equalsIgnoreCase("[Click]")){
 				AppDriver.click(xpath);
 			}else if(step[2].equalsIgnoreCase("[Touth]")){
@@ -80,25 +80,59 @@ public class BaseRunAppKeyWordImpl {
 			throw new AppiumException("错误:" + e.getMessage());
 		}
 	}
-	
-	
+
+
 	/**
 	 * 滑动
 	 * @param steps
 	 * @throws AppiumException
 	 */
 	public static void slide(String[] steps) throws AppiumException{
-		if(steps[1].equalsIgnoreCase("Left")){
-			AppDriver.swipe(AppDriver.WIDTH - 10, AppDriver.HEIGTH/2, 10, AppDriver.HEIGTH/2);
-		}else if(steps[1].equalsIgnoreCase("Right")){
-			AppDriver.swipe(10, AppDriver.HEIGTH/2, AppDriver.WIDTH - 10, AppDriver.HEIGTH/2);
-		}else if(steps[1].equalsIgnoreCase("Top")){
-			AppDriver.swipe(AppDriver.WIDTH/2, AppDriver.HEIGTH - 10, AppDriver.WIDTH/2, 10);
-		}else if(steps[1].equalsIgnoreCase("Bottom")){
-			AppDriver.swipe(AppDriver.WIDTH/2, 10, AppDriver.WIDTH/2, AppDriver.HEIGTH - 10);
+		int startX = 0 ;
+		int startY = 0;
+		int endX = 0;
+		int endY = 0;
+
+		int MAX_WIDTH = AppDriver.WIDTH - 10;
+		int MAX_HEIGHT = AppDriver.HEIGHT - 10;
+		int MIDST_WIDTH = AppDriver.WIDTH/2;
+		int MIDST_HEIGHT = AppDriver.HEIGHT/2;
+		int MIN_WIDTH = 10;
+		int MIN_HEIGHT = 10;
+
+		if(steps.length >= 3 && (steps[2].equalsIgnoreCase("Center") || steps[2].equalsIgnoreCase("C"))){
+			MIN_WIDTH = AppDriver.WIDTH/4;
+			MIN_HEIGHT = AppDriver.HEIGHT/4;
+			MAX_WIDTH = AppDriver.WIDTH/4*3;
+			MAX_HEIGHT = AppDriver.HEIGHT/4*3;
 		}
+
+		if(steps[1].equalsIgnoreCase("LeftSlide") || steps[1].equalsIgnoreCase("LS")){
+			startX = MAX_WIDTH;
+			startY = MIDST_HEIGHT;
+			endX = MIN_WIDTH;
+			endY = MIDST_HEIGHT;
+		}else if(steps[1].equalsIgnoreCase("RightSlide") || steps[1].equalsIgnoreCase("RS")){
+			startX = MIN_WIDTH;
+			startY = MIDST_HEIGHT;
+			endX = MAX_WIDTH;
+			endY = MIDST_HEIGHT;
+		}else if(steps[1].equalsIgnoreCase("UpSlide") || steps[1].equalsIgnoreCase("US")){
+			startX = MIDST_WIDTH;
+			startY = MAX_HEIGHT;
+			endX = MIDST_WIDTH;
+			endY = MIN_HEIGHT;
+		}else if(steps[1].equalsIgnoreCase("DownSlide") || steps[1].equalsIgnoreCase("DS")){
+			startX = MIDST_WIDTH;
+			startY = MIN_HEIGHT;
+			endX = MIDST_WIDTH;
+			endY = MAX_HEIGHT;
+		}
+		Print.log("startX : " + startX + " startY : " + startY + " endX : " + endX + " endY : " + endY ,0 );
+		AppDriver.swipe(startX,startY,endX,endY);
+
 	}
-	
+
 	/**
 	 * 启动app 仅能启动一次。忽视第二次启动
 	 * @param steps
@@ -115,9 +149,9 @@ public class BaseRunAppKeyWordImpl {
 		}else{
 			path = steps[1];
 		}
-		
-		
+
+
 		AppDriver.init(path);
 	}
-	
+
 }

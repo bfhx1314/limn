@@ -8,6 +8,8 @@
  */
 package com.limn.tool.app;
 
+import com.limn.tool.parameter.Parameter;
+
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
@@ -47,7 +49,8 @@ public class ApkUtil {
 	/**
 	 * aapt所在的目录。
 	 */
-	private String mAaptPath = "bin/aapt";
+	private String mAaptPathByLinux = "bin/aapt";
+	private String mAaptPathByWindows = "bin/aapt.exe";
 
 	public ApkUtil() {
 		mBuilder = new ProcessBuilder();
@@ -62,7 +65,12 @@ public class ApkUtil {
 	 * @return apkInfo 一个Apk的信息。
 	 */
 	public ApkInfo getApkInfo(String apkPath) throws Exception {
-		Process process = mBuilder.command(mAaptPath, "d", "badging", apkPath)
+		String mAaptPath = mAaptPathByLinux;
+		if(Parameter.getOS().equalsIgnoreCase("Windows")){
+			mAaptPath = mAaptPathByWindows;
+		}
+
+		Process process = mBuilder.command(System.getProperty("user.dir") + "/" + mAaptPath, "d", "badging", apkPath)
 				.start();
 		InputStream is = null;
 		is = process.getInputStream();
@@ -195,11 +203,11 @@ public class ApkUtil {
 		}
 	}
 
-	public String getmAaptPath() {
-		return mAaptPath;
-	}
-
-	public void setmAaptPath(String mAaptPath) {
-		this.mAaptPath = mAaptPath;
-	}
+//	public String getmAaptPath() {
+//		return mAaptPath;
+//	}
+//
+//	public void setmAaptPath(String mAaptPath) {
+//		this.mAaptPath = mAaptPath;
+//	}
 }
