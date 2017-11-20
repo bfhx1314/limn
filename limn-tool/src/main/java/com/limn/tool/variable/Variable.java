@@ -23,7 +23,8 @@ public class Variable {
 	private static LinkedHashMap<String, String> expression = new LinkedHashMap<String, String>();
 	private static HashMap<String, String> externalVariable = new HashMap<String, String>();
 	private static String saveLocalVariablePath = Parameter.DEFAULT_TEMP_PATH + "/variableLocal.properties";
-	
+
+
 	
 	/**
 	 * 
@@ -158,8 +159,33 @@ public class Variable {
 			expression.put((String) key, (String) props.get(key));
 		}
 	}
-	
-	
+
+
+	public static LinkedHashMap<String, String>  getPrivateVariableLocal(String path){
+		path = FileUtil.getFileAbsolutelyPath(Parameter.DEFAULT_CONF_PATH,path);
+		Properties variableProps = new Properties();
+		File newFile = new File(path);
+		LinkedHashMap<String, String> data = new LinkedHashMap<>();
+		if(newFile.exists()){
+			try {
+				InputStreamReader isr = new InputStreamReader(new FileInputStream(path));
+				variableProps.load(isr);
+
+				for(Object key:variableProps.keySet()){
+					if(data.containsKey(key)){
+						Print.log("警告:存在相同的变量名称:" + key , 3);
+					}else{
+						data.put( (String)key, (String) variableProps.get(key));
+					}
+				}
+			} catch (Exception e) {
+				Print.log("获取本地化文件变量出错:" + e.getMessage(),2);
+			}
+		}else{
+			Print.log("本地化文件变量不存在,路径:" + path,2);
+		}
+		return data;
+	}
 	/**
 	 * 
 	 * @param path
