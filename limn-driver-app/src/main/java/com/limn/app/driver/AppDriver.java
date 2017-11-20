@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,6 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
-import net.erdfelt.android.apk.AndroidApk;
 
 public class AppDriver {
 
@@ -42,8 +42,6 @@ public class AppDriver {
 
 	private static String appFilePath = null;
 
-//	private static AndroidApk APKInfo = null;
-	
 	private static ApkInfo apkInfo = null;
 	
 	public static String AppType = "";
@@ -74,7 +72,7 @@ public class AppDriver {
 		}
 		
 		appFilePath = filePath;
-		
+
 		File appFile = new File(filePath);
 
 		if(FileUtil.getFileType(filePath).equalsIgnoreCase("ipa")){
@@ -109,16 +107,27 @@ public class AppDriver {
 			} catch (Exception e1) {
 				throw new  AppiumException("Appium APK包文件异常:" + appFile.getAbsolutePath() + "\n" + e1.getMessage());
 			}
+
+			LinkedHashMap<String, String> capability = Variable.getPrivateVariableLocal("capability.properties");
+
 			dcb.setCapability("deviceName", apkInfo.getApplicationLable()); // 后期增加配置
-			dcb.setCapability("paltformVersion", "6.0"); // 后期增加配置
-			dcb.setCapability("app", appFile.getAbsolutePath());
 			dcb.setCapability("appPackage", apkInfo.getPackageName());
-			dcb.setCapability("unicodeKeyboard", "true");
-			dcb.setCapability("resetKeyboard", "true");
-			dcb.setCapability("noReset", "true");
-			dcb.setCapability("appWaitActivity", "com.jifen.qukan.view.activity.MainActivity");
-			// Didn't get a new command in 600 secs, shutting down...
-			dcb.setCapability("newCommandTimeout", 600);
+			dcb.setCapability("app", appFile.getAbsolutePath());
+
+			for(String key : capability.keySet()){
+				dcb.setCapability(key, capability.get(key));
+				Print.log("AndroidDesiredCapabilities " + key + ":" + capability.get(key) , 3);
+			}
+
+// 			Didn't get a new command in 600 secs, shutting down...
+//			dcb.setCapability("newCommandTimeout", 600);
+//			dcb.setCapability("noReset", "true");
+//			dcb.setCapability("paltformVersion", paltformVersion); // 后期增加配置
+//			dcb.setCapability("unicodeKeyboard", "true");
+//			dcb.setCapability("resetKeyboard", "true");
+//			dcb.setCapability("appWaitActivity", "com.jifen.qukan.view.activity.MainActivity");
+
+
 			try{
 				driver = new AndroidDriver<AndroidElement>(sauceUrl,dcb);
 			}catch(SessionNotCreatedException e){
