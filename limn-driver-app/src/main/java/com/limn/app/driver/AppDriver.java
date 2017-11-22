@@ -114,11 +114,12 @@ public class AppDriver {
 			dcb.setCapability("appPackage", apkInfo.getPackageName());
 			dcb.setCapability("app", appFile.getAbsolutePath());
 
+            Print.log("------------设置Android基础属性----------------",0);
 			for(String key : capability.keySet()){
 				dcb.setCapability(key, capability.get(key));
-				Print.log("AndroidDesiredCapabilities " + key + ":" + capability.get(key) , 3);
+				Print.log("AndroidDesiredCapabilities设置属性 [" + key + " : " + capability.get(key) + "]" , 0);
 			}
-
+            Print.log("-----------------设置完毕---------------------",0);
 // 			Didn't get a new command in 600 secs, shutting down...
 //			dcb.setCapability("newCommandTimeout", 600);
 //			dcb.setCapability("noReset", "true");
