@@ -3,6 +3,7 @@ package com.limn.driver.common;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.limn.tool.common.BaseToolParameter;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
@@ -69,25 +70,25 @@ public class OperateWindows {
 		        //确认or取消
 		        if (option) {
 		            //确认
-		        	Print.log("Accept the alert: " + alert.getText(),1);
+		        	BaseToolParameter.getPrintThreadLocal().log("Accept the alert: " + alert.getText(),1);
 		            alert.accept();
 		        } else {
 		            //取消
-		        	Print.log("Dismiss the alert: " + alert.getText(),1);
+		        	BaseToolParameter.getPrintThreadLocal().log("Dismiss the alert: " + alert.getText(),1);
 		            alert.dismiss();
 		        }
 		        flag = true;
 		    } catch (WebDriverException e) {
 		        if (e.getMessage().startsWith("Could not find")){
 		            System.out.println("There is no alert appear!");
-		            Print.log("There is no alert appear!",2);
+		            BaseToolParameter.getPrintThreadLocal().log("There is no alert appear!",2);
 		        }else{
 		            throw e;
 		        }
 		    }
 		} catch (NoAlertPresentException e) {
 		    System.out.println("There is no alert appear!");
-		    Print.log("There is no alert appear!",2);
+		    BaseToolParameter.getPrintThreadLocal().log("There is no alert appear!",2);
 		}
 		return flag;
 	}
@@ -100,7 +101,7 @@ public class OperateWindows {
 		try {
 			currentHandle = DriverParameter.getDriverPaht().driver.getWindowHandle();
 		}catch(Exception e){
-			Print.log("当前driver没有对象",3);
+			BaseToolParameter.getPrintThreadLocal().log("当前driver没有对象",3);
 		}
 		
 		//得到所有窗口的句柄
@@ -117,7 +118,7 @@ public class OperateWindows {
 		int handlesSize = handles.size();
 		//存在窗口
 		if (handlesSize > 0) {
-			Print.log("存在"+ handlesSize +"个新窗口。", 3);
+			BaseToolParameter.getPrintThreadLocal().log("存在"+ handlesSize +"个新窗口。", 3);
 			for(int i=0;i<handlesSize;i++){
 			    try{
 					//定位窗口
@@ -140,7 +141,7 @@ public class OperateWindows {
 		int handlesSize = handles.size();
 		//存在窗口
 		if (handlesSize > 0) {
-			Print.log("存在"+ handlesSize +"个新窗口。", 3);
+			BaseToolParameter.getPrintThreadLocal().log("存在"+ handlesSize +"个新窗口。", 3);
 		    try{
 				//定位窗口
 		    	int i = 1;
@@ -180,7 +181,7 @@ public class OperateWindows {
 		int handlesSize = handles.size();
 		//存在窗口
 		if (handlesSize > 0) {
-			Print.log("存在"+ handlesSize +"个新窗口。", 3);
+			BaseToolParameter.getPrintThreadLocal().log("存在"+ handlesSize +"个新窗口。", 3);
 			for(int i=0;i<handlesSize;i++){
 			    try{
 					//定位窗口
@@ -188,13 +189,13 @@ public class OperateWindows {
 			    	DriverParameter.getDriverPaht().driver.close();
 			    }catch(Exception e){
 			        System.out.println(e.getMessage());
-			        Print.log(e.getMessage(), 2);
+			        BaseToolParameter.getPrintThreadLocal().log(e.getMessage(), 2);
 			    }
 			}
 			DriverParameter.getDriverPaht().driver.switchTo().window(currentHandle);
 		}
 //		System.out.println("Did not find window");
-//		Print.log("Did not find window", 2);
+//		BaseToolParameter.getPrintThreadLocal().log("Did not find window", 2);
 		return true;
 	}
 	/**
@@ -207,7 +208,7 @@ public class OperateWindows {
 		int handlesSize = handles.size();
 		//存在窗口
 		if (handlesSize > 0) {
-			Print.log("存在"+ handlesSize +"个新窗口。", 3);
+			BaseToolParameter.getPrintThreadLocal().log("存在"+ handlesSize +"个新窗口。", 3);
 		    try{
 				//定位窗口
 		    	int i = 1;
@@ -222,11 +223,11 @@ public class OperateWindows {
 	    		}
 		    }catch(Exception e){
 		        System.out.println(e.getMessage());
-		        Print.log(e.getMessage(), 2);
+		        BaseToolParameter.getPrintThreadLocal().log(e.getMessage(), 2);
 		    }
 		}
 //		System.out.println("Did not find window");
-//		Print.log("Did not find window", 2);
+//		BaseToolParameter.getPrintThreadLocal().log("Did not find window", 2);
 		return true;
 	}
 	//处理单个非alert弹窗

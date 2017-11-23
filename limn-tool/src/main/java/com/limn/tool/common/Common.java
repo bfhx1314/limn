@@ -48,7 +48,7 @@ public class Common {
 	public static void wait(int sec) {
 		Long time = ((Integer) sec).longValue();
 		try {
-			// Print.debugLog("Wait : " + sec, 0);
+			// BaseToolParameter.getPrintThreadLocal().debugLog("Wait : " + sec, 0);
 			Thread.sleep(time);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -204,7 +204,7 @@ public class Common {
 				}
 			} catch (Exception e) {
 				if (null != e.getMessage()) {
-					Print.log(e.getMessage(), 2);
+					BaseToolParameter.getPrintThreadLocal().log(e.getMessage(), 2);
 				}
 				variableValue = exp;
 			}
@@ -222,7 +222,7 @@ public class Common {
 			try {
 				variableValue = parser.eval(null, strArr, tree, null).toString();
 			} catch (Exception e) {
-				Print.log("语法解析失败，表达式：" + str, 2);
+				BaseToolParameter.getPrintThreadLocal().log("语法解析失败，表达式：" + str, 2);
 				return exp;
 				// throw new ParameterException("语法解析失败，表达式："+str);
 			}
@@ -284,7 +284,7 @@ public class Common {
 		try {
 			date = simpleDateFormat.parse(datatime);
 		} catch (ParseException e) {
-			Print.log("时间格式有误" + datatime, 2);
+			BaseToolParameter.getPrintThreadLocal().log("时间格式有误" + datatime, 2);
 		}
 		return date.getTime();
 	}
@@ -294,7 +294,7 @@ public class Common {
 		try {
 			address = InetAddress.getByName(name);
 		} catch (UnknownHostException e) {
-			Print.log("获取失败本机IP失败", 3);
+			BaseToolParameter.getPrintThreadLocal().log("获取失败本机IP失败", 3);
 			return "e.getMessage()";
 		}
 		return address.getHostAddress().toString();

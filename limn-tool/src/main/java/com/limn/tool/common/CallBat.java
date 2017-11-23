@@ -29,7 +29,7 @@ public class CallBat {
 
 	/**
 	 * 执行命令
-	 * @param cmd命令
+	 * @param cmd cmd命令
 	 * @return 返回输出流,以冒号拼接
 	 */
     public static String returnExec(String cmd) {

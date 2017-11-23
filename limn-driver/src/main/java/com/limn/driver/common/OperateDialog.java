@@ -2,12 +2,8 @@ package com.limn.driver.common;
 
 import com.limn.driver.Driver;
 import com.limn.driver.exception.SeleniumFindException;
+import com.limn.tool.common.*;
 import com.limn.tool.log.RunLog;
-import com.limn.tool.common.CallBat;
-import com.limn.tool.common.FileUtil;
-import com.limn.tool.common.GetSystemInfo;
-import com.limn.tool.common.Print;
-
 
 
 /**
@@ -43,7 +39,7 @@ public class OperateDialog {
 	 */
 	public static void saveFile(String path, String key) throws SeleniumFindException{
 		if (!FileUtil.exists(path)){
-			Print.log("文件不存在："+path, 2);
+			BaseToolParameter.getPrintThreadLocal().log("文件不存在："+path, 2);
 			return;
 		}
 		String cmdBufferedReader = "";
@@ -67,7 +63,7 @@ public class OperateDialog {
 				if (key.equalsIgnoreCase("Excel导出")){
 					cmdBufferedReader = clickButton("文件下载 ","保存");
 					if (cmdBufferedReader.indexOf("true") == -1){
-						Print.log("没有找到“文件下载”对话框！", 2);
+						BaseToolParameter.getPrintThreadLocal().log("没有找到“文件下载”对话框！", 2);
 						return;
 					}
 				}
@@ -75,13 +71,13 @@ public class OperateDialog {
 				if (cmdBufferedReader.indexOf("false") != -1){
 					cmdBufferedReader = close("下载完毕");
 					if (cmdBufferedReader.indexOf("false") != -1){
-						Print.log("没有找到“下载完毕”对话框！", 2);
+						BaseToolParameter.getPrintThreadLocal().log("没有找到“下载完毕”对话框！", 2);
 					}
 				}else{
-					Print.log("没有保存成功！", 2);
+					BaseToolParameter.getPrintThreadLocal().log("没有保存成功！", 2);
 				}
 			}else{
-				Print.log("功能没有实现，IE版本："+ieVersion, 2);
+				BaseToolParameter.getPrintThreadLocal().log("功能没有实现，IE版本："+ieVersion, 2);
 			}
 		}else if(browserName.equalsIgnoreCase("firefox")){
 			if (key.equalsIgnoreCase("Excel导出") || key.equalsIgnoreCase("保存文件")){
@@ -99,7 +95,7 @@ public class OperateDialog {
 					clickY = dialogY + 299;
 					cmdBufferedReader = clickByXY("正在打开",clickX,clickY);
 				}else{
-					Print.log("没有获取到“正在打开”坐标", 2);
+					BaseToolParameter.getPrintThreadLocal().log("没有获取到“正在打开”坐标", 2);
 					return;
 				}
 			}
@@ -109,7 +105,7 @@ public class OperateDialog {
 				cmdBufferedReader = downLoad("请输入要保存的文件名","\""+path+"\"","保存");
 			}
 			if (cmdBufferedReader.equalsIgnoreCase("true")){
-				Print.log("dialog还存在，保存失败！", 2);
+				BaseToolParameter.getPrintThreadLocal().log("dialog还存在，保存失败！", 2);
 			}
 		}else if(browserName.equalsIgnoreCase("chrome")){
 			cmdBufferedReader = downLoad("另存为","\""+path+"\"","保存");

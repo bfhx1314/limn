@@ -10,7 +10,7 @@
       <Middleware/>  
       <Yigo/>  
       <Version/>  
-      <ExcelPath>D:\workspace\趣头条.xls</ExcelPath>  
+      <ExcelPath>/Users/limengnan/趣头条.xls</ExcelPath>  
       <ExecuteMode>固定模式执行</ExecuteMode>  
       <SheetsNum/>  
       <FrontSteps>需要</FrontSteps>  
@@ -28,7 +28,7 @@
       <EditExcelPath>/Users/limengnan/Documents/testcase/apptest.xls</EditExcelPath>  
       <runTestModel>Android</runTestModel>  
       <RunTestModel>Android</RunTestModel>  
-      <AppFilePath>D:\apk\qukan_2_6_0_003.apk</AppFilePath> 
+      <AppFilePath>/Users/limengnan/Downloads/qukan.2.5.7.005.apk</AppFilePath> 
     </Template> 
   </Templates>  
   <Cores> 

@@ -122,7 +122,7 @@ public class FileUtil {
 	
 	/**
 	 * 获取文件后缀名
-	 * @param filePath
+	 * @param file
 	 * @return
 	 */
 	public static String getFileType(File file){
@@ -488,7 +488,7 @@ public class FileUtil {
 		if (RegExp.findCharacters(path, "[/|\\\\]")) {
 			return path;
 		} else {
-			return AbsolutelyPath + "\\" + path;
+			return AbsolutelyPath + "/" + path;
 		}
 	}
 

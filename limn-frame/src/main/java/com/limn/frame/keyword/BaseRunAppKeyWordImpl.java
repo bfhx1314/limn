@@ -2,15 +2,13 @@ package com.limn.frame.keyword;
 
 import java.util.HashMap;
 
+import com.limn.app.driver.AppDriverParameter;
+import com.limn.app.driver.bean.AppiumStartParameterBean;
+import com.limn.tool.common.BaseToolParameter;
 import org.openqa.selenium.WebDriverException;
 
-import com.limn.app.driver.AppDriver;
 import com.limn.app.driver.exception.AppiumException;
-import com.limn.driver.Driver;
-import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.control.RunAutoTestingParameter;
-import com.limn.frame.control.Test;
-import com.limn.tool.bean.RunParameter;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.TransformationMap;
 import com.limn.tool.parameter.Parameter;
@@ -30,7 +28,7 @@ public class BaseRunAppKeyWordImpl {
 			if(step.length >= 4 && RegExp.findCharacters(step[step.length-1], "^HASHMAP")){
 				// DEBUG模式
 				traXPath = TransformationMap.transformationByString(step[step.length-1]);
-				Print.debugLog("加载别名数据完成", 1);
+				BaseToolParameter.getPrintThreadLocal().debugLog("加载别名数据完成", 1);
 			}else{
 				// START模式
 				traXPath = RunAutoTestingParameter.getAlias();
@@ -40,7 +38,7 @@ public class BaseRunAppKeyWordImpl {
 //					traXPath = null;
 //				}else{
 //					traXPath = TransformationMap.transformationByString(context);
-//					Print.log("加载别名数据完成", 1);
+//					BaseToolParameter.getPrintThreadLocal().log("加载别名数据完成", 1);
 //				}
 			}
 
@@ -48,7 +46,7 @@ public class BaseRunAppKeyWordImpl {
 			if(null != traXPath){
 				if(traXPath.containsKey(step[1])){
 					xpath = traXPath.get(step[1]);
-					Print.log("获取[" + xpath + "] 别名:" + step[1], 0);
+					BaseToolParameter.getPrintThreadLocal().log("获取[" + xpath + "] 别名:" + step[1], 0);
 				}else{
 					xpath = step[1];
 				}
@@ -57,7 +55,7 @@ public class BaseRunAppKeyWordImpl {
 			}
 
 			if(step[2].equalsIgnoreCase("[Click]")){
-				AppDriver.click(xpath);
+				AppDriverParameter.getDriverConfigBean().click(xpath);
 			}else if(step[2].equalsIgnoreCase("[Touth]")){
 				int time = 1000;
 				if(step.length>3){
@@ -65,17 +63,17 @@ public class BaseRunAppKeyWordImpl {
 						time = Integer.valueOf(step[3]) * 1000;
 					}catch(NumberFormatException e){
 						if(!RegExp.findCharacters(step[3], "^HASHMAP")){
-							Print.log("无法解析长按秒数:" + step[3] + ",默认1秒", 3);
+							BaseToolParameter.getPrintThreadLocal().log("无法解析长按秒数:" + step[3] + ",默认1秒", 3);
 						}
 						time = 1000;
 					}
 				}
-				AppDriver.touchAction(xpath,time);
+				AppDriverParameter.getDriverConfigBean().touchAction(xpath,time);
 			}else{
-				AppDriver.setValue(xpath, step[2]);
+				AppDriverParameter.getDriverConfigBean().setValue(xpath, step[2]);
 			}
 		}catch(WebDriverException e){
-			Print.log("WebDriverException 异常报错 ", 3);
+			BaseToolParameter.getPrintThreadLocal().log("WebDriverException 异常报错 ", 3);
 		}catch(Exception e){
 			throw new AppiumException("错误:" + e.getMessage());
 		}
@@ -93,18 +91,18 @@ public class BaseRunAppKeyWordImpl {
 		int endX = 0;
 		int endY = 0;
 
-		int MAX_WIDTH = AppDriver.WIDTH - 10;
-		int MAX_HEIGHT = AppDriver.HEIGHT - 10;
-		int MIDST_WIDTH = AppDriver.WIDTH/2;
-		int MIDST_HEIGHT = AppDriver.HEIGHT/2;
+		int MAX_WIDTH = AppDriverParameter.getDriverConfigBean().WIDTH - 10;
+		int MAX_HEIGHT = AppDriverParameter.getDriverConfigBean().HEIGHT - 10;
+		int MIDST_WIDTH = AppDriverParameter.getDriverConfigBean().WIDTH/2;
+		int MIDST_HEIGHT = AppDriverParameter.getDriverConfigBean().HEIGHT/2;
 		int MIN_WIDTH = 10;
 		int MIN_HEIGHT = 10;
 
 		if(steps.length >= 3 && (steps[2].equalsIgnoreCase("Center") || steps[2].equalsIgnoreCase("C"))){
-			MIN_WIDTH = AppDriver.WIDTH/4;
-			MIN_HEIGHT = AppDriver.HEIGHT/4;
-			MAX_WIDTH = AppDriver.WIDTH/4*3;
-			MAX_HEIGHT = AppDriver.HEIGHT/4*3;
+			MIN_WIDTH = AppDriverParameter.getDriverConfigBean().WIDTH/4;
+			MIN_HEIGHT = AppDriverParameter.getDriverConfigBean().HEIGHT/4;
+			MAX_WIDTH = AppDriverParameter.getDriverConfigBean().WIDTH/4*3;
+			MAX_HEIGHT = AppDriverParameter.getDriverConfigBean().HEIGHT/4*3;
 		}
 
 		if(steps[1].equalsIgnoreCase("LeftSlide") || steps[1].equalsIgnoreCase("LS")){
@@ -129,7 +127,7 @@ public class BaseRunAppKeyWordImpl {
 			endY = MAX_HEIGHT;
 		}
 
-		AppDriver.swipe(startX,startY,endX,endY);
+		AppDriverParameter.getDriverConfigBean().swipe(startX,startY,endX,endY);
 
 	}
 
@@ -151,7 +149,15 @@ public class BaseRunAppKeyWordImpl {
 		}
 
 
-		AppDriver.init(path);
+		AppDriverParameter.getDriverConfigBean().init(path);
+
+//		AppiumStartParameterBean aspb = new AppiumStartParameterBean();
+//		aspb.setAddress("127.0.0.1");
+//		aspb.setPort("4723");
+//
+//		AppDriverParameter.getDriverConfigBean().initAndRunAppiumServer(path,aspb);
+
+
 	}
 
 }

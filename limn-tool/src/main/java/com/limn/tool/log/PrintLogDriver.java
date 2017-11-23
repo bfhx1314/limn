@@ -7,6 +7,8 @@ import java.awt.Dimension;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -160,6 +162,12 @@ public abstract class PrintLogDriver implements LogControlInterface{
 	
 	
 	public void printLog(String log,int style){
+	}
+
+	public void printlnLog(String log,int style){
+	}
+
+	public void printContinueLog(String log,int style){
 	}
 	
 	

@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.limn.frame.testcase.TestCase;
 import com.limn.frame.testcase.TestCaseExcel;
+import com.limn.tool.common.BaseToolParameter;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
 import com.limn.tool.parameter.Parameter;
@@ -206,7 +207,7 @@ public class EditTestCase{
 	
 	public void upModuleCase(int index) throws FileNotFoundException{
 		if(index==0){
-			Print.log("已经是第一行",3);
+			BaseToolParameter.getPrintThreadLocal().log("已经是第一行",3);
 			return;
 		}
 		int rowStart = moduleStartByIndex.get(index) - 2;

@@ -3,6 +3,7 @@ package com.limn.frame.testcase;
 
 import java.util.HashMap;
 
+import com.limn.tool.common.BaseToolParameter;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -102,18 +103,18 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 		excelModuleName = new HashMap<Integer,String>();
 		
 		int index = 0;
-		Print.debugLog("***************************", 2);
+		BaseToolParameter.getPrintThreadLocal().debugLog("***************************", 2);
 		for (Row row:excelSheet){	
 			excelSheet.getSheetName();
 			setCurrentRow(row.getRowNum());
 			if (getTestCaseNo() != null && getTestCaseNo().equals("用例编号")){
 				excelModuleStartIndex.put(index, row.getRowNum() + 1);
-				Print.debugLog(index + ":Start:"+ (row.getRowNum() + 1), 2);
+				BaseToolParameter.getPrintThreadLocal().debugLog(index + ":Start:"+ (row.getRowNum() + 1), 2);
 				excelModuleName.put(index, getValue(excelSheetIndex,row.getRowNum() - 1,1));
-				Print.debugLog(index + ":Name:"+ getValue(excelSheetIndex,row.getRowNum() - 1,1), 2);
+				BaseToolParameter.getPrintThreadLocal().debugLog(index + ":Name:"+ getValue(excelSheetIndex,row.getRowNum() - 1,1), 2);
 				if(index > 0){
 					excelModuleEndIndex.put(index-1, row.getRowNum() - 2);
-					Print.debugLog((index-1) + ":End:"+ (row.getRowNum() - 2), 2);
+					BaseToolParameter.getPrintThreadLocal().debugLog((index-1) + ":End:"+ (row.getRowNum() - 2), 2);
 				}
 				index++;
 			}
@@ -125,13 +126,13 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 			removeInvalidRow(excelModuleStartIndex.get(index));
 			save();
 			excelModuleEndIndex.put(index, excelSheet.getLastRowNum());
-			Print.debugLog(index + ":End:" + excelSheet.getLastRowNum(), 2);
+			BaseToolParameter.getPrintThreadLocal().debugLog(index + ":End:" + excelSheet.getLastRowNum(), 2);
 		}
 //		}else{
 //			excelModuleStartIndex.put(1, 4);
 //			excelModuleEndIndex.put(1, 4);
 //		}
-		Print.debugLog("***************************", 2);
+		BaseToolParameter.getPrintThreadLocal().debugLog("***************************", 2);
 	}
 	
 	
@@ -334,7 +335,7 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 			excelSheet.shiftRows(rowNum + 1,excelSheet.getLastRowNum(),-1);
 			return true;
 		}else{
-			Print.log("删除行已超出最大行数", 3);
+			BaseToolParameter.getPrintThreadLocal().log("删除行已超出最大行数", 3);
 			return false;
 		}
 	}
@@ -344,7 +345,7 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 		if(excelModuleStartIndex.containsKey(index)){
 			setValue(excelSheetIndex, excelModuleStartIndex.get(index) - 2, 1, moduleName);
 		}else{
-			Print.log("index:" + index + " 的模块",2);
+			BaseToolParameter.getPrintThreadLocal().log("index:" + index + " 的模块",2);
 		}
 	}
 	
@@ -570,7 +571,7 @@ public class TestCaseExcel extends ExcelEditor implements TestCase {
 							relate.put(getTestCaseNo(), getRelatedNo());
 							relate.put(getTestCaseNo() + "_Location", excelSheetIndex + "_" + row);
 						}else if(!getTestCaseNo().isEmpty()){
-							Print.log("用例编号存在重复:" + getTestCaseNo() + " " + excelSheetIndex
+							BaseToolParameter.getPrintThreadLocal().log("用例编号存在重复:" + getTestCaseNo() + " " + excelSheetIndex
 									+ "_" + row , 2);
 						}
 					}

@@ -309,10 +309,19 @@ public class RunLogDriver extends PrintLogDriver implements LogControlInterface 
 	
 	
 	public void printLog(String log,int style){
-		runLogWrite(new SimpleDateFormat("MM-dd HH:mm:ss").format(new Date())+"-->",log + "\n\r",style);
+		runLogWrite(new SimpleDateFormat("MM-dd HH:mm:ss").format(new Date())+"-->",log ,style);
 		uploadLog(log);
 	}
-	
+
+	public void printlnLog(String log,int style){
+		runLogWrite(new SimpleDateFormat("MM-dd HH:mm:ss").format(new Date())+"-->",log + "\n\r",style);
+	}
+
+	public void printContinueLog(String log,int style){
+		runLogWrite("",log ,style);
+		uploadLog(log);
+	}
+
 	
 	public void printLocalLog(String log,int style){
 		runLogWrite(new SimpleDateFormat("MM-dd HH:mm:ss").format(new Date()) + "-->",log + "\n\r",style);

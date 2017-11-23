@@ -51,6 +51,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import com.limn.tool.common.BaseToolParameter;
 import org.dom4j.DocumentException;
 
 import com.limn.frame.panel.CustomPanel;
@@ -269,7 +270,7 @@ public class EditTestCasePanel extends CustomPanel {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					Print.debugLog("sheet:" + sheetIndex.getSelectedIndex(), 2);
+					BaseToolParameter.getPrintThreadLocal().debugLog("sheet:" + sheetIndex.getSelectedIndex(), 2);
 					eTestCase.setTableSheet(sheetIndex.getSelectedIndex());
 					setTestCaseModule();
 				}
@@ -885,7 +886,7 @@ public class EditTestCasePanel extends CustomPanel {
 		// addKeyListener(new KeyAdapter() {
 		// public void keyTyped(KeyEvent e) {
 		// int keyChar = e.getKeyChar();
-		// Print.log("xxxx", 2);
+		// BaseToolParameter.getPrintThreadLocal().log("xxxx", 2);
 		// if (keyChar ==KeyEvent.VK_DELETE) {
 		// setText("");
 		// }

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Properties;
 
+import com.limn.tool.common.BaseToolParameter;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
 import com.limn.tool.parameter.Parameter;
@@ -22,7 +23,7 @@ public class Variable {
 
 	private static LinkedHashMap<String, String> expression = new LinkedHashMap<String, String>();
 	private static HashMap<String, String> externalVariable = new HashMap<String, String>();
-	private static String saveLocalVariablePath = Parameter.DEFAULT_TEMP_PATH + "/variableLocal.properties";
+	private static String saveLocalVariablePath = Parameter.DEFAULT_CONF_PATH + "/variableLocal.properties";
 
 
 	
@@ -74,51 +75,51 @@ public class Variable {
 		}
 		if (expression.containsKey(key)){
 			String valueString = expression.get(key);
-			Print.log("获取变量 " + key + ":" + valueString, 0);
+			BaseToolParameter.getPrintThreadLocal().log("获取变量 " + key + ":" + valueString, 0);
 			return valueString;
 		}else{
-			Print.log("不存在变量：" + key, 2);
+			BaseToolParameter.getPrintThreadLocal().log("不存在变量：" + key, 2);
 			return null;
 		}
 	}
-	
+
 	/**
 	 * 删除所有的变量
 	 */
 	public static void removeExpressionAll() {
-		Print.log("删除用例中的全部变量:" + expression.size(), 0);
+		BaseToolParameter.getPrintThreadLocal().log("删除用例中的全部变量:" + expression.size(), 0);
 		expression.clear();
 	}
-	
+
 	/**
 	 * 删除变量
 	 * @param key
 	 */
 	public static void removeExpressionName(String key) {
 		if(expression.containsKey(key)){
-			Print.log("删除用例中的变量:" + key + "=" + expression.get(key), 0);
+			BaseToolParameter.getPrintThreadLocal().log("删除用例中的变量:" + key + "=" + expression.get(key), 0);
 			expression.remove(key);
 		}
 	}
-	
+
 	private static void saveLocal(){
 		Properties props = new Properties();
-		
+
 		for(String key:expression.keySet()){
 			if(!externalVariable.containsKey(key)){
 				props.put(key, expression.get(key));
 			}
 		}
-		
+
 		FileOutputStream fOut = null;
 		Writer out = null;
 		try {
 			fOut = new FileOutputStream(saveLocalVariablePath);
 			out = new OutputStreamWriter(fOut, "UTF-8");
-			
+
 			props.store(out, "variable local cache");
 		} catch (Exception e) {
-			Print.log("存储本地化文件变量出错:" + e.getMessage(),2);
+			BaseToolParameter.getPrintThreadLocal().log("存储本地化文件变量出错:" + e.getMessage(),2);
 			e.printStackTrace();
 		} finally{
 			try {
@@ -127,33 +128,33 @@ public class Variable {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * 获取本地的缓存
 	 */
 	private static void getLocal(){
-		
+
 		Properties props = new Properties();
-		
+
 		InputStreamReader isr = null;
-		
+
 		if(!new File(saveLocalVariablePath).exists()){
 			new File(saveLocalVariablePath).getParentFile().mkdirs();
 			return ;
 		}
-		
+
 		try {
 			isr = new InputStreamReader(new FileInputStream(saveLocalVariablePath),"UTF-8");
 			props.load(isr);
 		} catch (Exception e) {
-			Print.log("获取本地化文件变量出错:" + e.getMessage(),2);
+			BaseToolParameter.getPrintThreadLocal().log("获取本地化文件变量出错:" + e.getMessage(),2);
 		}
-		
+
 		expression.clear();
 		for(Object key:props.keySet()){
 			expression.put((String) key, (String) props.get(key));
@@ -173,31 +174,31 @@ public class Variable {
 
 				for(Object key:variableProps.keySet()){
 					if(data.containsKey(key)){
-						Print.log("警告:存在相同的变量名称:" + key , 3);
+						BaseToolParameter.getPrintThreadLocal().log("警告:存在相同的变量名称:" + key , 3);
 					}else{
 						data.put( (String)key, (String) variableProps.get(key));
 					}
 				}
 			} catch (Exception e) {
-				Print.log("获取本地化文件变量出错:" + e.getMessage(),2);
+				BaseToolParameter.getPrintThreadLocal().log("获取本地化文件变量出错:" + e.getMessage(),2);
 			}
 		}else{
-			Print.log("本地化文件变量不存在,路径:" + path,2);
+			BaseToolParameter.getPrintThreadLocal().log("本地化文件变量不存在,路径:" + path,2);
 		}
 		return data;
 	}
 	/**
-	 * 
+	 *
 	 * @param path
 	 */
 	public static void addVariableLocal(String path){
-		
+
 		if(expression.size()==0){
 			getLocal();
 		}
-		
+
 		path = FileUtil.getFileAbsolutelyPath(Parameter.DEFAULT_CONF_PATH,path);
-		
+
 		Properties variableProps = new Properties();
 		File newFile = new File(path);
 		if(newFile.exists()){
@@ -207,37 +208,37 @@ public class Variable {
 
 				for(Object key:variableProps.keySet()){
 					if(expression.containsKey((String) key)){
-						Print.log("警告:存在相同的变量名称:" + (String) key , 3);
+						BaseToolParameter.getPrintThreadLocal().log("警告:存在相同的变量名称:" + (String) key , 3);
 					}else{
 						expression.put((String) key, (String) variableProps.get(key));
 						externalVariable.put((String) key, (String) variableProps.get(key));
 					}
 				}
-				
+
 			} catch (Exception e) {
-				Print.log("获取本地化文件变量出错:" + e.getMessage(),2);
+				BaseToolParameter.getPrintThreadLocal().log("获取本地化文件变量出错:" + e.getMessage(),2);
 			}
-			
+
 		}else{
-			Print.log("本地化文件变量不存在,路径:" + path,2);
+			BaseToolParameter.getPrintThreadLocal().log("本地化文件变量不存在,路径:" + path,2);
 		}
-		
+
 
 	}
-	
+
 	/**
 	 * 查询变量数据
 	 * @param content
 	 * @return
 	 */
 	public static String resolve(String content){
-		
+
 		ArrayList<String> variableList = RegExp.matcherCharacters(content, "\\{.*?\\}");
 		String varFormat = null;
 		for(String var:variableList){
 			varFormat = RegExp.filterString(var, "{}");
 			String valueString = getExpressionValue(varFormat);
-			Print.log("变量："+varFormat+"="+valueString, 0);
+			BaseToolParameter.getPrintThreadLocal().log("变量："+varFormat+"="+valueString, 0);
 			String tempString = content.replace(var, "'"+valueString+ "'");
 			content = resolve(tempString);
 		}

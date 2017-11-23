@@ -26,13 +26,14 @@ import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import com.limn.app.driver.AppDriver;
+import com.limn.app.driver.AppDriverParameter;
+import com.limn.driver.Driver;
 import com.limn.frame.edit.EditTestCasePanel;
 import com.limn.frame.keyword.BaseAppKeyWordDriverImpl;
 import com.limn.frame.keyword.BaseAppKeyWordType;
@@ -43,6 +44,7 @@ import com.limn.frame.panel.CustomPanel;
 import com.limn.frame.panel.KeyWordPanel;
 import com.limn.frame.panel.LoadBroswerPanel;
 import com.limn.frame.panel.UIViewPanel;
+import com.limn.tool.common.BaseToolParameter;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
 import com.limn.tool.common.TransformationMap;
@@ -50,7 +52,6 @@ import com.limn.tool.log.LogControlInterface;
 import com.limn.tool.log.LogDocument;
 import com.limn.tool.log.PrintLogDriver;
 import com.limn.tool.log.RunLog;
-import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
 
 
@@ -100,7 +101,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 			ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	
-	private static JButton addExpectResult = new JButton("添加预期");
+	private JButton addExpectResult = new JButton("添加预期");
 	private JButton execute = new JButton("执行");
 	private JButton insertExecute = new JButton("插入执行");
 	private JButton executeAgain = new JButton("执行");
@@ -110,7 +111,10 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	private JButton deleteXPath = new JButton("删除别名");
 	
 	// TAB页
-	private static JTabbedPane tabbedPane = new JTabbedPane();
+	private JTabbedPane tabbedPane = new JTabbedPane();
+
+
+
 //
 //	public static JTabbedPane getTabbedPane() {
 //		return tabbedPane;
@@ -119,17 +123,17 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	JPanel pabelLog = new JPanel();
 	JPanel pabelTestCase = new JPanel();
 	
-	private static BaseKeyWordDriverImpl keyWordDriver = new BaseKeyWordDriverImpl();
+	private BaseKeyWordDriverImpl keyWordDriver = new BaseKeyWordDriverImpl();
 	
 	private EditTestCasePanel testCasePanel = new EditTestCasePanel();
 	
-	private UIViewPanel uiViewPanel = new UIViewPanel();
+	private UIViewPanel uiViewPanel = new UIViewPanel(this);
 	
 //	public VerificationPanel verificationPanel = new VerificationPanel();
 	//载入面板
-	private LoadBroswerPanel loadPanel = new LoadBroswerPanel();
+	private LoadBroswerPanel loadPanel = new LoadBroswerPanel(this);
 	
-	private static boolean isVerKeyWord = false;
+	private boolean isVerKeyWord = false;
 	
 	private CustomPanel isShowPanel = null;
 	
@@ -154,13 +158,13 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	
 	
 	public static void removeXpathAll() {
-		Print.log("删除全部关联属性:" + xpathName.size(), 0);
+		BaseToolParameter.getPrintThreadLocal().log("删除全部关联属性:" + xpathName.size(), 0);
 		xpathName.clear();
 	}
 	
 	public static void removeXpathName(String key) {
 		if(xpathName.containsKey(key)){
-			Print.log("删除关联属性:" + key + "=" + xpathName.get(key), 0);
+			BaseToolParameter.getPrintThreadLocal().log("删除关联属性:" + key + "=" + xpathName.get(key), 0);
 			xpathName.remove(key);
 		}
 	}
@@ -169,17 +173,24 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	 * 设置“添加预期”按钮可交互
 	 * @param bool
 	 */
-	public static void setAddExpectButton(boolean bool){
+	public void setAddExpectButton(boolean bool){
 		addExpectResult.setEnabled(bool);
 	}
 
 	public DebugEditFrame(){
-		keyWordPanel = new KeyWordPanel();
+		keyWordPanel = new KeyWordPanel(this);
 		addKeyWordDriver("基础关键字", new BaseKeyWordDriverImpl(), BaseKeyWordType.class);
 		addKeyWordDriver("App基础关键字", new BaseAppKeyWordDriverImpl(), BaseAppKeyWordType.class);
 		//TODO
 		init();
 	}
+
+	private static Print PRINT;
+	public void setPrint(Print print){
+		PRINT = print;
+		BaseToolParameter.setPrintThreadLocal(print);
+	}
+
 
 	/**
 	 * 增加关键字
@@ -592,9 +603,9 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 				String assPro = testCasePanel.getSelectAssProperties();
 				if(null != assPro && !assPro.isEmpty()){
 					xpathName = TransformationMap.transformationByString(assPro);
-					Print.log("获取关联属性:" + xpathName.size(),0);
+					BaseToolParameter.getPrintThreadLocal().log("获取关联属性:" + xpathName.size(),0);
 				}else{
-					Print.log("未获取获取关联属性",0);
+					BaseToolParameter.getPrintThreadLocal().log("未获取获取关联属性",0);
 				}
 			}
 		});
@@ -693,7 +704,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	/**
 	 * 设置关键字高亮
 	 */
-	private static void setKeyWordHigh(){
+	private void setKeyWordHigh(){
 		String content = testCase.getText();
 		String value= RegExp.splitKeyWord(content)[0];
 		if(keyWordDriver.isKeyWord(value)){
@@ -757,15 +768,17 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	}
 	
 	public static void main(String[] args){
-		Print.setLevel(Print.INFO);
-		new RunLog(new DebugEditFrame());
+		BaseToolParameter.getPrintThreadLocal().setLevel(BaseToolParameter.getPrintThreadLocal().INFO);
+		DebugEditFrame def = new DebugEditFrame();
+		BaseToolParameter.getPrintThreadLocal().setRunLog(new RunLog(def));
+		def.setPrint(BaseToolParameter.getPrintThreadLocal());
 	}
 
 	/**
 	 * 设置运行框的内容
 	 * @param step
 	 */
-	public static void setStepTextArea(String step){
+	public void setStepTextArea(String step){
 		String stepTemp = step;
 		String strTemp = RegExp.splitKeyWord(step)[0];
 		String tabPanelName = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
@@ -786,12 +799,20 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	
 	
 	public void printLog(String log,int style){
-		runLogWrite(new SimpleDateFormat("MM-dd HH:mm:ss").format(new Date())+"-->",log + "\n\r",style);
+		runLogWrite(new SimpleDateFormat("MM-dd HH:mm:ss").format(new Date())+"-->",log ,style);
 	}
 	
 	
 	public void printLocalLog(String log,int style){
-	
+
+	}
+
+	public void printlnLog(String log,int style){
+		runLogWrite(new SimpleDateFormat("MM-dd HH:mm:ss").format(new Date())+"-->",log + "\n\r",style);
+	}
+
+	public void printContinueLog(String log,int style){
+		runLogWrite("",log,style);
 	}
 	
 	public void debug(String log){
@@ -805,7 +826,25 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	public void error(String log){
 	
 	}
-	
+
+	//保存驱动对象
+	private Driver driver = null;
+
+	public AppDriver getAppDriver() {
+		if(null == appDriver){
+			appDriver = AppDriverParameter.getDriverConfigBean();
+		}
+		return appDriver;
+	}
+
+	public void setAppDriver(AppDriver appDriver) {
+		this.appDriver = appDriver;
+		AppDriverParameter.setAppDriver(appDriver);
+	}
+
+	private AppDriver appDriver = null;
+
+
 	/**
 	 * 执行
 	 * @author limn
@@ -815,15 +854,25 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		
 		public String step = null;
 		private boolean  isExecuteAgain = false;
+
+
 		public ExecuteStep(String step,boolean isExeAg){
 			this.step = step;
 			isExecuteAgain = isExeAg;
-					
-			
 		}
+
+
 		
 		@Override
 		public void run() {
+			BaseToolParameter.setPrintThreadLocal(PRINT);
+			if(null == getAppDriver()) {
+				appDriver = AppDriverParameter.getDriverConfigBean();
+				setAppDriver(appDriver);
+			}else{
+				AppDriverParameter.setAppDriver(getAppDriver());
+			}
+
 			try{
 				String[] steps = step.split("\n");
 				for (int j = 0; j < steps.length; j++){
@@ -853,6 +902,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 					
 				}
 			}finally{
+
 				execute.setEnabled(true);
 				insertExecute.setEnabled(true);
 				executeAgain.setEnabled(true);

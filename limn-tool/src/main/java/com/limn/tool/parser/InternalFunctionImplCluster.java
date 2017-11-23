@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import com.limn.tool.common.BaseToolParameter;
 import org.apache.poi.hssf.record.ObjectProtectRecord;
 
 import com.limn.tool.common.DateFormat;
@@ -228,7 +229,7 @@ public class InternalFunctionImplCluster extends BaseFunctionImplCluster {
 				
 				FileUtil.setFileText(path, number);
 			} catch (IOException e) {
-				Print.log(e.getMessage(), 2);
+				BaseToolParameter.getPrintThreadLocal().log(e.getMessage(), 2);
 			}
 			
 			int diff = digit - number.length();

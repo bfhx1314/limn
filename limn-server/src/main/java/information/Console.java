@@ -296,7 +296,9 @@ public class Console extends JFrame {
 		testClientList.setModel(clientList);
 	}
 	
-	
+	public static void main(String[] args){
+		Console c = new Console();
+	}
 
 	
 

@@ -1,5 +1,6 @@
 package com.limn.frame.control;
 
+import com.limn.tool.common.BaseToolParameter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -55,7 +56,7 @@ public class WebElementByXPath {
 			status = true;
 		} catch (NoSuchElementException e) {
 			status = false;
-			Print.log("'" + content + "' doesn't exist!", 2);
+			BaseToolParameter.getPrintThreadLocal().log("'" + content + "' doesn't exist!", 2);
 		}
 		return status;
 	}

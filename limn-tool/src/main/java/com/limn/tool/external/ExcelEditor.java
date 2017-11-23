@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 
+import com.limn.tool.common.BaseToolParameter;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -188,7 +189,7 @@ public class ExcelEditor {
 	public int getSheetIndexBySheetName(String sheetName){
 		HSSFSheet excelSheetTmp = excelBook.getSheet(sheetName);
 		if(excelSheetTmp == null){
-			Print.log("不存在的Sheet页名称：" + sheetName, 2);
+			BaseToolParameter.getPrintThreadLocal().log("不存在的Sheet页名称：" + sheetName, 2);
 			return -1;
 		}else{
 			return excelBook.getSheetIndex(excelSheetTmp);
@@ -208,7 +209,7 @@ public class ExcelEditor {
 	private boolean setSheetByName(String sheetName){
 		HSSFSheet excelSheetTmp = excelBook.getSheet(sheetName);
 		if(excelSheetTmp == null){
-			Print.log("不存在的Sheet页名称：" + sheetName, 2);
+			BaseToolParameter.getPrintThreadLocal().log("不存在的Sheet页名称：" + sheetName, 2);
 			return false;
 		}else{
 			excelSheet = excelSheetTmp;

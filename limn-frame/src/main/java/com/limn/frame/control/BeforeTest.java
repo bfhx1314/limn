@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.Socket;
 import java.util.HashMap;
 
+import com.limn.tool.common.*;
 import com.limn.tool.exception.ParameterException;
 import com.limn.tool.external.XMLReader;
 import com.limn.frame.keyword.KeyWordDriver;
@@ -14,10 +15,6 @@ import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
 import com.limn.tool.bean.ResultConfigBean;
 import com.limn.tool.bean.StartConfigBean;
-import com.limn.tool.common.Common;
-import com.limn.tool.common.DateFormat;
-import com.limn.tool.common.FileUtil;
-import com.limn.tool.common.Print;
 
 /**
  * 
@@ -135,17 +132,16 @@ public class BeforeTest implements Runnable {
 	private void beforeTest() {
 //		RunParameter.setStartPaht(startConfig);
 		//RunParameter.setResultPaht();
-		Print.log("***************开始分割线***************", 4);
-		Print.log("用例执行开始", 4);
+//		BaseToolParameter.getPrintThreadLocal().log("**开始分割线**", 4);
+//		BaseToolParameter.getPrintThreadLocal().log("用例执行开始", 4);
 		initParameter();
 		if (startConfig.isDebug()) {
-			// TODO 这里设置关键字驱动 和 Panel
-			// new RunLog(new DebugEditFrame());
-		} else if (!RunLog.isStart() && isStartLog) {
+			// 这里设置关键字驱动 和 Panel
+		} else if (!BaseToolParameter.getPrintThreadLocal().isStart() && isStartLog) {
 			if (socket != null) {
-				new RunLog(socket);
+				BaseToolParameter.getPrintThreadLocal().setRunLog(new RunLog(socket));
 			} else {
-				new RunLog();
+				BaseToolParameter.getPrintThreadLocal().setRunLog(new RunLog());
 			}
 		}
 		try {
@@ -168,14 +164,13 @@ public class BeforeTest implements Runnable {
 	 * @throws ParameterException
 	 */
 	private void init() throws ParameterException {
-
+		BaseToolParameter.getPrintThreadLocal().log("****开始分割线****", 4);
 		// if(!Parameter.NOTSERVER){
 		// lastVersion = Conf.getLatestVersion();
 		// initData();
 		// }else{
 		// Parameter.VERSION = "unKnow";
 		// }
-		// TODO 版本信息
 		// Parameter.VERSION = ?
 		createResultFolder();
 
@@ -296,7 +291,7 @@ public class BeforeTest implements Runnable {
 			resultPath = resultPath + "/" + rcb.getProductName();
 		}
 		File resultFolder = new File(resultPath + "/" + rcb.getTestName() + "/" + DateFormat.getDate("yyyyMMdd_HHmmss"));
-		Print.log("测试结果成目录:" + resultFolder.getAbsolutePath(), 4);
+		BaseToolParameter.getPrintThreadLocal().log("测试结果生成目录:" + resultFolder.getAbsolutePath(), 4);
 		resultFolder.mkdirs();
 
 		rcb.setResultFolder(resultFolder.getAbsolutePath());
@@ -354,7 +349,7 @@ public class BeforeTest implements Runnable {
 		if (flag) {
 			// 远程调用
 			if (keyWordDriver == null) {
-				Print.log("关键字驱动没有加载无法运行,请先执行setKeyWordDriver方法", 2);
+				BaseToolParameter.getPrintThreadLocal().log("关键字驱动没有加载无法运行,请先执行setKeyWordDriver方法", 2);
 				return;
 			}
 
@@ -370,7 +365,7 @@ public class BeforeTest implements Runnable {
 		}
 
 		if (isLoop) {
-			Print.log("暂停使用循环执行功能", 2);
+			BaseToolParameter.getPrintThreadLocal().log("暂停使用循环执行功能", 2);
 			return;
 			// new Thread(new BeforeTest(startConfig, keyWordDriver,
 			// isLoop)).start();

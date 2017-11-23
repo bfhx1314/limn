@@ -3,6 +3,7 @@ package com.limn.frame.keyword;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.limn.tool.common.*;
 import org.openqa.selenium.WebElement;
 
 import com.limn.driver.Driver;
@@ -12,11 +13,6 @@ import com.limn.driver.exception.SeleniumFindException;
 import com.limn.frame.control.RunAutoTestingParameter;
 import com.limn.frame.control.Test;
 import com.limn.tool.bean.RunParameter;
-import com.limn.tool.common.Common;
-import com.limn.tool.common.ConvertCharacter;
-import com.limn.tool.common.FileUtil;
-import com.limn.tool.common.Print;
-import com.limn.tool.common.TransformationMap;
 import com.limn.tool.exception.ParameterException;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
@@ -70,7 +66,7 @@ public class BaseRunKeyWordImpl {
 	 * @param url 地址
 	 * @param ip 远程运行IP 可选
 	 * @throws SeleniumFindException 
-	 * @throws HaowuException 
+	 * @throws SeleniumFindException
 	 */
 	public void startBroswer(String type, String url, String ip) throws SeleniumFindException {
 		DriverParameter.getDriverPaht().setDriver(type, url, ip);
@@ -95,7 +91,7 @@ public class BaseRunKeyWordImpl {
 		if(step.length >= 2){
 			url = step[1] + ":" + step[2];
 		}
-		Print.log("URL:" + url,0);
+		BaseToolParameter.getPrintThreadLocal().log("URL:" + url,0);
 		RunParameter.getStartPaht().setURL(url);
 		DriverParameter.getDriverPaht().changeURL(url);
 	}
@@ -144,7 +140,7 @@ public class BaseRunKeyWordImpl {
 			
 		}catch(Exception e){
 			throw new SeleniumFindException("错误:" + e.getMessage());
-//			Print.log(e.getMessage(), 2);
+//			BaseToolParameter.getPrintThreadLocal().log(e.getMessage(), 2);
 		}
 	}
 
@@ -164,14 +160,14 @@ public class BaseRunKeyWordImpl {
 					ArrayList<String> arrL = RegExp.matcherCharacters(arrT[0], "(?<=\\{)(.+?)(?=\\})");
 					variable = arrL.get(0);
 					Variable.setExpressionName(variable, "");
-					Print.log("变量:" + variable + "  值: " , 3);
+					BaseToolParameter.getPrintThreadLocal().log("变量:" + variable + "  值: " , 3);
 				}else if(!arrT[1].equals("")){
 					variableValue = Common.getExpressionValue(arrT[1]);
 					if (null != variableValue){
 						ArrayList<String> arrL = RegExp.matcherCharacters(arrT[0], "(?<=\\{)(.+?)(?=\\})");
 						variable = arrL.get(0);
 						Variable.setExpressionName(variable, variableValue);
-						Print.log("变量:" + variable + "  值:" + Variable.getExpressionValue(variable), 1);
+						BaseToolParameter.getPrintThreadLocal().log("变量:" + variable + "  值:" + Variable.getExpressionValue(variable), 1);
 					}else{
 						throw new ParameterException("语法解析失败，表达式："+arrT[1]);
 					}
@@ -197,7 +193,7 @@ public class BaseRunKeyWordImpl {
 					FileUtil.createFloder(parentPath);
 				}
 			}
-			Print.log("导入路径："+filePath, 1);
+			BaseToolParameter.getPrintThreadLocal().log("导入路径："+filePath, 1);
 //			OperateDialog.saveFile(path, step[0]);
 			//String xPath = "//div[@class=' x-window x-window-noborder' and contains(@style,'visibility: visible')]";
 			if (!step[1].equals("取消")){
@@ -240,20 +236,20 @@ public class BaseRunKeyWordImpl {
 						if (cmdBufferedReader.indexOf("false") != -1){
 							Driver.selectElementByXPath(xPath1 + "//button[contains(text(),'确定')]").click();
 						}else{
-							Print.log("添加附件失败，dialog框还存在。", 2);
+							BaseToolParameter.getPrintThreadLocal().log("添加附件失败，dialog框还存在。", 2);
 						}
 					}
 				}else{
-					Print.log("添加附件框没有找到。", 2);
+					BaseToolParameter.getPrintThreadLocal().log("添加附件框没有找到。", 2);
 				}
 			}else{
-				Print.log(filePath+"文件不存在", 2);
+				BaseToolParameter.getPrintThreadLocal().log(filePath+"文件不存在", 2);
 			}
 		}else{
 			if (WebElementByXPath.doesExist(By.xpath(xPath + "//button[contains(text(),'"+ key +"')]"))){
 				Driver.selectElementByXPath(xPath + "//button[contains(text(),'"+ key +"')]").click();
 			}else{
-				Print.log("没有找到按钮："+key, 2);
+				BaseToolParameter.getPrintThreadLocal().log("没有找到按钮："+key, 2);
 			}
 		}
 		*/

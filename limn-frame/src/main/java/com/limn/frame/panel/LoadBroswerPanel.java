@@ -31,6 +31,7 @@ import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.limn.tool.common.BaseToolParameter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -48,8 +49,6 @@ public class LoadBroswerPanel extends CustomPanel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-
 	private JLabel titleLabel = new JLabel("当前URL:");
 	private static JLabel title = new JLabel();
 
@@ -90,10 +89,13 @@ public class LoadBroswerPanel extends CustomPanel {
 	private JButton returnButton = new JButton("返回");
 	
 	// private JButton setXPathName = new JButton("设置XPATH别名");
-	public LoadBroswerPanel() {
+	private DebugEditFrame def = null;
+
+	public LoadBroswerPanel(DebugEditFrame def) {
 
 		setBounds(0, 0, 635, 395);
 		setLayout(null);
+		this.def = def;
 		// 页面URL
 		setBoundsAt(titleLabel, 5, 5, 80, 20);
 		setBoundsAt(title, 65, 5, 500, 20);
@@ -156,8 +158,8 @@ public class LoadBroswerPanel extends CustomPanel {
 				if (RegExp.findCharacters(step, "^录入:")){
 					step = step.replace("录入:", "验证:");
 				}
-				DebugEditFrame.setStepTextArea(step);
-				DebugEditFrame.setAddExpectButton(true);
+				def.setStepTextArea(step);
+				def.setAddExpectButton(true);
 			}
 		});
 		
@@ -199,7 +201,7 @@ public class LoadBroswerPanel extends CustomPanel {
 								flag = false;
 							}
 						}else{
-							DebugEditFrame.setXpathName(name, locator);
+							def.setXpathName(name, locator);
 							flag = false;
 						}
 					}else{
@@ -218,7 +220,7 @@ public class LoadBroswerPanel extends CustomPanel {
 				}
 				// 传入用例输入框
 				String step = keyword + name + ":" + value;
-				DebugEditFrame.setStepTextArea(step);
+				def.setStepTextArea(step);
 
 			}
 		});
@@ -345,7 +347,7 @@ public class LoadBroswerPanel extends CustomPanel {
 
 						setWebElmentByLocator(currentHighWebElement);
 						DriverParameter.getDriverPaht().highLightWebElement(currentHighWebElement);
-						DebugEditFrame.setAddExpectButton(false);
+						def.setAddExpectButton(false);
 					} catch (SeleniumFindException e1) {
 //						e1.printStackTrace();
 					}
@@ -358,7 +360,7 @@ public class LoadBroswerPanel extends CustomPanel {
 	/**
 	 * 模块列表的右键菜单
 	 * 
-	 * @param isNew
+	 * @param web
 	 *            是否有选中项目
 	 * @return
 	 */
@@ -384,7 +386,7 @@ public class LoadBroswerPanel extends CustomPanel {
 	
 	public void loadWebElement() throws SeleniumFindException {
 
-		Print.log("URL:" + DriverParameter.getDriverPaht().getCurrentURL(), 0);
+		BaseToolParameter.getPrintThreadLocal().log("URL:" + DriverParameter.getDriverPaht().getCurrentURL(), 0);
 		title.setText(DriverParameter.getDriverPaht().driver.getCurrentUrl());
 		traversal();
 	}
@@ -416,7 +418,6 @@ public class LoadBroswerPanel extends CustomPanel {
 	/**
 	 * 遍历页面中所有元素,取出tagname
 	 * 
-	 * @param web
 	 */
 	private void traversal() {
 		currentHighWebElement = null;
@@ -554,7 +555,7 @@ public class LoadBroswerPanel extends CustomPanel {
 			filterWebElement.addItem(tagName);
 			int start = range;
 			if (null == web){
-				Print.log("没有", 2);
+				BaseToolParameter.getPrintThreadLocal().log("没有", 2);
 				return;
 			}
 			List<WebElement> webTagElementsList = web.findElements(By.tagName(tagName));
@@ -629,7 +630,7 @@ public class LoadBroswerPanel extends CustomPanel {
 //				locatorXPath = locator;
 				// 点击xpath时传入用例输入框
 				String step = keyword + locator + ":";
-				DebugEditFrame.setStepTextArea(step);
+				def.setStepTextArea(step);
 			}else{
 				recommendLocator.setText("未能定位");
 				recommendLocator.setForeground(Color.RED.darker());

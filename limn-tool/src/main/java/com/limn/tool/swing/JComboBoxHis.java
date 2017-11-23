@@ -13,6 +13,7 @@ import java.util.Properties;
 
 import javax.swing.JComboBox;
 
+import com.limn.tool.common.BaseToolParameter;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
 import com.limn.tool.parameter.Parameter;
@@ -82,7 +83,7 @@ public class JComboBoxHis extends JComboBox<Object> {
 			fOut.close();
 			out.close();
 		} catch (Exception e) {
-			Print.log("存储本地化文件变量出错:" + e.getMessage(), 2);
+			BaseToolParameter.getPrintThreadLocal().log("存储本地化文件变量出错:" + e.getMessage(), 2);
 			e.printStackTrace();
 		} finally {
 			try {
@@ -114,9 +115,9 @@ public class JComboBoxHis extends JComboBox<Object> {
 			variableProps.load(isr);
 			isr.close();
 		} catch (FileNotFoundException e) {
-			Print.log("控件加载文件不存在:" + filePath, 2);
+			BaseToolParameter.getPrintThreadLocal().log("控件加载文件不存在:" + filePath, 2);
 		} catch (IOException e) {
-			Print.log("控件加载文件不存在:" + filePath, 2);
+			BaseToolParameter.getPrintThreadLocal().log("控件加载文件不存在:" + filePath, 2);
 		}
 	}
 }

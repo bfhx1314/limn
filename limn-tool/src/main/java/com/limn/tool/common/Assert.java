@@ -19,23 +19,23 @@ public class Assert {
 		testCase++;
 		testCaseAll++;
 		if(null == actual && null != expected){
-			Print.log("expected:[" + expected + "] but found [null]", 2);
+			BaseToolParameter.getPrintThreadLocal().log("expected:[" + expected + "] but found [null]", 2);
 			return;
 		}else if(null == actual && null == expected){
-			Print.debugLog(expected + ":PASS", 1);
+			BaseToolParameter.getPrintThreadLocal().debugLog(expected + ":PASS", 1);
 			executePass++;
 			executePassAll++;
 		}else if(null != actual && null == expected){
-			Print.log("expected:[null] but found [" + actual + "]", 2);
+			BaseToolParameter.getPrintThreadLocal().log("expected:[null] but found [" + actual + "]", 2);
 			return;
 		}
 		
 		if(actual.equals(expected)){
-			Print.debugLog(expected + ":PASS", 1);
+			BaseToolParameter.getPrintThreadLocal().debugLog(expected + ":PASS", 1);
 			executePass++;
 			executePassAll++;
 		}else{
-			Print.log("expected:[" + expected + "] but found [" + actual + "]", 2);
+			BaseToolParameter.getPrintThreadLocal().log("expected:[" + expected + "] but found [" + actual + "]", 2);
 		}
 		
 	}
@@ -46,27 +46,27 @@ public class Assert {
 		testCase++;
 		testCaseAll++;
 		if(null == actual && null != expected){
-			Print.log(annotate + "FAIL", 2);
-			Print.log("expected:[" + expected + "] but found [null]", 2);
+			BaseToolParameter.getPrintThreadLocal().log(annotate + "FAIL", 2);
+			BaseToolParameter.getPrintThreadLocal().log("expected:[" + expected + "] but found [null]", 2);
 			return;
 		}else if(null == actual && null == expected){
-			Print.debugLog(annotate + ":PASS", 1);
+			BaseToolParameter.getPrintThreadLocal().debugLog(annotate + ":PASS", 1);
 			executePass++;
 			executePassAll++;
 			return;
 		}else if(null != actual && null == expected){
-			Print.log(annotate + "FAIL", 2);
-			Print.log("expected:[null] but found [" + actual + "]", 2);
+			BaseToolParameter.getPrintThreadLocal().log(annotate + "FAIL", 2);
+			BaseToolParameter.getPrintThreadLocal().log("expected:[null] but found [" + actual + "]", 2);
 			return;
 		}
 		
 		if(actual.equals(expected)){
-			Print.debugLog(annotate + ":PASS", 1);
+			BaseToolParameter.getPrintThreadLocal().debugLog(annotate + ":PASS", 1);
 			executePass++;
 			executePassAll++;
 		}else{
-			Print.log(annotate + ":FAIL", 2);
-			Print.log("expected:" + expected + "but found " + actual, 2);
+			BaseToolParameter.getPrintThreadLocal().log(annotate + ":FAIL", 2);
+			BaseToolParameter.getPrintThreadLocal().log("expected:" + expected + "but found " + actual, 2);
 		}
 	}
 	
@@ -78,8 +78,8 @@ public class Assert {
 		int percent = (int) (avg*100);
 		
 		String executePassPercent = percent + "%";
-		Print.log("[" + title + "]执行:" + testCase + ",通过率:" + executePassPercent, 4);
-		Print.log("", 4);
+		BaseToolParameter.getPrintThreadLocal().log("[" + title + "]执行:" + testCase + ",通过率:" + executePassPercent, 4);
+		BaseToolParameter.getPrintThreadLocal().log("", 4);
 		executePass = 0;
 		testCase = 0;
 	}
@@ -92,9 +92,9 @@ public class Assert {
 		int percent = (int) (avg*100);
 		
 		String executePassPercent = percent + "%";
-		Print.log("--------------------------", 4);
-		Print.log("总计执行:" + testCaseAll + ",通过率:" + executePassPercent, 4);
-		Print.log("--------------------------", 4);
+		BaseToolParameter.getPrintThreadLocal().log("--------------------------", 4);
+		BaseToolParameter.getPrintThreadLocal().log("总计执行:" + testCaseAll + ",通过率:" + executePassPercent, 4);
+		BaseToolParameter.getPrintThreadLocal().log("--------------------------", 4);
 	}
 	
 	/**

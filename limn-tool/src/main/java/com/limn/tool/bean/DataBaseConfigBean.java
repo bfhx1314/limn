@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.limn.tool.common.BaseToolParameter;
 import com.limn.tool.common.Print;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.regexp.RegExp;
@@ -100,7 +101,6 @@ public class DataBaseConfigBean {
 	 * 
 	 * @param sql
 	 *            sql内容
-	 * @throws ParameterException
 	 */
 	public  void executeMultilineSQL(String sql) {
 		DBInit();
@@ -143,7 +143,7 @@ public class DataBaseConfigBean {
 
 	public  String[][] executeSQL(String sql) {
 		DBInit();
-		Print.log(sql, 0);
+		BaseToolParameter.getPrintThreadLocal().log(sql, 0);
 		Statement sta = null;
 		String[][] res = null;
 		try {
@@ -171,7 +171,7 @@ public class DataBaseConfigBean {
 			conn.close();
 
 		} catch (SQLException e) {
-			Print.log(e.getMessage(), 0);
+			BaseToolParameter.getPrintThreadLocal().log(e.getMessage(), 0);
 			return new String[0][0];
 		}
 		return res;
@@ -262,9 +262,9 @@ public class DataBaseConfigBean {
 	/**
 	 * 复制表
 	 * 
-	 * @param expectTable
-	 * @param string
-	 * @param b
+	 * @param newTable
+	 * @param oldTable
+	 * @param copyBoolean
 	 */
 	public  void copyDataTable(String newTable, String oldTable, boolean copyBoolean) {
 		String copybool = "";
@@ -383,7 +383,7 @@ public class DataBaseConfigBean {
 	 * 对比2个表
 	 * 
 	 * @param expectTable
-	 * @param acualTable
+	 * @param actualTable
 	 * @return
 	 */
 	public  boolean contrastTable(String expectTable, String actualTable) {
@@ -467,8 +467,8 @@ public class DataBaseConfigBean {
 	/**
 	 * 对比两张表 跟预期结果中 多出来的记录和缺少的记录，0 是缺少，1是多出
 	 * 
-	 * @param expectTable
-	 * @param acualTable
+	 * @param expect
+	 * @param actual
 	 * @return
 	 */
 	private  String[] contrastTableDifference(String expect, String actual) {

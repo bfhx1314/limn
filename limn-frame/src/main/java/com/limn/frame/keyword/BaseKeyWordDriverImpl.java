@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import com.limn.driver.common.OperateWindows;
 import com.limn.driver.exception.SeleniumFindException;
 import com.limn.tool.bean.RunParameter;
+import com.limn.tool.common.BaseToolParameter;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
 import com.limn.tool.exception.ParameterException;
@@ -115,21 +116,21 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 					}
 				}
 				if (-1 == status) {
-					Print.log("不存在此关键字:" + step[0], 2);
+					BaseToolParameter.getPrintThreadLocal().log("不存在此关键字:" + step[0], 2);
 				}
 			}
 		} catch (SeleniumFindException e) {
 			status = -2;
 			RunParameter.getResultPaht().setErrorMessage(e.getMessage());
-			Print.log(e.getMessage(), 2);
+			BaseToolParameter.getPrintThreadLocal().log(e.getMessage(), 2);
 		} catch (ParameterException e) {
 			status = -2;
 			RunParameter.getResultPaht().setErrorMessage(e.getMessage());
-			Print.log(e.getMessage(), 2);
+			BaseToolParameter.getPrintThreadLocal().log(e.getMessage(), 2);
 		} catch (Exception e){
 			status = -2;
 			RunParameter.getResultPaht().setErrorMessage(e.getMessage());
-			Print.log(e.getMessage(), 2);
+			BaseToolParameter.getPrintThreadLocal().log(e.getMessage(), 2);
 			e.printStackTrace();
 		}
 		return status;

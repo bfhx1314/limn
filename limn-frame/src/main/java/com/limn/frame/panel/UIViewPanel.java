@@ -36,6 +36,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import com.limn.app.driver.AppDriverParameter;
+import com.limn.tool.common.BaseToolParameter;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -43,8 +45,6 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
-import com.limn.android.tool.DebugBridge;
-import com.limn.app.driver.AppDriver;
 import com.limn.frame.debug.DebugEditFrame;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.FileUtil;
@@ -96,12 +96,14 @@ public class UIViewPanel extends CustomPanel {
 	// 屏幕截图存放位置
 	private String SCREENSHOTPATH = Parameter.DEFAULT_TEMP_PATH + "/AppScreenshot.png";
 	private String androidXML = Parameter.DEFAULT_TEMP_PATH + "/AppUI.xml";
-	
+
+	private DebugEditFrame def = null;
 	
 	private Document document = null;
 	private XPath xpath = null;
-	public UIViewPanel() {
-		
+	public UIViewPanel(DebugEditFrame def) {
+		this.def = def;
+
 		loadUI(false);
 		setLayout(null);
 		JButton button = new JButton("加载");
@@ -131,7 +133,6 @@ public class UIViewPanel extends CustomPanel {
 		XPathFactory factory = XPathFactory.newInstance();
         xpath = factory.newXPath();
 		
-		DebugBridge.init();
 		// 初始化需要时间
 		Common.wait(1000);
 
@@ -169,12 +170,12 @@ public class UIViewPanel extends CustomPanel {
 						if (hm.containsKey(name)) {
 							int status = JOptionPane.showConfirmDialog(UIViewPanel.this, "存在重复的关联属性:" + name + ",是否覆盖", "警告", JOptionPane.OK_CANCEL_OPTION);
 							if (status == 0) {
-								
-								DebugEditFrame.setXpathName(name, elementId);
+
+								def.setXpathName(name, elementId);
 								flag = false;
 							}
 						} else {
-							DebugEditFrame.setXpathName(name, elementId);
+							def.setXpathName(name, elementId);
 							flag = false;
 						}
 					} else {
@@ -193,7 +194,7 @@ public class UIViewPanel extends CustomPanel {
 				}
 				// 传入用例输入框
 				String step = keyword + name + ":" + value;
-				DebugEditFrame.setStepTextArea(step);
+				def.setStepTextArea(step);
 
 			}
 		});
@@ -214,10 +215,10 @@ public class UIViewPanel extends CustomPanel {
 				}else{
 					if(new File(sdk).exists()){
 						System.setProperty("com.android.uiautomator.bindir",sdk);
-						Print.log("设置SDK_HOME成功." + sdk,1);
+						BaseToolParameter.getPrintThreadLocal().log("设置SDK_HOME成功." + sdk,1);
 						Variable.setExpressionName("com.android.uiautomator.bindir", sdk);
 					}else{
-						Print.log("设置SDK_HOME失败,目录不存在." + sdk,2);
+						BaseToolParameter.getPrintThreadLocal().log("设置SDK_HOME失败,目录不存在." + sdk,2);
 					}
 				}
 			}
@@ -241,9 +242,9 @@ public class UIViewPanel extends CustomPanel {
 	 */
 	private void recursiveElement(Element element, int reindex) {
 		try {
-			if(AppDriver.AppType.equalsIgnoreCase("Android")){
+			if(def.getAppDriver().AppType.equalsIgnoreCase("Android")){
 			setListElement(element, reindex);
-			}else if(AppDriver.AppType.equalsIgnoreCase("IOS")){
+			}else if(def.getAppDriver().AppType.equalsIgnoreCase("IOS")){
 				setListIOSElement(element, reindex);
 			}
 
@@ -267,27 +268,27 @@ public class UIViewPanel extends CustomPanel {
 	 */
 	private boolean checkSDKHome() {
 		//如果是IOS测试 无需检查
-		if(AppDriver.AppType.equalsIgnoreCase("IOS")){
+		if(def.getAppDriver().AppType.equalsIgnoreCase("IOS")){
 			return true;
 		}
 		boolean isLoad = false;
 		if (System.getProperty("com.android.uiautomator.bindir") == null) {
 			String sdkPath = Variable.getExpressionValue("com.android.uiautomator.bindir");
 			if(sdkPath != null && !sdkPath.isEmpty()){
-				Print.log("获取SDK目录:" + sdkPath, 1);
+				BaseToolParameter.getPrintThreadLocal().log("获取SDK目录:" + sdkPath, 1);
 				System.setProperty("com.android.uiautomator.bindir", sdkPath);
 				isLoad = true;
 			}else if (Parameter.getOS().equalsIgnoreCase("Windows")) {
 				String sdk = System.getenv("ANDROID_HOME");
 				if (sdk != null && !sdk.isEmpty()) {
-					Print.log("获取SDK目录:" + sdk, 1);
+					BaseToolParameter.getPrintThreadLocal().log("获取SDK目录:" + sdk, 1);
 					System.setProperty("com.android.uiautomator.bindir", sdk);
 					isLoad = true;
 				} else {
-					Print.log("无法获取SDK目录", 2);
+					BaseToolParameter.getPrintThreadLocal().log("无法获取SDK目录", 2);
 				}
 			} else {
-				Print.log("无法获取SDK目录", 2);
+				BaseToolParameter.getPrintThreadLocal().log("无法获取SDK目录", 2);
 			}
 		}else{
 			if(new File(System.getProperty("com.android.uiautomator.bindir")).exists()){
@@ -302,8 +303,8 @@ public class UIViewPanel extends CustomPanel {
 	 */
 	public void loadUI(boolean loadApp) {
 
-		// 无法加载到SDKhome 直接退出
-		if (AppDriver.AppType.equalsIgnoreCase("Android") && !checkSDKHome()) {
+		// 目前支持Android
+		if (loadApp && !def.getAppDriver().AppType.equalsIgnoreCase("Android")) {
 			return;
 		}
 
@@ -314,7 +315,8 @@ public class UIViewPanel extends CustomPanel {
 		
 		//截图路径
 		if(loadApp){
-			AppDriver.screenshot(SCREENSHOTPATH);
+
+			def.getAppDriver().screenshot(SCREENSHOTPATH);
 		}else if(!new File(SCREENSHOTPATH).exists()){
 			return;
 		}
@@ -357,13 +359,13 @@ public class UIViewPanel extends CustomPanel {
 		String xml = null;
 		if(loadApp){
 			// 加载界面元素的xml
-			xml = AppDriver.driver.getPageSource();
+			xml = def.getAppDriver().driver.getPageSource();
 		}else if(new File(androidXML).exists()){
 			//加载本地文件
 			try {
 				xml = FileUtil.getFileText(androidXML);
 			} catch (IOException e1) {
-				Print.log("androidxml本地文件读取失败", 3);
+				BaseToolParameter.getPrintThreadLocal().log("androidxml本地文件读取失败", 3);
 				return;
 			}
 		}else{
@@ -391,12 +393,12 @@ public class UIViewPanel extends CustomPanel {
 			output = new XMLWriter(new FileOutputStream(androidXML), format);	
 			output.write(document);
 		} catch (IOException e1) {
-			Print.log("UIXML文件保存失败", 3);
+			BaseToolParameter.getPrintThreadLocal().log("UIXML文件保存失败", 3);
 		} finally{
 			try {
 				output.close();
 			} catch (IOException e1) {
-				Print.log("UIXML流对象关闭失败", 3);
+				BaseToolParameter.getPrintThreadLocal().log("UIXML流对象关闭失败", 3);
 			}
 		}
 
@@ -457,7 +459,7 @@ public class UIViewPanel extends CustomPanel {
 //			@Override
 //			public void focusGained(FocusEvent e) {
 //				if (hightElement != null) {
-//					Print.log("CLick", 1);
+//					BaseToolParameter.getPrintThreadLocal().log("CLick", 1);
 //					if (hightElement != null && !hightElement.resource_id.isEmpty()) {
 //
 //						String[] id = RegExp.splitWord(hightElement.resource_id, ":id/");
@@ -487,7 +489,7 @@ public class UIViewPanel extends CustomPanel {
 		try {
 			xpath.evaluate("", document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
-			Print.log("xpath数据异常:", 2);			
+			BaseToolParameter.getPrintThreadLocal().log("xpath数据异常:", 2);			
 		}
 		return null;
 	}
@@ -588,14 +590,14 @@ public class UIViewPanel extends CustomPanel {
 				return;
 			}
 			
-//			Print.debugLog("find it " + tempES.resource_id, 1);
+//			BaseToolParameter.getPrintThreadLocal().debugLog("find it " + tempES.resource_id, 1);
 			if (elementHighIndex != tempES.element_index) {
 
 				for (int i = 0; i < imagePanel.getComponentCount(); i++) {
 					imagePanel.remove(i);
 				}
 
-				Print.debugLog("start:" + tempES.x_start + " end:" + tempES.y_start, 5);
+				BaseToolParameter.getPrintThreadLocal().debugLog("start:" + tempES.x_start + " end:" + tempES.y_start, 5);
 				
 				JLabel jl = setBoundsAtImage(tempES.x_start, tempES.y_start, tempES.x_end - tempES.x_start, tempES.y_end - tempES.y_start, tempES.element_index);
 				imagePanel.add(jl);
@@ -605,7 +607,7 @@ public class UIViewPanel extends CustomPanel {
 				attributeModel.setValueAt(tempES.index, 0, 1);
 				attributeModel.setValueAt(tempES.z_order, 1, 1);
 				attributeModel.setValueAt(xpath, 2, 1);
-				if(AppDriver.AppType.equalsIgnoreCase("Android")){
+				if(def.getAppDriver().AppType.equalsIgnoreCase("Android")){
 					attributeModel.setValueAt("resource_id", 3, 0);
 					attributeModel.setValueAt(((AndroidElementSet)tempES).resource_id, 3, 1);
 					attributeModel.setValueAt("class", 4, 0);
@@ -617,7 +619,7 @@ public class UIViewPanel extends CustomPanel {
 					attributeModel.setValueAt("text", 7, 0);
 					attributeModel.setValueAt(((AndroidElementSet)tempES).text, 7, 1);
 					
-				}else if(AppDriver.AppType.equalsIgnoreCase("IOS")){
+				}else if(def.getAppDriver().AppType.equalsIgnoreCase("IOS")){
 					attributeModel.setValueAt("dom", 3, 0);
 					attributeModel.setValueAt(((IOSElementSet)tempES).dom, 3, 1);
 					attributeModel.setValueAt("label", 4, 0);
@@ -643,7 +645,7 @@ public class UIViewPanel extends CustomPanel {
 				for(int i = 1 ; i < list.length ; i ++){
 					xpath = xpath + "\\:" + list[i];		
 				}
-				if(AppDriver.AppType.equalsIgnoreCase("Android")){
+				if(def.getAppDriver().AppType.equalsIgnoreCase("Android")){
 					boolean searchIt = XMLXPath.search(
 							"//" + tempES.element.getName() + "[@resource-id='" + ((AndroidElementSet)tempES).resource_id + "']",
 							tempES.element);
@@ -660,11 +662,11 @@ public class UIViewPanel extends CustomPanel {
 
 				elementHighIndex = tempES.element_index;
 			} else {
-				Print.debugLog("ready", 1);
+				BaseToolParameter.getPrintThreadLocal().debugLog("ready", 1);
 			}
 
 		} else {
-			Print.debugLog("not find it", 1);
+			BaseToolParameter.getPrintThreadLocal().debugLog("not find it", 1);
 		}
 	}
 	
@@ -684,7 +686,7 @@ public class UIViewPanel extends CustomPanel {
 		imageWidth = new Double(width / scaling.doubleValue()).intValue();
 		imageHeight = new Double(height / scaling.doubleValue()).intValue();
 				
-		Print.debugLog("截图缩放比例:" + scaling.doubleValue(), 0);
+		BaseToolParameter.getPrintThreadLocal().debugLog("截图缩放比例:" + scaling.doubleValue(), 0);
 	}
 
 	private TableColumnModel getColumn(JTable table, int[] width) {
@@ -707,17 +709,17 @@ public class UIViewPanel extends CustomPanel {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			if (hightElement != null) {
-				Print.debugLog("CLick", 1);
+				BaseToolParameter.getPrintThreadLocal().debugLog("CLick", 1);
 //				if (hightElement != null && !hightElement.resource_id.isEmpty()) {
 //
 //					String[] id = RegExp.splitWord(hightElement.resource_id, ":id/");
 //					elementId = id[1];
 					String step = "M录入:" + hightElement.xpath + ":";
 
-					if (AppDriver.AppType.equalsIgnoreCase("Android") && ((AndroidElementSet)hightElement)._class.equalsIgnoreCase("android.widget.Button")) {
+					if (def.getAppDriver().AppType.equalsIgnoreCase("Android") && ((AndroidElementSet)hightElement)._class.equalsIgnoreCase("android.widget.Button")) {
 						step = step + "[Click]";
 					}
-					DebugEditFrame.setStepTextArea(step);
+				def.setStepTextArea(step);
 //				}
 			}
 		}

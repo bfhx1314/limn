@@ -5,8 +5,9 @@ import com.limn.driver.Driver;
 public class DriverParameter {
 	
 	private static ThreadLocal<Driver> driverConfigBean = new ThreadLocal<>();
-	
-	public static void setDriverPaht() {
+
+
+	private static void setDriverPaht() {
 		driverConfigBean.set(new Driver());
 	}
 

@@ -2,6 +2,7 @@ package com.limn.tool.parameter;
 
 import java.util.LinkedHashMap;
 
+import com.limn.tool.common.BaseToolParameter;
 import com.limn.tool.common.Print;
 
 /**
@@ -24,13 +25,13 @@ public class Expression {
 	
 	
 	public static void removeExpressionAll() {
-		Print.log("删除用例中的全部变量:" + expression.size(), 0);
+		BaseToolParameter.getPrintThreadLocal().log("删除用例中的全部变量:" + expression.size(), 0);
 		expression.clear();
 	}
 	
 	public static void removeExpressionName(String key) {
 		if(expression.containsKey(key)){
-			Print.log("删除用例中的变量:" + key + "=" + expression.get(key), 0);
+			BaseToolParameter.getPrintThreadLocal().log("删除用例中的变量:" + key + "=" + expression.get(key), 0);
 			expression.remove(key);
 		}
 	}

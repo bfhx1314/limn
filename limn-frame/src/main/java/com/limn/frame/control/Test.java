@@ -8,12 +8,14 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.limn.app.driver.AppDriverParameter;
+import com.limn.app.driver.bean.AppiumStartParameterBean;
+import com.limn.tool.common.*;
 import com.limn.tool.exception.SeleniumException;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import com.limn.app.driver.AppDriver;
 import com.limn.app.driver.exception.AppiumException;
 import com.limn.driver.common.DriverParameter;
 import com.limn.driver.exception.SeleniumFindException;
@@ -26,14 +28,7 @@ import com.limn.frame.testcase.TestCaseExcel;
 import com.limn.tool.bean.ResultConfigBean;
 import com.limn.tool.bean.RunParameter;
 import com.limn.tool.bean.StartConfigBean;
-import com.limn.tool.common.Common;
-import com.limn.tool.common.ConvertCharacter;
-import com.limn.tool.common.FileUtil;
-import com.limn.tool.common.Print;
-import com.limn.tool.common.Screenshot;
-import com.limn.tool.common.TransformationMap;
 import com.limn.tool.exception.ParameterException;
-import com.limn.tool.log.RunLog;
 import com.limn.tool.regexp.RegExp;
 
 /**
@@ -57,7 +52,7 @@ public class Test {
 	private String resultPath = null;
 
 	// 定义远程电脑IP
-	private String IP = null;
+//	private String IP = null;
 
 	private LinkedHashMap<String, String> TRA_NAME = null;
 
@@ -89,33 +84,47 @@ public class Test {
 	private String SR = null;
 
 	public Test(StartConfigBean startConfig, KeyWordDriver kwd, ResultConfigBean rcb)  {
+
 		this.rcb = rcb;
+		String ip;
+		String port = null;
 		RunParameter.setResultPaht(rcb);
 		RunParameter.setStartPaht(startConfig);
 		this.startConfig = startConfig;
 		keyWordDriver = kwd;
 		if (startConfig.getComputer() != null && startConfig.getComputer().equals("远程")) {
-			IP = startConfig.getIP();
+			ip = startConfig.getIP().split(":")[0];
+			port = startConfig.getIP().split(":")[1];
+		}else{
+			ip = "127.0.0.1";
 		}
 
 		if (!startConfig.getRunTestModel().equalsIgnoreCase("浏览器")) {
 
 			try {
 				isAPPScreenshot = true;
-				AppDriver.init(startConfig.getAppFilePath(), IP);
+				AppiumStartParameterBean aspb = new AppiumStartParameterBean();
+				if(BaseUntil.isEmpty(port)){
+					port = "4723";
+				}
+				aspb.setAddress(ip);
+				aspb.setPort(port);
+				AppDriverParameter.getDriverConfigBean().init(startConfig.getAppFilePath(), aspb);
+
+//				AppDriverParameter.getDriverConfigBean().initAndRunAppiumServer(startConfig.getAppFilePath(), aspb);
 			} catch (AppiumException e) {
-				Print.log(e.getMessage(), 2);
-				Print.log("用例停止执行", 2);
+				BaseToolParameter.getPrintThreadLocal().log(e.getMessage(), 2);
+				BaseToolParameter.getPrintThreadLocal().log("用例停止执行", 2);
 				return;
 			}
 
 		} else {
 			// 浏览器类型，URL地址
-			DriverParameter.getDriverPaht().setDriver(startConfig.getBrowserType(), startConfig.getURL(), IP);
+			DriverParameter.getDriverPaht().setDriver(startConfig.getBrowserType(), startConfig.getURL(), ip);
 			try {
 				DriverParameter.getDriverPaht().startBrowser();
 			} catch (SeleniumFindException e) {
-				Print.log(e.getMessage(), 2);
+				BaseToolParameter.getPrintThreadLocal().log(e.getMessage(), 2);
 			}
 		}
 
@@ -167,18 +176,18 @@ public class Test {
 		}
 
 		tc = new TestCaseExcel(startConfig.getExcelPath());
-		
+
 		// 测试结果集
 		recordResult.init(tc);
 		RunAutoTestingParameter.setTestCase(tc);
-		
+
 		if (startConfig.getSpecify().equals("指定")) {
 			runTimeSheetNum = Integer.parseInt(startConfig.getSpecifySheet()) - 1;
 			runTimeRowNum = Integer.parseInt(startConfig.getSpecifyRow()) - 1;
 			runTimeStepNum = Integer.parseInt(startConfig.getSpecifyStep()) - 1;
-			Print.log("指定Sheet:" + (runTimeSheetNum + 1), 0);
-			Print.log("指定Row:" + (runTimeRowNum + 1), 0);
-			Print.log("指定Step:" + (runTimeStepNum + 1), 0);
+			BaseToolParameter.getPrintThreadLocal().log("指定Sheet:" + (runTimeSheetNum + 1), 0);
+			BaseToolParameter.getPrintThreadLocal().log("指定Row:" + (runTimeRowNum + 1), 0);
+			BaseToolParameter.getPrintThreadLocal().log("指定Step:" + (runTimeStepNum + 1), 0);
 			tc.activateSheet(runTimeSheetNum);
 		} else if (startConfig.getExecuteMode() != null && startConfig.getExecuteMode().equals("固定模式执行")) {
 			// 这里取消掉 旧的模式, 固定模式 就是读sheet0的用例.
@@ -197,8 +206,9 @@ public class Test {
 				relate = tc.getTestCaseRelateNoByNo();
 			}
 		}
-		
-		RunLog.init(tc.getSheetLastRowNumber());
+
+		BaseToolParameter.getPrintThreadLocal().getRunlog().init(tc.getSheetLastRowNumber());
+		BaseToolParameter.getPrintThreadLocal().log("用例执行开始", 4);
 		//执行用例
 		executeTestCase();
 		
@@ -210,7 +220,6 @@ public class Test {
 		relate = null;
 		isRelate = false;
 		resultPath = null;
-		IP = null;
 
 		runTimeStepNum = 0;
 		runTimeSheetNum = 0;
@@ -256,7 +265,7 @@ public class Test {
 				tc.setCurrentRow(m);
 				result = runSteps(false);
 				if (result != ExecuteStatus.SUCCESS) {
-					Print.log("跳过: " + RunParameter.getResultPaht().getTestCaseMoudle(), 2);
+					BaseToolParameter.getPrintThreadLocal().log("跳过: " + RunParameter.getResultPaht().getTestCaseMoudle(), 2);
 
 					tc.setResult("跳过下个模块");
 
@@ -265,7 +274,7 @@ public class Test {
 					break;
 				} else {
 					if (null != SR) {
-						Print.log("模块存在关联,跳过: " + RunParameter.getResultPaht().getTestCaseMoudle(), 2);
+						BaseToolParameter.getPrintThreadLocal().log("模块存在关联,跳过: " + RunParameter.getResultPaht().getTestCaseMoudle(), 2);
 					}
 				}
 			}
@@ -276,8 +285,8 @@ public class Test {
 		recordResult.addTestCaseCount();
 		
 		tc.saveFile();
-		Print.log("用例执行完毕", 4);
-		Print.log("***************结束分割线***************\n", 4);
+		BaseToolParameter.getPrintThreadLocal().log("用例执行完毕", 4);
+		BaseToolParameter.getPrintThreadLocal().log("****结束分割线****\n", 4);
 //		close();
 	}
 	
@@ -319,12 +328,12 @@ public class Test {
 			String context = tc.getAssociatedProperites();
 			TRA_NAME = null;
 			if (null != context) {
-				Print.debugLog("开始加载别名数据", 0);
+				BaseToolParameter.getPrintThreadLocal().debugLog("开始加载别名数据", 0);
 				TRA_NAME = TransformationMap.transformationByString(context);
 				
 				RunAutoTestingParameter.setAlias(TRA_NAME);
 				
-				Print.log("加载别名数据完成", 0);
+				BaseToolParameter.getPrintThreadLocal().log("加载别名数据完成", 0);
 			}
 
 			if (null != SR) {
@@ -340,11 +349,11 @@ public class Test {
 			}
 			RunParameter.getResultPaht().setTestCaseNo(tc.getTestCaseNo());
 			if (isRelate) {
-				Print.log("当前用例编号:" + RunParameter.getResultPaht().getTestCaseNo(), 0);
+				BaseToolParameter.getPrintThreadLocal().log("当前用例编号:" + RunParameter.getResultPaht().getTestCaseNo(), 0);
 				String relateNo = relate.get(RunParameter.getResultPaht().getTestCaseNo());
 				if (relateNo != null && !relateNo.equals("")) {
 					// 记录原有的行列
-					Print.log("相关用例编号:" + relateNo, 0);
+					BaseToolParameter.getPrintThreadLocal().log("相关用例编号:" + relateNo, 0);
 
 					// 记录结果集
 					recordResult.addRelatedCase(relateNo);
@@ -367,14 +376,14 @@ public class Test {
 			}
 
 			if (null != steps && !steps[0].isEmpty()) {
-				RunLog.setStepsForTextAreaByIndex(tc.getCurrentRow() + 1, steps, RunParameter.getResultPaht().getTestCaseNo());
+				BaseToolParameter.getPrintThreadLocal().getRunlog().setStepsForTextAreaByIndex(tc.getCurrentRow() + 1, steps, RunParameter.getResultPaht().getTestCaseNo());
 				int stepNum = runTimeStepNum;
 				// 测试结果集
 				recordResult.addCase(RunParameter.getResultPaht().getTestCaseNo());
 				RunParameter.getResultPaht().setCaseStatus(1);
 				for (; stepNum < steps.length; stepNum++) {
 					runTimeStepNum = stepNum;
-					RunLog.highLightCurrentStep(stepNum);
+					BaseToolParameter.getPrintThreadLocal().getRunlog().highLightCurrentStep(stepNum);
 
 					// 测试结果集
 					recordResult.addStep(steps[stepNum], String.valueOf(result));
@@ -460,12 +469,12 @@ public class Test {
 
 		// } catch (NoSuchWindowException e2){
 		// errString = e2.getMessage();
-		// Print.log(errString, 2);
+		// BaseToolParameter.getPrintThreadLocal().log(errString, 2);
 		// Parameter.ERRORLOG = errString;
 		// return ExecuteStatus.FAILURE;
 		// } catch (Exception e1){
 		// errString = e1.getMessage();
-		// Print.log(e1.getMessage(), 2);
+		// BaseToolParameter.getPrintThreadLocal().log(e1.getMessage(), 2);
 		// Parameter.ERRORLOG = errString;
 		// return ExecuteStatus.FAILURE;
 		// }
@@ -481,7 +490,7 @@ public class Test {
 		} catch (IOException e) {
 			results = -2;
 			RunParameter.getResultPaht().setErrorLog(e.getMessage());
-			Print.log(e.getMessage(), 2);
+			BaseToolParameter.getPrintThreadLocal().log(e.getMessage(), 2);
 			e.printStackTrace();
 		}
 		// 记录结果集
@@ -498,20 +507,20 @@ public class Test {
 		int rtsheetn = runTimeSheetNum;
 		int rtrown = runTimeRowNum;
 		int currentRow = tc.getCurrentRow();
-		Print.log("环境出错,搜索还原场景步骤", 2);
+		BaseToolParameter.getPrintThreadLocal().log("环境出错,搜索还原场景步骤", 2);
 		runTimeRowNum = 0;
 		runTimeStepNum = 0;
 
 		try {
 			tc.activateSheet("Scenario Reduction");
 
-			Print.log("开始执行还原场景步骤", 2);
+			BaseToolParameter.getPrintThreadLocal().log("开始执行还原场景步骤", 2);
 
 			executeTestCase();
 
 		} catch (Exception e) {
 
-			Print.log("未找到还原场景步骤", 2);
+			BaseToolParameter.getPrintThreadLocal().log("未找到还原场景步骤", 2);
 
 		} finally {
 			SR = null;
@@ -527,7 +536,7 @@ public class Test {
 	private String screenshot(String bitMapPath) {
 		String path = null;
 		if (isAPPScreenshot) {
-			path = AppDriver.screenshot(bitMapPath);
+			path = AppDriverParameter.getDriverConfigBean().screenshot(bitMapPath);
 		} else {
 			path = DriverParameter.getDriverPaht().screenshot(bitMapPath);
 //			path = screenshot.snapShot(bitMapPath);
@@ -725,7 +734,7 @@ public class Test {
 		if (!expectedStr.isEmpty()) {
 			steps = RegExp.splitWord(expectedStr, "\n");
 		} else {
-			Print.log("预期结果为空！", 2);
+			BaseToolParameter.getPrintThreadLocal().log("预期结果为空！", 2);
 //			RunLog.printLog("预期结果为空！", 2);
 		}
 		return steps;
@@ -1231,7 +1240,7 @@ public class Test {
 				} else if (expectedStr.indexOf(arr[0] + str2) != -1) {
 					arrExpected = rebulitExpCase(arr[0], str2);
 				} else {
-					Print.log("预期结果可能存在问题：" + expectedStr, 2);
+					BaseToolParameter.getPrintThreadLocal().log("预期结果可能存在问题：" + expectedStr, 2);
 				}
 			}
 			return arrExpected;
@@ -1299,7 +1308,7 @@ public class Test {
 
 			} catch (Exception e) {
 				new SeleniumFindException("错误:" + e.getMessage());
-				// Print.log(e.getMessage(), 2);
+				// BaseToolParameter.getPrintThreadLocal().log(e.getMessage(), 2);
 			}
 
 			// 单选、多选框
