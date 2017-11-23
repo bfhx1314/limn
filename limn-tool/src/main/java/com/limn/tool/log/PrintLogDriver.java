@@ -165,6 +165,7 @@ public abstract class PrintLogDriver implements LogControlInterface{
 	}
 
 	public void printlnLog(String log,int style){
+		runLogWrite(new SimpleDateFormat("MM-dd HH:mm:ss").format(new Date())+"-->",log + "\n\r",style);
 	}
 
 	public void printContinueLog(String log,int style){

@@ -10,8 +10,10 @@ import java.util.List;
 
 import com.limn.app.driver.AppDriverParameter;
 import com.limn.app.driver.bean.AppiumStartParameterBean;
+import com.limn.frame.panel.AppiumConsole;
 import com.limn.tool.common.*;
 import com.limn.tool.exception.SeleniumException;
+import com.limn.tool.variable.Variable;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -109,6 +111,11 @@ public class Test {
 				}
 				aspb.setAddress(ip);
 				aspb.setPort(port);
+				String appiumPath = Variable.getExpressionValue("appium.path");
+				if(BaseUntil.isNotEmpty(appiumPath)){
+					new AppiumConsole(aspb,"node " + appiumPath + " " + aspb.toString());
+					Common.wait(3000);
+				}
 				AppDriverParameter.getDriverConfigBean().init(startConfig.getAppFilePath(), aspb);
 
 //				AppDriverParameter.getDriverConfigBean().initAndRunAppiumServer(startConfig.getAppFilePath(), aspb);
