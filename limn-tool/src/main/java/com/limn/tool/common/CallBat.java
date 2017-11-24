@@ -37,7 +37,7 @@ public class CallBat {
         String str = "";
         try {
             //执行命令
-        	cmd = cmd.replace("/", "\\");
+//        	cmd = cmd.replace("/", "\\");
             p = Runtime.getRuntime().exec(cmd);
             try {
 				Thread.sleep(1000);

@@ -114,7 +114,7 @@ public class Test {
 				String appiumPath = Variable.getExpressionValue("appium.path");
 				if(BaseUntil.isNotEmpty(appiumPath)){
 					new AppiumConsole(aspb,"node " + appiumPath + " " + aspb.toString());
-					Common.wait(3000);
+					Common.wait(5000);
 				}
 				AppDriverParameter.getDriverConfigBean().init(startConfig.getAppFilePath(), aspb);
 

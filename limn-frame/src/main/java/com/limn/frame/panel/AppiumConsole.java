@@ -12,6 +12,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 
 
@@ -26,6 +28,7 @@ public class AppiumConsole extends JFrame{
             ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
+    private  Thread  runLogAppium = null;
 
     public AppiumConsole(AppiumStartParameterBean aspb, String cmd){
         super("Appium" + aspb.toString());
@@ -33,13 +36,34 @@ public class AppiumConsole extends JFrame{
         writeLogPane.setEditable(false);
         add(logJScrollLog);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        addWindowListener(new WindowAdapter(){
+//
+//            @Override
+//            public void windowClosed(WindowEvent e) {
+//                super.windowClosed(e);
+//                try {
+//                    AppiumConsole.this.br.close();
+//                } catch (IOException e1) {
+//                    e1.printStackTrace();
+//                }
+//            }
+//        });
         setBounds((int) ((getScreenWidth() - 500) * 0.5), (int) ((getScreenHeight() - 600) * 0.5), 500, 600);
         setVisible(true);
 
-        CallBat.exec(cmd + " > "  + Parameter.DEFAULT_TEMP_PATH +  "/appium.log");
-        new Thread(new AppiumReadLog(new File(Parameter.DEFAULT_TEMP_PATH +  "/appium.log"))).start();
+//        String a =CallBat.returnExec(cmd + " > ");
+//        String a =CallBat.returnExec(cmd + " > "  + Parameter.DEFAULT_TEMP_PATH +  "/appium.log");
+
+        runLogAppium = new Thread(new AppiumLog(cmd));
+        runLogAppium.start();
+
+//        new Thread(new AppiumReadLog(new File(Parameter.DEFAULT_TEMP_PATH +  "/appium.log"))).start();
 
     }
+
+
+
+
 
     public static void main(String[] args){
         AppiumStartParameterBean aspb = new AppiumStartParameterBean();
@@ -123,14 +147,57 @@ public class AppiumConsole extends JFrame{
 
 
     }
+
+    private boolean isCmdStop = false;
+    BufferedReader br = null;
+
+    class AppiumLog implements Runnable{
+
+        private String cmd;
+        public AppiumLog(String cmd){
+            this.cmd = cmd;
+        }
+
+        @Override
+        public void run() {
+            Process p;
+            try {
+                //执行命令
+                p = Runtime.getRuntime().exec(cmd);
+                //取得命令结果的输出流
+                InputStream fis=p.getInputStream();
+                //用一个读输出流类去读
+                InputStreamReader isr=new InputStreamReader(fis,"UTF-8");
+                //用缓冲器读行
+                br=new BufferedReader(isr);
+                String line=null;
+                //直到读完为止
+                while(!isCmdStop && (line=br.readLine())!=null) {
+                    runLogWrite(line + "\n\r",0);
+                }
+                fis.close();
+                isr.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+
+            }
+        }
+    }
+
+
+
+
+    private long lastTimeFileSize = 0; // 上次文件大小
+
+
     class AppiumReadLog implements Runnable {
 
         private File logFile = null;
-        private long lastTimeFileSize = 0; // 上次文件大小
 
         public AppiumReadLog(File logFile) {
             this.logFile = logFile;
-            lastTimeFileSize = logFile.length();
         }
 
         private boolean flag = true;
@@ -138,13 +205,14 @@ public class AppiumConsole extends JFrame{
         @Override
         public void run() {
             while (flag) {
-                System.out.print("11111111");
+
                 try {
                     RandomAccessFile randomFile = new RandomAccessFile(logFile, "r");
                     randomFile.seek(lastTimeFileSize);
-                    String tmp = null;
-                    while ((tmp = randomFile.readLine()) != null) {
-                        AppiumConsole.this.runLogWrite(tmp, 0);
+                    String tmp = randomFile.readLine();
+                    while (tmp != null) {
+                        runLogWrite(tmp + "\n\r", 0);
+                        tmp = randomFile.readLine();
                     }
                     lastTimeFileSize = randomFile.length();
                 } catch (IOException e) {
