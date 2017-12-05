@@ -1,6 +1,5 @@
 package com.limn.tool.exception;
 
-import com.limn.tool.parameter.Parameter;
 
 
 /**

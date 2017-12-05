@@ -85,12 +85,12 @@ public class Test {
 	// 不是null 时, 标志执行场景还原
 	private String SR = null;
 
-	public Test(StartConfigBean startConfig, KeyWordDriver kwd, ResultConfigBean rcb)  {
+	public Test(StartConfigBean startConfig, KeyWordDriver kwd, ResultConfigBean rcb, boolean isLoop)  {
 
 		this.rcb = rcb;
 		String ip;
 		String port = null;
-		RunParameter.setResultPaht(rcb);
+ 		RunParameter.setResultPaht(rcb);
 		RunParameter.setStartPaht(startConfig);
 		this.startConfig = startConfig;
 		keyWordDriver = kwd;
@@ -98,7 +98,7 @@ public class Test {
 			ip = startConfig.getIP().split(":")[0];
 			port = startConfig.getIP().split(":")[1];
 		}else{
-			ip = "127.0.0.1";
+			ip = Variable.getExpressionValue("appium.address");
 		}
 
 		if (!startConfig.getRunTestModel().equalsIgnoreCase("浏览器")) {
@@ -107,14 +107,14 @@ public class Test {
 				isAPPScreenshot = true;
 				AppiumStartParameterBean aspb = new AppiumStartParameterBean();
 				if(BaseUntil.isEmpty(port)){
-					port = "4723";
+					port = Variable.getExpressionValue("appium.port");
 				}
 				aspb.setAddress(ip);
 				aspb.setPort(port);
 				String appiumPath = Variable.getExpressionValue("appium.path");
 				if(BaseUntil.isNotEmpty(appiumPath)){
-					new AppiumConsole(aspb,"node " + appiumPath + " " + aspb.toString());
-					Common.wait(5000);
+//					new AppiumConsole(aspb,"node " + appiumPath + " " + aspb.toString());
+//					Common.wait(5000);
 				}
 				AppDriverParameter.getDriverConfigBean().init(startConfig.getAppFilePath(), aspb);
 
@@ -217,8 +217,9 @@ public class Test {
 		BaseToolParameter.getPrintThreadLocal().getRunlog().init(tc.getSheetLastRowNumber());
 		BaseToolParameter.getPrintThreadLocal().log("用例执行开始", 4);
 		//执行用例
-		executeTestCase();
-		
+		recordResult.addSheet(runTimeSheetNum);
+		executeTestCase(isLoop);
+
 //		close();
 	}
 
@@ -245,55 +246,60 @@ public class Test {
 	 * 
 	 * @throws SeleniumFindException
 	 */
-	public void executeTestCase(){
+	public void executeTestCase(boolean isLoop){
 		int count;
 		int result = 1;
 
 		// 测试结果集
-		recordResult.addSheet(runTimeSheetNum);
 
-		// 按模块执行
-		for (int i = 0; i < tc.getExcelModuleStartIndex().size(); i++) {
 
-			RunParameter.getResultPaht().setTestCaseMoudle(tc.getExcelModuleName().get(i));
-			// 测试结果集
-			recordResult.addModule(RunParameter.getResultPaht().getTestCaseMoudle());
+		do {
+			// 按模块执行
+			for (int i = 0; i < tc.getExcelModuleStartIndex().size(); i++) {
 
-			int m = tc.getExcelModuleStartIndex().get(i);
+				RunParameter.getResultPaht().setTestCaseMoudle(tc.getExcelModuleName().get(i));
+				// 测试结果集
+				recordResult.addModule(RunParameter.getResultPaht().getTestCaseMoudle());
 
-			if (runTimeRowNum > tc.getExcelModuleStartIndex().get(i)) {
-				m = runTimeRowNum;
-			}
+				int m = tc.getExcelModuleStartIndex().get(i);
 
-			count = tc.getExcelModuleEndIndex().get(i);
-			for (; m <= count; m++) {
+				if (runTimeRowNum > tc.getExcelModuleStartIndex().get(i)) {
+					m = runTimeRowNum;
+				}
 
-				runTimeRowNum = m;
-				tc.setCurrentRow(m);
-				result = runSteps(false);
-				if (result != ExecuteStatus.SUCCESS) {
-					BaseToolParameter.getPrintThreadLocal().log("跳过: " + RunParameter.getResultPaht().getTestCaseMoudle(), 2);
+				count = tc.getExcelModuleEndIndex().get(i);
+				for (; m <= count; m++) {
 
-					tc.setResult("跳过下个模块");
+					runTimeRowNum = m;
+					tc.setCurrentRow(m);
+					result = runSteps(false);
+					if (result != ExecuteStatus.SUCCESS) {
+						BaseToolParameter.getPrintThreadLocal().log("跳过: " + RunParameter.getResultPaht().getTestCaseMoudle(), 2);
 
-					SR = "场景还原/";
-					// 执行下个模块
-					break;
-				} else {
-					if (null != SR) {
-						BaseToolParameter.getPrintThreadLocal().log("模块存在关联,跳过: " + RunParameter.getResultPaht().getTestCaseMoudle(), 2);
+						tc.setResult("跳过下个模块");
+
+//						SR = "场景还原/";
+						// 执行下个模块
+//						scenarioReduction();
+//						break;
+					} else {
+						if (null != SR) {
+							BaseToolParameter.getPrintThreadLocal().log("模块存在关联,跳过: " + RunParameter.getResultPaht().getTestCaseMoudle(), 2);
+						}
 					}
 				}
-			}
 
+			}
+			runTimeRowNum = 0;
+			// 修正用例总数
+			recordResult.addTestCaseCount();
+
+			tc.saveFile();
+		} while (isLoop);
+		if(null != SR) {
+			BaseToolParameter.getPrintThreadLocal().log("用例执行完毕", 4);
+			BaseToolParameter.getPrintThreadLocal().log("****结束分割线****\n", 4);
 		}
-		runTimeRowNum = 0;
-		// 修正用例总数
-		recordResult.addTestCaseCount();
-		
-		tc.saveFile();
-		BaseToolParameter.getPrintThreadLocal().log("用例执行完毕", 4);
-		BaseToolParameter.getPrintThreadLocal().log("****结束分割线****\n", 4);
 //		close();
 	}
 	
@@ -351,7 +357,8 @@ public class Test {
 
 					return ExecuteStatus.SUCCESS;
 				}
-				scenarioReduction();
+				//TODO 暂时关此处还原
+//				scenarioReduction();
 
 			}
 			RunParameter.getResultPaht().setTestCaseNo(tc.getTestCaseNo());
@@ -411,7 +418,13 @@ public class Test {
 							continue;
 						}
 
-						break;
+
+						SR = "场景还原/"; //如果执行失败还是继续执行用例(如果还原步骤有问题.就会死循环)
+						// 执行下个模块
+						scenarioReduction();
+						SR = null;
+						BaseToolParameter.getPrintThreadLocal().getRunlog().setStepsForTextAreaByIndex(tc.getCurrentRow() + 1, steps, RunParameter.getResultPaht().getTestCaseNo());
+//						break;
 					}
 				}
 
@@ -450,7 +463,7 @@ public class Test {
 
 		int results = 1;
 		// try{
-
+		step = step.replace("\r" , "");
 		String[] st = RegExp.splitKeyWord(step);
 		switch (st[0]) {
 		case BaseKeyWordType.VERIFICATION:
@@ -489,7 +502,9 @@ public class Test {
 		// 截图
 		RunParameter.getResultPaht().setLogSnapshot("snapshot/" + runTimeSheetNum + "_" + path.replaceAll("/", "_") + "_log.png");
 
-		String bitMapPath = RunParameter.getResultPaht().getResultFolderBitMap() + "/" + path + "_" + step.split(":")[0];
+		String bitMapPath = RunParameter.getResultPaht().getResultFolderBitMap() + "/" + path + "_" + step.split(":")[0] + ".png";
+		bitMapPath = FileUtil.getNewFilePath(bitMapPath);
+
 		bitMapPath = screenshot(bitMapPath);
 		// bitMapPath = screenshot.snapShot(bitMapPath);
 		try {
@@ -519,23 +534,24 @@ public class Test {
 		runTimeStepNum = 0;
 
 		try {
-			tc.activateSheet("Scenario Reduction");
+			tc.activateSheet("Scenario_Reduction");
 
 			BaseToolParameter.getPrintThreadLocal().log("开始执行还原场景步骤", 2);
 
-			executeTestCase();
+			executeTestCase(false);
 
 		} catch (Exception e) {
 
 			BaseToolParameter.getPrintThreadLocal().log("未找到还原场景步骤", 2);
 
 		} finally {
-			SR = null;
+
 			tc.activateSheet(rtsheetn);
 			runTimeRowNum = rtrown;
 			runTimeSheetNum = rtsheetn;
 			runTimeStepNum = rtstepn;
 			tc.setCurrentRow(currentRow);
+
 		}
 
 	}

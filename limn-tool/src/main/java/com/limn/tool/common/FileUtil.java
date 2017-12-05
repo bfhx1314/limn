@@ -17,6 +17,7 @@ import java.net.JarURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.jar.JarEntry;
@@ -245,7 +246,6 @@ public class FileUtil {
 	 * @param targetFile
 	 *            目标文件
 	 * @throws IOException
-	 * @throws ParameterException
 	 */
 	public static void copyFile(File sourceFile, File targetFile) throws IOException {
 		if (!targetFile.exists()) {
@@ -413,7 +413,7 @@ public class FileUtil {
 	/**
 	 * 对于文件内容
 	 * 
-	 * @param 文件路径
+	 * @param path 文件路径
 	 * @return 文件内容
 	 * @throws IOException
 	 */
@@ -615,5 +615,37 @@ public class FileUtil {
 			}
 		}
 	}
+
+	public static String getNewFilePath(String filePath){
+		String flag = "_1";
+		String fileType = FileUtil.getFileType(filePath);
+		while(new File(filePath).exists()){
+
+			ArrayList<String> res = RegExp.matcherCharacters(filePath , "_\\d{1,}\\." + fileType + "$");
+			if(res.size() == 1){
+				ArrayList<String> resInt = RegExp.matcherCharacters(res.get(0),"\\d{1,}");
+				int num = Integer.valueOf(resInt.get(0)) + 1;
+				flag = "_" + num + "." + fileType;
+
+				filePath = filePath.replace(res.get(0),flag);
+			}else{
+				String name = new File(filePath).getName();
+				filePath = new File(filePath).getParent() + "\\" + name.substring(0,name.lastIndexOf(".")) + flag + "." + fileType;
+			}
+
+
+
+		}
+		return  filePath;
+
+	}
+
+
+	public static void main(String[] args){
+
+		String a = getNewFilePath("D:\\workspace\\limn\\ResultsFolder\\趣头条\\20171201_234645\\BitMap\\0\\3\\0_M启动.png");
+		System.out.println(a);
+	}
+
 
 }

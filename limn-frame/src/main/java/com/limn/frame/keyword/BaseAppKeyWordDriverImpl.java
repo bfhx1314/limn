@@ -26,7 +26,7 @@ public class BaseAppKeyWordDriverImpl implements KeyWordDriver {
 	
 	@Override
 	public int start(String[] step) {
-
+		BaseRunAppKeyWordImpl baseRunAppKeyWord = new BaseRunAppKeyWordImpl();
 		int status = 1;
 		try {
 
@@ -35,13 +35,20 @@ public class BaseAppKeyWordDriverImpl implements KeyWordDriver {
 			//录入数据
 			case BaseAppKeyWordType.M_INPUT:
 				cheakKeyWordCount(step.length, 2);
-				BaseRunAppKeyWordImpl.input(step);
+				baseRunAppKeyWord.input(step);
 				break;
 			case BaseAppKeyWordType.M_SLIDE:
-				BaseRunAppKeyWordImpl.slide(step);
+				baseRunAppKeyWord.slide(step,false);
 				break;
 			case BaseAppKeyWordType.M_START:
-				BaseRunAppKeyWordImpl.start(step);
+				baseRunAppKeyWord.start(step);
+				break;
+			case BaseAppKeyWordType.M_IFEXISTINPUT:
+				cheakKeyWordCount(step.length, 2);
+				baseRunAppKeyWord.ifExistInput(step);
+				break;
+			case BaseAppKeyWordType.M_IRREGULARSLIDE:
+				baseRunAppKeyWord.slide(step,true);
 				break;
 			//自定义关键字
 			default:

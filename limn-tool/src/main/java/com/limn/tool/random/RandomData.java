@@ -26,6 +26,14 @@ public class RandomData {
 	 * @return
 	 */
 	public static int getNumberRange(int min, int max){
+		if(min == max){
+			return min;
+		}else if (min > max){
+			int r = max;
+			max = min;
+			min = r;
+		}
+
 		Random random = new Random();
 		int s = random.nextInt(max) % (max - min + 1) + min;
 		return s;

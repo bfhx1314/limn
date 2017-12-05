@@ -21,7 +21,7 @@ public class BaseRunAppKeyWordImpl {
 	 * @param step
 	 * @throws AppiumException
 	 */
-	public static void input(String[] step) throws AppiumException{
+	public void input(String[] step) throws AppiumException{
 
 		try{
 			HashMap<String,String> traXPath = null;
@@ -73,7 +73,7 @@ public class BaseRunAppKeyWordImpl {
 				AppDriverParameter.getDriverConfigBean().setValue(xpath, step[2]);
 			}
 		}catch(WebDriverException e){
-			BaseToolParameter.getPrintThreadLocal().log("WebDriverException 异常报错 ", 3);
+			BaseToolParameter.getPrintThreadLocal().log(e.getMessage(), 3);
 		}catch(Exception e){
 			throw new AppiumException("错误:" + e.getMessage());
 		}
@@ -85,7 +85,7 @@ public class BaseRunAppKeyWordImpl {
 	 * @param steps
 	 * @throws AppiumException
 	 */
-	public static void slide(String[] steps) throws AppiumException{
+	public void slide(String[] steps, boolean is_RuleSlide) throws AppiumException{
 		int startX = 0 ;
 		int startY = 0;
 		int endX = 0;
@@ -103,6 +103,11 @@ public class BaseRunAppKeyWordImpl {
 			MIN_HEIGHT = AppDriverParameter.getDriverConfigBean().HEIGHT/4;
 			MAX_WIDTH = AppDriverParameter.getDriverConfigBean().WIDTH/4*3;
 			MAX_HEIGHT = AppDriverParameter.getDriverConfigBean().HEIGHT/4*3;
+		}else if(steps.length >= 3 && (steps[2].equalsIgnoreCase("Most") || steps[2].equalsIgnoreCase("M"))){
+			MIN_WIDTH = AppDriverParameter.getDriverConfigBean().WIDTH/8;
+			MIN_HEIGHT = AppDriverParameter.getDriverConfigBean().HEIGHT/8;
+			MAX_WIDTH = AppDriverParameter.getDriverConfigBean().WIDTH/8*7;
+			MAX_HEIGHT = AppDriverParameter.getDriverConfigBean().HEIGHT/8*7;
 		}
 
 		if(steps[1].equalsIgnoreCase("LeftSlide") || steps[1].equalsIgnoreCase("LS")){
@@ -127,7 +132,8 @@ public class BaseRunAppKeyWordImpl {
 			endY = MAX_HEIGHT;
 		}
 
-		AppDriverParameter.getDriverConfigBean().swipe(startX,startY,endX,endY);
+
+		AppDriverParameter.getDriverConfigBean().swipe(startX,startY,endX,endY,is_RuleSlide);
 
 	}
 
@@ -136,18 +142,21 @@ public class BaseRunAppKeyWordImpl {
 	 * @param steps
 	 * @throws AppiumException
 	 */
-	public static void start(String[] steps) throws AppiumException{
+	public void start(String[] steps) throws AppiumException{
 		String path = "";
 		if(Parameter.getOS().equalsIgnoreCase("Windows")){
-			path = steps[1] + ":";
-			//windows系统存在:字符需要合并
-			for(int i = 2 ;  i < steps.length ; i++){
-				path = path + steps[i];
+			if(steps.length > 2) {
+				path = steps[1] + ":";
+				//windows系统存在:字符需要合并
+				for (int i = 2; i < steps.length; i++) {
+					path = path + steps[i];
+				}
 			}
 		}else{
-			path = steps[1];
+			if(steps.length > 1) {
+				path = steps[1];
+			}
 		}
-
 
 		AppDriverParameter.getDriverConfigBean().init(path);
 
@@ -156,8 +165,16 @@ public class BaseRunAppKeyWordImpl {
 //		aspb.setPort("4723");
 //
 //		AppDriverParameter.getDriverConfigBean().initAndRunAppiumServer(path,aspb);
+	}
 
 
+
+	public void ifExistInput(String[] step) throws AppiumException {
+		try{
+			input(step);
+		}catch (Exception e){
+			BaseToolParameter.getPrintThreadLocal().log("元素不存在不进行录入,解除异常,继续运行程序",0);
+		}
 	}
 
 }

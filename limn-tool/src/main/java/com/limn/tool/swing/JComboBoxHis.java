@@ -15,9 +15,7 @@ import javax.swing.JComboBox;
 
 import com.limn.tool.common.BaseToolParameter;
 import com.limn.tool.common.FileUtil;
-import com.limn.tool.common.Print;
 import com.limn.tool.parameter.Parameter;
-import com.limn.tool.variable.Variable;
 
 public class JComboBoxHis extends JComboBox<Object> {
 

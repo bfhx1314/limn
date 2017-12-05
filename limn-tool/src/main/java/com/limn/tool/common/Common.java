@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.limn.tool.random.RandomData;
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -48,12 +49,14 @@ public class Common {
 	public static void wait(int sec) {
 		Long time = ((Integer) sec).longValue();
 		try {
-			// BaseToolParameter.getPrintThreadLocal().debugLog("Wait : " + sec, 0);
+//			BaseToolParameter.getPrintThreadLocal().log("Wait : " + sec, 0);
 			Thread.sleep(time);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
+
+
 
 	/**
 	 * 根据请求返回InputStream

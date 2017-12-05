@@ -1,5 +1,9 @@
 package com.limn.tool.common;
 
+import com.limn.tool.random.RandomData;
+
+import java.util.ArrayList;
+
 /**
  * Created by limengnan on 2017/11/22.
  */
@@ -19,6 +23,8 @@ public class BaseUntil {
         }
         return false;
     }
+
+
 
 
 }

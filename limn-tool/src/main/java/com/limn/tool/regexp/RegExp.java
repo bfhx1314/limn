@@ -26,7 +26,7 @@ public class RegExp {
 		characters = ConvertCharacter.getHtmlAsc(characters);
 		String[] m = Pattern.compile("[;|:]").split(characters);
 		for(int i = 0 ; i<m.length ; i++){
-			m[i] = ConvertCharacter.getHtmlChr(m[i]);
+			m[i] = ConvertCharacter.getHtmlChr(m[i]).replace("\r","");
 		}
 		return m;
 	}
