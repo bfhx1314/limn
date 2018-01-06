@@ -16,6 +16,10 @@ public class RunParameter {
 	}
 
 	public static StartConfigBean getStartPaht() {
+		if(startConfigBean.get() == null) {
+			BaseToolParameter.getPrintThreadLocal().log("startConfigBean为null,调试模式请忽视改警告", 3);
+			startConfigBean.set(new StartConfigBean());
+		}
 		return startConfigBean.get();
 	}
 	
@@ -25,7 +29,6 @@ public class RunParameter {
 	
 	public static ResultConfigBean getResultPaht(){
 		if(resultConfigBean.get() == null){
-
 			BaseToolParameter.getPrintThreadLocal().log("resultConfigBean为null,调试模式请忽视改警告", 3);
 			resultConfigBean.set(new ResultConfigBean()); 
 		}

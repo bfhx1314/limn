@@ -12,6 +12,11 @@ public class DriverParameter {
 	}
 
 	public static Driver getDriverPaht() {
+
+		if(driverConfigBean.get() == null){
+			driverConfigBean.set(new Driver());
+		}
+
 		return driverConfigBean.get();
 	}
 	
