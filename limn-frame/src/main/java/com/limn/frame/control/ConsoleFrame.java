@@ -1113,8 +1113,8 @@ public class ConsoleFrame extends JFrame {
 	/**
 	 * 检查传入的路径是否存在
 	 * 
-	 * @param 路径字符串
-	 * @param 路径字符串在界面上对应控件的识别标签
+	 * @param path 路径字符串
+	 * @param note 路径字符串在界面上对应控件的识别标签
 	 * @throws ParameterException
 	 */
 	private void checkExist(String path, String note) throws ParameterException {

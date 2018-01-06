@@ -74,6 +74,11 @@ public class ExcelEditor {
 						e.printStackTrace();
 					}
 				}
+				try {
+					byteArrayInputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}else{
 			readOnly = false;

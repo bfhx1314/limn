@@ -8,10 +8,12 @@ import com.limn.driver.common.OperateWindows;
 import com.limn.driver.exception.SeleniumFindException;
 import com.limn.tool.bean.RunParameter;
 import com.limn.tool.common.BaseToolParameter;
+import com.limn.tool.common.BaseUntil;
 import com.limn.tool.common.Common;
 import com.limn.tool.common.Print;
 import com.limn.tool.exception.ParameterException;
 import com.limn.tool.parameter.Parameter;
+import com.limn.tool.random.RandomData;
 
 /**
  * 基础关键字
@@ -71,9 +73,14 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 				
 				break;
 			case BaseKeyWordType.WAIT:
-				cheakKeyWordCount(step.length, 1);
-				int waitTime = Integer.valueOf(step[1])*1000;
-				Common.wait(waitTime);
+				cheakKeyWordCount(step.length, 2);
+				int waitTime = 0;
+				if(step.length == 3 && BaseUntil.isNotEmpty(step[2])){
+					waitTime = RandomData.getNumberRange(Integer.valueOf(step[1]),Integer.valueOf(step[2]));
+				}
+				BaseToolParameter.getPrintThreadLocal().log("等待" + waitTime + "秒",0);
+
+				Common.wait(Integer.valueOf(waitTime)*1000);
 				break;
 			case BaseKeyWordType.EXPRESSION:
 				cheakKeyWordCount(step.length, 1);

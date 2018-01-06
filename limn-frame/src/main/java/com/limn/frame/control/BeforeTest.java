@@ -1,6 +1,7 @@
 package com.limn.frame.control;
 
 import java.io.File;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.HashMap;
 
@@ -345,31 +346,38 @@ public class BeforeTest implements Runnable {
 	public void run() {
 		
 		beforeTest();
-		
-		if (flag) {
-			// 远程调用
-			if (keyWordDriver == null) {
-				BaseToolParameter.getPrintThreadLocal().log("关键字驱动没有加载无法运行,请先执行setKeyWordDriver方法", 2);
-				return;
-			}
 
-			for (int i = 0; i < xmlReader.getTemplateCount(); i++) {
-				HashMap<String, String> templateMap = xmlReader.getNodeValueByTemplateIndex(i);
-				// testParameter = templateMap;
-				startConfig = getStartConfigByMap(templateMap);
-				beforeTest();
-				test = new Test(startConfig, keyWordDriver, rcb);
+		try {
+			if (flag) {
+				// 远程调用
+				if (keyWordDriver == null) {
+					BaseToolParameter.getPrintThreadLocal().log("关键字驱动没有加载无法运行,请先执行setKeyWordDriver方法", 2);
+					return;
+				}
+
+				for (int i = 0; i < xmlReader.getTemplateCount(); i++) {
+					HashMap<String, String> templateMap = xmlReader.getNodeValueByTemplateIndex(i);
+					// testParameter = templateMap;
+					startConfig = getStartConfigByMap(templateMap);
+					beforeTest();
+					test = new Test(startConfig, keyWordDriver, rcb, isLoop);
+				}
+			} else {
+				test = new Test(startConfig, keyWordDriver, rcb, isLoop);
 			}
-		} else {
-			test = new Test(startConfig, keyWordDriver, rcb);
+		}catch (Exception e){
+			while(true) {
+				if(isLoop){
+					test = new Test(startConfig, keyWordDriver, rcb, isLoop);
+				}
+			}
 		}
 
-		if (isLoop) {
-			BaseToolParameter.getPrintThreadLocal().log("暂停使用循环执行功能", 2);
-			return;
-			// new Thread(new BeforeTest(startConfig, keyWordDriver,
-			// isLoop)).start();
-		}
+//		if (isLoop) {
+//			BaseToolParameter.getPrintThreadLocal().log("暂停使用循环执行功能", 2);
+//			return;
+//			 new Test(startConfig, keyWordDriver, rcb);
+//		}
 
 	}
 

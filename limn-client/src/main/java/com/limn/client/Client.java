@@ -327,7 +327,7 @@ public class Client {
             dos.writeUTF("start");
 			while(true) {
                 dos.writeUTF("Success");
-                Common.wait(1000);
+                Common.wait(1);
             }
 			
 			

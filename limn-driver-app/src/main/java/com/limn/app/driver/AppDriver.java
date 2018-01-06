@@ -5,12 +5,16 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.limn.app.driver.bean.AppiumStartParameterBean;
+import com.limn.app.driver.bean.SlidingPathBean;
+import com.limn.app.driver.common.AppDriverBaseUtil;
 import com.limn.tool.common.*;
+import com.limn.tool.random.RandomData;
 import io.appium.java_client.*;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
@@ -90,9 +94,9 @@ public class AppDriver {
 	private void init() throws AppiumException {
 
 		//如果已经初始化  返回
-		if (null != driver) {
-			return;
-		}
+//		if (null != driver) {
+//			return;
+//		}
 		BaseToolParameter.getPrintThreadLocal().log("ASPB : " + ASPB.toString(),0);
 		File appFile = new File(appFilePath);
 
@@ -131,7 +135,7 @@ public class AppDriver {
 
 			LinkedHashMap<String, String> capability = Variable.getPrivateVariableLocal("capability.properties");
 
-			dcb.setCapability("deviceName", apkInfo.getApplicationLable()); // 后期增加配置
+//			dcb.setCapability("deviceName", apkInfo.getApplicationLable()); // 后期增加配置
 			dcb.setCapability("appPackage", apkInfo.getPackageName());
 			dcb.setCapability("app", appFile.getAbsolutePath());
 
@@ -300,15 +304,59 @@ public class AppDriver {
 	 * @param endY
 	 * @throws AppiumException
 	 */
+	public void swipe(int startX, int startY, int endX, int endY, Boolean is_RuleSlide) throws AppiumException {
+
+		SlidingPathBean spb = new SlidingPathBean();
+		spb.setStartX(startX);
+		spb.setStartY(startY);
+		spb.setEndX(endX);
+		spb.setEndY(endY);
+
+		if(is_RuleSlide) {
+
+			int rNum = RandomData.getNumberRange(2, 5);
+
+			ArrayList<SlidingPathBean> spbs = AppDriverBaseUtil.getRandonSlidingPaths(spb,rNum);
+
+			for(SlidingPathBean childspb : spbs){
+				swipe(childspb);
+			}
+		}else{
+			swipe(spb);
+		}
+	}
+
+
+	public void swipe(SlidingPathBean spb) throws AppiumException {
+
+		check();
+		BaseToolParameter.getPrintThreadLocal().log("滑动坐标-> startX : " + spb.getStartX() + " startY : " + spb.getStartY() + " endX : " + spb.getEndX() + " endY : " + spb.getEndY() ,0 );
+		TouchAction action = new TouchAction(driver);
+		int value = RandomData.getNumberRange(10,300);
+		action.longPress(spb.getStartX(),spb.getStartY(),Duration.ofMillis(value)).moveTo(spb.getEndX(),spb.getEndY()).release();
+		action.perform();
+	}
+
+
+
+	/**
+	 * 滑动屏幕
+	 *
+	 * @param startX
+	 *            起始x
+	 * @param startY
+	 * @param endX
+	 * @param endY
+	 * @throws AppiumException
+	 */
 	public void swipe(int startX, int startY, int endX, int endY) throws AppiumException {
 
 		check();
 		BaseToolParameter.getPrintThreadLocal().log("滑动坐标-> startX : " + startX + " startY : " + startY + " endX : " + endX + " endY : " + endY ,0 );
 		TouchAction action = new TouchAction(driver);
-		action.longPress(startX,startY,Duration.ofMillis(1000)).moveTo(endX,endY).release();
+		int value = RandomData.getNumberRange(100,2000);
+		action.longPress(startX,startY,Duration.ofMillis(value)).moveTo(endX,endY).release();
 		action.perform();
-
-//		driver.swipe(startx, starty, endx, endy, 1000);
 	}
 
 	/**
