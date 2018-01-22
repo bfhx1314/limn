@@ -12,8 +12,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.*;
 
 
@@ -53,16 +51,14 @@ public class AppiumConsole extends JFrame{
 
 //        String a =CallBat.returnExec(cmd + " > ");
 //        String a =CallBat.returnExec(cmd + " > "  + Parameter.DEFAULT_TEMP_PATH +  "/appium.log");
+        CallBat.exec("echo '' > " + Parameter.DEFAULT_TEMP_PATH + "/appium.log");
+        CallBat.exec(cmd + " -g " + Parameter.DEFAULT_TEMP_PATH + "/appium.log");
+        new Thread(new AppiumReadLog(new File(Parameter.DEFAULT_TEMP_PATH +  "/appium.log"))).start();
 
-        runLogAppium = new Thread(new AppiumLog(cmd));
-        runLogAppium.start();
 
-//        new Thread(new AppiumReadLog(new File(Parameter.DEFAULT_TEMP_PATH +  "/appium.log"))).start();
-
+//        runLogAppium = new Thread(new AppiumLog(cmd));
+//        runLogAppium.start();
     }
-
-
-
 
 
     public static void main(String[] args){
@@ -186,31 +182,29 @@ public class AppiumConsole extends JFrame{
         }
     }
 
-
-
-
-    private long lastTimeFileSize = 0; // 上次文件大小
-
-
     class AppiumReadLog implements Runnable {
 
         private File logFile = null;
+        private long lastTimeFileSize = 0; // 上次文件大小
 
         public AppiumReadLog(File logFile) {
             this.logFile = logFile;
+//            lastTimeFileSize = logFile.length();
         }
 
         private boolean flag = true;
 
         @Override
         public void run() {
+
+
             while (flag) {
 
                 try {
                     RandomAccessFile randomFile = new RandomAccessFile(logFile, "r");
                     randomFile.seek(lastTimeFileSize);
-                    String tmp = randomFile.readLine();
-                    while (tmp != null) {
+                    String tmp = null;
+                    while ((tmp = randomFile.readLine()) != null) {
                         runLogWrite(tmp + "\n\r", 0);
                         tmp = randomFile.readLine();
                     }

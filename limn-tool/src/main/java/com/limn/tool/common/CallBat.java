@@ -20,6 +20,7 @@ public class CallBat {
 	
 	public static void exec(String cmd) {
 //		cmd = cmd.replace("/", "\\");
+
 		try {
 			Runtime.getRuntime().exec(cmd);
 		} catch (IOException e) {
