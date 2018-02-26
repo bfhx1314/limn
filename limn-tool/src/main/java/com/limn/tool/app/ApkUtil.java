@@ -70,7 +70,7 @@ public class ApkUtil {
 			mAaptPath = mAaptPathByWindows;
 		}
 
-		Process process = mBuilder.command(System.getProperty("user.dir") + "/" + mAaptPath, "d", "badging", apkPath)
+		Process process = mBuilder.command(Parameter.DFAULT_TEST_PATH + "/" + mAaptPath, "d", "badging", apkPath)
 				.start();
 
 

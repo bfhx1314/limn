@@ -50,6 +50,9 @@ public class BaseAppKeyWordDriverImpl implements KeyWordDriver {
 			case BaseAppKeyWordType.M_IRREGULARSLIDE:
 				baseRunAppKeyWord.slide(step,true);
 				break;
+				case BaseAppKeyWordType.M_CLOSEAPP:
+				baseRunAppKeyWord.closeApp(step);
+				break;
 			//自定义关键字
 			default:
 				return -1;

@@ -71,24 +71,23 @@ public class DateFormat {
 		return new SimpleDateFormat(format).format(GregorianCalendar.getInstance().getTime());
 	}
 	
-	public static String getData(String format , Date data){
+	public static String getDate(String format , Date data){
 		String date = null;
 		date =  new SimpleDateFormat(format).format(data);
-		
 		return date;
 	}
-	
-	
-	public static Date getData(String format , String data){
-		java.util.Date date = null;
+
+
+	public static Date getDate(String format , String data){
+		Date dateR = null;
 		try {
-			date =  new SimpleDateFormat(format).parse(data);
+			dateR =  new SimpleDateFormat(format).parse(data);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return date;
+		return dateR;
 	}
 	
 	public static void main(String[] args){

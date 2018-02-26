@@ -177,4 +177,9 @@ public class BaseRunAppKeyWordImpl {
 		}
 	}
 
+
+	public void closeApp(String[] step) throws AppiumException{
+		AppDriverParameter.getDriverConfigBean().closeApp();
+	}
+
 }

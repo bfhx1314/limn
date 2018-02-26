@@ -1,7 +1,9 @@
 package com.limn.app.driver;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
@@ -14,9 +16,16 @@ import com.limn.app.driver.bean.AppiumStartParameterBean;
 import com.limn.app.driver.bean.SlidingPathBean;
 import com.limn.app.driver.common.AppDriverBaseUtil;
 import com.limn.tool.common.*;
+import com.limn.tool.external.XMLReader;
+import com.limn.tool.external.XMLXPath;
 import com.limn.tool.random.RandomData;
 import io.appium.java_client.*;
+import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.commons.io.FileUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.io.XMLWriter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -51,6 +60,11 @@ public class AppDriver {
 	private long waitTime = 16*1000;
 
 	private AppiumStartParameterBean ASPB = new AppiumStartParameterBean();
+
+
+	private final String ANDROID = "ANDROID";
+
+	private final String IOS = "IOS";
 
 
 	/**
@@ -101,9 +115,9 @@ public class AppDriver {
 		File appFile = new File(appFilePath);
 
 		if(FileUtil.getFileType(appFilePath).equalsIgnoreCase("ipa")){
-			AppType = "IOS";
+			AppType = IOS;
 		}else if(FileUtil.getFileType(appFilePath).equalsIgnoreCase("apk")){
-			AppType = "Android";
+			AppType = ANDROID;
 		}else{
 			AppType = "";
 			throw new AppiumException(appFile.getAbsolutePath() + " APP文件类型错误:" + FileUtil.getFileType(appFilePath));
@@ -137,7 +151,8 @@ public class AppDriver {
 
 //			dcb.setCapability("deviceName", apkInfo.getApplicationLable()); // 后期增加配置
 			dcb.setCapability("appPackage", apkInfo.getPackageName());
-			dcb.setCapability("app", appFile.getAbsolutePath());
+
+			dcb.setCapability(MobileCapabilityType.APP, appFile.getAbsolutePath());
 
 			BaseToolParameter.getPrintThreadLocal().log("----设置Android基础属性----",0);
 			for(String key : capability.keySet()){
@@ -214,7 +229,32 @@ public class AppDriver {
 		}
 	}
 
-	private AndroidElement getAndroidElement(String key) throws AppiumException {
+
+	public void pressesKeyCode(int key){
+
+		if(ANDROID.equalsIgnoreCase(AppType)){
+			((AndroidDriver)driver).pressKeyCode(key);
+		}else{
+			//TODO 支持Android
+		}
+	}
+
+	public boolean elementIsExist(String key){
+		try {
+			getAndroidElement(key);
+			return true;
+		} catch (AppiumException e) {
+			return false;
+		}
+	}
+
+
+
+
+
+
+
+	public AndroidElement getAndroidElement(String key) throws AppiumException {
 
 		long startTime = DateFormat.getCurrentTimeMillisByLong();
 		long endTime = 0l;
@@ -223,7 +263,6 @@ public class AppDriver {
 
 		int status = 0;
 		do{
-
 			status = 0;
 			if (RegExp.findCharacters(key, "^/")) {
 				listEle = driver.findElementsByXPath(key);
@@ -253,8 +292,6 @@ public class AppDriver {
 
 		switch (status){
 		case 1:
-
-
 			throw new AppiumException("不存在:");
 		case 2:
 			throw new AppiumException("存在多个此元素:");
@@ -263,9 +300,7 @@ public class AppDriver {
 		default:
 			break;
 		}
-
 		return listEle.get(0);
-
 	}
 
 	// /**
@@ -335,6 +370,7 @@ public class AppDriver {
 		int value = RandomData.getNumberRange(10,300);
 		action.longPress(spb.getStartX(),spb.getStartY(),Duration.ofMillis(value)).moveTo(spb.getEndX(),spb.getEndY()).release();
 		action.perform();
+
 	}
 
 
@@ -437,6 +473,40 @@ public class AppDriver {
 			BaseToolParameter.getPrintThreadLocal().log("save snapshot error! path is:" + bitMapPath, 2);
 		}
 		return bitMapPath;
+	}
+
+	public void saveCurrentUIXML(String savePath){
+		try {
+			check();
+		} catch (AppiumException e1) {
+			BaseToolParameter.getPrintThreadLocal().log("保存界面XML失败", 2);
+		}
+
+		try {
+			Document document = DocumentHelper.parseText(driver.getPageSource());
+			Writer fileWriter = new FileWriter(savePath);
+			XMLWriter xmlWriter = new XMLWriter(fileWriter);
+			xmlWriter.write(document); // 写入文件中
+			xmlWriter.close();
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		} catch (DocumentException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+
+	/**
+	 * 关闭App
+	 */
+	public void closeApp(){
+
+		try {
+			check();
+		} catch (AppiumException e1) {
+			BaseToolParameter.getPrintThreadLocal().log("截图失败", 2);
+		}
+		driver.closeApp();
 	}
 
 }

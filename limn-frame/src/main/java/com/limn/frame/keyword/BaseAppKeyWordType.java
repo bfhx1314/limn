@@ -50,6 +50,8 @@ public class BaseAppKeyWordType {
 	 * 实例: M滑动:LeftSlide:Center<br>
 	 */
 	public static final String M_IRREGULARSLIDE = "M无规律滑动";
+
+	public static final String M_CLOSEAPP = "M关闭APP";
 	
 	
 }

@@ -21,13 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -37,7 +31,9 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import com.limn.app.driver.AppDriverParameter;
+import com.limn.app.driver.exception.AppiumException;
 import com.limn.tool.common.BaseToolParameter;
+import io.appium.java_client.android.AndroidElement;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -106,10 +102,23 @@ public class UIViewPanel extends CustomPanel {
 
 		loadUI(false);
 		setLayout(null);
+
+
+
 		JButton button = new JButton("加载");
 		setBoundsAt(button, 320, 5, 60, 20);
 		setBoundsAt(setXPathName, 390, 5, 100, 20);
 		setBoundsAt(setSDK, 500, 5, 100, 20);
+
+
+		JTextArea xpathTextArea = new JTextArea();
+		JButton findIt = new JButton("搜索");
+		JLabel findItResult = new JLabel();
+
+		setBoundsAt(xpathTextArea, 320, 30, 150, 20);
+		setBoundsAt(findIt, 480, 30, 60, 20);
+		setBoundsAt(findItResult, 550, 30, 80, 20);
+
 		
 		attributeModel.addColumn("属性");
 		attributeModel.addColumn("值");
@@ -128,7 +137,7 @@ public class UIViewPanel extends CustomPanel {
 		attributeTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		attributeJScroll.setViewportView(attributeTable);
 
-		setBoundsAt(attributeJScroll, 320, 30, 300, 390);
+		setBoundsAt(attributeJScroll, 320, 55, 300, 365);
 
 		XPathFactory factory = XPathFactory.newInstance();
         xpath = factory.newXPath();
@@ -220,6 +229,30 @@ public class UIViewPanel extends CustomPanel {
 					}else{
 						BaseToolParameter.getPrintThreadLocal().log("设置SDK_HOME失败,目录不存在." + sdk,2);
 					}
+				}
+			}
+		});
+
+
+		findIt.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				boolean find = true;
+				String content = "搜索中";
+				try {
+					findItResult.setForeground(Color.black);
+					findItResult.setText(content);
+					def.getAppDriver().getAndroidElement(xpathTextArea.getText());
+				} catch (AppiumException e1) {
+					find = false;
+					content = e1.getMessage();
+				}
+				if(find){
+					findItResult.setForeground(Color.GREEN);
+					findItResult.setText("Find");
+				}else{
+					findItResult.setForeground(Color.RED);
+					findItResult.setText(content);
 				}
 			}
 		});
