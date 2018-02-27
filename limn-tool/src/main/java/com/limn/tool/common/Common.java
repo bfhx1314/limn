@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -15,13 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import com.limn.tool.random.RandomData;
-import org.apache.commons.httpclient.Cookie;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpState;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -31,7 +23,6 @@ import org.dom4j.io.XMLWriter;
 
 import com.limn.tool.exception.ParameterException;
 import com.limn.tool.external.XMLReader;
-import com.limn.tool.httpclient.StructureMethod;
 import com.limn.tool.parameter.Parameter;
 import com.limn.tool.parser.Parser;
 import com.limn.tool.parser.SyntaxTree;
@@ -71,27 +62,27 @@ public class Common {
 	 *            请求页面
 	 * @return
 	 */
-	public static InputStream getISByRequest(String cookies, String ip, int port, String requestURL) {
-		HttpClient client = new HttpClient();
-		client.getHostConfiguration().setHost(ip, port, "http");
-
-		NameValuePair[] param = {};
-		PostMethod recommennd = StructureMethod.getPostMethod(param, requestURL);
-
-		recommennd.setRequestHeader("Cookie", cookies);
-
-		try {
-			client.executeMethod(recommennd);
-			return recommennd.getResponseBodyAsStream();
-		} catch (HttpException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
-
-	}
+//	public static InputStream getISByRequest(String cookies, String ip, int port, String requestURL) {
+//		HttpClient client = new HttpClient();
+//		client.getHostConfiguration().setHost(ip, port, "http");
+//
+//		NameValuePair[] param = {};
+//		PostMethod recommennd = StructureMethod.getPostMethod(param, requestURL);
+//
+//		recommennd.setRequestHeader("Cookie", cookies);
+//
+//		try {
+//			client.executeMethod(recommennd);
+//			return recommennd.getResponseBodyAsStream();
+//		} catch (HttpException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return null;
+//
+//	}
 
 	/**
 	 * 返回OCR识别的验证码,注意有失败的几率
