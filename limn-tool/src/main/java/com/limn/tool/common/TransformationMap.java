@@ -30,7 +30,7 @@ public class TransformationMap {
 			LinkedHashMap<String,String> map = new LinkedHashMap<String, String>();
 			String[] dataDe = data.split("\n");
 			for(String key : dataDe){
-				ArrayList<String> keyValue = RegExp.matcherCharacters(key, "[^\t|' ']{1,}");
+				ArrayList<String> keyValue = RegExp.matcherCharacters(key, "[^\t]{1,}");
 				if (keyValue.size() == 0){
 //					return new LinkedHashMap<String,String>();
 					BaseToolParameter.getPrintThreadLocal().log("无别名:" + key, 0);
