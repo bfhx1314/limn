@@ -298,7 +298,8 @@ public class ExcelEditor {
 	 * @return
 	 */
 	public boolean saveAs(String path){
-		return save(path);
+		filePath = path;
+		return save();
 	}
 	
 	
