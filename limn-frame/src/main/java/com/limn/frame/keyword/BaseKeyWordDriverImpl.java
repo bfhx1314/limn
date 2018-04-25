@@ -74,7 +74,7 @@ public class BaseKeyWordDriverImpl implements KeyWordDriver {
 				break;
 			case BaseKeyWordType.WAIT:
 				cheakKeyWordCount(step.length, 2);
-				int waitTime = 0;
+				int waitTime = Integer.valueOf(step[1]);
 				if(step.length == 3 && BaseUntil.isNotEmpty(step[2])){
 					waitTime = RandomData.getNumberRange(Integer.valueOf(step[1]),Integer.valueOf(step[2]));
 				}
