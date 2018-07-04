@@ -7,8 +7,9 @@ public class DriverParameter {
 	private static ThreadLocal<Driver> driverConfigBean = new ThreadLocal<>();
 
 
-	private static void setDriverPaht() {
-		driverConfigBean.set(new Driver());
+
+	public static void setDriverPaht(Driver driverPaht) {
+		driverConfigBean.set(driverPaht);
 	}
 
 	public static Driver getDriverPaht() {

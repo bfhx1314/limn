@@ -34,6 +34,7 @@ import javax.swing.text.StyleConstants;
 import com.limn.app.driver.AppDriver;
 import com.limn.app.driver.AppDriverParameter;
 import com.limn.driver.Driver;
+import com.limn.driver.common.DriverParameter;
 import com.limn.frame.edit.EditTestCasePanel;
 import com.limn.frame.keyword.BaseAppKeyWordDriverImpl;
 import com.limn.frame.keyword.BaseAppKeyWordType;
@@ -827,8 +828,21 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	
 	}
 
+	public Driver getDriver() {
+
+		if(null == driver){
+			driver = DriverParameter.getDriverPaht();
+		}
+		return driver;
+	}
+
+
 	//保存驱动对象
 	private Driver driver = null;
+
+
+
+
 
 	public AppDriver getAppDriver() {
 		if(null == appDriver){
@@ -841,6 +855,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		this.appDriver = appDriver;
 		AppDriverParameter.setAppDriver(appDriver);
 	}
+
 
 	private AppDriver appDriver = null;
 
@@ -871,6 +886,11 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 				setAppDriver(appDriver);
 			}else{
 				AppDriverParameter.setAppDriver(getAppDriver());
+			}
+			if(null == getDriver()){
+				driver = DriverParameter.getDriverPaht();
+			}else{
+				DriverParameter.setDriverPaht(driver);
 			}
 
 			try{

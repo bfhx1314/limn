@@ -10,9 +10,7 @@ import com.limn.tool.bean.RunParameter;
 import com.limn.tool.common.BaseToolParameter;
 import com.limn.tool.common.BaseUntil;
 import com.limn.tool.common.Common;
-import com.limn.tool.common.Print;
 import com.limn.tool.exception.ParameterException;
-import com.limn.tool.parameter.Parameter;
 import com.limn.tool.random.RandomData;
 
 /**
@@ -22,7 +20,6 @@ import com.limn.tool.random.RandomData;
  */
 public class BaseKeyWordDriverImpl implements KeyWordDriver {
 	
-	public KeyWordDriver keyWord = null;
 	private LinkedHashMap<String,KeyWordDriver> KWD = new LinkedHashMap<String,KeyWordDriver>();
 	private LinkedHashMap<String,Class<?>> KWDT = new LinkedHashMap<String,Class<?>>();
 	private HashSet<String> allKeyWord = new HashSet<String>();
