@@ -108,6 +108,7 @@ public class BaseRunKeyWordImpl {
 	 * @throws ParameterException 
 	 */
 	public  void inputValue(String[] step)throws SeleniumFindException {
+
 		try{
 			HashMap<String,String> traXPath = null; 
 			if(step.length >= 4 && RegExp.findCharacters(step[step.length-1], "^HASHMAP")){

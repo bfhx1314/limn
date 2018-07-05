@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Properties;
 
 import com.limn.tool.common.BaseToolParameter;
+import com.limn.tool.common.ConvertCharacter;
 import com.limn.tool.common.FileUtil;
 import com.limn.tool.common.Print;
 import com.limn.tool.parameter.Parameter;
@@ -232,7 +233,7 @@ public class Variable {
 	 * @return
 	 */
 	public static String resolve(String content){
-
+		content = ConvertCharacter.getHtmlAsc(content);
 		ArrayList<String> variableList = RegExp.matcherCharacters(content, "\\{.*?\\}");
 		String varFormat = null;
 		for(String var:variableList){
@@ -242,6 +243,7 @@ public class Variable {
 			String tempString = content.replace(var, "'"+valueString+ "'");
 			content = resolve(tempString);
 		}
+		content = ConvertCharacter.getHtmlChr(content);
 		return content;
 	}
 	

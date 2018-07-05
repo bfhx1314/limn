@@ -82,12 +82,6 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	//自定义面板
 	private KeyWordPanel keyWordPanel = null;
 	
-//	private JTabbedPane Jtab = new JTabbedPane();
-	
-//	private JButton eidt = new JButton("编辑");
-//	private JButton change = new JButton("关键字");
-//	private JButton loadBrowser =new JButton("定位");
-	
 	//步骤编辑区
 	private JTable editTestCase = new JTable();
 	private DefaultTableModel model = new DefaultTableModel();
@@ -114,16 +108,6 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 	// TAB页
 	private JTabbedPane tabbedPane = new JTabbedPane();
 
-
-
-//
-//	public static JTabbedPane getTabbedPane() {
-//		return tabbedPane;
-//	}
-
-	JPanel pabelLog = new JPanel();
-	JPanel pabelTestCase = new JPanel();
-	
 	private BaseKeyWordDriverImpl keyWordDriver = new BaseKeyWordDriverImpl();
 	
 	private EditTestCasePanel testCasePanel = new EditTestCasePanel();
@@ -260,21 +244,6 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 			}
 		});
 		
-		
-//		setBoundsAt(Jtab,350, 0, 635, 395);
-		
-//		setBoundsAt(testCasePanel,350, 0, 635, 395);
-//		setBoundsAt(keyWordPanel,350, 0, 635, 395);
-//		setBoundsAt(loadPanel,350, 0, 635, 395);
-		
-//		Jtab.add("用例编辑器", testCasePanel);
-//		Jtab.add("页面定位器", loadPanel);
-//		Jtab.add("自定义面板", customPanel);
-//		testCasePanel.setVisible(false);
-//		customPanel.setVisible(false);
-		
-
-		
 		addPanel("编辑", testCasePanel);
 		addPanel("关键字", keyWordPanel);
 		addPanel("Web", loadPanel);
@@ -284,61 +253,7 @@ public class DebugEditFrame extends PrintLogDriver implements LogControlInterfac
 		
 		testCasePanel.setVisible(true);
 		isShowPanel = testCasePanel;
-//		setBoundsAt(eidt, 303, 5, 46, 20);
-//		eidt.setMargin(new Insets(0,0,0,0));
-//		eidt.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent e){
-////				if (loadPanel.isVisible()) {
-//					testCasePanel.setVisible(true);
-//					loadPanel.setVisible(false);
-//					keyWordPanel.setVisible(false);
-////				} else {
-////					testCasePanel.setVisible(false);
-////					loadPanel.setVisible(true);
-////					customPanel.setVisible(false);
-////				}
-//			}
-//		});
-//		
-//		setBoundsAt(loadBrowser,303, 30, 46, 20);
-//		loadBrowser.setMargin(new Insets(0,0,0,0));
-//		loadBrowser.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent e){
-////				if (loadPanel.isVisible()) {
-////					testCasePanel.setVisible(true);
-////					loadPanel.setVisible(false);
-////					customPanel.setVisible(false);
-////				} else {
-//					testCasePanel.setVisible(false);
-//					loadPanel.setVisible(true);
-//					keyWordPanel.setVisible(false);
-////				}
-//			}
-//		});
-//		
-//		loadPanel.setVisible(false);
-//		setBoundsAt(change, 303, 55, 46, 20);
-//		change.setMargin(new Insets(0,0,0,0));
-//		
-//		//切换自定义的面板
-//		change.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent e){
-////				if(customPanel.isVisible()){
-////					testCasePanel.setVisible(true);
-////					customPanel.setVisible(false);
-////					loadPanel.setVisible(false);
-////				}else{
-//					testCasePanel.setVisible(false);
-//					keyWordPanel.setVisible(true);
-//					loadPanel.setVisible(false);
-////				}
-//				
-//			}
-//		});
-		
+
 		setBoundsAt(moveTestCase,303, 200, 46, 20);
 		setBoundsAt(moveEditTestCase,303, 250, 46, 20);
 		setBoundsAt(logJScrollLog,2, 405, 990, 165);

@@ -41,7 +41,7 @@ import com.limn.tool.variable.Variable;
 public class LoadBroswerPanel extends CustomPanel {
 
 	/**
-	 * 
+	 *
 	 */
 	private JLabel titleLabel = new JLabel("当前URL:");
 	private static JLabel title = new JLabel();
@@ -59,17 +59,17 @@ public class LoadBroswerPanel extends CustomPanel {
 	private JLabel result = new JLabel();
 
 	private static JTextField recommendLocator = new JTextField();
-	
+
 	private static JComboBox<String> filterWebElement = new JComboBox<>();
 
 	private VerificationPanel verification = new VerificationPanel();
-	
+
 	// 查询的元素列表
 	private HashMap<Integer, WebElement> findWebElements = new HashMap<>();
 	private HashMap<Integer, String> showList = new HashMap<>();
 	private HashMap<String, String> rangeList = new HashMap<>();
 
-//	private static JButton verificationButton = new JButton("验证");
+	//	private static JButton verificationButton = new JButton("验证");
 	private static JButton setXPathName = new JButton("设置XPATH别名");
 
 	private static JButton clearFilterElement = new JButton("清空元素");
@@ -146,8 +146,8 @@ public class LoadBroswerPanel extends CustomPanel {
 //				def.setAddExpectButton(true);
 //			}
 //		});
-		
-		
+
+
 		returnButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -156,16 +156,21 @@ public class LoadBroswerPanel extends CustomPanel {
 				verification.setVisible(false);
 			}
 		});
-		
+
 
 		setXPathName.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String locator = recommendLocator.getText();
-				if(locator.equals("未能定位")){
-					return ;
+				String[] caseStep = RegExp.splitKeyWord(DebugEditFrame.getStepTextArea());
+				if(caseStep== null || caseStep.length<1){
+					JOptionPane.showMessageDialog(LoadBroswerPanel.title,"无内容设置");
+					return;
 				}
+//				if(locator.equals("未能定位")){
+//					return ;
+//				}
 				//xpath别名
 				String name = null;
 				//是否完成
@@ -218,36 +223,36 @@ public class LoadBroswerPanel extends CustomPanel {
 		filterWebElement.setEditable(true);
 		Component comp = filterWebElement.getEditor().getEditorComponent();
 		comp.addKeyListener(new KeyListener() {
-			
+
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void keyReleased(KeyEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (!filterWebElement.getEditor().getItem().toString().isEmpty()) {
 					if (e.getKeyCode() == KeyEvent.VK_ENTER) // 判断按下的键是否是回车键
 					{
 						WebElement web = null;
-//		
+//
 						try {
 							web = def.getDriver().getWebElement(By.xpath("/html"));
 						} catch (SeleniumFindException e1) {
-							
+
 						}
-						
+
 //						new Thread(new SearchWebElement(web,filterWebElement.getEditor().getItem().toString())).start();
 					}
 				}
-				
+
 			}
 		});
 		// 选中过滤
@@ -285,7 +290,7 @@ public class LoadBroswerPanel extends CustomPanel {
 			public void mouseClicked(MouseEvent e) {
 
 //				if (e.getButton() == 3) {
-//					
+//
 //					if (webElements.getSelectedIndex() == -1) {
 //
 //					} else {
@@ -328,6 +333,8 @@ public class LoadBroswerPanel extends CustomPanel {
 				findWebElements.clear();
 				filterWebElement.removeAllItems();
 				webElements.removeAll();
+				showList.clear();
+				rangeList.clear();
 				searchRange = 0;
 			}
 		});
@@ -335,7 +342,7 @@ public class LoadBroswerPanel extends CustomPanel {
 
 	/**
 	 * 模块列表的右键菜单
-	 * 
+	 *
 	 * @param web
 	 *            是否有选中项目
 	 * @return
@@ -343,9 +350,9 @@ public class LoadBroswerPanel extends CustomPanel {
 	private JPopupMenu getRightMenu(final WebElement web) {
 		JPopupMenu menu = new JPopupMenu();
 		JMenuItem verification = new JMenuItem("验证");
-		
+
 		verification.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//TODO 
@@ -353,7 +360,7 @@ public class LoadBroswerPanel extends CustomPanel {
 		});
 		menu.add(verification);
 		return menu;
-		
+
 	}
 
 	private void setBoundsAt(Component comp, int x, int y, int width, int height) {
@@ -361,7 +368,7 @@ public class LoadBroswerPanel extends CustomPanel {
 		this.add(comp);
 	}
 
-	
+
 	/**
 	 * loading
 	 */
@@ -369,15 +376,15 @@ public class LoadBroswerPanel extends CustomPanel {
 		recommendLocator.setText("");
 		result.setVisible(true);
 	}
-	
+
 	/**
 	 * 加载完成
 	 */
 	private void complete(){
 		result.setVisible(false);
 	}
-	
-	
+
+
 	/**
 	 * 遍历页面中所有元素,取出tagname
 	 * 废弃
@@ -405,11 +412,11 @@ public class LoadBroswerPanel extends CustomPanel {
 	}
 
 	private void setWebElmentByLocator(WebElement web) {
-		
+
 		if (null == web) {
 			return;
 		}
-		
+
 		try {
 			String locator = def.getDriver().getXpathByWebElement(web);
 			if (null != locator && !locator.isEmpty()) {
@@ -424,9 +431,9 @@ public class LoadBroswerPanel extends CustomPanel {
 		}
 
 	}
-	
 
-	
+
+
 	private String getIdentifiedByWebElement(WebElement web) {
 
 		String text = web.getTagName() + "{";
@@ -434,7 +441,7 @@ public class LoadBroswerPanel extends CustomPanel {
 		String att_name = web.getAttribute("name");
 		String att_class = web.getAttribute("class");
 
-		
+
 		if (web.getTagName().equalsIgnoreCase("input")) {
 			text = text + " type=" + web.getAttribute("type");
 		}
@@ -442,7 +449,7 @@ public class LoadBroswerPanel extends CustomPanel {
 		if(null != web.getText() && !web.getText().isEmpty()){
 			text = text + " text=" + web.getText();
 		}
-		
+
 		if (null != att_id && !att_id.isEmpty()) {
 			text = text + " id=" + att_id;
 		}
@@ -482,7 +489,7 @@ public class LoadBroswerPanel extends CustomPanel {
 			serachByXpath(xpath);
 			complete();
 		}
-		
+
 		private void serachByXpath(String value) {
 			filterWebElement.addItem(value);
 			filterWebElement.setSelectedItem(value);
@@ -507,10 +514,10 @@ public class LoadBroswerPanel extends CustomPanel {
 			}
 			rangeList.put(tagName, start + ":" + (searchRange - 1));
 		}
-		
-		
+
+
 	}
-	
+
 	/**
 	 * 根据页面元素生成XPATH进入用例步骤
 	 * @author limengnan
@@ -519,13 +526,13 @@ public class LoadBroswerPanel extends CustomPanel {
 	class FindWebElement implements Runnable{
 
 		private String locator;
-		
+
 		public FindWebElement(String locator){
 			locator = Variable.resolve(locator);
-			this.locator = locator;	
+			this.locator = locator;
 		}
-		
-		
+
+
 		@Override
 		public void run() {
 			loading();
@@ -546,9 +553,9 @@ public class LoadBroswerPanel extends CustomPanel {
 			}
 			complete();
 		}
-		
+
 	}
 
-	
-	
+
+
 }
